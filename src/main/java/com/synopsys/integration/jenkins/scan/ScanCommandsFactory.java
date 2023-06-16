@@ -1,6 +1,5 @@
 package com.synopsys.integration.jenkins.scan;
 
-import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloaderAndExecutor;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 
 import hudson.AbortException;
