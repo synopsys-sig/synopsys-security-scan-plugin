@@ -1,0 +1,2 @@
+_extends: .github
+tag-template: synopsys-security-scan-plugin-$NEXT_MINOR_VERSION
