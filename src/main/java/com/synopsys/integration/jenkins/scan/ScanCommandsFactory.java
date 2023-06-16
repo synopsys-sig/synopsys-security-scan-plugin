@@ -1,5 +1,6 @@
 package com.synopsys.integration.jenkins.scan;
 
+import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloaderAndExecutor;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 
 import hudson.AbortException;
@@ -29,7 +30,7 @@ public class ScanCommandsFactory {
     }
 
     public static ScanPipelineCommands createPipelineCommand(TaskListener listener, EnvVars envVars, Launcher launcher, Node node, FilePath workspace) {
-        return new ScanPipelineCommands(new SecurityScanner(listener));
+        return new ScanPipelineCommands(new SecurityScanner(new BridgeDownloaderAndExecutor(), listener));
     }
     
 }
