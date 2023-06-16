@@ -2,11 +2,14 @@ package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 
+import hudson.EnvVars;
 import hudson.FilePath;
+import hudson.Platform;
 import hudson.model.TaskListener;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 
 /**
  * @author akib @Date 6/15/23
@@ -15,9 +18,11 @@ public class BridgeDownloaderAndExecutor {
 
     private final String bridgeZipFileName = "bridge.zip";
     private final TaskListener listener;
+    private final EnvVars envVars;
 
-    public BridgeDownloaderAndExecutor(TaskListener listener) {
+    public BridgeDownloaderAndExecutor(TaskListener listener, EnvVars envVars) {
         this.listener = listener;
+        this.envVars = envVars;
     }
 
     public FilePath downloadSynopsysBridge(FilePath downloadFilePath, String bridgeVersion, String bridgeDownloadUrl) {
@@ -26,7 +31,7 @@ public class BridgeDownloaderAndExecutor {
         
         if (isValidVersion(bridgeVersion)) {
             bridgeUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL + bridgeVersion + "/" +
-                ApplicationConstants.getSynopsysBridgeZipFileName(ApplicationConstants.PLATFORM_LINUX);
+                ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform());
         } else if (isValidBridgeDownloadUrl(bridgeDownloadUrl)){
             bridgeUrl = bridgeDownloadUrl;
         } else {
@@ -60,6 +65,14 @@ public class BridgeDownloaderAndExecutor {
         } catch (Exception e) {
             listener.getLogger().println("Synopsys bridge unzipping failed");
             e.printStackTrace();
+        }
+    }
+
+    private String getPlatform() {
+        if (Objects.equals(envVars.getPlatform(), Platform.WINDOWS)) {
+            return ApplicationConstants.PLATFORM_WINDOWS;
+        } else {
+            return ApplicationConstants.PLATFORM_LINUX;
         }
     }
 

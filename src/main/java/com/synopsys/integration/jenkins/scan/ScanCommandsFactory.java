@@ -29,7 +29,7 @@ public class ScanCommandsFactory {
     }
 
     public static ScanPipelineCommands createPipelineCommand(TaskListener listener, EnvVars envVars, Launcher launcher, Node node, FilePath workspace) {
-        return new ScanPipelineCommands(new SecurityScanner(listener));
+        return new ScanPipelineCommands(new SecurityScanner(listener, launcher, workspace, envVars));
     }
     
 }
