@@ -32,21 +32,22 @@ public class SecurityScanner {
         this.envVars = envVars;
     }
 
-    public int runScanner() throws IOException, InterruptedException {
+    public int runScanner(List<String> blackDuckArgs, List<String> bridgeArgs) throws IOException, InterruptedException {
         BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor = new BridgeDownloaderAndExecutor(listener, envVars);
         FilePath downloadFilePath = Utility.createTempDir(ApplicationConstants.APPLICATION_NAME);
 
         FilePath bridgeZipPath = bridgeDownloaderAndExecutor.downloadSynopsysBridge(downloadFilePath,null, null);
-        bridgeDownloaderAndExecutor.unzipSynopsysBridge(bridgeZipPath, downloadFilePath);
+        bridgeDownloaderAndExecutor.unzipSynopsysBridge(bridgeZipPath, workspace);
+        Utility.cleanupTempDir(downloadFilePath);
+
+        List<String> commandLineArgs = getCommandLineArgs(blackDuckArgs, bridgeArgs);
 
         listener.getLogger().println(LogMessages.ASTERISKS);
         listener.getLogger().println(LogMessages.START_SCANNER);
         listener.getLogger().println(LogMessages.ASTERISKS);
 
-        List<String> commandLine = new ArrayList<>();
-        commandLine.add("synopsys-bridge --help"); //test command
         int scanner = launcher.launch()
-            .cmds(commandLine)
+            .cmds(commandLineArgs)
             .envs(envVars)
             .pwd(workspace)
             .stdout(listener)
@@ -58,6 +59,13 @@ public class SecurityScanner {
         listener.getLogger().println(LogMessages.ASTERISKS);
 
         return scanner;
+    }
+
+    private List<String> getCommandLineArgs(List<String> blackDuckArgs, List<String> bridgeArgs) {
+        List<String> commandLineArgs = new ArrayList<>();
+        commandLineArgs.addAll(Utility.getInitialBridgeArgs());
+        commandLineArgs.addAll(bridgeArgs);
+        return commandLineArgs;
     }
 
 }

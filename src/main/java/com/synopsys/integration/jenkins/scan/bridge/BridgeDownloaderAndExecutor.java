@@ -55,10 +55,10 @@ public class BridgeDownloaderAndExecutor {
         return bridgeZipPath;
     }
 
-    public void unzipSynopsysBridge(FilePath bridgeZipPath, FilePath downloadFilePath) {
+    public void unzipSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeUnzipPath) {
         try {
-            listener.getLogger().println("Unzipping synopsys bridge from: " + downloadFilePath);
-            bridgeZipPath.unzip(downloadFilePath);
+            listener.getLogger().println("Unzipping synopsys bridge from: " + bridgeZipPath + " to: " + bridgeUnzipPath);
+            bridgeZipPath.unzip(bridgeUnzipPath);
             // Delete the zip file
             bridgeZipPath.delete();
             listener.getLogger().println("Synopsys bridge unzipped successfully");
