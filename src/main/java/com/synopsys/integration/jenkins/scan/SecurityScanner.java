@@ -4,6 +4,7 @@ import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloaderAndExecutor;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
+import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -11,7 +12,6 @@ import hudson.Launcher;
 import hudson.model.TaskListener;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,16 +23,18 @@ public class SecurityScanner {
     private final Launcher launcher;
     private final FilePath workspace;
     private final EnvVars envVars;
+    private final ScannerArgumentService scannerArgumentService;
 
     public SecurityScanner(TaskListener listener, Launcher launcher, FilePath workspace,
-                           EnvVars envVars) {
+                           EnvVars envVars, ScannerArgumentService scannerArgumentService) {
         this.listener = listener;
         this.launcher = launcher;
         this.workspace = workspace;
         this.envVars = envVars;
+        this.scannerArgumentService = scannerArgumentService;
     }
 
-    public int runScanner(List<String> blackDuckArgs, List<String> bridgeArgs) throws IOException, InterruptedException {
+    public int runScanner(String blackDuckArgs, String bridgeArgs) throws IOException, InterruptedException {
         BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor = new BridgeDownloaderAndExecutor(listener, envVars);
         FilePath downloadFilePath = Utility.createTempDir(ApplicationConstants.APPLICATION_NAME);
 
@@ -40,7 +42,7 @@ public class SecurityScanner {
         bridgeDownloaderAndExecutor.unzipSynopsysBridge(bridgeZipPath, workspace);
         Utility.cleanupTempDir(downloadFilePath);
 
-        List<String> commandLineArgs = getCommandLineArgs(blackDuckArgs, bridgeArgs);
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(blackDuckArgs, bridgeArgs);
 
         listener.getLogger().println(LogMessages.ASTERISKS);
         listener.getLogger().println(LogMessages.START_SCANNER);
@@ -59,13 +61,6 @@ public class SecurityScanner {
         listener.getLogger().println(LogMessages.ASTERISKS);
 
         return scanner;
-    }
-
-    private List<String> getCommandLineArgs(List<String> blackDuckArgs, List<String> bridgeArgs) {
-        List<String> commandLineArgs = new ArrayList<>();
-        commandLineArgs.addAll(Utility.getInitialBridgeArgs());
-        commandLineArgs.addAll(bridgeArgs);
-        return commandLineArgs;
     }
 
 }

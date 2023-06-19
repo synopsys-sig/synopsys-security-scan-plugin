@@ -3,9 +3,9 @@ package com.synopsys.integration.jenkins.scan;
 
 
 
+import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author akib @Date 6/15/23
@@ -17,11 +17,12 @@ public class ScanPipelineCommands {
         this.scanner = scanner;
     }
 
-    public int runScanner(String param1, String param2) throws IOException, InterruptedException {
-        // need to validate and prepare params to execute
-        List<String> blackDuckArgs = Arrays.asList(param1.split(" "));
-        List<String> bridgeArgs = Arrays.asList(param2.split(" "));
-        return scanner.runScanner(blackDuckArgs, bridgeArgs);
+    public int runScanner(String param1, String param2) throws IOException, InterruptedException, ScannerJenkinsException {
+        int exitCode = scanner.runScanner(param1, param2);
+        if (exitCode > 0) {
+            throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
+        }
+        return scanner.runScanner(param1, param2);
     }
 
 }

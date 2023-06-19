@@ -1,5 +1,7 @@
-package com.synopsys.integration.jenkins.scan;
+package com.synopsys.integration.jenkins.scan.service;
 
+import com.synopsys.integration.jenkins.scan.ScanPipelineCommands;
+import com.synopsys.integration.jenkins.scan.SecurityScanner;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 
 import hudson.AbortException;
@@ -29,7 +31,8 @@ public class ScanCommandsFactory {
     }
 
     public static ScanPipelineCommands createPipelineCommand(TaskListener listener, EnvVars envVars, Launcher launcher, Node node, FilePath workspace) {
-        return new ScanPipelineCommands(new SecurityScanner(listener, launcher, workspace, envVars));
+        return new ScanPipelineCommands(
+            new SecurityScanner(listener, launcher, workspace, envVars, new ScannerArgumentService()));
     }
     
 }
