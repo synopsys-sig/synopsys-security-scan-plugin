@@ -24,7 +24,7 @@ public class Utility {
 
     public static List<String> getInitialBridgeArgs() {
         List<String> initBridgeArgs = new ArrayList<>();
-        initBridgeArgs.add("./synopsys-bridge");
+        initBridgeArgs.add(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND);
 //        initBridgeArgs.add("--stage");
 //        initBridgeArgs.add("blackduck");
 //        initBridgeArgs.add("--input");
