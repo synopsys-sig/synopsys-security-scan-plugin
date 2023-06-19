@@ -22,7 +22,7 @@ public class ScanPipelineCommands {
         if (exitCode > 0) {
             throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
         }
-        return scanner.runScanner(param1, param2);
+        return exitCode;
     }
 
 }
