@@ -35,14 +35,14 @@ public class SecurityScanner {
     }
 
     public int runScanner(String blackDuckArgs, String bridgeArgs) throws IOException, InterruptedException {
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(workspace, blackDuckArgs);
+
         BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor = new BridgeDownloaderAndExecutor(listener, envVars);
         FilePath downloadFilePath = Utility.createTempDir(ApplicationConstants.APPLICATION_NAME);
 
         FilePath bridgeZipPath = bridgeDownloaderAndExecutor.downloadSynopsysBridge(downloadFilePath,null, null);
         bridgeDownloaderAndExecutor.unzipSynopsysBridge(bridgeZipPath, workspace);
         Utility.cleanupTempDir(downloadFilePath);
-
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(blackDuckArgs, bridgeArgs);
 
         listener.getLogger().println(LogMessages.ASTERISKS);
         listener.getLogger().println(LogMessages.START_SCANNER);

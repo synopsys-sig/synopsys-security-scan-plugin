@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.pipeline;
+package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
