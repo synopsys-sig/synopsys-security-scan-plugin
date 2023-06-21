@@ -5,6 +5,7 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
+import com.synopsys.integration.jenkins.scan.validation.BlackDuckParametersValidation;
 
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -18,13 +19,11 @@ import java.util.List;
  * @author akib @Date 6/15/23
  */
 public class SecurityScanner {
-
     private final TaskListener listener;
     private final Launcher launcher;
     private final FilePath workspace;
     private final EnvVars envVars;
     private final ScannerArgumentService scannerArgumentService;
-
     public SecurityScanner(TaskListener listener, Launcher launcher, FilePath workspace,
                            EnvVars envVars, ScannerArgumentService scannerArgumentService) {
         this.listener = listener;
@@ -35,32 +34,53 @@ public class SecurityScanner {
     }
 
     public int runScanner(String blackDuckArgs, String bridgeArgs) throws IOException, InterruptedException {
+
+        BlackDuckParametersValidation blackDuckParametersValidation = new BlackDuckParametersValidation();
+
+        //TODO: add validation for Synopys-Bridge parameters in the if condition as well.
+        if (!blackDuckParametersValidation.validateBlackDuckParameters(blackDuckArgs)) {
+            listener.getLogger().println("Couldn't validate BlackDuck or Synopys-Bridge parameters!");
+            return 1;
+        }
+
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(workspace, blackDuckArgs);
 
+        initiateBridgeDownloadAndUnzip(listener, envVars, workspace);
+
+        printMessages(LogMessages.START_SCANNER);
+
+        int scanner = launcher.launch()
+                .cmds(commandLineArgs)
+                .envs(envVars)
+                .pwd(workspace)
+                .stdout(listener)
+                .quiet(true)
+                .join();
+
+        printMessages(LogMessages.END_SCANNER);
+
+        return scanner;
+    }
+
+    private void initiateBridgeDownloadAndUnzip(TaskListener listener, EnvVars envVars, FilePath workspace) throws InterruptedException, IOException {
         BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor = new BridgeDownloaderAndExecutor(listener, envVars);
         FilePath downloadFilePath = Utility.createTempDir(ApplicationConstants.APPLICATION_NAME);
 
-        FilePath bridgeZipPath = bridgeDownloaderAndExecutor.downloadSynopsysBridge(downloadFilePath,null, null);
-        bridgeDownloaderAndExecutor.unzipSynopsysBridge(bridgeZipPath, workspace);
-        Utility.cleanupTempDir(downloadFilePath);
+        try {
+            FilePath bridgeZipPath = bridgeDownloaderAndExecutor.downloadSynopsysBridge(downloadFilePath, null, null);
+            bridgeDownloaderAndExecutor.unzipSynopsysBridge(bridgeZipPath, workspace);
+        } catch (Exception e) {
+            listener.getLogger().println("There is an exception while downloading/unzipping Synopys-bridge.");
+            e.getStackTrace();
+        } finally {
+            Utility.cleanupTempDir(downloadFilePath);
+        }
+    }
 
+    public void printMessages(String message) {
         listener.getLogger().println(LogMessages.ASTERISKS);
-        listener.getLogger().println(LogMessages.START_SCANNER);
+        listener.getLogger().println(message);
         listener.getLogger().println(LogMessages.ASTERISKS);
-
-        int scanner = launcher.launch()
-            .cmds(commandLineArgs)
-            .envs(envVars)
-            .pwd(workspace)
-            .stdout(listener)
-            .quiet(true)
-            .join();
-
-        listener.getLogger().println(LogMessages.ASTERISKS);
-        listener.getLogger().println(LogMessages.END_SCANNER);
-        listener.getLogger().println(LogMessages.ASTERISKS);
-
-        return scanner;
     }
 
 }

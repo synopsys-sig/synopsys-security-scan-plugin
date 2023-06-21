@@ -12,6 +12,9 @@ public class ApplicationConstants {
     public static final String SYNOPSYS_BRIDGE_LATEST_VERSION = "latest";
     public static final String PLATFORM_LINUX = "linux64";
     public static final String PLATFORM_WINDOWS = "win64";
+    
+    public static final String BLACKDUCK_URL_KEY = "blackduck.url";
+    public static final String BLACKDUCK_API_TOKEN_KEY = "blackduck.token";
 
     public static final String getSynopsysBridgeZipFileName(String platform) {
         return "synopsys-bridge-" + platform + ".zip";
