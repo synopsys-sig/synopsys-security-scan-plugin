@@ -6,15 +6,16 @@ import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfi
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.input.Blackduck;
+import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 
 import hudson.FilePath;
 
-import java.util.HashMap;
 import jenkins.model.GlobalConfiguration;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,10 +36,11 @@ public class ScannerArgumentService {
         blackduck.setUrl(config.getBlackDuckUrl());
         blackduck.setToken(config.getBlackDuckCredentialsId());
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("blackduck", blackduck);
+        BridgeInput bridgeInput = new BridgeInput();
+        bridgeInput.setBlackduck(blackduck);
+
         Map<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("data", data);
+        jsonMap.put("data", bridgeInput);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);

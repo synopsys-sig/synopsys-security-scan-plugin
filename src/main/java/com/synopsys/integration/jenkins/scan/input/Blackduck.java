@@ -1,21 +1,23 @@
 package com.synopsys.integration.jenkins.scan.input;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author akib @Date 6/20/23
  */
-@JsonAppend
 public class Blackduck {
+    @JsonProperty("url")
     private String url;
+    @JsonProperty("token")
     private String token;
+    @JsonProperty("install.directory")
     private String installDirectory;
-    private boolean scanFull;
-    private List<BlackduckScanFailureSeverities> scanFailureSeverities = new ArrayList<>();
+    @JsonProperty("scan")
+    private Scan scan;
+    @JsonProperty("automation")
     private Automation automation;
 
     public String getUrl() {
@@ -42,21 +44,12 @@ public class Blackduck {
         this.installDirectory = installDirectory;
     }
 
-    public boolean isScanFull() {
-        return scanFull;
+    public Scan getScan() {
+        return scan;
     }
 
-    public void setScanFull(boolean scanFull) {
-        this.scanFull = scanFull;
-    }
-
-    public List<BlackduckScanFailureSeverities> getScanFailureSeverities() {
-        return scanFailureSeverities;
-    }
-
-    public void setScanFailureSeverities(
-        List<BlackduckScanFailureSeverities> scanFailureSeverities) {
-        this.scanFailureSeverities = scanFailureSeverities;
+    public void setScan(Scan scan) {
+        this.scan = scan;
     }
 
     public Automation getAutomation() {
@@ -65,6 +58,29 @@ public class Blackduck {
 
     public void setAutomation(Automation automation) {
         this.automation = automation;
+    }
+
+    private class Scan {
+        @JsonProperty("full")
+        private boolean isFullScan = false;
+        @JsonProperty("failure.severities")
+        private List<BlackduckScanFailureSeverities> failureSeverities;
+
+        public boolean isFullScan() {
+            return isFullScan;
+        }
+
+        public void setFullScan(boolean fullScan) {
+            isFullScan = fullScan;
+        }
+
+        public List<BlackduckScanFailureSeverities> getFailureSeverities() {
+            return failureSeverities;
+        }
+
+        public void setFailureSeverities(List<BlackduckScanFailureSeverities> failureSeverities) {
+            this.failureSeverities = failureSeverities;
+        }
     }
 
     public enum BlackduckScanFailureSeverities {
