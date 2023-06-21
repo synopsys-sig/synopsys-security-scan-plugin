@@ -23,38 +23,45 @@ import java.util.Map;
  * @author akib @Date 6/19/23
  */
 public class ScannerArgumentService {
+    private static final String DATA_KEY = "data";
 
     public List<String> getCommandLineArgs(FilePath workspace, String blackduckArgs) throws IOException {
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE));
         commandLineArgs.add(createBlackDuckInputJson(workspace, blackduckArgs));
+
         return commandLineArgs;
     }
 
     private String createBlackDuckInputJson(FilePath workspace, String blackduckArgs) throws IOException {
         Blackduck blackduck = new Blackduck();
         ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
-        blackduck.setUrl(config.getBlackDuckUrl());
-        blackduck.setToken(config.getBlackDuckCredentialsId());
+
+        blackduck.setUrl(config.getBlackDuckUrl().trim());
+        blackduck.setToken(config.getBlackDuckCredentialsId().trim());
 
         BridgeInput bridgeInput = new BridgeInput();
         bridgeInput.setBlackduck(blackduck);
 
-        Map<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("data", bridgeInput);
+        Map<String, Object> blackduckJsonMap = new HashMap<>();
+        blackduckJsonMap.put(DATA_KEY, bridgeInput);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        String blackduckJson = mapper.writeValueAsString(jsonMap);
-        String jsonPath = workspace.getRemote() + "/" + BridgeParams.BLACKDUCK_STATE_FILE_NAME;
 
-        try {
-            FileWriter fileWriter = new FileWriter(jsonPath);
+        String blackduckJson = mapper.writeValueAsString(blackduckJsonMap);
+        String jsonPath = workspace.getRemote().concat("/").concat(BridgeParams.BLACKDUCK_STATE_FILE_NAME);
+
+        writeBlackduckJsonToFile(jsonPath, blackduckJson);
+
+        return BridgeParams.BLACKDUCK_STATE_FILE_NAME;
+    }
+
+    public void writeBlackduckJsonToFile(String jsonPath, String blackduckJson) {
+        try (FileWriter fileWriter = new FileWriter(jsonPath)) {
             fileWriter.write(blackduckJson);
-            fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return BridgeParams.BLACKDUCK_STATE_FILE_NAME;
     }
 
     public static List<String> getInitialBridgeArgs(String stage) {
@@ -63,6 +70,7 @@ public class ScannerArgumentService {
         initBridgeArgs.add(BridgeParams.STAGE_OPTION);
         initBridgeArgs.add(stage);
         initBridgeArgs.add(BridgeParams.INPUT_OPTION);
+
         return initBridgeArgs;
     }
     
