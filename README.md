@@ -6,8 +6,20 @@ TODO Describe what your plugin does here
 
 ## Getting started
 
-TODO Tell users how to configure your plugin here, include screenshots, pipeline examples and 
-configuration-as-code examples.
+To run this application, you can use either of the following commands:
+
+
+```
+./mvnw hpi:run
+```
+
+or
+
+```
+mvn hpi:run
+```
+
+**Make sure 8080 port is free**
 
 ## Issues
 
