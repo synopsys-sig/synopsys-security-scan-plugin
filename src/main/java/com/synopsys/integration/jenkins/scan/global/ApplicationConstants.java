@@ -13,6 +13,11 @@ public class ApplicationConstants {
     
     public static final String BLACKDUCK_URL_KEY = "blackduck.url";
     public static final String BLACKDUCK_API_TOKEN_KEY = "blackduck.token";
+    public static final String BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck.install.directory";
+    public static final String BLACKDUCK_SCAN_FULL_KEY = "blackduck.scan.full";
+    public static final String BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck.scan.failure.severities";
+    public static final String BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck.automation.fixpr";
+    public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck.automation.prcomment";
 
     public static final String getSynopsysBridgeZipFileName(String platform) {
         return "synopsys-bridge-" + platform + ".zip";

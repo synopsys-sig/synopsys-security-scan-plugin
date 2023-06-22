@@ -5,7 +5,7 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
-import com.synopsys.integration.jenkins.scan.validation.BlackDuckParametersValidation;
+import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
 
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -30,17 +30,17 @@ public class SecurityScanner {
         this.scannerArgumentService = scannerArgumentService;
     }
 
-    public int runScanner(String blackDuckArgs, String bridgeArgs) throws IOException, InterruptedException {
+    public int runScanner(String stageParams, String bridgeParams) throws IOException, InterruptedException {
 
-        BlackDuckParametersValidation blackDuckParametersValidation = new BlackDuckParametersValidation();
+        BlackDuckParametersService blackDuckParametersValidation = new BlackDuckParametersService();
 
-        //TODO: add validation for Synopys-Bridge parameters in the if condition as well.
-        if (!blackDuckParametersValidation.validateBlackDuckParameters(blackDuckArgs)) {
-            listener.getLogger().println("Couldn't validate BlackDuck or Synopys-Bridge parameters!");
+        //TODO: add validation for Synopsys-Bridge parameters in the if condition as well.
+        if (!blackDuckParametersValidation.validateBlackDuckParameters(stageParams)) {
+            listener.getLogger().println("Couldn't validate BlackDuck or Synopsys-Bridge parameters!");
             return 1;
         }
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(workspace, blackDuckArgs);
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(workspace, stageParams);
 
         initiateBridgeDownloadAndUnzip(listener, envVars, workspace);
 
@@ -67,7 +67,7 @@ public class SecurityScanner {
             FilePath bridgeZipPath = bridgeDownloaderAndExecutor.downloadSynopsysBridge(downloadFilePath, null, null);
             bridgeDownloaderAndExecutor.unzipSynopsysBridge(bridgeZipPath, workspace);
         } catch (Exception e) {
-            listener.getLogger().println("There is an exception while downloading/unzipping Synopys-bridge.");
+            listener.getLogger().println("There is an exception while downloading/unzipping Synopsys-bridge.");
             e.getStackTrace();
         } finally {
             Utility.cleanupTempDir(downloadFilePath);

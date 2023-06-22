@@ -57,11 +57,11 @@ public class BlackDuck {
         this.automation = automation;
     }
 
-    private class Scan {
+    public static class Scan {
         @JsonProperty("full")
-        private boolean isFullScan = false;
+        private boolean isFullScan;
         @JsonProperty("failure.severities")
-        private List<BlackduckScanFailureSeverities> failureSeverities;
+        private List<String> failureSeverities;
 
         public boolean isFullScan() {
             return isFullScan;
@@ -71,34 +71,12 @@ public class BlackDuck {
             isFullScan = fullScan;
         }
 
-        public List<BlackduckScanFailureSeverities> getFailureSeverities() {
+        public List<String> getFailureSeverities() {
             return failureSeverities;
         }
 
-        public void setFailureSeverities(List<BlackduckScanFailureSeverities> failureSeverities) {
+        public void setFailureSeverities(List<String> failureSeverities) {
             this.failureSeverities = failureSeverities;
-        }
-    }
-
-    public enum BlackduckScanFailureSeverities {
-        ALL("ALL"),
-        NONE("NONE"),
-        BLOCKER("BLOCKER"),
-        CRITICAL("CRITICAL"),
-        MAJOR("MAJOR"),
-        MINOR("MINOR"),
-        OK("OK"),
-        TRIVIAL("TRIVIAL"),
-        UNSPECIFIED("UNSPECIFIED");
-
-        private final String value;
-
-        BlackduckScanFailureSeverities(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
         }
     }
 
