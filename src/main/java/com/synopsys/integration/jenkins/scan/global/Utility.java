@@ -5,9 +5,6 @@ import hudson.FilePath;
 import java.io.IOException;
 import java.nio.file.Files;
 
-/**
- * @author akib @Date 6/16/23
- */
 public class Utility {
 
     public static FilePath createTempDir(String directoryName) throws IOException, InterruptedException {

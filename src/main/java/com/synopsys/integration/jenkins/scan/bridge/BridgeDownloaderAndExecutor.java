@@ -11,9 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Objects;
 
-/**
- * @author akib @Date 6/15/23
- */
 public class BridgeDownloaderAndExecutor {
 
     private final String bridgeZipFileName = "bridge.zip";
@@ -30,14 +27,15 @@ public class BridgeDownloaderAndExecutor {
         String bridgeUrl;
         
         if (isValidVersion(bridgeVersion)) {
-            bridgeUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL + bridgeVersion + "/" +
-                ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform());
+            bridgeUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL
+                .concat(bridgeVersion).concat("/")
+                .concat(ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform()));
         } else if (isValidBridgeDownloadUrl(bridgeDownloadUrl)){
             bridgeUrl = bridgeDownloadUrl;
         } else {
-            bridgeUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL +
-                ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION + "/" +
-                ApplicationConstants.getSynopsysBridgeZipFileName(ApplicationConstants.PLATFORM_LINUX);
+            bridgeUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL
+                .concat(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION).concat("/")
+                .concat(ApplicationConstants.getSynopsysBridgeZipFileName(ApplicationConstants.PLATFORM_LINUX));
         }
 
         if (checkIfBridgeUrlExists(bridgeUrl)) {
@@ -59,6 +57,7 @@ public class BridgeDownloaderAndExecutor {
         try {
             listener.getLogger().println("Unzipping synopsys bridge from: " + bridgeZipPath + " to: " + bridgeUnzipPath);
             bridgeZipPath.unzip(bridgeUnzipPath);
+
             // Delete the zip file
             bridgeZipPath.delete();
             listener.getLogger().println("Synopsys bridge unzipped successfully");

@@ -11,9 +11,6 @@ import hudson.Launcher;
 import hudson.model.Node;
 import hudson.model.TaskListener;
 
-/**
- * @author akib @Date 6/15/23
- */
 public class ScanCommandsFactory {
     
     private final TaskListener listener;

@@ -2,15 +2,12 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
-import com.synopsys.integration.jenkins.scan.input.Blackduck;
+import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 
 import hudson.FilePath;
-
-import jenkins.model.GlobalConfiguration;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,46 +16,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author akib @Date 6/19/23
- */
 public class ScannerArgumentService {
     private static final String DATA_KEY = "data";
 
-    public List<String> getCommandLineArgs(FilePath workspace, String blackduckArgs) throws IOException {
-        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE));
-        commandLineArgs.add(createBlackDuckInputJson(workspace, blackduckArgs));
+    public List<String> getCommandLineArgs(FilePath workspace, String stageParams) throws IOException {
+        String stageName = getStageType(stageParams);
+        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(stageName));
+
+        BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
+
+        if (stageName.equals(BridgeParams.BLACKDUCK_STAGE)) {
+            BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(stageParams);
+            commandLineArgs.add(createBlackDuckInputJson(workspace, blackDuck));
+        }
 
         return commandLineArgs;
     }
 
-    private String createBlackDuckInputJson(FilePath workspace, String blackduckArgs) throws IOException {
-        Blackduck blackduck = new Blackduck();
-        ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
-
-        blackduck.setUrl(config.getBlackDuckUrl().trim());
-        blackduck.setToken(config.getBlackDuckCredentialsId().trim());
-
+    private String createBlackDuckInputJson(FilePath workspace, BlackDuck blackDuck) throws IOException {
         BridgeInput bridgeInput = new BridgeInput();
-        bridgeInput.setBlackduck(blackduck);
+        bridgeInput.setBlackDuck(blackDuck);
 
-        Map<String, Object> blackduckJsonMap = new HashMap<>();
-        blackduckJsonMap.put(DATA_KEY, bridgeInput);
+        Map<String, Object> blackDuckJsonMap = new HashMap<>();
+        blackDuckJsonMap.put(DATA_KEY, bridgeInput);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        String blackduckJson = mapper.writeValueAsString(blackduckJsonMap);
-        String jsonPath = workspace.getRemote().concat("/").concat(BridgeParams.BLACKDUCK_STATE_FILE_NAME);
+        String blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
+        String jsonPath = workspace.getRemote().concat("/").concat(BridgeParams.BLACKDUCK_JSON_FILE_NAME);
 
-        writeBlackduckJsonToFile(jsonPath, blackduckJson);
+        writeBlackDuckJsonToFile(jsonPath, blackDuckJson);
 
-        return BridgeParams.BLACKDUCK_STATE_FILE_NAME;
+        return BridgeParams.BLACKDUCK_JSON_FILE_NAME;
     }
 
-    public void writeBlackduckJsonToFile(String jsonPath, String blackduckJson) {
+    public void writeBlackDuckJsonToFile(String jsonPath, String blackDuckJson) {
         try (FileWriter fileWriter = new FileWriter(jsonPath)) {
-            fileWriter.write(blackduckJson);
+            fileWriter.write(blackDuckJson);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,6 +67,16 @@ public class ScannerArgumentService {
         initBridgeArgs.add(BridgeParams.INPUT_OPTION);
 
         return initBridgeArgs;
+    }
+
+    public String getStageType(String stageParams) {
+        if (stageParams.contains(BridgeParams.COVERITY_STAGE)) {
+            return BridgeParams.COVERITY_STAGE;
+        } else if (stageParams.contains(BridgeParams.POLARIS_STAGE)) {
+            return BridgeParams.POLARIS_STAGE;
+        } else {
+            return BridgeParams.BLACKDUCK_STAGE;
+        }
     }
     
 }
