@@ -15,9 +15,6 @@ import hudson.model.TaskListener;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * @author akib @Date 6/15/23
- */
 public class SecurityScanner {
     private final TaskListener listener;
     private final Launcher launcher;

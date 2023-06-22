@@ -1,7 +1,5 @@
 package com.synopsys.integration.jenkins.scan.global;
-/**
- * @author akib @Date 6/15/23
- */
+
 public class ApplicationConstants {
 
     public static final String APPLICATION_NAME = "synopsys-security-scan";

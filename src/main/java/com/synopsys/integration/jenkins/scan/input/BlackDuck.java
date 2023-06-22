@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-/**
- * @author akib @Date 6/20/23
- */
-public class Blackduck {
+public class BlackDuck {
     @JsonProperty("url")
     private String url;
     @JsonProperty("token")

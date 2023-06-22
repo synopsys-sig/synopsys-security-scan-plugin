@@ -2,19 +2,17 @@ package com.synopsys.integration.jenkins.scan.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * @author akib @Date 6/21/23
- */
 public class BridgeInput {
 
     @JsonProperty("blackduck")
-    private Blackduck blackduck;
+    private BlackDuck blackDuck;
 
-    public Blackduck getBlackduck() {
-        return blackduck;
+    public BlackDuck getBlackDuck() {
+        return blackDuck;
     }
 
-    public void setBlackduck(Blackduck blackduck) {
-        this.blackduck = blackduck;
+    public void setBlackDuck(BlackDuck blackDuck) {
+        this.blackDuck = blackDuck;
     }
+
 }

@@ -11,9 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Objects;
 
-/**
- * @author akib @Date 6/15/23
- */
 public class BridgeDownloaderAndExecutor {
 
     private final String bridgeZipFileName = "bridge.zip";

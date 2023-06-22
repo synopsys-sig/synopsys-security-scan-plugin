@@ -1,7 +1,5 @@
 package com.synopsys.integration.jenkins.scan.global;
-/**
- * @author akib @Date 6/20/23
- */
+
 public class BridgeParams {
 
     public static final String STAGE_OPTION = "--stage";

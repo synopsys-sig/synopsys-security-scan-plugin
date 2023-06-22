@@ -26,9 +26,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-/**
- * @author akib @Date 6/15/23
- */
 public class SecurityScanStep extends Step implements Serializable {
 
     private static final long serialVersionUID = 6294070801130995534L;

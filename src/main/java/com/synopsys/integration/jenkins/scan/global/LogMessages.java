@@ -1,7 +1,5 @@
 package com.synopsys.integration.jenkins.scan.global;
-/**
- * @author akib @Date 6/15/23
- */
+
 public class LogMessages {
 
     public static final String ASTERISKS = "******************************************************************************";

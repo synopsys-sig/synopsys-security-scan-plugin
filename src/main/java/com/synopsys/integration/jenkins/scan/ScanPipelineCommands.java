@@ -4,9 +4,6 @@ import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import java.io.IOException;
 
-/**
- * @author akib @Date 6/15/23
- */
 public class ScanPipelineCommands {
     private final SecurityScanner scanner;
 

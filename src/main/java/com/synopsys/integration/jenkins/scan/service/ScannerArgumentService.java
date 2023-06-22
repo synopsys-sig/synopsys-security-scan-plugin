@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
-import com.synopsys.integration.jenkins.scan.input.Blackduck;
+import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 
 import hudson.FilePath;
@@ -19,46 +19,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author akib @Date 6/19/23
- */
 public class ScannerArgumentService {
     private static final String DATA_KEY = "data";
 
-    public List<String> getCommandLineArgs(FilePath workspace, String blackduckArgs) throws IOException {
+    public List<String> getCommandLineArgs(FilePath workspace, String blackDuckArgs) throws IOException {
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE));
-        commandLineArgs.add(createBlackDuckInputJson(workspace, blackduckArgs));
+        commandLineArgs.add(createBlackDuckInputJson(workspace, blackDuckArgs));
 
         return commandLineArgs;
     }
 
-    private String createBlackDuckInputJson(FilePath workspace, String blackduckArgs) throws IOException {
-        Blackduck blackduck = new Blackduck();
+    private String createBlackDuckInputJson(FilePath workspace, String blackDuckArgs) throws IOException {
+        BlackDuck blackDuck = new BlackDuck();
         ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
 
-        blackduck.setUrl(config.getBlackDuckUrl().trim());
-        blackduck.setToken(config.getBlackDuckCredentialsId().trim());
+        blackDuck.setUrl(config.getBlackDuckUrl().trim());
+        blackDuck.setToken(config.getBlackDuckCredentialsId().trim());
 
         BridgeInput bridgeInput = new BridgeInput();
-        bridgeInput.setBlackduck(blackduck);
+        bridgeInput.setBlackDuck(blackDuck);
 
-        Map<String, Object> blackduckJsonMap = new HashMap<>();
-        blackduckJsonMap.put(DATA_KEY, bridgeInput);
+        Map<String, Object> blackDuckJsonMap = new HashMap<>();
+        blackDuckJsonMap.put(DATA_KEY, bridgeInput);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        String blackduckJson = mapper.writeValueAsString(blackduckJsonMap);
+        String blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
         String jsonPath = workspace.getRemote().concat("/").concat(BridgeParams.BLACKDUCK_STATE_FILE_NAME);
 
-        writeBlackduckJsonToFile(jsonPath, blackduckJson);
+        writeBlackDuckJsonToFile(jsonPath, blackDuckJson);
 
         return BridgeParams.BLACKDUCK_STATE_FILE_NAME;
     }
 
-    public void writeBlackduckJsonToFile(String jsonPath, String blackduckJson) {
+    public void writeBlackDuckJsonToFile(String jsonPath, String blackDuckJson) {
         try (FileWriter fileWriter = new FileWriter(jsonPath)) {
-            fileWriter.write(blackduckJson);
+            fileWriter.write(blackDuckJson);
         } catch (IOException e) {
             e.printStackTrace();
         }
