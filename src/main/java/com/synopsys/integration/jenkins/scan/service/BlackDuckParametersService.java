@@ -78,14 +78,14 @@ public class BlackDuckParametersService {
     public Map<String, String> getCombinedBlackDuckParameters(String blackDuckArguments) {
         List<String> parsedBlackDuckParameters = parseBlackDuckParameters(blackDuckArguments);
 
-        Map<String, String> blackDuckParametersMapFromPipeline = createBlackDuckParametersMap(parsedBlackDuckParameters);
-        Map<String, String> blackDuckParametersMapFromUI = blackDuckParametersFromJenkinsUI();
+        Map<String, String> blackDuckParametersMapFromPipeline = createBlackDuckParametersMapFromPipeline(parsedBlackDuckParameters);
+        Map<String, String> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
 
         for (Map.Entry<String, String> entry : blackDuckParametersMapFromUI.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
 
-            //Giving precedence the pipeline arguments. Therefore, if same key-value occurs pipeline's value will be taken.
+            //Giving precedence to the pipeline arguments. Therefore, if same key-value occurs, pipeline's value will be taken.
             if (!blackDuckParametersMapFromPipeline.containsKey(key)) {
                 blackDuckParametersMapFromPipeline.put(key, value);
             }
@@ -93,7 +93,7 @@ public class BlackDuckParametersService {
         return blackDuckParametersMapFromPipeline;
     }
 
-    public Map<String, String> blackDuckParametersFromJenkinsUI() {
+    public Map<String, String> createBlackDuckParametersMapFromJenkinsUI() {
         ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
 
         Map<String, String> blackDuckParametersFromJenkinsUI = new HashMap<>();
@@ -112,7 +112,7 @@ public class BlackDuckParametersService {
         return Arrays.asList(blackDuckArguments.trim().split("\\s+"));
     }
 
-    public Map<String, String> createBlackDuckParametersMap(List<String> parsedParameters) {
+    public Map<String, String> createBlackDuckParametersMapFromPipeline(List<String> parsedParameters) {
         Map<String, String> parameterMap = new HashMap<>();
 
         for (String parameter : parsedParameters) {

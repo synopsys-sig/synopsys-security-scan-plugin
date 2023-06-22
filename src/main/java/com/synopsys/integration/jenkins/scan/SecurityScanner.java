@@ -32,10 +32,10 @@ public class SecurityScanner {
 
     public int runScanner(String stageParams, String bridgeParams) throws IOException, InterruptedException {
 
-        BlackDuckParametersService blackDuckParametersValidation = new BlackDuckParametersService();
+        BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
 
         //TODO: add validation for Synopsys-Bridge parameters in the if condition as well.
-        if (!blackDuckParametersValidation.validateBlackDuckParameters(stageParams)) {
+        if (!blackDuckParametersService.validateBlackDuckParameters(stageParams)) {
             listener.getLogger().println("Couldn't validate BlackDuck or Synopsys-Bridge parameters!");
             return 1;
         }

@@ -40,24 +40,24 @@ public class BridgeDownloaderAndExecutor {
 
         if (checkIfBridgeUrlExists(bridgeUrl)) {
             try {
-                listener.getLogger().println("Downloading synopsys bridge from: ".concat(bridgeUrl));
+                listener.getLogger().println("Downloading synopsys bridge from: " + bridgeUrl);
                 bridgeZipPath.copyFrom(new URL(bridgeUrl));
-                listener.getLogger().println("Synopsys bridge downloaded successfully to: ".concat(bridgeZipPath.getRemote()));
+                listener.getLogger().println("Synopsys bridge downloaded successfully to: " + bridgeZipPath.getRemote());
             } catch (Exception e) {
                 listener.getLogger().println("Synopsys bridge download failed");
                 e.printStackTrace();
             }
         } else {
-            listener.getLogger().println("Invalid synopsys bridge download url: ".concat(bridgeUrl));
+            listener.getLogger().println("Invalid synopsys bridge download url: " + bridgeUrl);
         }
         return bridgeZipPath;
     }
 
     public void unzipSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeUnzipPath) {
         try {
-            listener.getLogger().println("Synopsys bridge zip file path: ".concat(bridgeZipPath.getRemote()));
-            listener.getLogger().println("Synopsys bridge unzip file path: ".concat(bridgeUnzipPath.getRemote()));
+            listener.getLogger().println("Unzipping synopsys bridge from: " + bridgeZipPath + " to: " + bridgeUnzipPath);
             bridgeZipPath.unzip(bridgeUnzipPath);
+
             // Delete the zip file
             bridgeZipPath.delete();
             listener.getLogger().println("Synopsys bridge unzipped successfully");
