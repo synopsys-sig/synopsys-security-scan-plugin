@@ -1,8 +1,5 @@
 package com.synopsys.integration.jenkins.scan;
 
-
-
-
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import java.io.IOException;
