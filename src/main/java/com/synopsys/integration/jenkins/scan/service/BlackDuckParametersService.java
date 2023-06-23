@@ -119,7 +119,7 @@ public class BlackDuckParametersService {
             String[] keyValue = parameter.split("=", 2);
             if (keyValue.length == 2) {
                 String key = keyValue[0].substring(2).trim().toLowerCase();
-                String value = keyValue[1].trim().toLowerCase();
+                String value = keyValue[1].trim();
                 parameterMap.put(key, value);
             }
         }
