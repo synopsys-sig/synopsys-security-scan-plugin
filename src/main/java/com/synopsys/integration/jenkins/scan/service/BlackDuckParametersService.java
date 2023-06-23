@@ -19,10 +19,8 @@ public class BlackDuckParametersService {
 
     public BlackDuck createBlackDuckObject(Map<String, String> blackDuckParametersMap) {
         BlackDuck blackDuck = new BlackDuck();
-        Automation automation = new Automation();
 
-        //TODO: add nested Scan class related object
-        blackDuck.setAutomation(automation);
+        //TODO: add other members of BlackDuck class
 
         for (Map.Entry<String, String> entry : blackDuckParametersMap.entrySet()) {
             String key = entry.getKey();
