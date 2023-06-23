@@ -2,6 +2,7 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.input.Automation;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 
 import jenkins.model.GlobalConfiguration;
@@ -16,8 +17,12 @@ public class BlackDuckParametersService {
         return createBlackDuckObject(blackDuckParametersMap);
     }
 
-    private BlackDuck createBlackDuckObject(Map<String, String> blackDuckParametersMap) {
+    public BlackDuck createBlackDuckObject(Map<String, String> blackDuckParametersMap) {
         BlackDuck blackDuck = new BlackDuck();
+        Automation automation = new Automation();
+
+        //TODO: add nested Scan class related object
+        blackDuck.setAutomation(automation);
 
         for (Map.Entry<String, String> entry : blackDuckParametersMap.entrySet()) {
             String key = entry.getKey();
@@ -65,9 +70,12 @@ public class BlackDuckParametersService {
         return blackDuck;
     }
 
-    public boolean validateBlackDuckParameters(String blackDuckArguments) {
+    public boolean performParameterValidation(String blackDuckArguments) {
         Map<String, String> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckArguments);
 
+        return validateBlackDuckParameters(blackDuckParametersMap);
+    }
+    public boolean validateBlackDuckParameters(Map<String,String> blackDuckParametersMap) {
         return blackDuckParametersMap != null
                 && Stream.of(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
                 .allMatch(key -> blackDuckParametersMap.containsKey(key)
@@ -104,7 +112,7 @@ public class BlackDuckParametersService {
         return blackDuckParametersFromJenkinsUI;
     }
 
-    private List<String> parseBlackDuckParameters(String blackDuckArguments) {
+    public List<String> parseBlackDuckParameters(String blackDuckArguments) {
         if (blackDuckArguments == null || blackDuckArguments.isBlank()) {
             return Collections.emptyList();
         }
@@ -119,7 +127,7 @@ public class BlackDuckParametersService {
             String[] keyValue = parameter.split("=", 2);
             if (keyValue.length == 2) {
                 String key = keyValue[0].substring(2).trim().toLowerCase();
-                String value = keyValue[1].trim().toLowerCase();
+                String value = keyValue[1].trim();
                 parameterMap.put(key, value);
             }
         }
