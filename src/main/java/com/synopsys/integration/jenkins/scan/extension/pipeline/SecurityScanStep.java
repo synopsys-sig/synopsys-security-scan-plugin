@@ -2,8 +2,8 @@ package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
+
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -29,21 +30,11 @@ import javax.annotation.Nonnull;
 public class SecurityScanStep extends Step implements Serializable {
 
     private static final long serialVersionUID = 6294070801130995534L;
-    private final String param1;
-    private final String param2;
+    private final Map<String, Object> scanParams;
 
     @DataBoundConstructor
-    public SecurityScanStep(String param1, String param2) {
-        this.param1 = param1;
-        this.param2 = param2;
-    }
-
-    public String getParam1() {
-        return param1;
-    }
-
-    public String getParam2() {
-        return param2;
+    public SecurityScanStep(Map<String, Object> scanParams) {
+        this.scanParams = scanParams;
     }
 
     @Override
@@ -91,7 +82,7 @@ public class SecurityScanStep extends Step implements Serializable {
         @Override
         protected Integer run() throws IOException, InterruptedException, ScannerJenkinsException {
             return ScanCommandsFactory.createPipelineCommand(listener, envVars, launcher, node, workspace)
-                .runScanner(param1, param2);
+                .runScanner(scanParams);
         }
 
     }

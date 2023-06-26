@@ -4,8 +4,8 @@ import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloaderAndExecutor;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
-import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
+import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -14,6 +14,7 @@ import hudson.model.TaskListener;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class SecurityScanner {
     private final TaskListener listener;
@@ -30,19 +31,19 @@ public class SecurityScanner {
         this.scannerArgumentService = scannerArgumentService;
     }
 
-    public int runScanner(String stageParams, String bridgeParams) throws IOException, InterruptedException {
+    public int runScanner(Map<String, Object> scanParams) throws IOException, InterruptedException {
 
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
 
         //TODO: add validation for Synopsys-Bridge parameters in the if condition as well.
-        if (!blackDuckParametersService.validateBlackDuckParameters(stageParams)) {
+        if (!blackDuckParametersService.validateBlackDuckParameters(scanParams)) {
             listener.getLogger().println("Couldn't validate BlackDuck or Synopsys-Bridge parameters!");
             return 1;
         }
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(workspace, stageParams);
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(workspace, scanParams);
 
-        initiateBridgeDownloadAndUnzip(listener, envVars, workspace);
+//        initiateBridgeDownloadAndUnzip(listener, envVars, workspace);
 
         printMessages(LogMessages.START_SCANNER);
 

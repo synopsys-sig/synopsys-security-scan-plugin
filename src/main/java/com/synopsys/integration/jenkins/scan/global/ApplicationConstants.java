@@ -11,15 +11,15 @@ public class ApplicationConstants {
     public static final String PLATFORM_LINUX = "linux64";
     public static final String PLATFORM_WINDOWS = "win64";
     
-    public static final String BLACKDUCK_URL_KEY = "blackduck.url";
-    public static final String BLACKDUCK_API_TOKEN_KEY = "blackduck.token";
-    public static final String BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck.install.directory";
-    public static final String BLACKDUCK_SCAN_FULL_KEY = "blackduck.scan.full";
-    public static final String BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck.scan.failure.severities";
-    public static final String BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck.automation.fixpr";
-    public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck.automation.prcomment";
+    public static final String BLACKDUCK_URL_KEY = "blackduck_url";
+    public static final String BLACKDUCK_API_TOKEN_KEY = "blackduck_api_token";
+    public static final String BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck_install_directory";
+    public static final String BLACKDUCK_SCAN_FULL_KEY = "blackduck_scan_full";
+    public static final String BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck_scan_failure_severities";
+    public static final String BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck_automation_fixpr";
+    public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck_automation_prcomment";
 
-    public static final String getSynopsysBridgeZipFileName(String platform) {
+    public static String getSynopsysBridgeZipFileName(String platform) {
         return "synopsys-bridge-" + platform + ".zip";
     }
 

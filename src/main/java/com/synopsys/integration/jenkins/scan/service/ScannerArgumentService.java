@@ -19,14 +19,14 @@ import java.util.Map;
 public class ScannerArgumentService {
     private static final String DATA_KEY = "data";
 
-    public List<String> getCommandLineArgs(FilePath workspace, String stageParams) throws IOException {
-        String stageName = getStageType(stageParams);
+    public List<String> getCommandLineArgs(FilePath workspace, Map<String, Object> scanParams) throws IOException {
+        String stageName = getStageType(scanParams);
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(stageName));
 
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
 
         if (stageName.equals(BridgeParams.BLACKDUCK_STAGE)) {
-            BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(stageParams);
+            BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParams);
             commandLineArgs.add(createBlackDuckInputJson(workspace, blackDuck));
         }
 
@@ -69,10 +69,11 @@ public class ScannerArgumentService {
         return initBridgeArgs;
     }
 
-    public String getStageType(String stageParams) {
-        if (stageParams.contains(BridgeParams.COVERITY_STAGE)) {
+    public String getStageType(Map<String, Object> scanParams) {
+        String params = scanParams.toString();
+        if (params.contains(BridgeParams.COVERITY_STAGE)) {
             return BridgeParams.COVERITY_STAGE;
-        } else if (stageParams.contains(BridgeParams.POLARIS_STAGE)) {
+        } else if (params.contains(BridgeParams.POLARIS_STAGE)) {
             return BridgeParams.POLARIS_STAGE;
         } else {
             return BridgeParams.BLACKDUCK_STAGE;
