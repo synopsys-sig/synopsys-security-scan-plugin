@@ -35,7 +35,7 @@ public class SecurityScanner {
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
 
         //TODO: add validation for Synopsys-Bridge parameters in the if condition as well.
-        if (!blackDuckParametersService.validateBlackDuckParameters(stageParams)) {
+        if (!blackDuckParametersService.performParameterValidation(stageParams)) {
             listener.getLogger().println("Couldn't validate BlackDuck or Synopsys-Bridge parameters!");
             return 1;
         }
