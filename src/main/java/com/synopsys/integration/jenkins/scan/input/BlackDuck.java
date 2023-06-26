@@ -3,8 +3,6 @@ package com.synopsys.integration.jenkins.scan.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
-
 public class BlackDuck {
     @JsonProperty("url")
     private String url;
@@ -16,6 +14,11 @@ public class BlackDuck {
     private Scan scan;
     @JsonProperty("automation")
     private Automation automation;
+
+    public BlackDuck() {
+        scan = new Scan();
+        automation = new Automation();
+    }
 
     public String getUrl() {
         return url;
@@ -55,29 +58,6 @@ public class BlackDuck {
 
     public void setAutomation(Automation automation) {
         this.automation = automation;
-    }
-
-    public static class Scan {
-        @JsonProperty("full")
-        private boolean isFullScan;
-        @JsonProperty("failure.severities")
-        private List<String> failureSeverities;
-
-        public boolean isFullScan() {
-            return isFullScan;
-        }
-
-        public void setFullScan(boolean fullScan) {
-            isFullScan = fullScan;
-        }
-
-        public List<String> getFailureSeverities() {
-            return failureSeverities;
-        }
-
-        public void setFailureSeverities(List<String> failureSeverities) {
-            this.failureSeverities = failureSeverities;
-        }
     }
 
 }
