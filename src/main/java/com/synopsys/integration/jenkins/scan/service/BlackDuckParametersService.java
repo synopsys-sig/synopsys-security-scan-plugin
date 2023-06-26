@@ -16,7 +16,7 @@ public class BlackDuckParametersService {
         return createBlackDuckObject(blackDuckParametersMap);
     }
 
-    private BlackDuck createBlackDuckObject(Map<String, Object> blackDuckParametersMap) {
+    public BlackDuck createBlackDuckObject(Map<String, Object> blackDuckParametersMap) {
         BlackDuck blackDuck = new BlackDuck();
 
         for (Map.Entry<String, Object> entry : blackDuckParametersMap.entrySet()) {
@@ -65,7 +65,7 @@ public class BlackDuckParametersService {
         return blackDuck;
     }
 
-    public boolean validateBlackDuckParameters(Map<String, Object> blackDuckParams) {
+    public boolean performParameterValidation(Map<String, Object> blackDuckParams) {
         return blackDuckParams != null
                 && Stream.of(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
                 .allMatch(key -> blackDuckParams.containsKey(key)

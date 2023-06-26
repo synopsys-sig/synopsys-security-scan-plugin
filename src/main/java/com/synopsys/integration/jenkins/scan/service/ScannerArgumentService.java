@@ -33,7 +33,7 @@ public class ScannerArgumentService {
         return commandLineArgs;
     }
 
-    private String createBlackDuckInputJson(FilePath workspace, BlackDuck blackDuck) throws IOException {
+    public String createBlackDuckInputJson(FilePath workspace, BlackDuck blackDuck) throws IOException {
         BridgeInput bridgeInput = new BridgeInput();
         bridgeInput.setBlackDuck(blackDuck);
 
