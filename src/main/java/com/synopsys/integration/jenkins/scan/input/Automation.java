@@ -1,27 +1,28 @@
 package com.synopsys.integration.jenkins.scan.input;
 
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Automation {
 
     @JsonProperty("fixpr")
-    private boolean isFixPr;
+    private Boolean fixpr;
     @JsonProperty("prcomment")
-    private boolean isPrComment;
+    private Boolean prcomment;
 
-    public boolean isFixPr() {
-        return isFixPr;
+    public Boolean getFixpr() {
+        return fixpr;
     }
 
-    public void setFixPr(boolean fixPr) {
-        isFixPr = fixPr;
+    public void setFixpr(Boolean fixpr) {
+        this.fixpr = fixpr;
     }
 
-    public boolean isPrComment() {
-        return isPrComment;
+    public Boolean getPrcomment() {
+        return prcomment;
     }
 
-    public void setPrComment(boolean prComment) {
-        isPrComment = prComment;
+    public void setPrcomment(Boolean prcomment) {
+        this.prcomment = prcomment;
     }
 }

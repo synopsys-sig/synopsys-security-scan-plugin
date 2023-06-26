@@ -17,6 +17,11 @@ public class BlackDuck {
     @JsonProperty("automation")
     private Automation automation;
 
+    public BlackDuck() {
+        scan = new Scan();
+        automation = new Automation();
+    }
+
     public String getUrl() {
         return url;
     }
@@ -59,16 +64,16 @@ public class BlackDuck {
 
     public static class Scan {
         @JsonProperty("full")
-        private boolean isFullScan;
+        private Boolean full;
         @JsonProperty("failure.severities")
         private List<String> failureSeverities;
 
-        public boolean isFullScan() {
-            return isFullScan;
+        public Boolean getFull() {
+            return full;
         }
 
-        public void setFullScan(boolean fullScan) {
-            isFullScan = fullScan;
+        public void setFull(Boolean full) {
+            this.full = full;
         }
 
         public List<String> getFailureSeverities() {
