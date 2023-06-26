@@ -2,7 +2,6 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.input.Automation;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 
 import jenkins.model.GlobalConfiguration;
@@ -12,19 +11,18 @@ import java.util.stream.Stream;
 
 public class BlackDuckParametersService {
 
-    public BlackDuck prepareBlackDuckInputForBridge(String blackDuckArguments) {
-        Map<String, String> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckArguments);
+    public BlackDuck prepareBlackDuckInputForBridge(Map<String, Object> blackDuckParametersFormPipeline) {
+        Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
+        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFormPipeline, blackDuckParametersMapFromUI);
         return createBlackDuckObject(blackDuckParametersMap);
     }
 
-    public BlackDuck createBlackDuckObject(Map<String, String> blackDuckParametersMap) {
+    public BlackDuck createBlackDuckObject(Map<String, Object> blackDuckParametersMap) {
         BlackDuck blackDuck = new BlackDuck();
 
-        //TODO: add other members of BlackDuck class
-
-        for (Map.Entry<String, String> entry : blackDuckParametersMap.entrySet()) {
+        for (Map.Entry<String, Object> entry : blackDuckParametersMap.entrySet()) {
             String key = entry.getKey();
-            String value = entry.getValue().trim();
+            String value = entry.getValue().toString().trim();
 
             switch (key) {
                 case ApplicationConstants.BLACKDUCK_URL_KEY:
@@ -38,7 +36,7 @@ public class BlackDuckParametersService {
                     break;
                 case ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY:
                     if (value.equals("true") || value.equals("false")) {
-                        blackDuck.getScan().setFullScan(Boolean.parseBoolean(value));
+                        blackDuck.getScan().setFull(Boolean.parseBoolean(value));
                     }
                     break;
                 case ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY:
@@ -54,12 +52,12 @@ public class BlackDuckParametersService {
                     break;
                 case ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY:
                     if (value.equals("true") || value.equals("false")) {
-                        blackDuck.getAutomation().setFixPr(Boolean.parseBoolean(value));
+                        blackDuck.getAutomation().setFixpr(Boolean.parseBoolean(value));
                     }
                     break;
                 case ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY:
                     if (value.equals("true") || value.equals("false")) {
-                        blackDuck.getAutomation().setPrComment(Boolean.parseBoolean(value));
+                        blackDuck.getAutomation().setPrcomment(Boolean.parseBoolean(value));
                     }
                     break;
             }
@@ -68,41 +66,34 @@ public class BlackDuckParametersService {
         return blackDuck;
     }
 
-    public boolean performParameterValidation(String blackDuckArguments) {
-        Map<String, String> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckArguments);
-
-        return validateBlackDuckParameters(blackDuckParametersMap);
-    }
-    public boolean validateBlackDuckParameters(Map<String,String> blackDuckParametersMap) {
-        return blackDuckParametersMap != null
+    public boolean performParameterValidation(Map<String, Object> blackDuckParams) {
+        return blackDuckParams != null
                 && Stream.of(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
-                .allMatch(key -> blackDuckParametersMap.containsKey(key)
-                        && blackDuckParametersMap.get(key) != null
-                        && !blackDuckParametersMap.get(key).isEmpty());
+                .allMatch(key -> blackDuckParams.containsKey(key)
+                        && blackDuckParams.get(key) != null
+                        && !blackDuckParams.get(key).toString().isEmpty());
     }
 
-    public Map<String, String> getCombinedBlackDuckParameters(String blackDuckArguments) {
-        List<String> parsedBlackDuckParameters = parseBlackDuckParameters(blackDuckArguments);
-
-        Map<String, String> blackDuckParametersMapFromPipeline = createBlackDuckParametersMapFromPipeline(parsedBlackDuckParameters);
-        Map<String, String> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
-
-        for (Map.Entry<String, String> entry : blackDuckParametersMapFromUI.entrySet()) {
+    public Map<String, Object> getCombinedBlackDuckParameters(Map<String, Object> blackDuckParamsFromPipeline, Map<String, Object> blackDuckParametersMapFromUI) {
+        if (Objects.isNull(blackDuckParametersMapFromUI)) {
+            return blackDuckParamsFromPipeline;
+        }
+        for (Map.Entry<String, Object> entry : blackDuckParametersMapFromUI.entrySet()) {
             String key = entry.getKey();
-            String value = entry.getValue();
+            Object value = entry.getValue();
 
             //Giving precedence to the pipeline arguments. Therefore, if same key-value occurs, pipeline's value will be taken.
-            if (!blackDuckParametersMapFromPipeline.containsKey(key)) {
-                blackDuckParametersMapFromPipeline.put(key, value);
+            if (!blackDuckParamsFromPipeline.containsKey(key)) {
+                blackDuckParamsFromPipeline.put(key, value);
             }
         }
-        return blackDuckParametersMapFromPipeline;
+        return blackDuckParamsFromPipeline;
     }
 
-    public Map<String, String> createBlackDuckParametersMapFromJenkinsUI() {
+    public Map<String, Object> createBlackDuckParametersMapFromJenkinsUI() {
         ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
 
-        Map<String, String> blackDuckParametersFromJenkinsUI = new HashMap<>();
+        Map<String, Object> blackDuckParametersFromJenkinsUI = new HashMap<>();
 
         blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl().trim());
         blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY,config.getBlackDuckCredentialsId().trim());
@@ -110,26 +101,4 @@ public class BlackDuckParametersService {
         return blackDuckParametersFromJenkinsUI;
     }
 
-    public List<String> parseBlackDuckParameters(String blackDuckArguments) {
-        if (blackDuckArguments == null || blackDuckArguments.isBlank()) {
-            return Collections.emptyList();
-        }
-
-        return Arrays.asList(blackDuckArguments.trim().split("\\s+"));
-    }
-
-    public Map<String, String> createBlackDuckParametersMapFromPipeline(List<String> parsedParameters) {
-        Map<String, String> parameterMap = new HashMap<>();
-
-        for (String parameter : parsedParameters) {
-            String[] keyValue = parameter.split("=", 2);
-            if (keyValue.length == 2) {
-                String key = keyValue[0].substring(2).trim().toLowerCase();
-                String value = keyValue[1].trim();
-                parameterMap.put(key, value);
-            }
-        }
-
-        return parameterMap;
-    }
 }

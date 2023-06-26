@@ -1,5 +1,9 @@
 package com.synopsys.integration.jenkins.scan.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 
 import hudson.FilePath;
@@ -9,13 +13,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Comparator;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Comparator;
 
 public class ScannerArgumentServiceTest {
     private BlackDuck blackDuck;
@@ -33,23 +34,23 @@ public class ScannerArgumentServiceTest {
     @Test
     void createBlackDuckInputJsonTest() throws IOException {
         String inputJsonPath = workspacePath().getRemote();
-        Path filePath = Paths.get(String.join("/", inputJsonPath, "blackduck_input.json"));
+        Path filePath = Paths.get(String.join("/", inputJsonPath, BridgeParams.BLACKDUCK_JSON_FILE_NAME));
 
         scannerArgumentService.createBlackDuckInputJson(workspacePath(),blackDuck);
 
-        assertTrue(Files.exists(filePath), "File blackduck_input.json does not exist at the specified path.");
+        assertTrue(Files.exists(filePath), "File ".concat(BridgeParams.BLACKDUCK_JSON_FILE_NAME).concat(" does not exist at the specified path."));
         cleanup();
     }
 
     @Test
     void writeBlackDuckJsonToFileTest() throws IOException {
-        String jsonPath = String.join("/", workspacePath().getRemote(), "blackduck_input.json");
+        String jsonPath = String.join("/", workspacePath().getRemote(), BridgeParams.BLACKDUCK_JSON_FILE_NAME);
         String jsonString = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"}}}";
 
         scannerArgumentService.writeBlackDuckJsonToFile(jsonPath, jsonString);
         String fileContent = new String(Files.readAllBytes(Paths.get(jsonPath)));
 
-        assertTrue(Files.exists(Path.of(jsonPath)), "blackduck_input.json does not exist at the specified path.");
+        assertTrue(Files.exists(Path.of(jsonPath)), BridgeParams.BLACKDUCK_JSON_FILE_NAME.concat(" does not exist at the specified path."));
         assertEquals(jsonString,fileContent);
 
         cleanup();
