@@ -26,9 +26,10 @@ public class BlackDuckParametersServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, "/path/to/blackduck/directory");
 
-        //TODO: add Scan and Automation related unit tests.
-        //blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, "true");
-        //blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, "false");
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, "true");
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, "false");
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, "true");
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, "BLOCKER, CRITICAL, MAJOR, MINOR");
 
 
         BlackDuck blackDuck = blackDuckParametersService.createBlackDuckObject(blackDuckParametersMap);
@@ -37,9 +38,10 @@ public class BlackDuckParametersServiceTest {
         assertEquals("MDJDSROSVC56FAKEKEY", blackDuck.getToken());
         assertEquals("/path/to/blackduck/directory", blackDuck.getInstallDirectory());
 
-        //TODO: add Scan and Automation related unit tests.
-        //assertEquals(true, blackDuck.getAutomation().isFixPr());
-        //assertEquals(false, blackDuck.getAutomation().isPrComment());
+        assertEquals(true, blackDuck.getAutomation().isFixPr());
+        assertEquals(false, blackDuck.getAutomation().isPrComment());
+        assertEquals(true, blackDuck.getScan().isFullScan());
+        assertEquals(List.of("BLOCKER", "CRITICAL", "MAJOR", "MINOR"), blackDuck.getScan().getFailureSeverities());
     }
 
     @Test

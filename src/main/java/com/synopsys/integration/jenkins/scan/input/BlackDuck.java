@@ -17,6 +17,11 @@ public class BlackDuck {
     @JsonProperty("automation")
     private Automation automation;
 
+    public BlackDuck() {
+        this.automation = new Automation();
+        this.scan = new Scan();
+    }
+
     public String getUrl() {
         return url;
     }
