@@ -94,7 +94,6 @@ public class BlackDuckParametersServiceTest {
 
         assertEquals(expectedBlackDuckArguments, parsedParameters);
         assertEquals(3, parsedParameters.size());
-
     }
 
     @Test
@@ -114,7 +113,6 @@ public class BlackDuckParametersServiceTest {
 
         assertEquals(expectedMap, result);
         assertEquals(2, expectedMap.size());
-
     }
 
     @Test
@@ -143,8 +141,6 @@ public class BlackDuckParametersServiceTest {
         combinedMap = blackDuckParametersService.getCombinedBlackDuckParameters(pipelineMapNull, pipelineMapNull);
 
         assertEquals(null, combinedMap);
-
-
     }
 
 }
