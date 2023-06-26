@@ -11,8 +11,9 @@ import java.util.stream.Stream;
 
 public class BlackDuckParametersService {
 
-    public BlackDuck prepareBlackDuckInputForBridge(Map<String, Object> blackDuckParams) {
-        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParams);
+    public BlackDuck prepareBlackDuckInputForBridge(Map<String, Object> blackDuckParametersFormPipeline) {
+        Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
+        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFormPipeline, blackDuckParametersMapFromUI);
         return createBlackDuckObject(blackDuckParametersMap);
     }
 
@@ -73,9 +74,10 @@ public class BlackDuckParametersService {
                         && !blackDuckParams.get(key).toString().isEmpty());
     }
 
-    public Map<String, Object> getCombinedBlackDuckParameters(Map<String, Object> blackDuckParamsFromPipeline) {
-        Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
-
+    public Map<String, Object> getCombinedBlackDuckParameters(Map<String, Object> blackDuckParamsFromPipeline, Map<String, Object> blackDuckParametersMapFromUI) {
+        if (Objects.isNull(blackDuckParametersMapFromUI)) {
+            return blackDuckParamsFromPipeline;
+        }
         for (Map.Entry<String, Object> entry : blackDuckParametersMapFromUI.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();

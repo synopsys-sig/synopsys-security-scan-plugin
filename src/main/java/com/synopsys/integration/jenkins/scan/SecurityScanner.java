@@ -22,6 +22,7 @@ public class SecurityScanner {
     private final FilePath workspace;
     private final EnvVars envVars;
     private final ScannerArgumentService scannerArgumentService;
+    
     public SecurityScanner(TaskListener listener, Launcher launcher, FilePath workspace,
                            EnvVars envVars, ScannerArgumentService scannerArgumentService) {
         this.listener = listener;
