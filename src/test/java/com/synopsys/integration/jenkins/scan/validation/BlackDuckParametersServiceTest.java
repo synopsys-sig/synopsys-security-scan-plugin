@@ -117,4 +117,34 @@ public class BlackDuckParametersServiceTest {
 
     }
 
+    @Test
+    public void testGetCombinedBlackDuckParameters() {
+        Map<String, String> expectedMap = new HashMap<>();
+        expectedMap.put("blackduck.url", "https://fake.blackduck.url");
+        expectedMap.put("blackduck.token", "MDJDSROSVC56FAKEKEY");
+
+        Map<String, String> pipelineMapWithUrl = new HashMap<>();
+        pipelineMapWithUrl.put("blackduck.url", "https://fake.blackduck.url");
+
+        Map<String, String> uiMapWithToken = new HashMap<>();
+        uiMapWithToken.put("blackduck.token", "MDJDSROSVC56FAKEKEY");
+
+        Map<String, String> combinedMap = blackDuckParametersService.getCombinedBlackDuckParameters(pipelineMapWithUrl, uiMapWithToken);
+
+        assertEquals(expectedMap, combinedMap);
+        assertEquals(2, expectedMap.size());
+
+        combinedMap.clear();
+        expectedMap.clear();
+
+        Map<String, String> pipelineMapNull = null;
+        Map<String, String> uiMapNull = null;
+
+        combinedMap = blackDuckParametersService.getCombinedBlackDuckParameters(pipelineMapNull, pipelineMapNull);
+
+        assertEquals(null, combinedMap);
+
+
+    }
+
 }

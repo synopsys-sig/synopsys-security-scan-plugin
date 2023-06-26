@@ -13,7 +13,12 @@ import java.util.stream.Stream;
 public class BlackDuckParametersService {
 
     public BlackDuck prepareBlackDuckInputForBridge(String blackDuckArguments) {
-        Map<String, String> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckArguments);
+        List<String> parsedBlackDuckParameters = parseBlackDuckParameters(blackDuckArguments);
+        Map<String, String> blackDuckParametersMapFromPipeline = createBlackDuckParametersMapFromPipeline(parsedBlackDuckParameters);
+        Map<String, String> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
+
+        Map<String, String> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersMapFromPipeline, blackDuckParametersMapFromUI);
+
         return createBlackDuckObject(blackDuckParametersMap);
     }
 
@@ -69,7 +74,11 @@ public class BlackDuckParametersService {
     }
 
     public boolean performParameterValidation(String blackDuckArguments) {
-        Map<String, String> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckArguments);
+        List<String> parsedBlackDuckParameters = parseBlackDuckParameters(blackDuckArguments);
+        Map<String, String> blackDuckParametersMapFromPipeline = createBlackDuckParametersMapFromPipeline(parsedBlackDuckParameters);
+        Map<String, String> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
+
+        Map<String, String> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersMapFromPipeline, blackDuckParametersMapFromUI);
 
         return validateBlackDuckParameters(blackDuckParametersMap);
     }
@@ -81,19 +90,17 @@ public class BlackDuckParametersService {
                         && !blackDuckParametersMap.get(key).isEmpty());
     }
 
-    public Map<String, String> getCombinedBlackDuckParameters(String blackDuckArguments) {
-        List<String> parsedBlackDuckParameters = parseBlackDuckParameters(blackDuckArguments);
+    public Map<String, String> getCombinedBlackDuckParameters(Map<String, String> blackDuckParametersMapFromPipeline, Map<String, String> blackDuckParametersMapFromUI) {
 
-        Map<String, String> blackDuckParametersMapFromPipeline = createBlackDuckParametersMapFromPipeline(parsedBlackDuckParameters);
-        Map<String, String> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
+        if (blackDuckParametersMapFromUI != null && !blackDuckParametersMapFromUI.isEmpty()) {
+            for (Map.Entry<String, String> entry : blackDuckParametersMapFromUI.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
 
-        for (Map.Entry<String, String> entry : blackDuckParametersMapFromUI.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-            //Giving precedence to the pipeline arguments. Therefore, if same key-value occurs, pipeline's value will be taken.
-            if (!blackDuckParametersMapFromPipeline.containsKey(key)) {
-                blackDuckParametersMapFromPipeline.put(key, value);
+                //Giving precedence to the pipeline arguments. Therefore, if same key-value occurs, pipeline's value will be taken.
+                if (!blackDuckParametersMapFromPipeline.containsKey(key)) {
+                    blackDuckParametersMapFromPipeline.put(key, value);
+                }
             }
         }
         return blackDuckParametersMapFromPipeline;
