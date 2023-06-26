@@ -18,6 +18,10 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck.scan.failure.severities";
     public static final String BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck.automation.fixpr";
     public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck.automation.prcomment";
+    public static final String BRIDGE_DOWNLOAD_FILE_PATH = "/tmp/synopsys-security-scan";
+    public static final String BRIDGE_ZIP_FILE_FORMAT = "bridge.zip";
+
+
 
     public static final String getSynopsysBridgeZipFileName(String platform) {
         return "synopsys-bridge-" + platform + ".zip";
