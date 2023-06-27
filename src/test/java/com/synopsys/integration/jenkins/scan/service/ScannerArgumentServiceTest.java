@@ -38,7 +38,8 @@ public class ScannerArgumentServiceTest {
 
         scannerArgumentService.createBlackDuckInputJson(workspacePath(),blackDuck);
 
-        assertTrue(Files.exists(filePath), "File ".concat(BridgeParams.BLACKDUCK_JSON_FILE_NAME).concat(" does not exist at the specified path."));
+        assertTrue(Files.exists(filePath), String.format("File %s does not exist at the specified path.", BridgeParams.BLACKDUCK_JSON_FILE_NAME));
+
         cleanup();
     }
 
@@ -50,7 +51,7 @@ public class ScannerArgumentServiceTest {
         scannerArgumentService.writeBlackDuckJsonToFile(jsonPath, jsonString);
         String fileContent = new String(Files.readAllBytes(Paths.get(jsonPath)));
 
-        assertTrue(Files.exists(Path.of(jsonPath)), BridgeParams.BLACKDUCK_JSON_FILE_NAME.concat(" does not exist at the specified path."));
+        assertTrue(Files.exists(Path.of(jsonPath)), String.format("%s does not exist at the specified path.", BridgeParams.BLACKDUCK_JSON_FILE_NAME));
         assertEquals(jsonString,fileContent);
 
         cleanup();

@@ -29,11 +29,14 @@ public class BridgeDownloaderAndExecutorTest {
         String bridgeVersion = null;
         String bridgeDownloadUrl = null;
 
-        FilePath outputDownloadFilePath = new FilePath(new File(ApplicationConstants.BRIDGE_DOWNLOAD_FILE_PATH + ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT));
+        FilePath outputDownloadFilePath = new FilePath(new File(ApplicationConstants.BRIDGE_DOWNLOAD_FILE_PATH
+                .concat(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT)));
 
-        Mockito.when(bridgeDownloaderAndExecutorMock.downloadSynopsysBridge(inputDownloadFilePath, bridgeVersion, bridgeDownloadUrl)).thenReturn(outputDownloadFilePath);
+        Mockito.when(bridgeDownloaderAndExecutorMock.downloadSynopsysBridge
+                (inputDownloadFilePath, bridgeVersion, bridgeDownloadUrl)).thenReturn(outputDownloadFilePath);
 
-        assertEquals(outputDownloadFilePath, bridgeDownloaderAndExecutorMock.downloadSynopsysBridge(inputDownloadFilePath, bridgeVersion, bridgeDownloadUrl));
+        assertEquals(outputDownloadFilePath, bridgeDownloaderAndExecutorMock.downloadSynopsysBridge
+                (inputDownloadFilePath, bridgeVersion, bridgeDownloadUrl));
 
     }
 
@@ -42,9 +45,11 @@ public class BridgeDownloaderAndExecutorTest {
         String bridgeZipPath = BRIDGE_DOWNLOAD_FILE_PATH.concat("/").concat(BRIDGE_ZIP_FILE_FORMAT);
         String bridgeUnzipPath = "/synopsys-security-scan-plugin/work/workspace/First_Job_main";
 
-        bridgeDownloaderAndExecutorMock.unzipSynopsysBridge(new FilePath(new File(bridgeZipPath)), new FilePath(new File(bridgeUnzipPath)));
+        bridgeDownloaderAndExecutorMock.unzipSynopsysBridge
+                (new FilePath(new File(bridgeZipPath)), new FilePath(new File(bridgeUnzipPath)));
 
-        verify(bridgeDownloaderAndExecutorMock, times(1)).unzipSynopsysBridge(new FilePath(new File(bridgeZipPath)), new FilePath(new File(bridgeUnzipPath)));
+        verify(bridgeDownloaderAndExecutorMock, times(1))
+                .unzipSynopsysBridge(new FilePath(new File(bridgeZipPath)), new FilePath(new File(bridgeUnzipPath)));
     }
     @Test
    void testValidateBridgeVersion() {
@@ -55,7 +60,8 @@ public class BridgeDownloaderAndExecutorTest {
 
     @Test
     void testValidateBridgeDownloadUrl() {
-        String bridgeDownloadUrl = BRIDGE_ARTIFACTORY_URL.concat(SYNOPSYS_BRIDGE_LATEST_VERSION).concat("/synopsys-bridge-").concat(PLATFORM_LINUX).concat(".zip") ;
+        String bridgeDownloadUrl = BRIDGE_ARTIFACTORY_URL.concat(SYNOPSYS_BRIDGE_LATEST_VERSION)
+                .concat("/synopsys-bridge-").concat(PLATFORM_LINUX).concat(".zip") ;
 
         assertEquals(true, bridgeDownloaderAndExecutor.isValidBridgeDownloadUrl(bridgeDownloadUrl));
 
@@ -63,7 +69,8 @@ public class BridgeDownloaderAndExecutorTest {
 
     @Test
     void testValidateBridgeUrlExistence() {
-        String bridgeUrl = BRIDGE_ARTIFACTORY_URL.concat(SYNOPSYS_BRIDGE_LATEST_VERSION).concat("/synopsys-bridge-").concat(PLATFORM_LINUX).concat(".zip") ;
+        String bridgeUrl = BRIDGE_ARTIFACTORY_URL.concat(SYNOPSYS_BRIDGE_LATEST_VERSION)
+                .concat("/synopsys-bridge-").concat(PLATFORM_LINUX).concat(".zip") ;
 
         Mockito.when(bridgeDownloaderAndExecutorMock.checkIfBridgeUrlExists(bridgeUrl)).thenReturn(true);
 
