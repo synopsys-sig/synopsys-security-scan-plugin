@@ -76,16 +76,16 @@ public class BridgeDownloaderAndExecutor {
         }
     }
 
-    private boolean isValidVersion(String bridgeVersion) {
+    public boolean isValidVersion(String bridgeVersion) {
         return bridgeVersion != null && bridgeVersion.length() > 0;
     }
 
-    private boolean isValidBridgeDownloadUrl(String bridgeDownloadUrl) {
+    public boolean isValidBridgeDownloadUrl(String bridgeDownloadUrl) {
         return bridgeDownloadUrl != null && bridgeDownloadUrl.length() > 0 &&
             bridgeDownloadUrl.matches(".*synopsys-bridge-([0-9.]*).*");
     }
 
-    private boolean checkIfBridgeUrlExists(String bridgeUrl) {
+    public boolean checkIfBridgeUrlExists(String bridgeUrl) {
         try {
             URL url = new URL(bridgeUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
