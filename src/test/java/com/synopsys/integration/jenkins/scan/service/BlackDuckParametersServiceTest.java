@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BlackDuckParametersServiceTest {
@@ -30,9 +31,10 @@ public class BlackDuckParametersServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, TEST_BLACKDUCK_INSTALL_DIRECTORY_PATH);
 
-        //TODO: add Scan and Automation related unit tests.
-        //blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, "true");
-        //blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, "false");
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, "true");
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, "false");
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, "true");
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, "BLOCKER, CRITICAL, MAJOR, MINOR");
 
 
         BlackDuck blackDuck = blackDuckParametersService.createBlackDuckObject(blackDuckParametersMap);
@@ -41,9 +43,10 @@ public class BlackDuckParametersServiceTest {
         assertEquals(TEST_BLACKDUCK_TOKEN, blackDuck.getToken());
         assertEquals(TEST_BLACKDUCK_INSTALL_DIRECTORY_PATH, blackDuck.getInstallDirectory());
 
-        //TODO: add Scan and Automation related unit tests.
-        //assertEquals(true, blackDuck.getAutomation().isFixPr());
-        //assertEquals(false, blackDuck.getAutomation().isPrComment());
+        assertEquals(true, blackDuck.getAutomation().getFixpr());
+        assertEquals(false, blackDuck.getAutomation().getPrcomment());
+        assertEquals(true, blackDuck.getScan().getFull());
+        assertEquals(List.of("BLOCKER", "CRITICAL", "MAJOR", "MINOR"), blackDuck.getScan().getFailureSeverities());
     }
 
     @Test
