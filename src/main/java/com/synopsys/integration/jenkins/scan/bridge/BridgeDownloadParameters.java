@@ -9,7 +9,7 @@ public class BridgeDownloadParameters {
     private String bridgeInstallationPath;
 
     public BridgeDownloadParameters() {
-        this.bridgeDownloadVersion = ApplicationConstants.BRIDGE_ARTIFACTORY_URL;
+        this.bridgeDownloadUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL;
         this.bridgeDownloadVersion = ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION;
         this.bridgeInstallationPath = Utility.defaultBridgeInstallationPath();
     }

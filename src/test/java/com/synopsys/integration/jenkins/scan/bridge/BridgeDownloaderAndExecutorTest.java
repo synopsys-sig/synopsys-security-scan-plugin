@@ -25,7 +25,6 @@ public class BridgeDownloaderAndExecutorTest {
 
     @Test
     void testDownloadSynopsysBridge() {
-        FilePath inputDownloadFilePath = new FilePath(new File(ApplicationConstants.BRIDGE_DOWNLOAD_FILE_PATH));
         String bridgeVersion = null;
         String bridgeDownloadUrl = null;
 
@@ -33,10 +32,10 @@ public class BridgeDownloaderAndExecutorTest {
                 .concat(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT)));
 
         Mockito.when(bridgeDownloaderAndExecutorMock.downloadSynopsysBridge
-                (inputDownloadFilePath, bridgeVersion, bridgeDownloadUrl)).thenReturn(outputDownloadFilePath);
+                ( bridgeVersion, bridgeDownloadUrl)).thenReturn(outputDownloadFilePath);
 
         assertEquals(outputDownloadFilePath, bridgeDownloaderAndExecutorMock.downloadSynopsysBridge
-                (inputDownloadFilePath, bridgeVersion, bridgeDownloadUrl));
+                (bridgeVersion, bridgeDownloadUrl));
 
     }
 

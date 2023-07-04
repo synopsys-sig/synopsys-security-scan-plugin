@@ -13,8 +13,6 @@ import java.net.URL;
 import java.util.Objects;
 
 public class BridgeDownloaderAndExecutor {
-
-    private final String bridgeZipFileName = "bridge.zip";
     private final TaskListener listener;
     private final EnvVars envVars;
 
@@ -23,7 +21,7 @@ public class BridgeDownloaderAndExecutor {
         this.envVars = envVars;
     }
 
-    public FilePath downloadSynopsysBridge(FilePath downloadFilePath, String bridgeVersion, String bridgeDownloadUrl) {
+    public FilePath downloadSynopsysBridge(String bridgeVersion, String bridgeDownloadUrl) {
         String bridgeUrl;
         
         if (isValidVersion(bridgeVersion)) {
@@ -61,17 +59,13 @@ public class BridgeDownloaderAndExecutor {
     }
 
     public void unzipSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath) {
-        //TODO: We may define a specific accessible directory (For default location) and unzip the executables inside that.
-        // We should also have facility to accept a parameter for specifying location
         try {
-            listener.getLogger().println("Synopsys bridge zip path: " + bridgeZipPath.getRemote());
             bridgeZipPath.unzip(bridgeInstallationPath);
 
-            //TODO: If we download the zip to temp directory, we may not need to call delete.
+            //Have to call delete *explicitly* as JVM doesn't erase this file.
+            bridgeZipPath.delete();
 
-            //bridgeZipPath.delete();
-
-            listener.getLogger().println("Synopsys bridge unzipped successfully and bridge installation path: " + bridgeInstallationPath.getRemote());
+            listener.getLogger().printf("Bridge zip path: %s and bridge installation path: %s \n", bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
         } catch (Exception e) {
             listener.getLogger().println("Synopsys bridge unzipping failed");
             e.printStackTrace();
@@ -79,10 +73,12 @@ public class BridgeDownloaderAndExecutor {
     }
 
     private String getPlatform() {
-        //TODO:  We can also check for Mac, as bridge have Mac compatible executables as well.
+        String os = System.getProperty("os.name").toLowerCase();
 
-        if (Objects.equals(envVars.getPlatform(), Platform.WINDOWS)) {
+        if (os.contains("win")) {
             return ApplicationConstants.PLATFORM_WINDOWS;
+        } else if (os.contains("mac")) {
+            return ApplicationConstants.PLATFORM_MAC;
         } else {
             return ApplicationConstants.PLATFORM_LINUX;
         }

@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,26 +17,6 @@ public class BridgeDownloadManager {
     private final String bridgeBinary = "synopsys-bridge";
     private final String extensionsDirectory = "extensions";
     private final String versionFile = "versions.txt";
-
-    //TODO may be to service class?
-    public BridgeDownloadParameters getBridgeDownloadParams(Map<String, Object> scanParams, BridgeDownloadParameters bridgeDownloadParameters) {
-
-        //TODO: CONSTANTS
-        if (scanParams.containsKey("bridge_download_url")) {
-            bridgeDownloadParameters.setBridgeDownloadUrl(scanParams.get("bridge_download_url").toString());
-        }
-
-        if (scanParams.containsKey("bridge_download_version")) {
-            bridgeDownloadParameters.setBridgeDownloadVersion(scanParams.get("bridge_download_version").toString());
-        }
-
-        if (scanParams.containsKey("synopsys_bridge_path")) {
-            bridgeDownloadParameters.setBridgeInstallationPath(scanParams.get("synopsys_bridge_path").toString());
-        }
-
-        return bridgeDownloadParameters;
-    }
-
     public boolean isSynopsysBridgeDownloadRequired(BridgeDownloadParameters bridgeDownloadParameters) {
         String bridgeDownloadUrl = bridgeDownloadParameters.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParameters.getBridgeInstallationPath();

@@ -66,9 +66,9 @@ public class Utility {
         String userHome = System.getProperty("user.home");
 
         if (os.contains("win")) {
-            defaultInstallationPath = String.join("\\", userHome, "Downloads", "synopsys-scan-plugin");
+            defaultInstallationPath = String.join("\\", userHome, "Downloads", ApplicationConstants.DEFAULT_DIRECTORY_NAME);
         } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
-            defaultInstallationPath = String.join("/", userHome, "Downloads", "synopsys-scan-plugin");
+            defaultInstallationPath = String.join("/", userHome, "Downloads", ApplicationConstants.DEFAULT_DIRECTORY_NAME);
         }
 
         verifyAndCreateInstallationPath(defaultInstallationPath);
@@ -81,7 +81,7 @@ public class Utility {
         if (!directory.exists()) {
             boolean created = directory.mkdirs();
             if (!created) {
-                System.err.println("Failed to create directory: " + bridgeUnzipPath);
+                System.out.println("Failed to create directory: " + bridgeUnzipPath);
             }
         }
     }
