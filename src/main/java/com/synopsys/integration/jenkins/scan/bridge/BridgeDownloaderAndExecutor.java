@@ -7,6 +7,7 @@ import hudson.FilePath;
 import hudson.Platform;
 import hudson.model.TaskListener;
 
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Objects;
@@ -23,51 +24,54 @@ public class BridgeDownloaderAndExecutor {
     }
 
     public FilePath downloadSynopsysBridge(FilePath downloadFilePath, String bridgeVersion, String bridgeDownloadUrl) {
-        FilePath bridgeZipPath = downloadFilePath.child(bridgeZipFileName);
         String bridgeUrl;
         
         if (isValidVersion(bridgeVersion)) {
             bridgeUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL
                 .concat(bridgeVersion).concat("/")
                 .concat(ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform(), bridgeVersion));
-        } else if (isValidBridgeDownloadUrl(bridgeDownloadUrl)){
+        }
+        else if (isValidBridgeDownloadUrl(bridgeDownloadUrl)) {
             bridgeUrl = bridgeDownloadUrl;
-        } else {
+        }
+        else {
             bridgeUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL
                 .concat(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION).concat("/")
                 .concat(ApplicationConstants.getSynopsysBridgeZipFileName(ApplicationConstants.PLATFORM_LINUX));
         }
 
+        FilePath tempFilePath = null;
         if (checkIfBridgeUrlExists(bridgeUrl)) {
             try {
-                listener.getLogger().println("Downloading synopsys bridge from: ".concat(bridgeUrl));
-                bridgeZipPath.copyFrom(new URL(bridgeUrl));
-                //TODO:We can check and copy the zip to temp directory if it is downloading the zip to current directory.
+                listener.getLogger().println("Downloading synopsys bridge from: " + bridgeUrl);
+                File tempFile = File.createTempFile("bridge", ".zip");
 
-                listener.getLogger().println("Synopsys bridge downloaded successfully to: ".concat(bridgeZipPath.getRemote()));
+                tempFilePath = new FilePath(tempFile);
+                tempFilePath.copyFrom(new URL(bridgeUrl));
+
             } catch (Exception e) {
                 listener.getLogger().println("Synopsys bridge download failed");
                 e.printStackTrace();
             }
-        } else {
+        }
+        else {
             listener.getLogger().println("Invalid synopsys bridge download url: " + bridgeUrl);
         }
-        return bridgeZipPath;
+        return tempFilePath;
     }
 
-    public void unzipSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeUnzipPath) {
+    public void unzipSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath) {
         //TODO: We may define a specific accessible directory (For default location) and unzip the executables inside that.
         // We should also have facility to accept a parameter for specifying location
         try {
-            listener.getLogger().println("Synopsys bridge zip path: ".concat(bridgeZipPath.getRemote()));
-            bridgeZipPath.unzip(bridgeUnzipPath);
+            listener.getLogger().println("Synopsys bridge zip path: " + bridgeZipPath.getRemote());
+            bridgeZipPath.unzip(bridgeInstallationPath);
 
             //TODO: If we download the zip to temp directory, we may not need to call delete.
 
-            // Delete the zip file
-            bridgeZipPath.delete();
-            listener.getLogger().println("Synopsys bridge unzipped successfully");
-            listener.getLogger().println("Synopsys bridge unzip path: ".concat(bridgeUnzipPath.getRemote()));
+            //bridgeZipPath.delete();
+
+            listener.getLogger().println("Synopsys bridge unzipped successfully and bridge installation path: " + bridgeInstallationPath.getRemote());
         } catch (Exception e) {
             listener.getLogger().println("Synopsys bridge unzipping failed");
             e.printStackTrace();
