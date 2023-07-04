@@ -11,10 +11,16 @@ import java.util.stream.Stream;
 
 public class BlackDuckParametersService {
 
-    public BlackDuck prepareBlackDuckInputForBridge(Map<String, Object> blackDuckParametersFormPipeline) {
+    public BlackDuck prepareBlackDuckInputForBridge(Map<String, Object> blackDuckParametersFromPipeline) {
         Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
-        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFormPipeline, blackDuckParametersMapFromUI);
+        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFromPipeline, blackDuckParametersMapFromUI);
         return createBlackDuckObject(blackDuckParametersMap);
+    }
+
+    public Map<String, Object> prepareBlackDuckParameterValidation(Map<String, Object> blackDuckParametersFromPipeline) {
+        Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
+        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFromPipeline, blackDuckParametersMapFromUI);
+        return blackDuckParametersMap;
     }
 
     public BlackDuck createBlackDuckObject(Map<String, Object> blackDuckParametersMap) {
@@ -81,9 +87,9 @@ public class BlackDuckParametersService {
         for (Map.Entry<String, Object> entry : blackDuckParametersMapFromUI.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-
+            //TODO: check blackDuckParamsFromPipeline.get(key) throws exception if key is absent
             //Giving precedence to the pipeline arguments. Therefore, if same key-value occurs, pipeline's value will be taken.
-            if (!blackDuckParamsFromPipeline.containsKey(key)) {
+            if (!blackDuckParamsFromPipeline.containsKey(key) || blackDuckParamsFromPipeline.get(key) == null) {
                 blackDuckParamsFromPipeline.put(key, value);
             }
         }

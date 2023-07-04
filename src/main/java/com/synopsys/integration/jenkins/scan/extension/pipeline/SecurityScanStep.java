@@ -81,6 +81,11 @@ public class SecurityScanStep extends Step implements Serializable {
 
         @Override
         protected Integer run() throws IOException, InterruptedException, ScannerJenkinsException {
+            scanParams.put("bridge_download_url",
+                    "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/");
+            scanParams.put("bridge_download_version", "0.3.1");
+            scanParams.put("synopsys_bridge_path","/home/jahid/abc-dummy");
+
             return ScanCommandsFactory.createPipelineCommand(listener, envVars, launcher, node, workspace)
                 .runScanner(scanParams);
         }

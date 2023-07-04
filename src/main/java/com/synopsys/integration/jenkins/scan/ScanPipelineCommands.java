@@ -14,11 +14,16 @@ public class ScanPipelineCommands {
     }
 
     public int runScanner(Map<String, Object> scanParams) throws IOException, InterruptedException, ScannerJenkinsException {
+        for (Map.Entry<String, Object> entry : scanParams.entrySet()) {
+            if ("null".equals(entry.getValue())) {
+                entry.setValue(null);
+            }
+        }
+
         int exitCode = scanner.runScanner(scanParams);
         if (exitCode > 0) {
             throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
         }
         return exitCode;
     }
-
 }

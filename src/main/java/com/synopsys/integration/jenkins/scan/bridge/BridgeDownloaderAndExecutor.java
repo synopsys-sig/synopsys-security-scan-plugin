@@ -29,7 +29,7 @@ public class BridgeDownloaderAndExecutor {
         if (isValidVersion(bridgeVersion)) {
             bridgeUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL
                 .concat(bridgeVersion).concat("/")
-                .concat(ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform()));
+                .concat(ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform(), bridgeVersion));
         } else if (isValidBridgeDownloadUrl(bridgeDownloadUrl)){
             bridgeUrl = bridgeDownloadUrl;
         } else {
@@ -42,6 +42,8 @@ public class BridgeDownloaderAndExecutor {
             try {
                 listener.getLogger().println("Downloading synopsys bridge from: ".concat(bridgeUrl));
                 bridgeZipPath.copyFrom(new URL(bridgeUrl));
+                //TODO:We can check and copy the zip to temp directory if it is downloading the zip to current directory.
+
                 listener.getLogger().println("Synopsys bridge downloaded successfully to: ".concat(bridgeZipPath.getRemote()));
             } catch (Exception e) {
                 listener.getLogger().println("Synopsys bridge download failed");
@@ -54,9 +56,13 @@ public class BridgeDownloaderAndExecutor {
     }
 
     public void unzipSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeUnzipPath) {
+        //TODO: We may define a specific accessible directory (For default location) and unzip the executables inside that.
+        // We should also have facility to accept a parameter for specifying location
         try {
             listener.getLogger().println("Synopsys bridge zip path: ".concat(bridgeZipPath.getRemote()));
             bridgeZipPath.unzip(bridgeUnzipPath);
+
+            //TODO: If we download the zip to temp directory, we may not need to call delete.
 
             // Delete the zip file
             bridgeZipPath.delete();
@@ -69,6 +75,8 @@ public class BridgeDownloaderAndExecutor {
     }
 
     private String getPlatform() {
+        //TODO:  We can also check for Mac, as bridge have Mac compatible executables as well.
+
         if (Objects.equals(envVars.getPlatform(), Platform.WINDOWS)) {
             return ApplicationConstants.PLATFORM_WINDOWS;
         } else {
@@ -95,5 +103,4 @@ public class BridgeDownloaderAndExecutor {
             return false;
         }
     }
-
 }

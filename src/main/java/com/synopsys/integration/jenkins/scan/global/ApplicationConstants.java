@@ -22,7 +22,10 @@ public class ApplicationConstants {
     public static final String BRIDGE_ZIP_FILE_FORMAT = "bridge.zip";
 
     public static String getSynopsysBridgeZipFileName(String platform) {
-        return "synopsys-bridge-" + platform + ".zip";
+        return "synopsys-bridge-".concat(platform).concat(".zip");
+    }
+    public static String getSynopsysBridgeZipFileName(String platform, String version) {
+        return "synopsys-bridge-".concat(version).concat("-").concat(platform).concat(".zip");
     }
 
 }

@@ -1,5 +1,7 @@
 package com.synopsys.integration.jenkins.scan;
 
+import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadManager;
+import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloaderAndExecutor;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
@@ -12,6 +14,7 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.TaskListener;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -36,41 +39,58 @@ public class SecurityScanner {
 
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
 
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
+        BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor = new BridgeDownloaderAndExecutor(listener, envVars);
+        BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager();
+        BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadManager.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
+
+
         //TODO: add validation for Synopsys-Bridge parameters in the if condition as well.
-        if (!blackDuckParametersService.performParameterValidation(scanParams)) {
+        Map<String, Object> blackDuckParameters = blackDuckParametersService.prepareBlackDuckParameterValidation(scanParams);
+        if (!blackDuckParametersService.performParameterValidation(blackDuckParameters)) {
             listener.getLogger().println("Couldn't validate BlackDuck or Synopsys-Bridge parameters!");
             return 1;
         }
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(workspace, scanParams);
 
-        initiateBridgeDownloadAndUnzip(listener, envVars, workspace);
+        FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(bridgeInstallationPath, scanParams);
+
+        boolean isDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
+        if(isDownloadRequired) {
+            initiateBridgeDownloadAndUnzip(bridgeDownloaderAndExecutor, bridgeDownloadParams);
+        }
+
+       Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace.getRemote());
 
         printMessages(LogMessages.START_SCANNER);
 
         int scanner = launcher.launch()
                 .cmds(commandLineArgs)
                 .envs(envVars)
-                .pwd(workspace)
+                .pwd(bridgeInstallationPath)
                 .stdout(listener)
                 .quiet(true)
                 .join();
-
         printMessages(LogMessages.END_SCANNER);
 
         return scanner;
     }
 
-    private void initiateBridgeDownloadAndUnzip(TaskListener listener, EnvVars envVars, FilePath workspace) throws InterruptedException, IOException {
-        BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor = new BridgeDownloaderAndExecutor(listener, envVars);
-        FilePath downloadFilePath = Utility.createTempDir(ApplicationConstants.APPLICATION_NAME);
+    private void initiateBridgeDownloadAndUnzip(BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor, BridgeDownloadParameters bridgeDownloadParams) {
+        String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
+        String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();
+        String bridgeDownloadVersion = bridgeDownloadParams.getBridgeDownloadVersion();
+
+        Utility.verifyAndCreateInstallationPath(bridgeInstallationPath);
+        FilePath downloadFilePath = null;
 
         try {
-            FilePath bridgeZipPath = bridgeDownloaderAndExecutor.downloadSynopsysBridge(downloadFilePath, null, null);
-            bridgeDownloaderAndExecutor.unzipSynopsysBridge(bridgeZipPath, workspace);
+            downloadFilePath = Utility.createTempDir(ApplicationConstants.APPLICATION_NAME);
+            FilePath bridgeZipPath = bridgeDownloaderAndExecutor.downloadSynopsysBridge(downloadFilePath, bridgeDownloadVersion, bridgeDownloadUrl);
+            bridgeDownloaderAndExecutor.unzipSynopsysBridge(bridgeZipPath, new FilePath(new File(bridgeInstallationPath)));
         } catch (Exception e) {
             listener.getLogger().println("There is an exception while downloading/unzipping Synopsys-bridge.");
-            e.getStackTrace();
         } finally {
             Utility.cleanupTempDir(downloadFilePath);
         }

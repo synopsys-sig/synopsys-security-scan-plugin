@@ -19,7 +19,7 @@ import java.util.Map;
 public class ScannerArgumentService {
     private static final String DATA_KEY = "data";
 
-    public List<String> getCommandLineArgs(FilePath workspace, Map<String, Object> scanParams) throws IOException {
+    public List<String> getCommandLineArgs(FilePath bridgeInstallationPath, Map<String, Object> scanParams) throws IOException {
         String stageName = getStageType(scanParams);
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(stageName));
 
@@ -27,13 +27,13 @@ public class ScannerArgumentService {
 
         if (stageName.equals(BridgeParams.BLACKDUCK_STAGE)) {
             BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParams);
-            commandLineArgs.add(createBlackDuckInputJson(workspace, blackDuck));
+            commandLineArgs.add(createBlackDuckInputJson(bridgeInstallationPath, blackDuck));
         }
 
         return commandLineArgs;
     }
 
-    public String createBlackDuckInputJson(FilePath workspace, BlackDuck blackDuck) throws IOException {
+    public String createBlackDuckInputJson(FilePath bridgeInstallationPath, BlackDuck blackDuck) throws IOException {
         BridgeInput bridgeInput = new BridgeInput();
         bridgeInput.setBlackDuck(blackDuck);
 
@@ -44,7 +44,8 @@ public class ScannerArgumentService {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         String blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
-        String jsonPath = workspace.getRemote().concat("/").concat(BridgeParams.BLACKDUCK_JSON_FILE_NAME);
+        //TODO: We can create the json file in a temporary directory instead of creating inside workspace directory.
+        String jsonPath = bridgeInstallationPath.child(BridgeParams.BLACKDUCK_JSON_FILE_NAME).getRemote();
 
         writeBlackDuckJsonToFile(jsonPath, blackDuckJson);
 
@@ -79,5 +80,4 @@ public class ScannerArgumentService {
             return BridgeParams.BLACKDUCK_STAGE;
         }
     }
-    
 }
