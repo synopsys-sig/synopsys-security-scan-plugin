@@ -1,8 +1,6 @@
 package com.synopsys.integration.jenkins.scan;
 
-import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadManager;
-import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
-import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloaderAndExecutor;
+import com.synopsys.integration.jenkins.scan.bridge.*;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
@@ -52,10 +50,10 @@ public class SecurityScanner {
 
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager();
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
-            BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor = new BridgeDownloaderAndExecutor(listener, envVars);
+//            BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor = new BridgeDownloaderAndExecutor(listener, envVars);
 
             if (isBridgeDownloadRequired) {
-                initiateBridgeDownloadAndUnzip(bridgeDownloaderAndExecutor, bridgeDownloadParams);
+                initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
             }
 
             Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace.getRemote());
@@ -85,7 +83,10 @@ public class SecurityScanner {
         return scanner;
     }
 
-    private void initiateBridgeDownloadAndUnzip(BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor, BridgeDownloadParameters bridgeDownloadParams) {
+    private void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
+        BridgeDownload bridgeDownload = new BridgeDownload(listener, envVars);
+        BridgeInstall bridgeInstall = new BridgeInstall(listener, envVars);
+
         String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();
         String bridgeDownloadVersion = bridgeDownloadParams.getBridgeDownloadVersion();
@@ -93,8 +94,8 @@ public class SecurityScanner {
         Utility.verifyAndCreateInstallationPath(bridgeInstallationPath);
 
         try {
-            FilePath bridgeZipPath = bridgeDownloaderAndExecutor.downloadSynopsysBridge(bridgeDownloadVersion, bridgeDownloadUrl);
-            bridgeDownloaderAndExecutor.unzipSynopsysBridge(bridgeZipPath, new FilePath(new File(bridgeInstallationPath)));
+            FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadVersion, bridgeDownloadUrl);
+            bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(new File(bridgeInstallationPath)));
         } catch (Exception e) {
             listener.getLogger().println("There is an exception while downloading/installing Synopsys-bridge.");
         }

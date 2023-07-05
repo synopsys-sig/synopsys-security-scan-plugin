@@ -11,12 +11,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-public class BridgeDownloaderAndExecutor {
+public class BridgeDownload {
     private final TaskListener listener;
     private final EnvVars envVars;
 
-    public BridgeDownloaderAndExecutor(TaskListener listener, EnvVars envVars) {
+    public BridgeDownload(TaskListener listener, EnvVars envVars) {
         this.listener = listener;
         this.envVars = envVars;
     }
@@ -31,7 +30,7 @@ public class BridgeDownloaderAndExecutor {
         }
         else if (isValidVersion(bridgeVersion)) {
             bridgeUrl = bridgeDownloadUrl.concat(bridgeVersion).concat("/")
-                .concat(ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform(), bridgeVersion));
+                    .concat(ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform(), bridgeVersion));
         }
 
         FilePath tempFilePath = null;
@@ -54,20 +53,6 @@ public class BridgeDownloaderAndExecutor {
         return tempFilePath;
     }
 
-    public void unzipSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath) {
-        try {
-            bridgeZipPath.unzip(bridgeInstallationPath);
-
-            //Have to call delete *explicitly* as JVM doesn't erase this file.
-            bridgeZipPath.delete();
-
-            listener.getLogger().printf("Bridge zip path: %s and bridge installation path: %s \n", bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
-        } catch (Exception e) {
-            listener.getLogger().println("Synopsys bridge unzipping failed");
-            e.printStackTrace();
-        }
-    }
-
     private String getPlatform() {
         String os = System.getProperty("os.name").toLowerCase();
 
@@ -88,7 +73,7 @@ public class BridgeDownloaderAndExecutor {
 
     public boolean isValidBridgeDownloadUrl(String bridgeDownloadUrl) {
         return bridgeDownloadUrl != null && bridgeDownloadUrl.length() > 0 &&
-            bridgeDownloadUrl.matches(".*synopsys-bridge-([0-9.]*).*");
+                bridgeDownloadUrl.matches(".*synopsys-bridge-([0-9.]*).*");
     }
 
     public boolean checkIfBridgeUrlExists(String bridgeUrl) {
