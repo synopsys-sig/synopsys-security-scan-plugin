@@ -51,10 +51,10 @@ public class SecurityScanner {
             List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(bridgeInstallationPath, scanParams);
 
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager();
-            boolean isDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
+            boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
             BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor = new BridgeDownloaderAndExecutor(listener, envVars);
 
-            if (isDownloadRequired) {
+            if (isBridgeDownloadRequired) {
                 initiateBridgeDownloadAndUnzip(bridgeDownloaderAndExecutor, bridgeDownloadParams);
             }
 
