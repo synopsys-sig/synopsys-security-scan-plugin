@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-
 public class BridgeDownloaderAndExecutorTest {
     private final BridgeDownloaderAndExecutor bridgeDownloaderAndExecutorMock = Mockito.mock(BridgeDownloaderAndExecutor.class);
     private BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor;
@@ -24,7 +23,7 @@ public class BridgeDownloaderAndExecutorTest {
     }
 
     @Test
-    void testDownloadSynopsysBridge() {
+    void downloadSynopsysBridgeTest() {
         String bridgeVersion = null;
         String bridgeDownloadUrl = null;
 
@@ -40,7 +39,7 @@ public class BridgeDownloaderAndExecutorTest {
     }
 
     @Test
-    void TestUnzipSynopsysBridge() {
+    void unzipSynopsysBridgeTest() {
         String bridgeZipPath = BRIDGE_DOWNLOAD_FILE_PATH.concat("/").concat(BRIDGE_ZIP_FILE_FORMAT);
         String bridgeUnzipPath = "/synopsys-security-scan-plugin/work/workspace/First_Job_main";
 
@@ -51,14 +50,14 @@ public class BridgeDownloaderAndExecutorTest {
                 .unzipSynopsysBridge(new FilePath(new File(bridgeZipPath)), new FilePath(new File(bridgeUnzipPath)));
     }
     @Test
-   void testValidateBridgeVersion() {
+   void validateBridgeVersionTest() {
         String bridgeVersion = "0.3.1";
 
         assertEquals(true, bridgeDownloaderAndExecutor.isValidVersion(bridgeVersion));
     }
 
     @Test
-    void testValidateBridgeDownloadUrl() {
+    void validateBridgeDownloadUrlTest() {
         String bridgeDownloadUrl = BRIDGE_ARTIFACTORY_URL.concat(SYNOPSYS_BRIDGE_LATEST_VERSION)
                 .concat("/synopsys-bridge-").concat(PLATFORM_LINUX).concat(".zip") ;
 
@@ -67,7 +66,7 @@ public class BridgeDownloaderAndExecutorTest {
     }
 
     @Test
-    void testValidateBridgeUrlExistence() {
+    void validateBridgeUrlExistenceTest() {
         String bridgeUrl = BRIDGE_ARTIFACTORY_URL.concat(SYNOPSYS_BRIDGE_LATEST_VERSION)
                 .concat("/synopsys-bridge-").concat(PLATFORM_LINUX).concat(".zip") ;
 

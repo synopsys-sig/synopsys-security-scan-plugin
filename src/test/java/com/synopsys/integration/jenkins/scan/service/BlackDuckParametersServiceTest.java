@@ -24,7 +24,7 @@ public class BlackDuckParametersServiceTest {
     }
 
     @Test
-    void testCreateBlackDuckObject() {
+    void createBlackDuckObjectTest() {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
 
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
@@ -50,7 +50,7 @@ public class BlackDuckParametersServiceTest {
     }
 
     @Test
-    void testValidateBlackDuckParametersForValidParameters() {
+    void validateBlackDuckParametersForValidParametersTest() {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
@@ -59,7 +59,7 @@ public class BlackDuckParametersServiceTest {
     }
 
     @Test
-    void testValidateBlackDuckParametersForMissingParameters() {
+    void validateBlackDuckParametersForMissingParametersTest() {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
 
@@ -67,7 +67,7 @@ public class BlackDuckParametersServiceTest {
     }
 
     @Test
-    void testValidateBlackDuckParametersForNullAndEmpty() {
+    void validateBlackDuckParametersForNullAndEmptyTest() {
         BlackDuckParametersService service = new BlackDuckParametersService();
         assertFalse(service.performParameterValidation(null));
 
@@ -79,7 +79,7 @@ public class BlackDuckParametersServiceTest {
     }
 
     @Test
-    public void testGetCombinedBlackDuckParameters() {
+    public void getCombinedBlackDuckParametersTest() {
         Map<String, String> expectedMap = new HashMap<>();
         expectedMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
         expectedMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);

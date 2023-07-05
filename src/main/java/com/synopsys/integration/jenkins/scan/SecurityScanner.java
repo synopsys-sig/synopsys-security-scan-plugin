@@ -15,7 +15,6 @@ import hudson.Launcher;
 import hudson.model.TaskListener;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public class SecurityScanner {
         this.scannerArgumentService = scannerArgumentService;
     }
 
-    public int runScanner(Map<String, Object> scanParams) throws IOException, InterruptedException {
+    public int runScanner(Map<String, Object> scanParams) {
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
@@ -63,14 +62,21 @@ public class SecurityScanner {
 
             printMessages(LogMessages.START_SCANNER);
 
-            scanner = launcher.launch()
-                    .cmds(commandLineArgs)
-                    .envs(envVars)
-                    .pwd(bridgeInstallationPath)
-                    .stdout(listener)
-                    .quiet(true)
-                    .join();
-        } else {
+            try {
+                scanner = launcher.launch()
+                        .cmds(commandLineArgs)
+                        .envs(envVars)
+                        .pwd(bridgeInstallationPath)
+                        .stdout(listener)
+                        .quiet(true)
+                        .join();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                Utility.cleanupInputJson(bridgeDownloadParams.getBridgeInstallationPath());
+            }
+        }
+        else {
            listener.getLogger().println("Couldn't validate BlackDuck or Synopsys-Bridge parameters!");
         }
 

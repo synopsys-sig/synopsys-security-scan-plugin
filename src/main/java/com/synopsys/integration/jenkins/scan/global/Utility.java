@@ -102,4 +102,11 @@ public class Utility {
         return file;
     }
 
+    public static void cleanupInputJson(String bridgeInstallationPath) {
+        File file = new File(bridgeInstallationPath, BridgeParams.BLACKDUCK_JSON_FILE_NAME);
+
+        if (file.exists()) {
+            file.delete();
+        }
+    }
 }

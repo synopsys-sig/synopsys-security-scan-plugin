@@ -19,7 +19,7 @@ import java.util.Map;
 public class ScannerArgumentService {
     private static final String DATA_KEY = "data";
 
-    public List<String> getCommandLineArgs(FilePath bridgeInstallationPath, Map<String, Object> scanParams) throws IOException {
+    public List<String> getCommandLineArgs(FilePath bridgeInstallationPath, Map<String, Object> scanParams) {
         String stageName = getStageType(scanParams);
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(stageName));
 
@@ -33,7 +33,7 @@ public class ScannerArgumentService {
         return commandLineArgs;
     }
 
-    public String createBlackDuckInputJson(FilePath bridgeInstallationPath, BlackDuck blackDuck) throws IOException {
+    public String createBlackDuckInputJson(FilePath bridgeInstallationPath, BlackDuck blackDuck) {
         BridgeInput bridgeInput = new BridgeInput();
         bridgeInput.setBlackDuck(blackDuck);
 
@@ -43,11 +43,14 @@ public class ScannerArgumentService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        String blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
-        //TODO: We can create the json file in a temporary directory instead of creating inside workspace directory.
-        String jsonPath = bridgeInstallationPath.child(BridgeParams.BLACKDUCK_JSON_FILE_NAME).getRemote();
-
-        writeBlackDuckJsonToFile(jsonPath, blackDuckJson);
+        String blackDuckJson = null;
+        try {
+            blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
+            String jsonPath = bridgeInstallationPath.child(BridgeParams.BLACKDUCK_JSON_FILE_NAME).getRemote();
+            writeBlackDuckJsonToFile(jsonPath, blackDuckJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return BridgeParams.BLACKDUCK_JSON_FILE_NAME;
     }

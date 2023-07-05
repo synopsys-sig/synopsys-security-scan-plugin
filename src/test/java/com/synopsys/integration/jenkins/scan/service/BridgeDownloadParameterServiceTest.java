@@ -39,6 +39,7 @@ public class BridgeDownloadParameterServiceTest {
     void isValidVersionTest() {
         String validVersion = "1.2.3";
         assertTrue(bridgeDownloadParametersService.isValidVersion(validVersion));
+        assertTrue(bridgeDownloadParametersService.isValidVersion("latest"));
 
         String invalidVersion = "x.x.x";
         assertFalse(bridgeDownloadParametersService.isValidVersion(invalidVersion));

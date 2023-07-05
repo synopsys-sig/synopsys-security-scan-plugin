@@ -87,9 +87,9 @@ public class BlackDuckParametersService {
         for (Map.Entry<String, Object> entry : blackDuckParametersMapFromUI.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            //TODO: check blackDuckParamsFromPipeline.get(key) throws exception if key is absent
             //Giving precedence to the pipeline arguments. Therefore, if same key-value occurs, pipeline's value will be taken.
-            if (!blackDuckParamsFromPipeline.containsKey(key) || blackDuckParamsFromPipeline.get(key) == null) {
+            if (!blackDuckParamsFromPipeline.containsKey(key) ||
+                    (blackDuckParamsFromPipeline.containsKey(key) && blackDuckParamsFromPipeline.get(key) == null)) {
                 blackDuckParamsFromPipeline.put(key, value);
             }
         }
@@ -106,5 +106,4 @@ public class BlackDuckParametersService {
 
         return blackDuckParametersFromJenkinsUI;
     }
-
 }

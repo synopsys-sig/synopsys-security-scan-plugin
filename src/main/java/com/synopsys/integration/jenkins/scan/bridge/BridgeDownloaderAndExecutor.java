@@ -4,13 +4,13 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 
 import hudson.EnvVars;
 import hudson.FilePath;
-import hudson.Platform;
 import hudson.model.TaskListener;
 
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BridgeDownloaderAndExecutor {
     private final TaskListener listener;
@@ -22,20 +22,16 @@ public class BridgeDownloaderAndExecutor {
     }
 
     public FilePath downloadSynopsysBridge(String bridgeVersion, String bridgeDownloadUrl) {
-        String bridgeUrl;
-        
-        if (isValidVersion(bridgeVersion)) {
-            bridgeUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL
-                .concat(bridgeVersion).concat("/")
+        String bridgeUrl = null;
+
+        if (bridgeVersion.equals(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION)) {
+            bridgeUrl =bridgeDownloadUrl.concat(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION).concat("/")
+                    .concat(ApplicationConstants.getSynopsysBridgeZipFileName(ApplicationConstants.PLATFORM_LINUX));
+
+        }
+        else if (isValidVersion(bridgeVersion)) {
+            bridgeUrl = bridgeDownloadUrl.concat(bridgeVersion).concat("/")
                 .concat(ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform(), bridgeVersion));
-        }
-        else if (isValidBridgeDownloadUrl(bridgeDownloadUrl)) {
-            bridgeUrl = bridgeDownloadUrl;
-        }
-        else {
-            bridgeUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL
-                .concat(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION).concat("/")
-                .concat(ApplicationConstants.getSynopsysBridgeZipFileName(ApplicationConstants.PLATFORM_LINUX));
         }
 
         FilePath tempFilePath = null;
@@ -85,7 +81,9 @@ public class BridgeDownloaderAndExecutor {
     }
 
     public boolean isValidVersion(String bridgeVersion) {
-        return bridgeVersion != null && bridgeVersion.length() > 0;
+        Pattern pattern = Pattern.compile("\\d+\\.\\d+\\.\\d+");
+        Matcher matcher = pattern.matcher(bridgeVersion);
+        return matcher.matches();
     }
 
     public boolean isValidBridgeDownloadUrl(String bridgeDownloadUrl) {

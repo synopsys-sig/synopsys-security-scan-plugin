@@ -38,7 +38,7 @@ public class BridgeDownloadParametersService {
     public boolean isValidVersion(String version) {
         Pattern pattern = Pattern.compile("\\d+\\.\\d+\\.\\d+");
         Matcher matcher = pattern.matcher(version);
-        return matcher.matches();
+        return matcher.matches() || version.equals(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION);
     }
 
     public boolean isValidInstallationPath(String installationPath) {
