@@ -26,7 +26,7 @@ Run the Black Duck Scan in jenkins pipeline -
 ```
 stage("synopsys-security-scan") {
     steps {
-        synopsys_scan scanParams: [blackduck_url: "${env.BLACKDUCK_URL}", blackduck_api_token: "${env.BLACKDUCK_TOKEN}", blackduck_scan_full: true]
+        synopsys_scan blackduck_url: "${env.BLACKDUCK_URL}", blackduck_api_token: "${env.BLACKDUCK_TOKEN}", blackduck_scan_full: true
     }
 }
 ```
