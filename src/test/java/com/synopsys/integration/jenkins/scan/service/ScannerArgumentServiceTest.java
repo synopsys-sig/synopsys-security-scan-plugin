@@ -32,7 +32,7 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    void createBlackDuckInputJsonTest() throws IOException {
+    void createBlackDuckInputJsonTest() {
         String inputJsonPath = workspacePath().getRemote();
         Path filePath = Paths.get(String.join("/", inputJsonPath, BridgeParams.BLACKDUCK_JSON_FILE_NAME));
 
@@ -44,12 +44,17 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    void writeBlackDuckJsonToFileTest() throws IOException {
+    void writeBlackDuckJsonToFileTest() {
         String jsonPath = String.join("/", workspacePath().getRemote(), BridgeParams.BLACKDUCK_JSON_FILE_NAME);
         String jsonString = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"}}}";
 
         scannerArgumentService.writeBlackDuckJsonToFile(jsonPath, jsonString);
-        String fileContent = new String(Files.readAllBytes(Paths.get(jsonPath)));
+        String fileContent = null;
+        try {
+            fileContent = new String(Files.readAllBytes(Paths.get(jsonPath)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         assertTrue(Files.exists(Path.of(jsonPath)), String.format("%s does not exist at the specified path.", BridgeParams.BLACKDUCK_JSON_FILE_NAME));
         assertEquals(jsonString,fileContent);
@@ -71,14 +76,18 @@ public class ScannerArgumentServiceTest {
         return new FilePath(path.toFile());
     }
 
-    public void cleanup() throws IOException {
+    public void cleanup() {
         Path directory = Paths.get(workspacePath().getRemote());
 
         if (Files.exists(directory)) {
-            Files.walk(directory)
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
+            try {
+                Files.walk(directory)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

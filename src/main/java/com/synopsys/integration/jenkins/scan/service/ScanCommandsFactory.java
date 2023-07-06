@@ -12,7 +12,6 @@ import hudson.model.Node;
 import hudson.model.TaskListener;
 
 public class ScanCommandsFactory {
-    
     private final TaskListener listener;
     private final EnvVars envVars;
     private final FilePath workspace;

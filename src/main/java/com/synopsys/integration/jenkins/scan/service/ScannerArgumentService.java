@@ -19,7 +19,7 @@ import java.util.Map;
 public class ScannerArgumentService {
     private static final String DATA_KEY = "data";
 
-    public List<String> getCommandLineArgs(FilePath workspace, Map<String, Object> scanParams) throws IOException {
+    public List<String> getCommandLineArgs(FilePath bridgeInstallationPath, Map<String, Object> scanParams) {
         String stageName = getStageType(scanParams);
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(stageName));
 
@@ -27,13 +27,13 @@ public class ScannerArgumentService {
 
         if (stageName.equals(BridgeParams.BLACKDUCK_STAGE)) {
             BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParams);
-            commandLineArgs.add(createBlackDuckInputJson(workspace, blackDuck));
+            commandLineArgs.add(createBlackDuckInputJson(bridgeInstallationPath, blackDuck));
         }
 
         return commandLineArgs;
     }
 
-    public String createBlackDuckInputJson(FilePath workspace, BlackDuck blackDuck) throws IOException {
+    public String createBlackDuckInputJson(FilePath bridgeInstallationPath, BlackDuck blackDuck) {
         BridgeInput bridgeInput = new BridgeInput();
         bridgeInput.setBlackDuck(blackDuck);
 
@@ -43,10 +43,14 @@ public class ScannerArgumentService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        String blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
-        String jsonPath = workspace.getRemote().concat("/").concat(BridgeParams.BLACKDUCK_JSON_FILE_NAME);
-
-        writeBlackDuckJsonToFile(jsonPath, blackDuckJson);
+        String blackDuckJson = null;
+        try {
+            blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
+            String jsonPath = bridgeInstallationPath.child(BridgeParams.BLACKDUCK_JSON_FILE_NAME).getRemote();
+            writeBlackDuckJsonToFile(jsonPath, blackDuckJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return BridgeParams.BLACKDUCK_JSON_FILE_NAME;
     }
@@ -79,5 +83,4 @@ public class ScannerArgumentService {
             return BridgeParams.BLACKDUCK_STAGE;
         }
     }
-    
 }
