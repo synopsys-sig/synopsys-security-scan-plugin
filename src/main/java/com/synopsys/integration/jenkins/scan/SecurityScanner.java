@@ -4,6 +4,8 @@ import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloaderAndExecutor;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.BitBucket;
+import com.synopsys.integration.jenkins.scan.service.BitBucketRepositoryService;
 import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 
@@ -42,19 +44,23 @@ public class SecurityScanner {
             return 1;
         }
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(workspace, scanParams);
+        BitBucketRepositoryService bitBucketRepositoryService = new BitBucketRepositoryService(listener, envVars);
+        BitBucket bitBucket = bitBucketRepositoryService.fetchBitbucketRepoDetails();
 
-        initiateBridgeDownloadAndUnzip(listener, envVars, workspace);
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(workspace, scanParams, bitBucket);
+
+//        initiateBridgeDownloadAndUnzip(listener, envVars, workspace);
 
         printMessages(LogMessages.START_SCANNER);
 
-        int scanner = launcher.launch()
-                .cmds(commandLineArgs)
-                .envs(envVars)
-                .pwd(workspace)
-                .stdout(listener)
-                .quiet(true)
-                .join();
+//        int scanner = launcher.launch()
+//                .cmds(commandLineArgs)
+//                .envs(envVars)
+//                .pwd(workspace)
+//                .stdout(listener)
+//                .quiet(true)
+//                .join();
+        int scanner = 0;
 
         printMessages(LogMessages.END_SCANNER);
 

@@ -36,7 +36,7 @@ public class ScannerArgumentServiceTest {
         String inputJsonPath = workspacePath().getRemote();
         Path filePath = Paths.get(String.join("/", inputJsonPath, BridgeParams.BLACKDUCK_JSON_FILE_NAME));
 
-        scannerArgumentService.createBlackDuckInputJson(workspacePath(),blackDuck);
+        scannerArgumentService.createBlackDuckInputJson(workspacePath(),blackDuck, null);
 
         assertTrue(Files.exists(filePath), String.format("File %s does not exist at the specified path.", BridgeParams.BLACKDUCK_JSON_FILE_NAME));
 

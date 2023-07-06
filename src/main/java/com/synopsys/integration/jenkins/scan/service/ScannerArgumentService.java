@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.BitBucket;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 
@@ -19,7 +20,7 @@ import java.util.Map;
 public class ScannerArgumentService {
     private static final String DATA_KEY = "data";
 
-    public List<String> getCommandLineArgs(FilePath workspace, Map<String, Object> scanParams) throws IOException {
+    public List<String> getCommandLineArgs(FilePath workspace, Map<String, Object> scanParams, BitBucket bitBucket) throws IOException {
         String stageName = getStageType(scanParams);
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(stageName));
 
@@ -27,15 +28,18 @@ public class ScannerArgumentService {
 
         if (stageName.equals(BridgeParams.BLACKDUCK_STAGE)) {
             BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParams);
-            commandLineArgs.add(createBlackDuckInputJson(workspace, blackDuck));
+            // added the Prcomment condition on the following code
+            commandLineArgs.add(createBlackDuckInputJson(workspace, blackDuck, blackDuck.getAutomation().getPrcomment() != null ? bitBucket : null));
+
         }
 
         return commandLineArgs;
     }
 
-    public String createBlackDuckInputJson(FilePath workspace, BlackDuck blackDuck) throws IOException {
+    public String createBlackDuckInputJson(FilePath workspace, BlackDuck blackDuck, BitBucket bitBucket) throws IOException {
         BridgeInput bridgeInput = new BridgeInput();
         bridgeInput.setBlackDuck(blackDuck);
+        bridgeInput.setBitBucket(bitBucket);
 
         Map<String, Object> blackDuckJsonMap = new HashMap<>();
         blackDuckJsonMap.put(DATA_KEY, bridgeInput);
