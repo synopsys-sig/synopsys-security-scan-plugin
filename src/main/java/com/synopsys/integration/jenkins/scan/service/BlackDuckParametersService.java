@@ -71,7 +71,7 @@ public class BlackDuckParametersService {
         return blackDuck;
     }
 
-    public boolean performParameterValidation(Map<String, Object> blackDuckParams) {
+    public boolean performBlackDuckParameterValidation(Map<String, Object> blackDuckParams) {
         return blackDuckParams != null
                 && Stream.of(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
                 .allMatch(key -> blackDuckParams.containsKey(key)

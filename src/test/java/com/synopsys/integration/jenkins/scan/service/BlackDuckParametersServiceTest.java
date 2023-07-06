@@ -55,7 +55,7 @@ public class BlackDuckParametersServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
         
-        assertTrue(blackDuckParametersService.performParameterValidation(blackDuckParametersMap));
+        assertTrue(blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParametersMap));
     }
 
     @Test
@@ -63,19 +63,19 @@ public class BlackDuckParametersServiceTest {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
 
-        assertFalse(blackDuckParametersService.performParameterValidation(blackDuckParametersMap));
+        assertFalse(blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParametersMap));
     }
 
     @Test
     void validateBlackDuckParametersForNullAndEmptyTest() {
         BlackDuckParametersService service = new BlackDuckParametersService();
-        assertFalse(service.performParameterValidation(null));
+        assertFalse(service.performBlackDuckParameterValidation(null));
 
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, "");
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
 
-        assertFalse(blackDuckParametersService.performParameterValidation(blackDuckParametersMap));
+        assertFalse(blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParametersMap));
     }
 
     @Test
