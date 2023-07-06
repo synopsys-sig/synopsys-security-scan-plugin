@@ -1,0 +1,45 @@
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+    <f:entry field="blackduck_url" title="Black Duck URL">
+        <f:textbox/>
+    </f:entry>
+    <f:entry field="blackduck_api_token" title="Black Duck Api Token">
+        <f:password/>
+    </f:entry>
+
+    <f:advanced>
+        <f:section title="Additional Black Duck Parameters">
+            <f:entry field="blackduck_install_directory" title="Black Duck Installation Path">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_scan_full" title="Black Duck full scan">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="blackduck_scan_failure_severities" title="Black Duck scan failure severities">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_automation_prcomment" title="Black Duck automatic pull request comment">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="blackduck_automation_fixpr" title="Black Duck automatic fix pull request">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="bitbucket_token" title="Bitbucket Token">
+                <f:password/>
+            </f:entry>
+        </f:section>
+
+        <f:section title="Additional Synopsys Bridge Parameters">
+            <f:entry field="bridge_download_url" title="Synopsys Bridge download URL">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="bridge_download_version" title="Synopsys Bridge download URL">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="synopsys_bridge_path" title="Synopsys Bridge download URL">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+    </f:advanced>
+
+</j:jelly>
