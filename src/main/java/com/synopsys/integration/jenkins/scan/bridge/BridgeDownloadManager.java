@@ -17,6 +17,7 @@ public class BridgeDownloadManager {
     private final String bridgeBinary = "synopsys-bridge";
     private final String extensionsDirectory = "extensions";
     private final String versionFile = "versions.txt";
+
     public boolean isSynopsysBridgeDownloadRequired(BridgeDownloadParameters bridgeDownloadParameters) {
         String bridgeDownloadUrl = bridgeDownloadParameters.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParameters.getBridgeInstallationPath();

@@ -2,7 +2,6 @@ package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 
-import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 
@@ -11,13 +10,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 public class BridgeDownload {
     private final TaskListener listener;
-    private final EnvVars envVars;
 
-    public BridgeDownload(TaskListener listener, EnvVars envVars) {
+    public BridgeDownload(TaskListener listener) {
         this.listener = listener;
-        this.envVars = envVars;
     }
 
     public FilePath downloadSynopsysBridge(String bridgeVersion, String bridgeDownloadUrl) {
@@ -25,7 +23,7 @@ public class BridgeDownload {
 
         if (bridgeVersion.equals(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION)) {
             bridgeUrl =bridgeDownloadUrl.concat(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION).concat("/")
-                    .concat(ApplicationConstants.getSynopsysBridgeZipFileName(ApplicationConstants.PLATFORM_LINUX));
+                    .concat(ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform()));
 
         }
         else if (isValidVersion(bridgeVersion)) {

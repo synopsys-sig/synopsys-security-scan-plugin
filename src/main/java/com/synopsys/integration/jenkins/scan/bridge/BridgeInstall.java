@@ -1,16 +1,13 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
-import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 
 public class BridgeInstall {
     private final TaskListener listener;
-    private final EnvVars envVars;
 
-    public BridgeInstall(TaskListener listener, EnvVars envVars) {
+    public BridgeInstall(TaskListener listener) {
         this.listener = listener;
-        this.envVars = envVars;
     }
 
     public void installSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath) {

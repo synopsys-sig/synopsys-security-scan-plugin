@@ -1,6 +1,7 @@
 package com.synopsys.integration.jenkins.scan;
 
 import com.synopsys.integration.jenkins.scan.bridge.*;
+import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
@@ -50,13 +51,11 @@ public class SecurityScanner {
 
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager();
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
-//            BridgeDownloaderAndExecutor bridgeDownloaderAndExecutor = new BridgeDownloaderAndExecutor(listener, envVars);
-
             if (isBridgeDownloadRequired) {
                 initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
             }
 
-            Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace.getRemote());
+            Utility.copyRepository(workspace.getRemote(), bridgeDownloadParams.getBridgeInstallationPath());
 
             printMessages(LogMessages.START_SCANNER);
 
@@ -71,7 +70,7 @@ public class SecurityScanner {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                Utility.cleanupInputJson(bridgeDownloadParams.getBridgeInstallationPath());
+                Utility.cleanupInputJson(bridgeDownloadParams.getBridgeInstallationPath(), BridgeParams.BLACKDUCK_JSON_FILE_NAME);
             }
         }
         else {
@@ -84,8 +83,8 @@ public class SecurityScanner {
     }
 
     private void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
-        BridgeDownload bridgeDownload = new BridgeDownload(listener, envVars);
-        BridgeInstall bridgeInstall = new BridgeInstall(listener, envVars);
+        BridgeDownload bridgeDownload = new BridgeDownload(listener);
+        BridgeInstall bridgeInstall = new BridgeInstall(listener);
 
         String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();

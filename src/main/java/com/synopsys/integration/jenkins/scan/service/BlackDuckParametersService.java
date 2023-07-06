@@ -10,7 +10,6 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class BlackDuckParametersService {
-
     public BlackDuck prepareBlackDuckInputForBridge(Map<String, Object> blackDuckParametersFromPipeline) {
         Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
         Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFromPipeline, blackDuckParametersMapFromUI);
@@ -101,9 +100,12 @@ public class BlackDuckParametersService {
 
         Map<String, Object> blackDuckParametersFromJenkinsUI = new HashMap<>();
 
-        blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl().trim());
-        blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY,config.getBlackDuckCredentialsId().trim());
-
+        try {
+            blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl().trim());
+            blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, config.getBlackDuckCredentialsId().trim());
+        } catch (Exception e) {
+            blackDuckParametersFromJenkinsUI.clear();
+        }
         return blackDuckParametersFromJenkinsUI;
     }
 }

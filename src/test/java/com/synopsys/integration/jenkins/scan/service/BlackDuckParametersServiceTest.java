@@ -103,7 +103,7 @@ public class BlackDuckParametersServiceTest {
 
         combinedMap = blackDuckParametersService.getCombinedBlackDuckParameters(pipelineMapNull, uiMapNull);
 
-        assertEquals(null, combinedMap);
+        assertNull(combinedMap);
     }
 
 }

@@ -8,14 +8,13 @@ import java.util.Map;
 
 public class ScanPipelineCommands {
     private final SecurityScanner scanner;
-
     public ScanPipelineCommands(SecurityScanner scanner) {
         this.scanner = scanner;
     }
 
     public int runScanner(Map<String, Object> scanParams) throws IOException, InterruptedException, ScannerJenkinsException {
         for (Map.Entry<String, Object> entry : scanParams.entrySet()) {
-            if ("null".equals(entry.getValue())) {
+            if (entry.getValue().equals("null")) {
                 entry.setValue(null);
             }
         }

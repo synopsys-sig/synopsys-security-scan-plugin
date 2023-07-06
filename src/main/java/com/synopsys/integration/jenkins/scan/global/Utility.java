@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class Utility {
-
     public static FilePath createTempDir(String directoryName) throws IOException, InterruptedException {
         FilePath tempFilePath = new FilePath(Files.createTempDirectory(directoryName).toFile());
         tempFilePath.mkdirs();
@@ -39,7 +38,7 @@ public class Utility {
         directory.delete();
     }
 
-    public static void copyRepository(String targetDirectory, String pluginWorkspaceDirectory) {
+    public static void copyRepository(String pluginWorkspaceDirectory, String targetDirectory) {
         File workspaceDirectory = Utility.stringToFile(pluginWorkspaceDirectory);
         File targetDir = Utility.stringToFile(targetDirectory);
 
@@ -55,7 +54,7 @@ public class Utility {
         try {
             FileUtils.copyDirectory(workspaceDirectory, targetDir);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -102,8 +101,8 @@ public class Utility {
         return file;
     }
 
-    public static void cleanupInputJson(String bridgeInstallationPath) {
-        File file = new File(bridgeInstallationPath, BridgeParams.BLACKDUCK_JSON_FILE_NAME);
+    public static void cleanupInputJson(String inputJsonPath, String inputJsonFileName) {
+        File file = new File(inputJsonPath, inputJsonFileName);
 
         if (file.exists()) {
             file.delete();
