@@ -12,14 +12,14 @@ public class ScanPipelineCommands {
         this.scanner = scanner;
     }
 
-    public int runScanner(Map<String, Object> scanParams) throws IOException, InterruptedException, ScannerJenkinsException {
-        for (Map.Entry<String, Object> entry : scanParams.entrySet()) {
+    public int runScanner(Map<String, Object> scanParameters) throws IOException, InterruptedException, ScannerJenkinsException {
+        for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
             if (entry.getValue().equals("null")) {
                 entry.setValue(null);
             }
         }
 
-        int exitCode = scanner.runScanner(scanParams);
+        int exitCode = scanner.runScanner(scanParameters);
         if (exitCode > 0) {
             throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
         }

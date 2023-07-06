@@ -1,6 +1,7 @@
 package com.synopsys.integration.jenkins.scan.global;
 
 import hudson.FilePath;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -107,5 +108,9 @@ public class Utility {
         if (file.exists()) {
             file.delete();
         }
+    }
+
+    public static boolean isStringNullOrBlank(String str) {
+        return str == null || str.isBlank();
     }
 }

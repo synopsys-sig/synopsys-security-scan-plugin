@@ -2,6 +2,7 @@ package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
 
 import hudson.EnvVars;
@@ -21,20 +22,126 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import org.kohsuke.stapler.DataBoundSetter;
 
 public class SecurityScanStep extends Step implements Serializable {
 
     private static final long serialVersionUID = 6294070801130995534L;
-    private final Map<String, Object> scanParams;
+
+    private final String blackduck_url;
+    private final String blackduck_api_token;
+
+    private String blackduck_install_directory;
+    private Boolean blackduck_scan_full;
+    private String blackduck_scan_failure_severities;
+    private Boolean blackduck_automation_fixpr;
+    private Boolean blackduck_automation_prcomment;
+    private String bitbucket_token;
+
+    private String bridge_download_url;
+    private String bridge_download_version;
+    private String synopsys_bridge_path;
 
     @DataBoundConstructor
-    public SecurityScanStep(Map<String, Object> scanParams) {
-        this.scanParams = scanParams;
+    public SecurityScanStep(String blackduck_url, String blackduck_api_token) {
+        this.blackduck_url = blackduck_url;
+        this.blackduck_api_token = blackduck_api_token;
+    }
+
+    public String getBlackduck_url() {
+        return blackduck_url;
+    }
+
+    public String getBlackduck_api_token() {
+        return blackduck_api_token;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_install_directory(String blackduck_install_directory) {
+        this.blackduck_install_directory = blackduck_install_directory;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_scan_full(Boolean blackduck_scan_full) {
+        this.blackduck_scan_full = blackduck_scan_full;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_scan_failure_severities(String blackduck_scan_failure_severities) {
+        this.blackduck_scan_failure_severities = blackduck_scan_failure_severities;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_automation_fixpr(Boolean blackduck_automation_fixpr) {
+        this.blackduck_automation_fixpr = blackduck_automation_fixpr;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_automation_prcomment(Boolean blackduck_automation_prcomment) {
+        this.blackduck_automation_prcomment = blackduck_automation_prcomment;
+    }
+
+    @DataBoundSetter
+    public void setBitbucket_token(String bitbucket_token) {
+        this.bitbucket_token = bitbucket_token;
+    }
+
+    @DataBoundSetter
+    public void setBridge_download_url(String bridge_download_url) {
+        this.bridge_download_url = bridge_download_url;
+    }
+
+    @DataBoundSetter
+    public void setBridge_download_version(String bridge_download_version) {
+        this.bridge_download_version = bridge_download_version;
+    }
+
+    @DataBoundSetter
+    public void setSynopsys_bridge_path(String synopsys_bridge_path) {
+        this.synopsys_bridge_path = synopsys_bridge_path;
+    }
+
+    public String getBlackduck_install_directory() {
+        return blackduck_install_directory;
+    }
+
+    public Boolean getBlackduck_scan_full() {
+        return blackduck_scan_full;
+    }
+
+    public String getBlackduck_scan_failure_severities() {
+        return blackduck_scan_failure_severities;
+    }
+
+    public Boolean getBlackduck_automation_fixpr() {
+        return blackduck_automation_fixpr;
+    }
+
+    public Boolean getBlackduck_automation_prcomment() {
+        return blackduck_automation_prcomment;
+    }
+
+    public String getBitbucket_token() {
+        return bitbucket_token;
+    }
+
+    public String getBridge_download_url() {
+        return bridge_download_url;
+    }
+
+    public String getBridge_download_version() {
+        return bridge_download_version;
+    }
+
+    public String getSynopsys_bridge_path() {
+        return synopsys_bridge_path;
     }
 
     @Override
@@ -81,10 +188,50 @@ public class SecurityScanStep extends Step implements Serializable {
 
         @Override
         protected Integer run() throws IOException, InterruptedException, ScannerJenkinsException {
+            Map<String, Object> pipelineParametersMap = prepareParametersMap();
+
             return ScanCommandsFactory.createPipelineCommand(listener, envVars, launcher, node, workspace)
-                .runScanner(scanParams);
+                .runScanner(pipelineParametersMap);
         }
 
+    }
+
+    // This method is for mapping all the pipeline input parameters
+    private Map<String, Object> prepareParametersMap() {
+        Map<String, Object> parametersMap = new HashMap<>();
+
+        if (!Utility.isStringNullOrBlank(blackduck_url)) {
+            parametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, blackduck_url.trim());
+        }
+        if (!Utility.isStringNullOrBlank(blackduck_api_token)) {
+            parametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, blackduck_api_token.trim());
+        }
+        if (!Utility.isStringNullOrBlank(blackduck_install_directory)) {
+            parametersMap.put(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, blackduck_install_directory.trim());
+        }
+        if (Objects.nonNull(blackduck_scan_full)) {
+            parametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, blackduck_scan_full);
+        }
+        if (!Utility.isStringNullOrBlank(blackduck_scan_failure_severities)) {
+            parametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, blackduck_scan_failure_severities.trim().toUpperCase());
+        }
+        if (Objects.nonNull(blackduck_automation_fixpr)) {
+            parametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, blackduck_automation_fixpr);
+        }
+        if (Objects.nonNull(blackduck_automation_prcomment)) {
+            parametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, blackduck_automation_prcomment);
+        }
+        if (!Utility.isStringNullOrBlank(bridge_download_url)) {
+            parametersMap.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, bridge_download_url.trim());
+        }
+        if (!Utility.isStringNullOrBlank(bridge_download_version)) {
+            parametersMap.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, bridge_download_version.trim());
+        }
+        if (!Utility.isStringNullOrBlank(synopsys_bridge_path)) {
+            parametersMap.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, synopsys_bridge_path.trim());
+        }
+        
+        return parametersMap;
     }
 
 }
