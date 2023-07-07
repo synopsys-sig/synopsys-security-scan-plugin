@@ -2,7 +2,6 @@ package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
 
 import hudson.EnvVars;
@@ -23,7 +22,6 @@ import org.kohsuke.stapler.DataBoundSetter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -143,6 +141,10 @@ public class SecurityScanStep extends Step implements Serializable {
         return synopsys_bridge_path;
     }
 
+    private Map<String, Object> getParametersMap() {
+        return ScanCommandsFactory.preparePipelineParametersMap(this);
+    }
+
     @Override
     public StepExecution start(StepContext context) throws Exception {
         return new Execution(context);
@@ -187,44 +189,10 @@ public class SecurityScanStep extends Step implements Serializable {
 
         @Override
         protected Integer run() throws IOException, InterruptedException, ScannerJenkinsException {
-            Map<String, Object> pipelineParametersMap = prepareParametersMap();
-
             return ScanCommandsFactory.createPipelineCommand(listener, envVars, launcher, node, workspace)
-                .runScanner(pipelineParametersMap);
+                .runScanner(getParametersMap());
         }
 
-    }
-
-    // This method is for mapping all the pipeline input parameters
-    private Map<String, Object> prepareParametersMap() {
-        Map<String, Object> parametersMap = new HashMap<>();
-
-        if (!Utility.isStringNullOrBlank(blackduck_url)) {
-            parametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, blackduck_url.trim());
-        }
-        if (!Utility.isStringNullOrBlank(blackduck_api_token)) {
-            parametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, blackduck_api_token.trim());
-        }
-        if (!Utility.isStringNullOrBlank(blackduck_install_directory)) {
-            parametersMap.put(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, blackduck_install_directory.trim());
-        }
-        if (!Utility.isStringNullOrBlank(blackduck_scan_failure_severities)) {
-            parametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, blackduck_scan_failure_severities.trim().toUpperCase());
-        }
-        parametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, blackduck_scan_full);
-        parametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, blackduck_automation_fixpr);
-        parametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, blackduck_automation_prcomment);
-        if (!Utility.isStringNullOrBlank(bridge_download_url)) {
-            parametersMap.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, bridge_download_url.trim());
-        }
-        if (!Utility.isStringNullOrBlank(bridge_download_version)) {
-            parametersMap.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, bridge_download_version.trim());
-        }
-        if (!Utility.isStringNullOrBlank(synopsys_bridge_path)) {
-            parametersMap.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, synopsys_bridge_path.trim());
-        }
-        
-        return parametersMap;
     }
 
 }
