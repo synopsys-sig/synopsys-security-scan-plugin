@@ -1,7 +1,7 @@
 package com.synopsys.integration.jenkins.scan;
 
 import com.synopsys.integration.jenkins.scan.bridge.*;
-import com.synopsys.integration.jenkins.scan.global.BridgeParams;
+import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
@@ -47,7 +47,7 @@ public class SecurityScanner {
                 && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
 
             FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
-            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(bridgeInstallationPath, scanParameters);
+            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParameters);
 
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager();
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
@@ -70,7 +70,7 @@ public class SecurityScanner {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                Utility.cleanupInputJson(bridgeDownloadParams.getBridgeInstallationPath(), BridgeParams.BLACKDUCK_JSON_FILE_NAME);
+                Utility.cleanupInputJson(ApplicationConstants.BLACKDUCK_INPUT_JSON_PATH);
             }
         }
         else {

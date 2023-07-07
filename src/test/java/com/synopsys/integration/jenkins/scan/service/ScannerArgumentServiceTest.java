@@ -33,10 +33,8 @@ public class ScannerArgumentServiceTest {
 
     @Test
     void createBlackDuckInputJsonTest() {
-        String inputJsonPath = workspacePath().getRemote();
-        Path filePath = Paths.get(String.join("/", inputJsonPath, BridgeParams.BLACKDUCK_JSON_FILE_NAME));
-
-        scannerArgumentService.createBlackDuckInputJson(workspacePath(),blackDuck);
+        String inputJsonPath =scannerArgumentService.createBlackDuckInputJson(blackDuck);
+        Path filePath = Paths.get(inputJsonPath);
 
         assertTrue(Files.exists(filePath), String.format("File %s does not exist at the specified path.", BridgeParams.BLACKDUCK_JSON_FILE_NAME));
 
@@ -45,10 +43,9 @@ public class ScannerArgumentServiceTest {
 
     @Test
     void writeBlackDuckJsonToFileTest() {
-        String jsonPath = String.join("/", workspacePath().getRemote(), BridgeParams.BLACKDUCK_JSON_FILE_NAME);
         String jsonString = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"}}}";
 
-        scannerArgumentService.writeBlackDuckJsonToFile(jsonPath, jsonString);
+        String jsonPath = scannerArgumentService.writeBlackDuckJsonToFile(jsonString);
         String fileContent = null;
         try {
             fileContent = new String(Files.readAllBytes(Paths.get(jsonPath)));
