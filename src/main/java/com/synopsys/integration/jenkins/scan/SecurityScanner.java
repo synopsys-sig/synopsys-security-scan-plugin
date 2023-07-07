@@ -33,21 +33,21 @@ public class SecurityScanner {
         this.scannerArgumentService = scannerArgumentService;
     }
 
-    public int runScanner(Map<String, Object> scanParams) {
+    public int runScanner(Map<String, Object> scanParameters) {
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
         BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService();
-        BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
+        BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParameters, bridgeDownloadParameters);
 
-        Map<String, Object> blackDuckParameters = blackDuckParametersService.prepareBlackDuckParameterValidation(scanParams);
+        Map<String, Object> blackDuckParameters = blackDuckParametersService.prepareBlackDuckParameterValidation(scanParameters);
         int scanner = 1;
 
         if (blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParameters)
                 && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
 
             FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
-            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams);
+            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParameters);
 
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager();
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);

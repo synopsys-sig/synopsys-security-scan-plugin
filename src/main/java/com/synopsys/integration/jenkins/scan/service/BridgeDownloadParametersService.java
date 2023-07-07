@@ -54,18 +54,18 @@ public class BridgeDownloadParametersService {
         return Files.isWritable(parentPath);
     }
 
-    public BridgeDownloadParameters getBridgeDownloadParams(Map<String, Object> scanParams, BridgeDownloadParameters bridgeDownloadParameters) {
+    public BridgeDownloadParameters getBridgeDownloadParams(Map<String, Object> scanParameters, BridgeDownloadParameters bridgeDownloadParameters) {
 
-        if (scanParams.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_URL)) {
-            bridgeDownloadParameters.setBridgeDownloadUrl(scanParams.get(ApplicationConstants.BRIDGE_DOWNLOAD_URL).toString());
+        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_URL)) {
+            bridgeDownloadParameters.setBridgeDownloadUrl(scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_URL).toString());
         }
 
-        if (scanParams.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION)) {
-            bridgeDownloadParameters.setBridgeDownloadVersion(scanParams.get(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION).toString());
+        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION)) {
+            bridgeDownloadParameters.setBridgeDownloadVersion(scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION).toString());
         }
 
-        if (scanParams.containsKey(ApplicationConstants.BRIDGE_INSTALLATION_PATH)) {
-            bridgeDownloadParameters.setBridgeInstallationPath(scanParams.get(ApplicationConstants.BRIDGE_INSTALLATION_PATH).toString());
+        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_INSTALLATION_PATH)) {
+            bridgeDownloadParameters.setBridgeInstallationPath(scanParameters.get(ApplicationConstants.BRIDGE_INSTALLATION_PATH).toString());
         }
 
         return bridgeDownloadParameters;
