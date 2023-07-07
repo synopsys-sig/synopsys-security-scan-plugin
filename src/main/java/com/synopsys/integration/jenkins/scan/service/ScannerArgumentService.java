@@ -24,7 +24,7 @@ public class ScannerArgumentService {
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
 
         if (stageName.equals(BridgeParams.BLACKDUCK_STAGE)) {
-            BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParams);
+            BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
             commandLineArgs.add(createBlackDuckInputJson(blackDuck));
         }
 
