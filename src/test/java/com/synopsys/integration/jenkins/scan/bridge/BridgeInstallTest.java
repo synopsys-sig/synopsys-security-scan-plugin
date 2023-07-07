@@ -26,7 +26,7 @@ public class BridgeInstallTest {
     @Test
     void installSynopsysBridgeTest() {
         String bridgeZipPath = BRIDGE_DOWNLOAD_FILE_PATH.concat("/").concat(BRIDGE_ZIP_FILE_FORMAT);
-        String bridgeUnzipPath = "/synopsys-security-scan-plugin/work/workspace/First_Job_main";
+        String bridgeUnzipPath = "/bridge/unzip/path";
 
         bridgeInstallMock.installSynopsysBridge(new FilePath(new File(bridgeZipPath)), new FilePath(new File(bridgeUnzipPath)));
 

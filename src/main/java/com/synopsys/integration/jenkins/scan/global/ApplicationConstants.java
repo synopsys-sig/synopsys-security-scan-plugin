@@ -21,7 +21,9 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck_scan_failure_severities";
     public static final String BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck_automation_fixpr";
     public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck_automation_prcomment";
-    public static final String DEFAULT_DIRECTORY_NAME = "synopsys-scan-plugin";
+    public static final String DEFAULT_DIRECTORY_NAME = "synopsys-bridge";
+    public static  String BLACKDUCK_INPUT_JSON_PATH = "";
+
 
     public static String getSynopsysBridgeZipFileName(String platform) {
         return "synopsys-bridge-".concat(platform).concat(".zip");

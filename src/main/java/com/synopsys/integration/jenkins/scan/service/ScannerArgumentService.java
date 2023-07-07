@@ -7,10 +7,8 @@ import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 
-import hudson.FilePath;
-
-import java.io.FileWriter;
-import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +17,7 @@ import java.util.Map;
 public class ScannerArgumentService {
     private static final String DATA_KEY = "data";
 
-    public List<String> getCommandLineArgs(FilePath bridgeInstallationPath, Map<String, Object> scanParams) {
+    public List<String> getCommandLineArgs(Map<String, Object> scanParams) {
         String stageName = getStageType(scanParams);
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(stageName));
 
@@ -27,13 +25,13 @@ public class ScannerArgumentService {
 
         if (stageName.equals(BridgeParams.BLACKDUCK_STAGE)) {
             BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParams);
-            commandLineArgs.add(createBlackDuckInputJson(bridgeInstallationPath, blackDuck));
+            commandLineArgs.add(createBlackDuckInputJson(blackDuck));
         }
 
         return commandLineArgs;
     }
 
-    public String createBlackDuckInputJson(FilePath bridgeInstallationPath, BlackDuck blackDuck) {
+    public String createBlackDuckInputJson(BlackDuck blackDuck) {
         BridgeInput bridgeInput = new BridgeInput();
         bridgeInput.setBlackDuck(blackDuck);
 
@@ -43,24 +41,30 @@ public class ScannerArgumentService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        String blackDuckJson = null;
+        String jsonPath = null;
         try {
-            blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
-            String jsonPath = bridgeInstallationPath.child(BridgeParams.BLACKDUCK_JSON_FILE_NAME).getRemote();
-            writeBlackDuckJsonToFile(jsonPath, blackDuckJson);
+            String blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
+            jsonPath = writeBlackDuckJsonToFile(blackDuckJson);
+            ApplicationConstants.BLACKDUCK_INPUT_JSON_PATH = jsonPath;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return BridgeParams.BLACKDUCK_JSON_FILE_NAME;
+        return jsonPath;
     }
 
-    public void writeBlackDuckJsonToFile(String jsonPath, String blackDuckJson) {
-        try (FileWriter fileWriter = new FileWriter(jsonPath)) {
-            fileWriter.write(blackDuckJson);
-        } catch (IOException e) {
+    public String writeBlackDuckJsonToFile(String blackDuckJson) {
+        String blackDuckInputJsonPath = null;
+
+        try {
+            Path tempFilePath = Files.createTempFile("blackduck_input", ".json");
+            Files.writeString(tempFilePath, blackDuckJson);
+            blackDuckInputJsonPath = tempFilePath.toAbsolutePath().toString();
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return blackDuckInputJsonPath;
     }
 
     public static List<String> getInitialBridgeArgs(String stage) {

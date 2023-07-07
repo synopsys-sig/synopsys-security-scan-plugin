@@ -65,9 +65,9 @@ public class Utility {
         String userHome = System.getProperty("user.home");
 
         if (os.contains("win")) {
-            defaultInstallationPath = String.join("\\", userHome, "Downloads", ApplicationConstants.DEFAULT_DIRECTORY_NAME);
+            defaultInstallationPath = String.join("\\", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
         } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
-            defaultInstallationPath = String.join("/", userHome, "Downloads", ApplicationConstants.DEFAULT_DIRECTORY_NAME);
+            defaultInstallationPath = String.join("/", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
         }
 
         verifyAndCreateInstallationPath(defaultInstallationPath);
@@ -75,12 +75,12 @@ public class Utility {
         return defaultInstallationPath;
     }
 
-    public static void verifyAndCreateInstallationPath(String bridgeUnzipPath) {
-        File directory = new File(bridgeUnzipPath);
+    public static void verifyAndCreateInstallationPath(String bridgeInstallationPath) {
+        File directory = new File(bridgeInstallationPath);
         if (!directory.exists()) {
             boolean created = directory.mkdirs();
             if (!created) {
-                System.out.println("Failed to create directory: " + bridgeUnzipPath);
+                System.out.println("Failed to create directory: " + bridgeInstallationPath);
             }
         }
     }
@@ -101,8 +101,8 @@ public class Utility {
         return file;
     }
 
-    public static void cleanupInputJson(String inputJsonPath, String inputJsonFileName) {
-        File file = new File(inputJsonPath, inputJsonFileName);
+    public static void cleanupInputJson(String inputJsonPath) {
+        File file = new File(inputJsonPath);
 
         if (file.exists()) {
             file.delete();
