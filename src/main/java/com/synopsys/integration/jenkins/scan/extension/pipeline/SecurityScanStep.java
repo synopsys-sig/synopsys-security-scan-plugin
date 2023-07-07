@@ -18,6 +18,7 @@ import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -29,7 +30,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import org.kohsuke.stapler.DataBoundSetter;
 
 public class SecurityScanStep extends Step implements Serializable {
 
@@ -39,10 +39,10 @@ public class SecurityScanStep extends Step implements Serializable {
     private final String blackduck_api_token;
 
     private String blackduck_install_directory;
-    private Boolean blackduck_scan_full;
+    private boolean blackduck_scan_full = true;
     private String blackduck_scan_failure_severities;
-    private Boolean blackduck_automation_fixpr;
-    private Boolean blackduck_automation_prcomment;
+    private boolean blackduck_automation_fixpr = false;
+    private boolean blackduck_automation_prcomment = false;
     private String bitbucket_token;
 
     private String bridge_download_url;
@@ -54,7 +54,7 @@ public class SecurityScanStep extends Step implements Serializable {
         this.blackduck_url = blackduck_url;
         this.blackduck_api_token = blackduck_api_token;
     }
-
+    
     public String getBlackduck_url() {
         return blackduck_url;
     }
@@ -107,12 +107,12 @@ public class SecurityScanStep extends Step implements Serializable {
     public void setSynopsys_bridge_path(String synopsys_bridge_path) {
         this.synopsys_bridge_path = synopsys_bridge_path;
     }
-
+    
     public String getBlackduck_install_directory() {
         return blackduck_install_directory;
     }
 
-    public Boolean getBlackduck_scan_full() {
+    public boolean getBlackduck_scan_full() {
         return blackduck_scan_full;
     }
 
@@ -120,11 +120,11 @@ public class SecurityScanStep extends Step implements Serializable {
         return blackduck_scan_failure_severities;
     }
 
-    public Boolean getBlackduck_automation_fixpr() {
+    public boolean getBlackduck_automation_fixpr() {
         return blackduck_automation_fixpr;
     }
 
-    public Boolean getBlackduck_automation_prcomment() {
+    public boolean getBlackduck_automation_prcomment() {
         return blackduck_automation_prcomment;
     }
 
