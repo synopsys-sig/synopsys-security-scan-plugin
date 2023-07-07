@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -107,7 +106,7 @@ public class SecurityScanStep extends Step implements Serializable {
     public void setSynopsys_bridge_path(String synopsys_bridge_path) {
         this.synopsys_bridge_path = synopsys_bridge_path;
     }
-    
+
     public String getBlackduck_install_directory() {
         return blackduck_install_directory;
     }
@@ -209,18 +208,12 @@ public class SecurityScanStep extends Step implements Serializable {
         if (!Utility.isStringNullOrBlank(blackduck_install_directory)) {
             parametersMap.put(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, blackduck_install_directory.trim());
         }
-        if (Objects.nonNull(blackduck_scan_full)) {
-            parametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, blackduck_scan_full);
-        }
         if (!Utility.isStringNullOrBlank(blackduck_scan_failure_severities)) {
             parametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, blackduck_scan_failure_severities.trim().toUpperCase());
         }
-        if (Objects.nonNull(blackduck_automation_fixpr)) {
-            parametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, blackduck_automation_fixpr);
-        }
-        if (Objects.nonNull(blackduck_automation_prcomment)) {
-            parametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, blackduck_automation_prcomment);
-        }
+        parametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, blackduck_scan_full);
+        parametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, blackduck_automation_fixpr);
+        parametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, blackduck_automation_prcomment);
         if (!Utility.isStringNullOrBlank(bridge_download_url)) {
             parametersMap.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, bridge_download_url.trim());
         }
