@@ -3,14 +3,18 @@ package com.synopsys.integration.jenkins.scan.service;
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketApi;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
+import com.cloudbees.plugins.credentials.CredentialsProvider;
+import com.cloudbees.plugins.credentials.common.StandardCredentials;
+import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.Api;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.Project;
 import hudson.EnvVars;
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.model.TaskListener;
-import java.io.IOException;
+import hudson.model.*;
 
-import hudson.slaves.EnvironmentVariablesNodeProperty;
+import java.io.IOException;
+import java.util.Collections;
+
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
 import jenkins.scm.api.SCMSourceOwner;
@@ -33,7 +37,8 @@ public class BitBucketRepositoryService {
 
         String JOB_NAME = envVars.get("JOB_NAME").substring(0, envVars.get("JOB_NAME").indexOf("/"));
         Integer PROJECT_REPOSITORY_PULL_NUMBER = envVars.get("CHANGE_ID") != null ? Integer.valueOf(envVars.get("CHANGE_ID")) : 0;
-        String BITBUCKET_TOKEN = envVars.get("BITBUCKET_TOKEN");
+
+        listener.getLogger().println("PROJECT_REPOSITORY_PULL_NUMBER: " + PROJECT_REPOSITORY_PULL_NUMBER);
 
         listener.getLogger().println("Getting bitbucket repository details");
 
@@ -49,6 +54,13 @@ public class BitBucketRepositoryService {
                 listener.getLogger().println("Getting repository details with BitbucketSCMSource");
                 BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
 
+                // Creating and using them to get the bitbucket token
+                FreeStyleProject freeStyleProject = new FreeStyleProject(jenkins, JOB_NAME);
+                FreeStyleBuild freeStyleBuild = new FreeStyleBuild(freeStyleProject);
+
+                String bitBucketToken = getCredentialsToken(bitbucketSCMSource.getCredentialsId(), freeStyleBuild);
+                listener.getLogger().println("BitBucket Token extracted using Credentials ID : " + bitBucketToken);
+
                 // Access the repository details with BitbucketSCMSource
                 listener.getLogger().println("ServerUrl: " + bitbucketSCMSource.getServerUrl());
 
@@ -59,14 +71,13 @@ public class BitBucketRepositoryService {
                 BitbucketRepository bitbucketRepository = bitbucketApi.getRepository();
 
                 listener.getLogger().println("Repository Name: " + bitbucketRepository.getRepositoryName());
-                listener.getLogger().println("Repository Owner: " + bitbucketRepository.getOwnerName());
                 listener.getLogger().println("Project Name: " + bitbucketRepository.getProject().getName());
                 listener.getLogger().println("Project Key: " + bitbucketRepository.getProject().getKey());
 
 
                 Api bitBucketApi = new Api();
                 bitBucketApi.setUrl(bitbucketSCMSource.getServerUrl());
-                bitBucketApi.setToken(BITBUCKET_TOKEN);
+                bitBucketApi.setToken(bitBucketToken);
 
                 Pull pull = new Pull();
                 pull.setNumber(PROJECT_REPOSITORY_PULL_NUMBER);
@@ -104,6 +115,17 @@ public class BitBucketRepositoryService {
             }
         }
         return null;
+    }
+
+    private static String getCredentialsToken(String credentialsId, FreeStyleBuild freeStyleBuild) {
+        StandardCredentials credentials = CredentialsProvider.findCredentialById(credentialsId, StandardCredentials.class, freeStyleBuild, Collections.emptyList());
+
+        if (credentials instanceof UsernamePasswordCredentialsImpl) {
+            UsernamePasswordCredentialsImpl usernamePasswordCredentials = (UsernamePasswordCredentialsImpl) credentials;
+            return usernamePasswordCredentials.getPassword().getPlainText();
+        }
+
+        return null;  // Handle other types of credentials if needed
     }
 
 }
