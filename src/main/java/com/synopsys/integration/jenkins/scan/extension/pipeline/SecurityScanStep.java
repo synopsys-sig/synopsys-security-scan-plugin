@@ -1,6 +1,5 @@
 package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
-import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
 
@@ -188,7 +187,7 @@ public class SecurityScanStep extends Step implements Serializable {
         }
 
         @Override
-        protected Integer run() throws IOException, InterruptedException, ScannerJenkinsException {
+        protected Integer run() {
             return ScanCommandsFactory.createPipelineCommand(listener, envVars, launcher, node, workspace)
                 .runScanner(getParametersMap());
         }
