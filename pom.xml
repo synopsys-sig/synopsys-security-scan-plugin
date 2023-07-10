@@ -4,14 +4,14 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>4.65</version>
+    <version>4.66</version>
     <relativePath />
   </parent>
   <groupId>io.jenkins.plugins</groupId>
   <artifactId>synopsys-security-scan-plugin</artifactId>
   <version>${revision}${changelist}</version>
   <packaging>hpi</packaging>
-  <name>TODO Plugin</name>
+  <name>Synopsys Security Scan Plugin</name>
   <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
   <licenses>
     <license>
@@ -28,8 +28,9 @@
   <properties>
     <revision>1.0</revision>
     <changelist>-SNAPSHOT</changelist>
+    <java.version>11</java.version>
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-    <jenkins.version>2.387.3</jenkins.version>
+    <jenkins.version>2.361.4</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     <spotless.check.skip>false</spotless.check.skip>
   </properties>
@@ -37,14 +38,75 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <!-- Pick up common dependencies for the selected LTS line: https://github.com/jenkinsci/bom#usage -->
         <groupId>io.jenkins.tools.bom</groupId>
-        <artifactId>bom-2.387.x</artifactId>
-        <version>2133.v2e6c00fe4d61</version>
+        <artifactId>bom-2.361.x</artifactId>
+        <version>2102.v854b_fec19c92</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>structs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-step-api</artifactId>
+      <version>639.v6eca_cd8c04a_a_</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>cloudbees-bitbucket-branch-source</artifactId>
+      <version>800.va_b_b_9a_a_5035c1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-basic-steps</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-cps</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-durable-task-step</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-job</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.6.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>5.6.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>2.23.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.16.1</version>
+    </dependency>
+  </dependencies>
 
   <repositories>
     <repository>

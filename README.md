@@ -6,8 +6,30 @@ TODO Describe what your plugin does here
 
 ## Getting started
 
-TODO Tell users how to configure your plugin here, include screenshots, pipeline examples and 
-configuration-as-code examples.
+To run this application, you can use either of the following commands:
+
+
+```
+./mvnw hpi:run
+```
+
+or
+
+```
+mvn hpi:run
+```
+
+**Make sure 8080 port is free**
+
+## Synopsys Security Scan - Black Duck
+Run the Black Duck Scan in jenkins pipeline - 
+```
+stage("synopsys-security-scan") {
+    steps {
+        synopsys_scan blackduck_url: "${env.BLACKDUCK_URL}", blackduck_api_token: "${env.BLACKDUCK_TOKEN}", blackduck_scan_full: true
+    }
+}
+```
 
 ## Issues
 

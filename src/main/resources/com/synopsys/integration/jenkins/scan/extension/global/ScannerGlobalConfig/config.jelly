@@ -1,0 +1,18 @@
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:section title="Synopsys Security Scan">
+        <f:entry field="blackDuckUrl" title="Black Duck URL">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="blackDuckCredentialsId" title="Black Duck Api Token">
+            <f:password/>
+        </f:entry>
+        <f:advanced>
+            <f:entry field="blackDuckTimeout" title="Black Duck Connection Timeout">
+                <f:textbox clazz="required number"/>
+            </f:entry>
+            <f:entry field="trustBlackDuckCertificates" title="Trust Black Duck Certificates">
+                <f:checkbox default="false"/>
+            </f:entry>
+        </f:advanced>
+    </f:section>
+</j:jelly>
