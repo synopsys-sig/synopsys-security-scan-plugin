@@ -5,7 +5,7 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.BitBucket;
-import com.synopsys.integration.jenkins.scan.service.BitBucketRepositoryService;
+import com.synopsys.integration.jenkins.scan.service.bitbucket.BitBucketRepositoryService;
 import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
