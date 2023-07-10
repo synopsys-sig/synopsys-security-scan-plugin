@@ -81,15 +81,4 @@ public class ScannerArgumentService {
 
         return initBridgeArgs;
     }
-
-    public String getStageType(Map<String, Object> scanParameters) {
-        String params = scanParameters.toString();
-        if (params.contains(BridgeParams.COVERITY_STAGE)) {
-            return BridgeParams.COVERITY_STAGE;
-        } else if (params.contains(BridgeParams.POLARIS_STAGE)) {
-            return BridgeParams.POLARIS_STAGE;
-        } else {
-            return BridgeParams.BLACKDUCK_STAGE;
-        }
-    }
 }
