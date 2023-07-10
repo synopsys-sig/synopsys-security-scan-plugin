@@ -50,13 +50,12 @@ public class BridgeDownloadParameterServiceTest {
         String os = System.getProperty("os.name").toLowerCase();
         String userHome = System.getProperty("user.home");
 
-        String validPath = null;
-        String invalidPath = "/path/does/not/exist";
+        String validPath = userHome;
+        String invalidPath = "/path/absent";
         if (os.contains("win")) {
             validPath = String.join("\\", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
             invalidPath = String.join("\\", invalidPath, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
-        }
-        else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
             validPath = String.join("/", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
             invalidPath = String.join("/", invalidPath, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
         }

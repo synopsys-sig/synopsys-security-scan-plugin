@@ -16,17 +16,22 @@ import java.util.Map;
 
 public class ScannerArgumentService {
     private static final String DATA_KEY = "data";
+    private String blackDuckInputJsonFilePath;
+
+    public String getBlackDuckInputJsonFilePath() {
+        return blackDuckInputJsonFilePath;
+    }
+
+    public void setBlackDuckInputJsonFilePath(String blackDuckInputJsonFilePath) {
+        this.blackDuckInputJsonFilePath = blackDuckInputJsonFilePath;
+    }
 
     public List<String> getCommandLineArgs(Map<String, Object> scanParameters) {
-        String stageName = getStageType(scanParameters);
-        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(stageName));
+        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE));
 
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
-
-        if (stageName.equals(BridgeParams.BLACKDUCK_STAGE)) {
-            BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
-            commandLineArgs.add(createBlackDuckInputJson(blackDuck));
-        }
+        BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
+        commandLineArgs.add(createBlackDuckInputJson(blackDuck));
 
         return commandLineArgs;
     }
@@ -45,7 +50,7 @@ public class ScannerArgumentService {
         try {
             String blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
             jsonPath = writeBlackDuckJsonToFile(blackDuckJson);
-            ApplicationConstants.BLACKDUCK_INPUT_JSON_PATH = jsonPath;
+            setBlackDuckInputJsonFilePath(jsonPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
