@@ -14,6 +14,7 @@ import hudson.model.*;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
@@ -33,12 +34,13 @@ public class BitBucketRepositoryService {
     }
 
 
-    public BitBucket fetchBitbucketRepoDetails() throws IOException, InterruptedException {
+    public BitBucket fetchBitbucketRepoDetails(Map<String, Object> scanParameters) throws IOException, InterruptedException {
 
-        String JOB_NAME = envVars.get("JOB_NAME").substring(0, envVars.get("JOB_NAME").indexOf("/"));
-        Integer PROJECT_REPOSITORY_PULL_NUMBER = envVars.get("CHANGE_ID") != null ? Integer.valueOf(envVars.get("CHANGE_ID")) : 0;
+        // extracting the job name from the combined job_branch name
+        String jobName = envVars.get("JOB_NAME").substring(0, envVars.get("JOB_NAME").indexOf("/"));
 
-        listener.getLogger().println("PROJECT_REPOSITORY_PULL_NUMBER: " + PROJECT_REPOSITORY_PULL_NUMBER);
+        //getting the pull number from env
+        Integer projectRepositoryPullNumber = envVars.get("CHANGE_ID") != null ? Integer.valueOf(envVars.get("CHANGE_ID")) : 0;
 
         listener.getLogger().println("Getting bitbucket repository details");
 
@@ -48,39 +50,34 @@ public class BitBucketRepositoryService {
 
         if (jenkins != null) {
 
-            SCMSource scmSource = findSCMSource(jenkins, JOB_NAME);
+            SCMSource scmSource = findSCMSource(jenkins, jobName);
 
             if (scmSource instanceof BitbucketSCMSource) {
-                listener.getLogger().println("Getting repository details with BitbucketSCMSource");
                 BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
 
                 // Creating and using them to get the bitbucket token
-                FreeStyleProject freeStyleProject = new FreeStyleProject(jenkins, JOB_NAME);
+                FreeStyleProject freeStyleProject = new FreeStyleProject(jenkins, jobName);
                 FreeStyleBuild freeStyleBuild = new FreeStyleBuild(freeStyleProject);
 
-                String bitBucketToken = getCredentialsToken(bitbucketSCMSource.getCredentialsId(), freeStyleBuild);
-                listener.getLogger().println("BitBucket Token extracted using Credentials ID : " + bitBucketToken);
+                // If we are not able to get bitbucket token from the input directly then we will get it through the bitbucketSCMSource CredentialId
+                String bitBucketToken = (String) scanParameters.get("bitbucket_token");
+                if(bitBucketToken == null) {
+                    bitBucketToken = getCredentialsToken(bitbucketSCMSource.getCredentialsId(), freeStyleBuild);
+                }
 
-                // Access the repository details with BitbucketSCMSource
-                listener.getLogger().println("ServerUrl: " + bitbucketSCMSource.getServerUrl());
-
-                listener.getLogger().println("Getting repository details with BitbucketApi");
                 BitbucketApi bitbucketApi = bitbucketSCMSource.buildBitbucketClient(bitbucketSCMSource.getRepoOwner(), bitbucketSCMSource.getRepository());
 
                 // Access the repository details with BitbucketApi
                 BitbucketRepository bitbucketRepository = bitbucketApi.getRepository();
 
                 listener.getLogger().println("Repository Name: " + bitbucketRepository.getRepositoryName());
-                listener.getLogger().println("Project Name: " + bitbucketRepository.getProject().getName());
-                listener.getLogger().println("Project Key: " + bitbucketRepository.getProject().getKey());
-
 
                 Api bitBucketApi = new Api();
                 bitBucketApi.setUrl(bitbucketSCMSource.getServerUrl());
                 bitBucketApi.setToken(bitBucketToken);
 
                 Pull pull = new Pull();
-                pull.setNumber(PROJECT_REPOSITORY_PULL_NUMBER);
+                pull.setNumber(projectRepositoryPullNumber);
 
                 Repository repository = new Repository();
                 repository.setName(bitbucketRepository.getRepositoryName());

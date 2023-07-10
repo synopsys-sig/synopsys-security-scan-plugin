@@ -3,8 +3,8 @@
         <f:entry field="blackDuckUrl" title="Black Duck URL">
             <f:textbox/>
         </f:entry>
-        <f:entry field="blackDuckCredentialsId" title="Black Duck Credentials">
-            <f:textbox/>
+        <f:entry field="blackDuckCredentialsId" title="Black Duck Api Token">
+            <f:password/>
         </f:entry>
         <f:advanced>
             <f:entry field="blackDuckTimeout" title="Black Duck Connection Timeout">

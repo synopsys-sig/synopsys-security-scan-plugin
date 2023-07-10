@@ -3,7 +3,6 @@ package com.synopsys.integration.jenkins.scan;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 
-import java.io.IOException;
 import java.util.Map;
 
 public class ScanPipelineCommands {
@@ -13,12 +12,31 @@ public class ScanPipelineCommands {
         this.scanner = scanner;
     }
 
-    public int runScanner(Map<String, Object> scanParams) throws IOException, InterruptedException, ScannerJenkinsException {
-        int exitCode = scanner.runScanner(scanParams);
-        if (exitCode > 0) {
-            throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
+    public int runScanner(Map<String, Object> scanParameters) {
+        for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
+            if (entry.getValue().equals("null")) {
+                entry.setValue(null);
+            }
         }
+
+        int exitCode = 1;
+        try {
+            exitCode = scanner.runScanner(scanParameters);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (exitCode > 0) {
+            handleScannerFailure(exitCode);
+        }
+
         return exitCode;
     }
 
+    private void handleScannerFailure(int exitCode) {
+        try {
+            throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
+        } catch (ScannerJenkinsException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -10,11 +10,16 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class BlackDuckParametersService {
-
-    public BlackDuck prepareBlackDuckInputForBridge(Map<String, Object> blackDuckParametersFormPipeline) {
+    public BlackDuck prepareBlackDuckInputForBridge(Map<String, Object> blackDuckParametersFromPipeline) {
         Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
-        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFormPipeline, blackDuckParametersMapFromUI);
+        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFromPipeline, blackDuckParametersMapFromUI);
         return createBlackDuckObject(blackDuckParametersMap);
+    }
+
+    public Map<String, Object> prepareBlackDuckParameterValidation(Map<String, Object> blackDuckParametersFromPipeline) {
+        Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
+        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFromPipeline, blackDuckParametersMapFromUI);
+        return blackDuckParametersMap;
     }
 
     public BlackDuck createBlackDuckObject(Map<String, Object> blackDuckParametersMap) {
@@ -66,7 +71,7 @@ public class BlackDuckParametersService {
         return blackDuck;
     }
 
-    public boolean performParameterValidation(Map<String, Object> blackDuckParams) {
+    public boolean performBlackDuckParameterValidation(Map<String, Object> blackDuckParams) {
         return blackDuckParams != null
                 && Stream.of(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
                 .allMatch(key -> blackDuckParams.containsKey(key)
@@ -81,9 +86,9 @@ public class BlackDuckParametersService {
         for (Map.Entry<String, Object> entry : blackDuckParametersMapFromUI.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-
             //Giving precedence to the pipeline arguments. Therefore, if same key-value occurs, pipeline's value will be taken.
-            if (!blackDuckParamsFromPipeline.containsKey(key)) {
+            if (!blackDuckParamsFromPipeline.containsKey(key) ||
+                    (blackDuckParamsFromPipeline.containsKey(key) && blackDuckParamsFromPipeline.get(key) == null)) {
                 blackDuckParamsFromPipeline.put(key, value);
             }
         }
@@ -95,10 +100,12 @@ public class BlackDuckParametersService {
 
         Map<String, Object> blackDuckParametersFromJenkinsUI = new HashMap<>();
 
-        blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl().trim());
-        blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY,config.getBlackDuckCredentialsId().trim());
-
+        try {
+            blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl().trim());
+            blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, config.getBlackDuckCredentialsId().trim());
+        } catch (Exception e) {
+            blackDuckParametersFromJenkinsUI.clear();
+        }
         return blackDuckParametersFromJenkinsUI;
     }
-
 }

@@ -8,12 +8,6 @@ public class BitBucket {
 
     @JsonProperty("project")
     private Project project;
-//    @JsonProperty("project.repository.pull.number")
-//    private String projectRepositoryPullNumber;
-//    @JsonProperty("project.repository.name")
-//    private String projectRepositoryName;
-//    @JsonProperty("project.key")
-//    private String projectKey;
 
     public BitBucket() {
         api = new Api();
