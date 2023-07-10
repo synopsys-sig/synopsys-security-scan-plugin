@@ -1,3 +1,8 @@
+buildscript {
+    apply from: "https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle", to: buildscript
+    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
+}
+
 plugins {
     // this version (0.43.0 and up) , uses a later version of test-harness eliminating the
     // dependency on a compromised version of apache commons-text.  Shows as a red-herring in scans
@@ -21,7 +26,6 @@ java {
     registerFeature('workflowStepApi') {
         usingSourceSet(sourceSets.main)
     }
-
 }
 
 repositories {
@@ -30,9 +34,18 @@ repositories {
     }
 }
 
+apply plugin: 'com.synopsys.integration.solution'
+
+artifactory {
+    publish {
+        defaults { publications('mavenJpi') }
+    }
+}
+
 jenkinsPlugin {
+    pluginId = 'synopsys-security-scan-plugin'
     jenkinsVersion = '2.377' // as of version 0.40.0 of jpi, it's jenkinsVersion...
-    displayName = 'Synopsys Security Scan Plugi'
+    displayName = 'Synopsys Security Scan Plugin'
 
     pluginFirstClassLoader = false
 }
