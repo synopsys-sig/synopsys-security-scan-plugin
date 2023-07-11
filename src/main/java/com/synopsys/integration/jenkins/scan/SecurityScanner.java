@@ -70,7 +70,7 @@ public class SecurityScanner {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                Utility.cleanupInputJson(ApplicationConstants.BLACKDUCK_INPUT_JSON_PATH);
+                Utility.cleanupInputJson(scannerArgumentService.getBlackDuckInputJsonFilePath());
             }
         }
         else {
