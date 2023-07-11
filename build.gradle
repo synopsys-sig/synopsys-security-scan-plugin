@@ -49,7 +49,6 @@ jenkinsPlugin {
 dependencies {
     implementation 'org.jenkins-ci.plugins:cloudbees-bitbucket-branch-source:809.vc1d904b_30426'
     implementation 'org.jsoup:jsoup:1.16.1'
-    implementation 'org.jenkins-ci.plugins:matrix-project:789.v57a_725b_63c79'
 
     workflowJobDslApi 'org.jenkins-ci.plugins:job-dsl:1.84'
     workflowJobApi 'org.jenkins-ci.plugins.workflow:workflow-job:1316.vd2290d3341a_f'
