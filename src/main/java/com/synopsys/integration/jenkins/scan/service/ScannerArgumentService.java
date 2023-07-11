@@ -17,18 +17,23 @@ import java.util.Map;
 
 public class ScannerArgumentService {
     private static final String DATA_KEY = "data";
+    private String blackDuckInputJsonFilePath;
+
+    public String getBlackDuckInputJsonFilePath() {
+        return blackDuckInputJsonFilePath;
+    }
+
+    public void setBlackDuckInputJsonFilePath(String blackDuckInputJsonFilePath) {
+        this.blackDuckInputJsonFilePath = blackDuckInputJsonFilePath;
+    }
 
     public List<String> getCommandLineArgs(Map<String, Object> scanParameters, BitBucket bitBucket) {
-        String stageName = getStageType(scanParameters);
-        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(stageName));
+        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE));
 
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
-
-        if (stageName.equals(BridgeParams.BLACKDUCK_STAGE)) {
-            BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
-            // added the Prcomment and Fixpr condition to create BlackDuck Input Json on the following code
-            commandLineArgs.add(createBlackDuckInputJson( blackDuck, blackDuck.getAutomation().getPrcomment() || blackDuck.getAutomation().getFixpr() ? bitBucket : null));
-        }
+        BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
+        // added the Prcomment and Fixpr condition to create BlackDuck Input Json on the following code
+        commandLineArgs.add(createBlackDuckInputJson( blackDuck, blackDuck.getAutomation().getPrcomment() || blackDuck.getAutomation().getFixpr() ? bitBucket : null));
 
         return commandLineArgs;
     }
@@ -48,7 +53,7 @@ public class ScannerArgumentService {
         try {
             String blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
             jsonPath = writeBlackDuckJsonToFile(blackDuckJson);
-            ApplicationConstants.BLACKDUCK_INPUT_JSON_PATH = jsonPath;
+            setBlackDuckInputJsonFilePath(jsonPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,16 +83,5 @@ public class ScannerArgumentService {
         initBridgeArgs.add(BridgeParams.INPUT_OPTION);
 
         return initBridgeArgs;
-    }
-
-    public String getStageType(Map<String, Object> scanParameters) {
-        String params = scanParameters.toString();
-        if (params.contains(BridgeParams.COVERITY_STAGE)) {
-            return BridgeParams.COVERITY_STAGE;
-        } else if (params.contains(BridgeParams.POLARIS_STAGE)) {
-            return BridgeParams.POLARIS_STAGE;
-        } else {
-            return BridgeParams.BLACKDUCK_STAGE;
-        }
     }
 }
