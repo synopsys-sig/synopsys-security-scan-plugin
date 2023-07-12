@@ -1,0 +1,62 @@
+buildscript {
+    apply from: "https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle", to: buildscript
+    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
+}
+
+plugins {
+    id 'org.jenkins-ci.jpi' version '0.46.0'
+}
+
+group = 'com.synopsys.integration'
+version = '0.0.1-SNAPSHOT'
+description = 'Synopsys Security Scan Plugin'
+
+java {
+    registerFeature('workflowJob') {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature('workflowJobDsl') {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature('workflowCps') {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature('workflowStepApi') {
+        usingSourceSet(sourceSets.main)
+    }
+}
+
+repositories {
+    maven {
+        url 'https://repo.jenkins-ci.org/releases/'
+    }
+}
+
+apply plugin: 'com.synopsys.integration.solution'
+
+artifactory {
+    publish {
+        defaults { publications('mavenJpi') }
+    }
+}
+
+jenkinsPlugin {
+    pluginId = 'synopsys-security-scan-plugin'
+    jenkinsVersion = '2.387.3'
+    displayName = 'Synopsys Security Scan Plugin'
+}
+
+dependencies {
+    implementation 'org.jenkins-ci.plugins:cloudbees-bitbucket-branch-source:809.vc1d904b_30426'
+    implementation 'org.jsoup:jsoup:1.16.1'
+
+    workflowJobDslApi 'org.jenkins-ci.plugins:job-dsl:1.84'
+    workflowJobApi 'org.jenkins-ci.plugins.workflow:workflow-job:1316.vd2290d3341a_f'
+    workflowCpsApi 'org.jenkins-ci.plugins.workflow:workflow-cps:3697.vb_470e454c232'
+    workflowStepApiApi 'org.jenkins-ci.plugins.workflow:workflow-step-api:625.vd896b_f445a_f8'
+
+    testImplementation 'org.jenkins-ci.main:jenkins-test-harness:1812.v6d4e97d91fd8'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    testImplementation 'org.mockito:mockito-core:2.23.4'
+}

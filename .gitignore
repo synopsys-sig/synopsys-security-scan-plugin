@@ -1,8 +1,3 @@
-target
-#.mvn/maven-wrapper.jar
-# mvn hpi:run
-work
-
 # IntelliJ IDEA project files
 *.iml
 *.iws
@@ -13,3 +8,9 @@ work
 .settings
 .classpath
 .project
+
+# build tool
+.gradle/
+build/
+target/
+work/
