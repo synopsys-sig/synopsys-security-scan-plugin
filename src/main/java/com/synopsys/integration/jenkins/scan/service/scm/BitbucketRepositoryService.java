@@ -3,9 +3,6 @@ package com.synopsys.integration.jenkins.scan.service.scm;
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketApi;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
-import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.common.StandardCredentials;
-import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Api;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Project;
@@ -13,16 +10,13 @@ import hudson.EnvVars;
 import hudson.model.*;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
-import jenkins.scm.api.SCMSourceOwner;
 
 
 public class BitbucketRepositoryService {
-
     private final TaskListener listener;
     private final EnvVars envVars;
 
@@ -31,22 +25,14 @@ public class BitbucketRepositoryService {
         this.envVars = envVars;
     }
 
-    public Bitbucket fetchBitbucketRepoDetails(Map<String, Object> scanParameters) {
-        // extracting the job name from the combined job_branch name
-        String jobName = envVars.get("JOB_NAME").substring(0, envVars.get("JOB_NAME").indexOf("/"));
-
-        //getting the pull number from env
-        Integer projectRepositoryPullNumber = envVars.get("CHANGE_ID") != null ? Integer.valueOf(envVars.get("CHANGE_ID")) : 0;
-
+    public Bitbucket fetchBitbucketRepositoryDetails(Jenkins jenkins, Map<String, Object> scanParameters, String jobName, Integer projectRepositoryPullNumber) {
         listener.getLogger().println("Getting bitbucket repository details");
 
         Bitbucket bitbucket = new Bitbucket();
 
-        Jenkins jenkins = Jenkins.getInstanceOrNull();
-
         if (jenkins != null) {
 
-            SCMSource scmSource = findSCMSource(jenkins, jobName);
+            SCMSource scmSource = SCMRepositoryService.findSCMSource();
 
             if (scmSource instanceof BitbucketSCMSource) {
                 BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
@@ -63,7 +49,7 @@ public class BitbucketRepositoryService {
                 // If we are not able to get bitbucket token from the input directly then we will get it through the bitbucketSCMSource CredentialId
                 String bitBucketToken = (String) scanParameters.get("bitbucket_token");
                 if(bitBucketToken == null) {
-                    bitBucketToken = getCredentialsToken(bitbucketSCMSource.getCredentialsId(), freeStyleBuild);
+                    bitBucketToken = SCMRepositoryService.getCredentialsToken(bitbucketSCMSource.getCredentialsId());
                 }
 
                 BitbucketApi bitbucketApiFromSCMSource = bitbucketSCMSource.buildBitbucketClient(bitbucketSCMSource.getRepoOwner(), bitbucketSCMSource.getRepository());
@@ -105,25 +91,4 @@ public class BitbucketRepositoryService {
         return bitbucket;
     }
 
-    private static SCMSource findSCMSource(Jenkins jenkins, String jobName) {
-        SCMSourceOwner owner = jenkins.getItemByFullName(jobName, SCMSourceOwner.class);
-        if (owner != null) {
-            for (SCMSource scmSource : owner.getSCMSources()) {
-                // Check if the SCM source belongs to the job
-                if (owner.getSCMSource(scmSource.getId()) != null) {
-                    return scmSource;
-                }
-            }
-        }
-        return null;
-    }
-
-    private static String getCredentialsToken(String credentialsId, FreeStyleBuild freeStyleBuild) {
-        StandardCredentials credentials = CredentialsProvider.findCredentialById(credentialsId, StandardCredentials.class, freeStyleBuild, Collections.emptyList());
-        if (credentials instanceof UsernamePasswordCredentialsImpl) {
-            UsernamePasswordCredentialsImpl usernamePasswordCredentials = (UsernamePasswordCredentialsImpl) credentials;
-            return usernamePasswordCredentials.getPassword().getPlainText();
-        }
-        return null;  /// Todo: Handle other types of credentials if needed
-    }
 }

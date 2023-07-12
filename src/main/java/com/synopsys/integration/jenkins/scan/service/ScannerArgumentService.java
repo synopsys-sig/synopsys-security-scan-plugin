@@ -7,7 +7,7 @@ import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
-import com.synopsys.integration.jenkins.scan.service.scm.BitbucketRepositoryService;
+import com.synopsys.integration.jenkins.scan.service.scm.SCMRepositoryService;
 import hudson.EnvVars;
 import hudson.model.TaskListener;
 
@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ScannerArgumentService {
-
     private final TaskListener listener;
     private final EnvVars envVars;
     private static final String DATA_KEY = "data";
@@ -29,7 +28,6 @@ public class ScannerArgumentService {
         this.listener = listener;
         this.envVars = envVars;
     }
-
 
     public String getBlackDuckInputJsonFilePath() {
         return blackDuckInputJsonFilePath;
@@ -42,13 +40,17 @@ public class ScannerArgumentService {
     public List<String> getCommandLineArgs(Map<String, Object> scanParameters) {
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE));
 
-        BitbucketRepositoryService bitBucketRepositoryService = new BitbucketRepositoryService(listener, envVars);
-        Bitbucket bitBucket = bitBucketRepositoryService.fetchBitbucketRepoDetails(scanParameters);
-
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
         BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
+
+        SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
+        Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters);
+
         // added the Prcomment and Fixpr condition to create BlackDuck Input Json on the following code
-        commandLineArgs.add(createBlackDuckInputJson( blackDuck, blackDuck.getAutomation().getPrcomment() || blackDuck.getAutomation().getFixpr() ? bitBucket : null));
+        if(scmObject instanceof Bitbucket) {
+            Bitbucket bitbucket = (Bitbucket) scmObject;
+            commandLineArgs.add(createBlackDuckInputJson( blackDuck, blackDuck.getAutomation().getPrcomment() || blackDuck.getAutomation().getFixpr() ? bitbucket : null));
+        }
 
         return commandLineArgs;
     }
