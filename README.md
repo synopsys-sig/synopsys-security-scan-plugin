@@ -24,6 +24,26 @@ To work with the project locally and run it with a Jenkins server, follow these 
 
 The generated plugin `hpi` file can be found in the `build/libs` folder of your project directory.
 
+### Setting up dev-test environment in docker
+
+*  Make sure a `temp-jenkins` directory exists in your home directory.
+
+
+* Run the following command to export your plugin into `hpi` format:
+```
+./gradlew clean build
+```
+
+* Spin up the jenkins instance with the following command:
+
+```
+docker-compose up
+```
+or if you prefer detach mode
+```
+docker-compose up -d
+```
+
 3. Install the plugin `hpi` file in your Jenkins instance:
 >- Go to your Jenkins instance.
 >- Navigate to **Manage Jenkins** > **Manage Plugins** > **Advanced Settings**.
