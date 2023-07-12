@@ -3,7 +3,7 @@ services:
   jenkins:
     image: jenkins/jenkins:latest
     volumes:
-      - ~/temp:/var/jenkins_home
+      - ~/temp-jenkins:/var/jenkins_home
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
     ports:

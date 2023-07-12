@@ -19,6 +19,33 @@ or
 mvn hpi:run
 ```
 
+### Setting up dev-test environment in docker
+
+*  Make sure a `temp-jenkins` directory exists in your home directory.
+
+
+* Run the following command to export your plugin into `hpi` format:
+```
+./mvnw hpi:hpi
+```
+
+or
+
+```
+mvn hpi:hpi
+```
+
+* Spin up the jenkins instance with the following command:
+
+```
+docker-compose up
+```
+or if you prefer detach mode
+```
+docker-compose up -d
+```
+
+
 **Make sure 8080 port is free**
 
 ## Synopsys Security Scan - Black Duck
