@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service.bitbucket;
+package com.synopsys.integration.jenkins.scan.service.scm;
 
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketApi;
@@ -20,22 +20,18 @@ import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
 import jenkins.scm.api.SCMSourceOwner;
 
-/**
- * @author akib @Date 6/14/23
- */
-public class BitBucketRepositoryService {
+
+public class BitbucketRepositoryService {
 
     private final TaskListener listener;
     private final EnvVars envVars;
 
-    public BitBucketRepositoryService(TaskListener listener, EnvVars envVars) {
+    public BitbucketRepositoryService(TaskListener listener, EnvVars envVars) {
         this.listener = listener;
         this.envVars = envVars;
     }
 
-
-    public BitBucket fetchBitbucketRepoDetails(Map<String, Object> scanParameters) throws IOException, InterruptedException {
-
+    public Bitbucket fetchBitbucketRepoDetails(Map<String, Object> scanParameters) {
         // extracting the job name from the combined job_branch name
         String jobName = envVars.get("JOB_NAME").substring(0, envVars.get("JOB_NAME").indexOf("/"));
 
@@ -44,7 +40,7 @@ public class BitBucketRepositoryService {
 
         listener.getLogger().println("Getting bitbucket repository details");
 
-        BitBucket bitBucket = new BitBucket();
+        Bitbucket bitbucket = new Bitbucket();
 
         Jenkins jenkins = Jenkins.getInstanceOrNull();
 
@@ -57,7 +53,12 @@ public class BitBucketRepositoryService {
 
                 // Creating and using them to get the bitbucket token
                 FreeStyleProject freeStyleProject = new FreeStyleProject(jenkins, jobName);
-                FreeStyleBuild freeStyleBuild = new FreeStyleBuild(freeStyleProject);
+                FreeStyleBuild freeStyleBuild = null;
+                try {
+                    freeStyleBuild = new FreeStyleBuild(freeStyleProject);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 // If we are not able to get bitbucket token from the input directly then we will get it through the bitbucketSCMSource CredentialId
                 String bitBucketToken = (String) scanParameters.get("bitbucket_token");
@@ -65,16 +66,21 @@ public class BitBucketRepositoryService {
                     bitBucketToken = getCredentialsToken(bitbucketSCMSource.getCredentialsId(), freeStyleBuild);
                 }
 
-                BitbucketApi bitbucketApi = bitbucketSCMSource.buildBitbucketClient(bitbucketSCMSource.getRepoOwner(), bitbucketSCMSource.getRepository());
+                BitbucketApi bitbucketApiFromSCMSource = bitbucketSCMSource.buildBitbucketClient(bitbucketSCMSource.getRepoOwner(), bitbucketSCMSource.getRepository());
 
                 // Access the repository details with BitbucketApi
-                BitbucketRepository bitbucketRepository = bitbucketApi.getRepository();
+                BitbucketRepository bitbucketRepository = null;
+                try {
+                    bitbucketRepository = bitbucketApiFromSCMSource.getRepository();
+                } catch (Exception e) {
+                    listener.getLogger().println("There is an exception while getting the BitbucketRepository from BitbucketApi");
+                } 
 
                 listener.getLogger().println("Repository Name: " + bitbucketRepository.getRepositoryName());
 
-                Api bitBucketApi = new Api();
-                bitBucketApi.setUrl(bitbucketSCMSource.getServerUrl());
-                bitBucketApi.setToken(bitBucketToken);
+                Api bitbucketApi = new Api();
+                bitbucketApi.setUrl(bitbucketSCMSource.getServerUrl());
+                bitbucketApi.setToken(bitBucketToken);
 
                 Pull pull = new Pull();
                 pull.setNumber(projectRepositoryPullNumber);
@@ -87,18 +93,16 @@ public class BitBucketRepositoryService {
                 project.setKey(bitbucketRepository.getProject().getKey());
                 project.setRepository(repository);
 
-                bitBucket.setApi(bitBucketApi);
-                bitBucket.setProject(project);
+                bitbucket.setApi(bitbucketApi);
+                bitbucket.setProject(project);
 
             } else {
-                listener.getLogger().println("SCM source is not a BitbucketSCMSource.");
+                listener.getLogger().println("Ignoring bitbucket_automation_fixpr and bitbucket_automation_prcomment since couldn't find any valid Bitbucket SCM source.");
             }
         } else {
             listener.getLogger().println("Jenkins instance not found.");
         }
-
-        return bitBucket;
-
+        return bitbucket;
     }
 
     private static SCMSource findSCMSource(Jenkins jenkins, String jobName) {
@@ -116,13 +120,10 @@ public class BitBucketRepositoryService {
 
     private static String getCredentialsToken(String credentialsId, FreeStyleBuild freeStyleBuild) {
         StandardCredentials credentials = CredentialsProvider.findCredentialById(credentialsId, StandardCredentials.class, freeStyleBuild, Collections.emptyList());
-
         if (credentials instanceof UsernamePasswordCredentialsImpl) {
             UsernamePasswordCredentialsImpl usernamePasswordCredentials = (UsernamePasswordCredentialsImpl) credentials;
             return usernamePasswordCredentials.getPassword().getPlainText();
         }
-
-        return null;  // Handle other types of credentials if needed
+        return null;  /// Todo: Handle other types of credentials if needed
     }
-
 }

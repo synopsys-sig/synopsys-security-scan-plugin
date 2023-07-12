@@ -1,7 +1,7 @@
 package com.synopsys.integration.jenkins.scan.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.synopsys.integration.jenkins.scan.input.bitbucket.BitBucket;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
 
 public class BridgeInput {
 
@@ -9,7 +9,7 @@ public class BridgeInput {
     private BlackDuck blackDuck;
 
     @JsonProperty("bitbucket")
-    private BitBucket bitBucket;
+    private Bitbucket bitbucket;
 
     public BlackDuck getBlackDuck() {
         return blackDuck;
@@ -19,12 +19,12 @@ public class BridgeInput {
         this.blackDuck = blackDuck;
     }
 
-    public BitBucket getBitBucket() {
-        return bitBucket;
+    public Bitbucket getBitbucket() {
+        return bitbucket;
     }
 
-    public void setBitBucket(BitBucket bitBucket) {
-        this.bitBucket = bitBucket;
+    public void setBitbucket(Bitbucket bitbucket) {
+        this.bitbucket = bitbucket;
     }
 
 

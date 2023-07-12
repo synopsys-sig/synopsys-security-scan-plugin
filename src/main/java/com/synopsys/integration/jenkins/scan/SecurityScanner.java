@@ -1,11 +1,8 @@
 package com.synopsys.integration.jenkins.scan;
 
 import com.synopsys.integration.jenkins.scan.bridge.*;
-import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
-import com.synopsys.integration.jenkins.scan.input.bitbucket.BitBucket;
-import com.synopsys.integration.jenkins.scan.service.bitbucket.BitBucketRepositoryService;
 import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
@@ -16,7 +13,6 @@ import hudson.Launcher;
 import hudson.model.TaskListener;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +32,7 @@ public class SecurityScanner {
         this.scannerArgumentService = scannerArgumentService;
     }
 
-    public int runScanner(Map<String, Object> scanParameters) throws IOException, InterruptedException {
+    public int runScanner(Map<String, Object> scanParameters) {
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
@@ -46,14 +42,11 @@ public class SecurityScanner {
         Map<String, Object> blackDuckParameters = blackDuckParametersService.prepareBlackDuckParameterValidation(scanParameters);
         int scanner = 1;
 
-        BitBucketRepositoryService bitBucketRepositoryService = new BitBucketRepositoryService(listener, envVars);
-        BitBucket bitBucket = bitBucketRepositoryService.fetchBitbucketRepoDetails(scanParameters);
-
         if (blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParameters)
                 && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
 
             FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
-            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParameters, bitBucket);
+            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParameters);
 
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager();
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);

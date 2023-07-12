@@ -6,7 +6,10 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
-import com.synopsys.integration.jenkins.scan.input.bitbucket.BitBucket;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
+import com.synopsys.integration.jenkins.scan.service.scm.BitbucketRepositoryService;
+import hudson.EnvVars;
+import hudson.model.TaskListener;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,8 +19,17 @@ import java.util.List;
 import java.util.Map;
 
 public class ScannerArgumentService {
+
+    private final TaskListener listener;
+    private final EnvVars envVars;
     private static final String DATA_KEY = "data";
     private String blackDuckInputJsonFilePath;
+
+    public ScannerArgumentService(TaskListener listener, EnvVars envVars) {
+        this.listener = listener;
+        this.envVars = envVars;
+    }
+
 
     public String getBlackDuckInputJsonFilePath() {
         return blackDuckInputJsonFilePath;
@@ -27,8 +39,11 @@ public class ScannerArgumentService {
         this.blackDuckInputJsonFilePath = blackDuckInputJsonFilePath;
     }
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, BitBucket bitBucket) {
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters) {
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE));
+
+        BitbucketRepositoryService bitBucketRepositoryService = new BitbucketRepositoryService(listener, envVars);
+        Bitbucket bitBucket = bitBucketRepositoryService.fetchBitbucketRepoDetails(scanParameters);
 
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
         BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
@@ -38,10 +53,13 @@ public class ScannerArgumentService {
         return commandLineArgs;
     }
 
-    public String createBlackDuckInputJson(BlackDuck blackDuck, BitBucket bitBucket) {
+    public String createBlackDuckInputJson(BlackDuck blackDuck, Object scm) {
         BridgeInput bridgeInput = new BridgeInput();
         bridgeInput.setBlackDuck(blackDuck);
-        bridgeInput.setBitBucket(bitBucket);
+        if (scm instanceof Bitbucket) {
+            Bitbucket bitbucket = (Bitbucket) scm;
+            bridgeInput.setBitbucket(bitbucket);
+        }
 
         Map<String, Object> blackDuckJsonMap = new HashMap<>();
         blackDuckJsonMap.put(DATA_KEY, bridgeInput);

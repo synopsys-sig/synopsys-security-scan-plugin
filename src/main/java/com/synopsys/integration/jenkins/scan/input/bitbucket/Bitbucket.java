@@ -2,14 +2,14 @@ package com.synopsys.integration.jenkins.scan.input.bitbucket;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BitBucket {
+public class Bitbucket {
     @JsonProperty("api")
     private Api api;
 
     @JsonProperty("project")
     private Project project;
 
-    public BitBucket() {
+    public Bitbucket() {
         api = new Api();
         project = new Project();
     }

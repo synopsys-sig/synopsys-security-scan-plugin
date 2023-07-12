@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 
-import com.synopsys.integration.jenkins.scan.input.bitbucket.BitBucket;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
 import hudson.FilePath;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +21,7 @@ import java.util.Comparator;
 
 public class ScannerArgumentServiceTest {
     private BlackDuck blackDuck;
-    private BitBucket bitBucket;
+    private Bitbucket bitBucket;
     private ScannerArgumentService scannerArgumentService;
 
     @BeforeEach
@@ -30,9 +30,9 @@ public class ScannerArgumentServiceTest {
         blackDuck.setUrl("https://fake.blackduck.url");
         blackDuck.setToken("MDJDSROSVC56FAKEKEY");
 
-        bitBucket = new BitBucket();
+        bitBucket = new Bitbucket();
 
-        scannerArgumentService = new ScannerArgumentService();
+        scannerArgumentService = new ScannerArgumentService(null, null);
     }
 
     @Test
