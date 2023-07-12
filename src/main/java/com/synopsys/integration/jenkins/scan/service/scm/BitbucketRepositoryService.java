@@ -37,15 +37,6 @@ public class BitbucketRepositoryService {
             if (scmSource instanceof BitbucketSCMSource) {
                 BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
 
-                // Creating and using them to get the bitbucket token
-                FreeStyleProject freeStyleProject = new FreeStyleProject(jenkins, jobName);
-                FreeStyleBuild freeStyleBuild = null;
-                try {
-                    freeStyleBuild = new FreeStyleBuild(freeStyleProject);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
                 // If we are not able to get bitbucket token from the input directly then we will get it through the bitbucketSCMSource CredentialId
                 String bitBucketToken = (String) scanParameters.get("bitbucket_token");
                 if(bitBucketToken == null) {

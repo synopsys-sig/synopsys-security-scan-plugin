@@ -57,6 +57,7 @@ public class SCMRepositoryService {
     }
 
     public static String getCredentialsToken(String credentialsId) {
+        // Creating FreeStyleProject, FreeStyleBuild and using these to get the bitbucket token
         FreeStyleProject freeStyleProject = new FreeStyleProject(jenkins, jobName);
         FreeStyleBuild freeStyleBuild = null;
 
