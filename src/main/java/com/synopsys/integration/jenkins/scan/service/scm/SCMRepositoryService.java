@@ -30,7 +30,7 @@ public class SCMRepositoryService {
     public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters) {
         jenkins = Jenkins.getInstanceOrNull();
         jobName = envVars.get("JOB_NAME").substring(0, envVars.get("JOB_NAME").indexOf("/"));
-        Integer projectRepositoryPullNumber = envVars.get("CHANGE_ID") != null ? Integer.valueOf(envVars.get("CHANGE_ID")) : 0;
+        Integer projectRepositoryPullNumber = envVars.get("CHANGE_ID") != null ? Integer.parseInt(envVars.get("CHANGE_ID")) : null;
 
         SCMSource scmSource = findSCMSource();
         if (scmSource instanceof BitbucketSCMSource) {
