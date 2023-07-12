@@ -18,14 +18,12 @@ import jenkins.scm.api.SCMSource;
 
 public class BitbucketRepositoryService {
     private final TaskListener listener;
-    private final EnvVars envVars;
 
-    public BitbucketRepositoryService(TaskListener listener, EnvVars envVars) {
+    public BitbucketRepositoryService(TaskListener listener) {
         this.listener = listener;
-        this.envVars = envVars;
     }
 
-    public Bitbucket fetchBitbucketRepositoryDetails(Jenkins jenkins, Map<String, Object> scanParameters, String jobName, Integer projectRepositoryPullNumber) {
+    public Bitbucket fetchBitbucketRepositoryDetails(Jenkins jenkins, Map<String, Object> scanParameters, Integer projectRepositoryPullNumber) {
         listener.getLogger().println("Getting bitbucket repository details");
 
         Bitbucket bitbucket = new Bitbucket();
@@ -37,7 +35,6 @@ public class BitbucketRepositoryService {
             if (scmSource instanceof BitbucketSCMSource) {
                 BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
 
-                // If we are not able to get bitbucket token from the input directly then we will get it through the bitbucketSCMSource CredentialId
                 String bitBucketToken = (String) scanParameters.get("bitbucket_token");
                 if(bitBucketToken == null) {
                     bitBucketToken = SCMRepositoryService.getCredentialsToken(bitbucketSCMSource.getCredentialsId());
@@ -45,7 +42,6 @@ public class BitbucketRepositoryService {
 
                 BitbucketApi bitbucketApiFromSCMSource = bitbucketSCMSource.buildBitbucketClient(bitbucketSCMSource.getRepoOwner(), bitbucketSCMSource.getRepository());
 
-                // Access the repository details with BitbucketApi
                 BitbucketRepository bitbucketRepository = null;
                 try {
                     bitbucketRepository = bitbucketApiFromSCMSource.getRepository();

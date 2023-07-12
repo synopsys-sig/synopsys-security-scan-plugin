@@ -29,16 +29,13 @@ public class SCMRepositoryService {
 
     public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters) {
         jenkins = Jenkins.getInstanceOrNull();
-        // extracting the job name from the combined job_branch name
         jobName = envVars.get("JOB_NAME").substring(0, envVars.get("JOB_NAME").indexOf("/"));
-        // getting the pull number from env
         Integer projectRepositoryPullNumber = envVars.get("CHANGE_ID") != null ? Integer.valueOf(envVars.get("CHANGE_ID")) : 0;
 
         SCMSource scmSource = findSCMSource();
-        // getting the bitbucket repository details
         if (scmSource instanceof BitbucketSCMSource) {
-            BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener, envVars);
-            return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(jenkins, scanParameters, jobName, projectRepositoryPullNumber);
+            BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
+            return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(jenkins, scanParameters, projectRepositoryPullNumber);
         }
         return null;
     }
@@ -47,7 +44,6 @@ public class SCMRepositoryService {
         SCMSourceOwner owner = jenkins != null ? jenkins.getItemByFullName(jobName, SCMSourceOwner.class) : null;
         if (owner != null) {
             for (SCMSource scmSource : owner.getSCMSources()) {
-                // Check if the SCM source belongs to the job
                 if (owner.getSCMSource(scmSource.getId()) != null) {
                     return scmSource;
                 }
@@ -57,7 +53,6 @@ public class SCMRepositoryService {
     }
 
     public static String getCredentialsToken(String credentialsId) {
-        // Creating FreeStyleProject, FreeStyleBuild and using these to get the bitbucket token
         FreeStyleProject freeStyleProject = new FreeStyleProject(jenkins, jobName);
         FreeStyleBuild freeStyleBuild = null;
 

@@ -46,11 +46,7 @@ public class ScannerArgumentService {
         SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
         Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters);
 
-        // added the Prcomment and Fixpr condition to create BlackDuck Input Json on the following code
-        if(scmObject instanceof Bitbucket) {
-            Bitbucket bitbucket = (Bitbucket) scmObject;
-            commandLineArgs.add(createBlackDuckInputJson( blackDuck, blackDuck.getAutomation().getPrcomment() || blackDuck.getAutomation().getFixpr() ? bitbucket : null));
-        }
+        commandLineArgs.add(createBlackDuckInputJson( blackDuck, blackDuck.getAutomation().getPrcomment() || blackDuck.getAutomation().getFixpr() ? scmObject : null));
 
         return commandLineArgs;
     }
