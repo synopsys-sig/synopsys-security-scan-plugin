@@ -16,6 +16,7 @@ public class ApplicationConstants {
     public static final String PLATFORM_MAC = "macosx";
     public static final String BLACKDUCK_URL_KEY = "blackduck_url";
     public static final String BLACKDUCK_API_TOKEN_KEY = "blackduck_api_token";
+    public static final String BITBUCKET_API_TOKEN_KEY = "bitbucket_api_token";
     public static final String BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck_install_directory";
     public static final String BLACKDUCK_SCAN_FULL_KEY = "blackduck_scan_full";
     public static final String BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck_scan_failure_severities";

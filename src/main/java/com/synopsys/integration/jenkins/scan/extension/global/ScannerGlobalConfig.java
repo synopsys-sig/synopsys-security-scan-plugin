@@ -41,6 +41,8 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     private String blackDuckCredentialsId;
 
+    private String bitbucketApiToken;
+
     private boolean trustBlackDuckCertificates;
 
     private int blackDuckTimeout = 120;
@@ -77,6 +79,16 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundSetter
     public void setBlackDuckCredentialsId(String blackDuckCredentialsId) {
         this.blackDuckCredentialsId = blackDuckCredentialsId;
+        save();
+    }
+
+    public String getBitbucketApiToken() {
+        return bitbucketApiToken;
+    }
+
+    @DataBoundSetter
+    public void setBitbucketApiToken(String bitbucketApiToken) {
+        this.bitbucketApiToken = bitbucketApiToken;
         save();
     }
 
@@ -142,11 +154,13 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
         String url = getNodeValue(doc, "blackDuckUrl").orElse(StringUtils.EMPTY);
         String credentialsId = getNodeValue(doc, "blackDuckCredentialsId").orElse(StringUtils.EMPTY);
+        String bitbucketToken = getNodeValue(doc, "bitbucketApiToken").orElse(StringUtils.EMPTY);
         int timeout = getNodeIntegerValue(doc, "blackDuckTimeout").orElse(120);
         boolean trustCerts = getNodeBooleanValue(doc, "trustBlackDuckCertificates").orElse(false);
 
         setBlackDuckUrl(url);
         setBlackDuckCredentialsId(credentialsId);
+        setBitbucketApiToken(bitbucketToken);
         setBlackDuckTimeout(timeout);
         setTrustBlackDuckCertificates(trustCerts);
         save();

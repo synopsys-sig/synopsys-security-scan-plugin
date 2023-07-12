@@ -6,6 +6,9 @@
         <f:entry field="blackDuckCredentialsId" title="Black Duck Api Token">
             <f:password/>
         </f:entry>
+        <f:entry field="bitbucketApiToken" title="Bitbucket Api Token">
+            <f:password/>
+        </f:entry>
         <f:advanced>
             <f:entry field="blackDuckTimeout" title="Black Duck Connection Timeout">
                 <f:textbox clazz="required number"/>
