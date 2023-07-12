@@ -47,9 +47,11 @@ public class BitbucketRepositoryService {
                     bitbucketRepository = bitbucketApiFromSCMSource.getRepository();
                 } catch (Exception e) {
                     listener.getLogger().println("There is an exception while getting the BitbucketRepository from BitbucketApi");
-                } 
+                }
 
-                listener.getLogger().println("Repository Name: " + bitbucketRepository.getRepositoryName());
+                if(bitbucketRepository != null) {
+                    listener.getLogger().println("Repository Name: " + bitbucketRepository.getRepositoryName());
+                }
 
                 Api bitbucketApi = new Api();
                 bitbucketApi.setUrl(bitbucketSCMSource.getServerUrl());

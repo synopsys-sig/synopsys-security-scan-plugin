@@ -62,7 +62,11 @@ public class SCMRepositoryService {
             e.printStackTrace();
         }
 
-        StandardCredentials credentials = CredentialsProvider.findCredentialById(credentialsId, StandardCredentials.class, freeStyleBuild, Collections.emptyList());
+        StandardCredentials credentials = null;
+        if (freeStyleBuild != null) {
+            credentials = CredentialsProvider.findCredentialById(credentialsId, StandardCredentials.class, freeStyleBuild, Collections.emptyList());
+        }
+
         if (credentials instanceof UsernamePasswordCredentialsImpl) {
             UsernamePasswordCredentialsImpl usernamePasswordCredentials = (UsernamePasswordCredentialsImpl) credentials;
             return usernamePasswordCredentials.getPassword().getPlainText();
