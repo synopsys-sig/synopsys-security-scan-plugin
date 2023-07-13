@@ -5,9 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -21,27 +18,12 @@ public class BridgeDownloadManagerTest {
 
     @Test
     public void getInstalledBridgeVersionTest() {
-        String directoryPath = getClass().getResource("/versions.txt").getPath();
-        File directory = new File(directoryPath).getParentFile();
-        String directoryAbsolutePath = directory.getAbsolutePath();
+        String versionFilePath = new File("src/test/resources/versions.txt").getAbsolutePath();
 
-        String installedVersion = bridgeDownloadManager.getInstalledBridgeVersion(directoryAbsolutePath);
+        String installedVersion = bridgeDownloadManager.getBridgeVersionFromVersionFile(versionFilePath);
 
-        assertNotNull(directoryAbsolutePath, "version.txt file not found");
+        assertNotNull(versionFilePath, "version.txt file not found");
         assertEquals("0.3.1", installedVersion);
-    }
-
-    @Test
-    void getLatestVersionTest() {
-        List<String> versions = new ArrayList<>();
-        versions.add("0.0.0");
-        versions.add("2.0.0");
-        versions.add("1.5.0");
-        versions.add("3.0.0");
-
-        String latestVersion = bridgeDownloadManager.getLatestVersion(versions);
-
-        assertEquals("3.0.0", latestVersion);
     }
 
     @Test
@@ -49,17 +31,72 @@ public class BridgeDownloadManagerTest {
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
         bridgeDownloadParameters.setBridgeDownloadUrl("https://fake.url.com/bridge");
         bridgeDownloadParameters.setBridgeInstallationPath("/path/to/bridge");
-        bridgeDownloadParameters.setBridgeDownloadVersion("1.0.0");
 
         BridgeDownloadManager mockedBridgeDownloadManager = Mockito.mock(BridgeDownloadManager.class);
 
         Mockito.when(mockedBridgeDownloadManager.checkIfBridgeInstalled(anyString())).thenReturn(true);
-        Mockito.when(mockedBridgeDownloadManager.getInstalledBridgeVersion(anyString())).thenReturn("0.9.0");
-        Mockito.when(mockedBridgeDownloadManager.getAllAvailableBridgeVersionsFromArtifactory(anyString())).thenReturn(
-                Arrays.asList("0.9.0", "1.0.0", "1.1.0")
-        );
         boolean isDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParameters);
 
         assertTrue(isDownloadRequired);
+    }
+
+    @Test
+    public void getDirectoryUrlTest() {
+        String downloadUrlWithoutTrailingSlash = "https://myown.artifactory.com/release/synopsys-bridge/0.3.59/synopsys-bridge-0.3.59-linux64.zip";
+        String directoryUrl = "https://myown.artifactory.com/release/synopsys-bridge/0.3.59";
+
+        assertEquals(directoryUrl, bridgeDownloadManager.getDirectoryUrl(downloadUrlWithoutTrailingSlash));
+
+        String downloadUrlWithTrailingSlash = "https://myown.artifactory.com/release/synopsys-bridge/latest/synopsys-bridge-linux64.zip/";
+        String expectedDirectoryUrl = "https://myown.artifactory.com/release/synopsys-bridge/latest";
+
+        assertEquals(expectedDirectoryUrl, bridgeDownloadManager.getDirectoryUrl(downloadUrlWithTrailingSlash));
+    }
+
+    @Test
+    public void versionFileAvailableTest() {
+        String directoryUrlWithoutVersion = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.3.1/";
+        String directoryUrlWithVersion = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/";
+
+        assertFalse(bridgeDownloadManager.versionFileAvailable(directoryUrlWithoutVersion));
+        assertTrue(bridgeDownloadManager.versionFileAvailable(directoryUrlWithVersion));
+    }
+
+    @Test
+    public void extractVersionFromUrlTest() {
+        String urlWithVersion = "https://myown.artifactory.com/synopsys-bridge/0.3.59/synopsys-bridge-0.3.59-linux64.zip";
+        String expectedVersionWithVersion = "0.3.59";
+
+        assertEquals(expectedVersionWithVersion, bridgeDownloadManager.extractVersionFromUrl(urlWithVersion));
+
+        String urlWithoutVersion = "https://myown.artifactory.com/synopsys-bridge/latest/synopsys-bridge-latest-linux64.zip";
+        String expectedVersionWithLatest = "NA";
+
+        assertEquals(expectedVersionWithLatest, bridgeDownloadManager.extractVersionFromUrl(urlWithoutVersion));
+    }
+
+    @Test
+    public void downloadVersionFileTest() {
+        String directoryUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest";
+        String tempVersionFilePath = bridgeDownloadManager.downloadVersionFile(directoryUrl);
+        File tempVersionFile = new File(tempVersionFilePath);
+
+        assertNotNull(tempVersionFilePath);
+        assertTrue(tempVersionFile.exists());
+    }
+
+    @Test
+    void getLatestBridgeVersionFromArtifactoryTest() {
+        String urlWithVersion = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.3.1/synopsys-bridge-0.3.1-linux64.zip ";
+        String resultWithVersion = bridgeDownloadManager.getLatestBridgeVersionFromArtifactory(urlWithVersion);
+
+        assertEquals("0.3.1", resultWithVersion);
+
+        String urlWithoutVersion = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-linux64.zip";
+        String resultWithoutVersion = bridgeDownloadManager.getLatestBridgeVersionFromArtifactory(urlWithoutVersion);
+
+        assertEquals("0.3.59", resultWithoutVersion);
+
+
     }
 }

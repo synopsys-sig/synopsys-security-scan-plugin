@@ -22,7 +22,7 @@ public class SecurityScanner {
     private final FilePath workspace;
     private final EnvVars envVars;
     private final ScannerArgumentService scannerArgumentService;
-    
+
     public SecurityScanner(TaskListener listener, Launcher launcher, FilePath workspace,
                            EnvVars envVars, ScannerArgumentService scannerArgumentService) {
         this.listener = listener;
@@ -32,21 +32,21 @@ public class SecurityScanner {
         this.scannerArgumentService = scannerArgumentService;
     }
 
-    public int runScanner(Map<String, Object> scanParameters) {
+    public int runScanner(Map<String, Object> scanParams) {
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
         BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService();
-        BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParameters, bridgeDownloadParameters);
+        BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
-        Map<String, Object> blackDuckParameters = blackDuckParametersService.prepareBlackDuckParameterValidation(scanParameters);
+        Map<String, Object> blackDuckParameters = blackDuckParametersService.prepareBlackDuckParameterValidation(scanParams);
         int scanner = 1;
 
         if (blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParameters)
                 && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
 
             FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
-            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParameters);
+            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams);
 
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager();
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
@@ -73,7 +73,7 @@ public class SecurityScanner {
             }
         }
         else {
-           listener.getLogger().println("Couldn't validate BlackDuck or Synopsys-Bridge parameters!");
+            listener.getLogger().println("Couldn't validate BlackDuck or Synopsys-Bridge parameters!");
         }
 
         printMessages(LogMessages.END_SCANNER);
@@ -87,12 +87,11 @@ public class SecurityScanner {
 
         String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();
-        String bridgeDownloadVersion = bridgeDownloadParams.getBridgeDownloadVersion();
 
         Utility.verifyAndCreateInstallationPath(bridgeInstallationPath);
 
         try {
-            FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadVersion, bridgeDownloadUrl);
+            FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl);
             bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(new File(bridgeInstallationPath)));
         } catch (Exception e) {
             listener.getLogger().println("There is an exception while downloading/installing Synopsys-bridge.");

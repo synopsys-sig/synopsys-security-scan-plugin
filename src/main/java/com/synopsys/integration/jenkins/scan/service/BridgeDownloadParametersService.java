@@ -12,7 +12,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BridgeDownloadParametersService {
-
     public boolean performBridgeDownloadParameterValidation(BridgeDownloadParameters bridgeDownloadParameters) {
         boolean validUrl = isValidUrl(bridgeDownloadParameters.getBridgeDownloadUrl());
         boolean validVersion = isValidVersion(bridgeDownloadParameters.getBridgeDownloadVersion());
@@ -46,6 +45,7 @@ public class BridgeDownloadParametersService {
         Path parentPath = path.getParent();
         if (parentPath != null && !Files.exists(parentPath)) {
             try {
+                //TODO: refactor
                 Files.createDirectories(parentPath);
             } catch (Exception e) {
                 return false;
@@ -55,19 +55,42 @@ public class BridgeDownloadParametersService {
     }
 
     public BridgeDownloadParameters getBridgeDownloadParams(Map<String, Object> scanParameters, BridgeDownloadParameters bridgeDownloadParameters) {
+        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_INSTALLATION_PATH)) {
+            bridgeDownloadParameters.setBridgeInstallationPath(
+                    scanParameters.get(ApplicationConstants.BRIDGE_INSTALLATION_PATH).toString().trim());
+        }
 
         if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_URL)) {
-            bridgeDownloadParameters.setBridgeDownloadUrl(scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_URL).toString());
+            bridgeDownloadParameters.setBridgeDownloadUrl(
+                    scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_URL).toString().trim());
         }
 
-        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION)) {
-            bridgeDownloadParameters.setBridgeDownloadVersion(scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION).toString());
-        }
+        else if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION)) {
+            String desiredVersion = scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION).toString().trim();
+            String bridgeDownloadUrl = String.join("/", ApplicationConstants.BRIDGE_ARTIFACTORY_URL,
+                    desiredVersion, ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform(), desiredVersion));
 
-        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_INSTALLATION_PATH)) {
-            bridgeDownloadParameters.setBridgeInstallationPath(scanParameters.get(ApplicationConstants.BRIDGE_INSTALLATION_PATH).toString());
+            bridgeDownloadParameters.setBridgeDownloadUrl(bridgeDownloadUrl);
+            bridgeDownloadParameters.setBridgeDownloadVersion(desiredVersion);
+        }
+        else {
+            String bridgeDownloadUrl = String.join("/", ApplicationConstants.BRIDGE_ARTIFACTORY_URL,
+                    ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION, ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform()));
+            bridgeDownloadParameters.setBridgeDownloadUrl(bridgeDownloadUrl);
         }
 
         return bridgeDownloadParameters;
+    }
+
+    public String getPlatform() {
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")) {
+            return ApplicationConstants.PLATFORM_WINDOWS;
+        } else if (os.contains("mac")) {
+            return ApplicationConstants.PLATFORM_MAC;
+        } else {
+            return ApplicationConstants.PLATFORM_LINUX;
+        }
     }
 }
