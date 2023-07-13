@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'com.synopsys.integration'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0-SNAPSHOT'
 description = 'Synopsys Security Scan Plugin'
 
 java {
