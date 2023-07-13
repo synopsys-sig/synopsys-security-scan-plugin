@@ -48,7 +48,7 @@ public class SecurityScanner {
             FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
             List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams);
 
-            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager();
+            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
             if (isBridgeDownloadRequired) {
                 initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
@@ -67,7 +67,7 @@ public class SecurityScanner {
                         .quiet(true)
                         .join();
             } catch (Exception e) {
-                e.printStackTrace();
+                listener.getLogger().println("Exception occurred while invoking synopsys-bridge from the plugin.");
             } finally {
                 Utility.cleanupInputJson(scannerArgumentService.getBlackDuckInputJsonFilePath());
             }

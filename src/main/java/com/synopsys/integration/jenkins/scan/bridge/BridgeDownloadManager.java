@@ -1,5 +1,7 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
+import hudson.model.TaskListener;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,9 +13,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BridgeDownloadManager {
+    private final TaskListener listener;
     private final String bridgeBinary = "synopsys-bridge";
     private final String extensionsDirectory = "extensions";
     private final String versionFile = "versions.txt";
+
+    public BridgeDownloadManager(TaskListener listener) {
+        this.listener = listener;
+    }
 
     public boolean isSynopsysBridgeDownloadRequired(BridgeDownloadParameters bridgeDownloadParameters) {
         String bridgeDownloadUrl = bridgeDownloadParameters.getBridgeDownloadUrl();
@@ -61,7 +68,7 @@ public class BridgeDownloadManager {
                 return matcher.group(1);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+           listener.getLogger().println("An exception occurred while extracting bridge-version from the versions.txt");
         }
         return null;
     }
@@ -73,10 +80,12 @@ public class BridgeDownloadManager {
             if(versionFileAvailable(directoryUrl)) {
                 String versionFilePath = downloadVersionFile(directoryUrl);
                 String latestVersion = getBridgeVersionFromVersionFile(versionFilePath);
+                listener.getLogger().println("Extracted version from the artifactory's 'versions.txt' is: " + latestVersion);
 
                 return latestVersion;
             }
             else {
+                listener.getLogger().println("Neither version related information, nor 'versions.txt' is found in the URL.");
                 return "NA";
             }
         }
@@ -98,7 +107,7 @@ public class BridgeDownloadManager {
 
             tempVersionFilePath = tempFilePath.toAbsolutePath().toString();
         } catch (IOException e) {
-            e.printStackTrace();
+            listener.getLogger().println("An exception occurred while downloading 'versions.txt'");
         }
         return tempVersionFilePath;
     }
@@ -110,7 +119,7 @@ public class BridgeDownloadManager {
             connection.setRequestMethod("HEAD");
             return (connection.getResponseCode() >= 200 && connection.getResponseCode() < 300);
         } catch (IOException e) {
-            e.printStackTrace();
+            listener.getLogger().println("An exception occurred while checking if 'versions.txt' is available or not in the URL.");
             return false;
         }
     }
@@ -128,7 +137,7 @@ public class BridgeDownloadManager {
             String directoryPath = path.substring(0, path.lastIndexOf('/'));
             directoryUrl = uri.getScheme().concat("://").concat(uri.getHost()).concat(directoryPath);
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            listener.getLogger().println("Bridge download URL is invalid");
         }
         return directoryUrl;
     }

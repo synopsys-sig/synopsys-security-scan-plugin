@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BridgeDownloadParametersService {
+
     public boolean performBridgeDownloadParameterValidation(BridgeDownloadParameters bridgeDownloadParameters) {
         boolean validUrl = isValidUrl(bridgeDownloadParameters.getBridgeDownloadUrl());
         boolean validVersion = isValidVersion(bridgeDownloadParameters.getBridgeDownloadVersion());
@@ -61,7 +62,6 @@ public class BridgeDownloadParametersService {
             bridgeDownloadParameters.setBridgeDownloadUrl(
                     scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_URL).toString().trim());
         }
-
         else if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION)) {
             String desiredVersion = scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION).toString().trim();
             String bridgeDownloadUrl = String.join("/", ApplicationConstants.BRIDGE_ARTIFACTORY_URL,
@@ -75,7 +75,6 @@ public class BridgeDownloadParametersService {
                     ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION, ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform()));
             bridgeDownloadParameters.setBridgeDownloadUrl(bridgeDownloadUrl);
         }
-
         return bridgeDownloadParameters;
     }
 

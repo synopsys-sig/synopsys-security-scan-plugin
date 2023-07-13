@@ -1,5 +1,6 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
+import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,9 +12,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 public class BridgeDownloadManagerTest {
     private BridgeDownloadManager bridgeDownloadManager;
+    private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
+
     @BeforeEach
     void setup() {
-        bridgeDownloadManager = new BridgeDownloadManager();
+        bridgeDownloadManager = new BridgeDownloadManager(listenerMock);
     }
 
     @Test
@@ -55,11 +58,11 @@ public class BridgeDownloadManagerTest {
 
     @Test
     public void versionFileAvailableTest() {
-        String directoryUrlWithoutVersion = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.3.1/";
-        String directoryUrlWithVersion = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/";
+        String directoryUrlWithoutVersionFile = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.3.1/";
+        String directoryUrlWithVersionFile = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/";
 
-        assertFalse(bridgeDownloadManager.versionFileAvailable(directoryUrlWithoutVersion));
-        assertTrue(bridgeDownloadManager.versionFileAvailable(directoryUrlWithVersion));
+        assertFalse(bridgeDownloadManager.versionFileAvailable(directoryUrlWithoutVersionFile));
+        assertTrue(bridgeDownloadManager.versionFileAvailable(directoryUrlWithVersionFile));
     }
 
     @Test
@@ -96,7 +99,5 @@ public class BridgeDownloadManagerTest {
         String resultWithoutVersion = bridgeDownloadManager.getLatestBridgeVersionFromArtifactory(urlWithoutVersion);
 
         assertEquals("0.3.59", resultWithoutVersion);
-
-
     }
 }

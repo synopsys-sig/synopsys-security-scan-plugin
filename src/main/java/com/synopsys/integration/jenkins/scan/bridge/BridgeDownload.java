@@ -26,7 +26,6 @@ public class BridgeDownload {
 
             } catch (Exception e) {
                 listener.getLogger().println("Synopsys bridge download failed");
-                e.printStackTrace();
             }
         }
         else {

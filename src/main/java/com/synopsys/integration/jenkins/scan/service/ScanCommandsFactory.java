@@ -32,7 +32,8 @@ public class ScanCommandsFactory {
         this.workspace = workspace;
     }
 
-    public static ScanPipelineCommands createPipelineCommand(TaskListener listener, EnvVars envVars, Launcher launcher, Node node, FilePath workspace) {
+    public static ScanPipelineCommands createPipelineCommand(TaskListener listener, EnvVars envVars,
+                                                             Launcher launcher, Node node, FilePath workspace) {
         return new ScanPipelineCommands(
             new SecurityScanner(listener, launcher, workspace, envVars, new ScannerArgumentService(listener, envVars)));
     }

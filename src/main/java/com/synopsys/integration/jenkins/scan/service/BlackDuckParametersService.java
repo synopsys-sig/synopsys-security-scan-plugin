@@ -65,6 +65,8 @@ public class BlackDuckParametersService {
                         blackDuck.getAutomation().setPrcomment(Boolean.parseBoolean(value));
                     }
                     break;
+                default:
+                    break;
             }
         }
 
