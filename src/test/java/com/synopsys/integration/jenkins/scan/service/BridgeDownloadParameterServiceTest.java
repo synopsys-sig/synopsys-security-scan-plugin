@@ -51,14 +51,14 @@ public class BridgeDownloadParameterServiceTest {
         String userHome = System.getProperty("user.home");
 
         String validPath = null;
-        String invalidPath = "/path/does/not/exist";
+        String invalidPath = null;
         if (os.contains("win")) {
             validPath = String.join("\\", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
-            invalidPath = String.join("\\", invalidPath, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
+            invalidPath = String.join("\\", "\\path\\absent", ApplicationConstants.DEFAULT_DIRECTORY_NAME);
         }
         else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
             validPath = String.join("/", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
-            invalidPath = String.join("/", invalidPath, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
+            invalidPath = String.join("/", "/path/absent", ApplicationConstants.DEFAULT_DIRECTORY_NAME);
         }
 
         assertTrue(bridgeDownloadParametersService.isValidInstallationPath(validPath));

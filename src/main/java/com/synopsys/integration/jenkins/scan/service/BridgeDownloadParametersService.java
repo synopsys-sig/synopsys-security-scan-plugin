@@ -43,15 +43,12 @@ public class BridgeDownloadParametersService {
     public boolean isValidInstallationPath(String installationPath) {
         Path path = Paths.get(installationPath);
         Path parentPath = path.getParent();
-        if (parentPath != null && !Files.exists(parentPath)) {
-            try {
-                //TODO: refactor
-                Files.createDirectories(parentPath);
-            } catch (Exception e) {
-                return false;
-            }
+
+        if (parentPath != null && Files.exists(parentPath) && Files.isWritable(parentPath)) {
+            return true;
+        } else {
+            return false;
         }
-        return Files.isWritable(parentPath);
     }
 
     public BridgeDownloadParameters getBridgeDownloadParams(Map<String, Object> scanParameters, BridgeDownloadParameters bridgeDownloadParameters) {
