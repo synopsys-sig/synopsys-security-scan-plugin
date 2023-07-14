@@ -52,6 +52,8 @@ public class SecurityScanner {
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
             if (isBridgeDownloadRequired) {
                 initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
+            } else {
+                listener.getLogger().println("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
             }
 
             Utility.copyRepository(workspace.getRemote(), bridgeDownloadParams.getBridgeInstallationPath());
