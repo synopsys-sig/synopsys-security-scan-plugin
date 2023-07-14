@@ -5,22 +5,27 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 
+import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class BlackDuckParametersServiceTest {
     private BlackDuckParametersService blackDuckParametersService;
+    private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
     private final String TEST_BLACKDUCK_URL = "https://fake.blackduck.url";
     private final String TEST_BLACKDUCK_TOKEN = "MDJDSROSVC56FAKEKEY";
     private final String TEST_BLACKDUCK_INSTALL_DIRECTORY_PATH = "/path/to/blackduck/directory";
     
     @BeforeEach
     void setUp() {
-        blackDuckParametersService = new BlackDuckParametersService();
+        blackDuckParametersService = new BlackDuckParametersService(listenerMock);
+        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
     @Test
@@ -68,7 +73,7 @@ public class BlackDuckParametersServiceTest {
 
     @Test
     void validateBlackDuckParametersForNullAndEmptyTest() {
-        BlackDuckParametersService service = new BlackDuckParametersService();
+        BlackDuckParametersService service = new BlackDuckParametersService(listenerMock);
         assertFalse(service.performBlackDuckParameterValidation(null));
 
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
@@ -105,5 +110,4 @@ public class BlackDuckParametersServiceTest {
 
         assertNull(combinedMap);
     }
-
 }

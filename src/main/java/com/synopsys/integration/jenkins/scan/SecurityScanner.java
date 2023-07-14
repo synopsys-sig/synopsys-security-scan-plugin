@@ -33,10 +33,10 @@ public class SecurityScanner {
     }
 
     public int runScanner(Map<String, Object> scanParams) {
-        BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
+        BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
-        BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService();
+        BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService(listener);
         BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
         Map<String, Object> blackDuckParameters = blackDuckParametersService.prepareBlackDuckParameterValidation(scanParams);
@@ -50,6 +50,7 @@ public class SecurityScanner {
 
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
+
             if (isBridgeDownloadRequired) {
                 initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
             } else {
@@ -69,13 +70,10 @@ public class SecurityScanner {
                         .quiet(true)
                         .join();
             } catch (Exception e) {
-                listener.getLogger().println("Exception occurred while invoking synopsys-bridge from the plugin.");
+                listener.getLogger().println("Exception occurred while invoking synopsys-bridge from the plugin : " + e.getMessage());
             } finally {
                 Utility.cleanupInputJson(scannerArgumentService.getBlackDuckInputJsonFilePath());
             }
-        }
-        else {
-            listener.getLogger().println("Couldn't validate BlackDuck or Synopsys-Bridge parameters!");
         }
 
         printMessages(LogMessages.END_SCANNER);
@@ -96,7 +94,7 @@ public class SecurityScanner {
             FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl);
             bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(new File(bridgeInstallationPath)));
         } catch (Exception e) {
-            listener.getLogger().println("There is an exception while downloading/installing Synopsys-bridge.");
+            listener.getLogger().println("There is an exception while downloading/installing Synopsys-bridge: " + e.getMessage());
         }
     }
 

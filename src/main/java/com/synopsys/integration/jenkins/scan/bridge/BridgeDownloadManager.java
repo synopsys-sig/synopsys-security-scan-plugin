@@ -68,7 +68,7 @@ public class BridgeDownloadManager {
                 return matcher.group(1);
             }
         } catch (Exception e) {
-           listener.getLogger().println("An exception occurred while extracting bridge-version from the versions.txt");
+           listener.getLogger().println("An exception occurred while extracting bridge-version from the versions.txt: " + e.getMessage());
         }
         return null;
     }
@@ -107,7 +107,7 @@ public class BridgeDownloadManager {
 
             tempVersionFilePath = tempFilePath.toAbsolutePath().toString();
         } catch (IOException e) {
-            listener.getLogger().println("An exception occurred while downloading 'versions.txt'");
+            listener.getLogger().println("An exception occurred while downloading 'versions.txt': " + e.getMessage());
         }
         return tempVersionFilePath;
     }
@@ -119,7 +119,7 @@ public class BridgeDownloadManager {
             connection.setRequestMethod("HEAD");
             return (connection.getResponseCode() >= 200 && connection.getResponseCode() < 300);
         } catch (IOException e) {
-            listener.getLogger().println("An exception occurred while checking if 'versions.txt' is available or not in the URL.");
+            listener.getLogger().println("An exception occurred while checking if 'versions.txt' is available or not in the URL : " + e.getMessage());
             return false;
         }
     }
@@ -137,7 +137,7 @@ public class BridgeDownloadManager {
             String directoryPath = path.substring(0, path.lastIndexOf('/'));
             directoryUrl = uri.getScheme().concat("://").concat(uri.getHost()).concat(directoryPath);
         } catch (URISyntaxException e) {
-            listener.getLogger().println("Bridge download URL is invalid");
+            listener.getLogger().println("An exception occurred while getting directoryUrl from downloadUrl: " + e.getMessage());
         }
         return directoryUrl;
     }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.File;
+import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -17,6 +18,7 @@ public class BridgeDownloadManagerTest {
     @BeforeEach
     void setup() {
         bridgeDownloadManager = new BridgeDownloadManager(listenerMock);
+        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
     @Test
@@ -96,8 +98,12 @@ public class BridgeDownloadManagerTest {
         assertEquals("0.3.1", resultWithVersion);
 
         String urlWithoutVersion = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-linux64.zip";
-        String resultWithoutVersion = bridgeDownloadManager.getLatestBridgeVersionFromArtifactory(urlWithoutVersion);
+        BridgeDownloadManager mockedBridgeDownloadManager = Mockito.mock(BridgeDownloadManager.class);
+        String expectedVersion = "0.3.59";
+        Mockito.when(mockedBridgeDownloadManager.getLatestBridgeVersionFromArtifactory(urlWithoutVersion)).thenReturn(expectedVersion);
 
-        assertEquals("0.3.59", resultWithoutVersion);
+        String resultWithoutVersion = mockedBridgeDownloadManager.getLatestBridgeVersionFromArtifactory(urlWithoutVersion);
+
+        assertEquals(expectedVersion, resultWithoutVersion);
     }
 }

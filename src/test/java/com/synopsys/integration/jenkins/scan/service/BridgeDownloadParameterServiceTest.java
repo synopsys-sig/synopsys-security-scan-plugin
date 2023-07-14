@@ -2,22 +2,27 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BridgeDownloadParameterServiceTest {
     private BridgeDownloadParametersService bridgeDownloadParametersService;
     private  BridgeDownloadParameters bridgeDownloadParameters;
+    private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
 
     @BeforeEach
     void setUp() {
         bridgeDownloadParameters = new BridgeDownloadParameters();
-        bridgeDownloadParametersService = new BridgeDownloadParametersService();
+        bridgeDownloadParametersService = new BridgeDownloadParametersService(listenerMock);
+        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
     @Test

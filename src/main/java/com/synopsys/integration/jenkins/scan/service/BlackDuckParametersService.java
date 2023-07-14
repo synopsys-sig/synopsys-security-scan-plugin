@@ -4,12 +4,17 @@ import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfi
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 
+import hudson.model.TaskListener;
 import jenkins.model.GlobalConfiguration;
 
 import java.util.*;
 import java.util.stream.Stream;
 
 public class BlackDuckParametersService {
+    private final TaskListener listener;
+    public BlackDuckParametersService(TaskListener listener) {
+        this.listener = listener;
+    }
     public BlackDuck prepareBlackDuckInputForBridge(Map<String, Object> blackDuckParametersFromPipeline) {
         Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
         Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFromPipeline, blackDuckParametersMapFromUI);
@@ -74,11 +79,26 @@ public class BlackDuckParametersService {
     }
 
     public boolean performBlackDuckParameterValidation(Map<String, Object> blackDuckParams) {
-        return blackDuckParams != null
+        boolean isValid =  blackDuckParams != null
                 && Stream.of(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
-                .allMatch(key -> blackDuckParams.containsKey(key)
-                        && blackDuckParams.get(key) != null
-                        && !blackDuckParams.get(key).toString().isEmpty());
+                .allMatch(key -> {
+                    boolean isKeyValid = blackDuckParams.containsKey(key)
+                            && blackDuckParams.get(key) != null
+                            && !blackDuckParams.get(key).toString().isEmpty();
+
+                    if (!isKeyValid) {
+                        listener.getLogger().printf("BlackDuck parameter validation failed for %s%n", key);
+                    }
+                    return isKeyValid;
+                });
+
+        if(isValid) {
+            listener.getLogger().println("BlackDuck parameters are validated successfully.");
+            return true;
+        } else {
+            listener.getLogger().println("BlackDuck parameters are not valid.");
+            return false;
+        }
     }
 
     public Map<String, Object> getCombinedBlackDuckParameters(Map<String, Object> blackDuckParamsFromPipeline, Map<String, Object> blackDuckParametersMapFromUI) {

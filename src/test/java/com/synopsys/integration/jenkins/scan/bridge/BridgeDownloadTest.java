@@ -3,8 +3,6 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 
 import hudson.FilePath;
 
-import hudson.model.TaskListener;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import java.io.File;

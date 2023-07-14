@@ -2,6 +2,7 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import hudson.model.TaskListener;
 
 import java.net.URL;
 import java.nio.file.Files;
@@ -12,18 +13,28 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BridgeDownloadParametersService {
+    private final TaskListener listener;
+    public BridgeDownloadParametersService(TaskListener listener) {
+        this.listener = listener;
+    }
 
     public boolean performBridgeDownloadParameterValidation(BridgeDownloadParameters bridgeDownloadParameters) {
         boolean validUrl = isValidUrl(bridgeDownloadParameters.getBridgeDownloadUrl());
         boolean validVersion = isValidVersion(bridgeDownloadParameters.getBridgeDownloadVersion());
         boolean validInstallationPath = isValidInstallationPath(bridgeDownloadParameters.getBridgeInstallationPath());
 
-        return validUrl && validVersion && validInstallationPath;
-
+        if(validUrl && validVersion && validInstallationPath) {
+            listener.getLogger().println("Bridge download parameters are validated successfully.");
+            return true;
+        } else {
+            listener.getLogger().println("Bridge download parameters are not valid.");
+            return false;
+        }
     }
 
     public boolean isValidUrl(String url) {
         if (url.isEmpty()) {
+            listener.getLogger().println("The provided Bridge download URL is empty.");
             return false;
         }
 
@@ -31,6 +42,7 @@ public class BridgeDownloadParametersService {
             new URL(url);
             return true;
         } catch (Exception e) {
+            listener.getLogger().println("The provided Bridge download URL is not valid: " + e.getMessage());
             return false;
         }
     }
@@ -38,7 +50,12 @@ public class BridgeDownloadParametersService {
     public boolean isValidVersion(String version) {
         Pattern pattern = Pattern.compile("\\d+\\.\\d+\\.\\d+");
         Matcher matcher = pattern.matcher(version);
-        return matcher.matches() || version.equals(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION);
+        if( matcher.matches() || version.equals(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION)) {
+            return true;
+        } else {
+            listener.getLogger().println("The provided Bridge download version is not valid");
+            return false;
+        }
     }
 
     public boolean isValidInstallationPath(String installationPath) {
@@ -48,6 +65,12 @@ public class BridgeDownloadParametersService {
         if (parentPath != null && Files.exists(parentPath) && Files.isWritable(parentPath)) {
             return true;
         } else {
+            if(parentPath == null && !Files.exists(parentPath)) {
+                listener.getLogger().printf("The path: %s doesn't exist.%n" , path.toString());
+            }
+            else if(!Files.isWritable(parentPath)) {
+                listener.getLogger().printf("The path: %s is not writable.%n" , path.toString());
+            }
             return false;
         }
     }
