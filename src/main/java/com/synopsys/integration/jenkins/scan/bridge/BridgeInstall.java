@@ -14,10 +14,11 @@ public class BridgeInstall {
         try {
             bridgeZipPath.unzip(bridgeInstallationPath);
 
-            //Have to call delete *explicitly* as JVM doesn't erase this file.
+            //Have to call delete *explicitly*.
             bridgeZipPath.delete();
 
-            listener.getLogger().printf("Bridge zip path: %s and bridge installation path: %s \n", bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
+            listener.getLogger().printf("Bridge zip path: %s and bridge installation path: %s %n",
+                    bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
         } catch (Exception e) {
             listener.getLogger().println("Synopsys bridge unzipping failed");
             e.printStackTrace();

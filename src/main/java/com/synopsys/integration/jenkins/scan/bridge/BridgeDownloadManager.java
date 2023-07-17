@@ -1,38 +1,48 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
+import hudson.model.TaskListener;
+
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.*;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 public class BridgeDownloadManager {
+    private final TaskListener listener;
     private final String bridgeBinary = "synopsys-bridge";
     private final String extensionsDirectory = "extensions";
     private final String versionFile = "versions.txt";
 
+    public BridgeDownloadManager(TaskListener listener) {
+        this.listener = listener;
+    }
+
     public boolean isSynopsysBridgeDownloadRequired(BridgeDownloadParameters bridgeDownloadParameters) {
         String bridgeDownloadUrl = bridgeDownloadParameters.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParameters.getBridgeInstallationPath();
-        String bridgeDownloadVersion = bridgeDownloadParameters.getBridgeDownloadVersion();
 
         if (!checkIfBridgeInstalled(bridgeInstallationPath)) {
             return true;
         }
 
-        String installedBridgeVersion = getInstalledBridgeVersion(bridgeInstallationPath);
-        List<String> availableVersions = getAllAvailableBridgeVersionsFromArtifactory(bridgeDownloadUrl);
-        String desiredBridgeVersion = bridgeDownloadVersion.equals(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION)
-                ? getLatestVersion(availableVersions) : bridgeDownloadVersion;
+        String installedBridgeVersionFilePath = null;
+        String os = System.getProperty("os.name").toLowerCase();
 
-        return !desiredBridgeVersion.equals(installedBridgeVersion);
+        if (os.contains("win")) {
+            installedBridgeVersionFilePath = String.join("\\", bridgeInstallationPath, versionFile);
+        } else {
+            installedBridgeVersionFilePath = String.join("/", bridgeInstallationPath, versionFile);
+        }
+
+        String installedBridgeVersion = getBridgeVersionFromVersionFile(installedBridgeVersionFilePath);
+        String latestBridgeVersion = getLatestBridgeVersionFromArtifactory(bridgeDownloadUrl);
+
+        return !latestBridgeVersion.equals(installedBridgeVersion);
     }
 
     public boolean checkIfBridgeInstalled(String synopsysBridgeInstallationPath) {
@@ -46,11 +56,11 @@ public class BridgeDownloadManager {
         return false;
     }
 
-    public String getInstalledBridgeVersion(String synopsysBridgeInstallationPath) {
-        File installationDirectory = new File(synopsysBridgeInstallationPath);
+    public String getBridgeVersionFromVersionFile(String versionFilePath) {
+        File installationDirectory = new File(versionFilePath);
 
         try {
-            String versionsFileContent = Files.readString(installationDirectory.toPath().resolve(versionFile));
+            String versionsFileContent = Files.readString(installationDirectory.toPath());
             Matcher matcher = Pattern.compile("Synopsys Bridge Package: (\\d+\\.\\d+\\.\\d+)")
                     .matcher(versionsFileContent);
 
@@ -58,43 +68,93 @@ public class BridgeDownloadManager {
                 return matcher.group(1);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+           listener.getLogger().println("An exception occurred while extracting bridge-version from the versions.txt: " + e.getMessage());
         }
-
         return null;
     }
 
-    public List<String> getAllAvailableBridgeVersionsFromArtifactory(String url) {
-        List<String> availableVersions = new ArrayList<>();
+    public String getLatestBridgeVersionFromArtifactory(String bridgeDownloadUrl) {
+        String extractedVersionNumber = extractVersionFromUrl(bridgeDownloadUrl);
+        if(extractedVersionNumber.equals("NA")) {
+            String directoryUrl = getDirectoryUrl(bridgeDownloadUrl);
+            if(versionFileAvailable(directoryUrl)) {
+                String versionFilePath = downloadVersionFile(directoryUrl);
+                String latestVersion = getBridgeVersionFromVersionFile(versionFilePath);
+                listener.getLogger().println("Extracted version from the artifactory's 'versions.txt' is: " + latestVersion);
 
-        try {
-            Document doc = Jsoup.connect(url).get();
-            Elements elements = doc.getElementsByTag("a");
-
-            for (Element element : elements) {
-                String content = element.text().endsWith("/") ? element.text().substring(0, element.text().length() - 1) : element.text();
-                String version = content.matches("^[0-9]+\\.[0-9]+\\.[0-9]+") ? content : null;
-                if (version != null) {
-                    availableVersions.add(version);
-                }
+                return latestVersion;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            else {
+                listener.getLogger().println("Neither version related information, nor 'versions.txt' is found in the URL.");
+                return "NA";
+            }
         }
-
-        return availableVersions;
-
+        else {
+            return extractedVersionNumber;
+        }
     }
 
-    public String getLatestVersion(List<String> versions) {
-        String latestVersion = "0.0.0";
+    public String downloadVersionFile(String directoryUrl) {
+        String versionFileUrl = String.join("/", directoryUrl, versionFile);
+        String tempVersionFilePath = null;
 
-        for (String version : versions) {
-            if (version.compareTo(latestVersion) > 0) {
-                latestVersion = version;
+        try {
+            URL url = new URL(versionFileUrl);
+            InputStream inputStream = url.openStream();
+            Path tempFilePath = Files.createTempFile("versions", ".txt");
+
+            Files.copy(inputStream, tempFilePath, StandardCopyOption.REPLACE_EXISTING);
+
+            tempVersionFilePath = tempFilePath.toAbsolutePath().toString();
+        } catch (IOException e) {
+            listener.getLogger().println("An exception occurred while downloading 'versions.txt': " + e.getMessage());
+        }
+        return tempVersionFilePath;
+    }
+
+    public boolean versionFileAvailable(String directoryUrl) {
+        try {
+            URL url = new URL(String.join("/",directoryUrl,versionFile));
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("HEAD");
+            return (connection.getResponseCode() >= 200 && connection.getResponseCode() < 300);
+        } catch (IOException e) {
+            listener.getLogger().println("An exception occurred while checking if 'versions.txt' is available or not in the URL : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public String getDirectoryUrl(String downloadUrl) {
+        String directoryUrl = null;
+        try {
+            URI uri = new URI(downloadUrl);
+            String path = uri.getPath();
+
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
             }
+
+            String directoryPath = path.substring(0, path.lastIndexOf('/'));
+            directoryUrl = uri.getScheme().concat("://").concat(uri.getHost()).concat(directoryPath);
+        } catch (URISyntaxException e) {
+            listener.getLogger().println("An exception occurred while getting directoryUrl from downloadUrl: " + e.getMessage());
+        }
+        return directoryUrl;
+    }
+
+    public String extractVersionFromUrl(String url) {
+        String regex = "/(\\d+\\.\\d+\\.\\d+)/";
+        Pattern pattern = Pattern.compile(regex);
+
+        Matcher matcher = pattern.matcher(url);
+
+        String version;
+        if (matcher.find()) {
+            version = matcher.group(1);
+        } else {
+            version = "NA";
         }
 
-        return latestVersion;
+        return version;
     }
 }

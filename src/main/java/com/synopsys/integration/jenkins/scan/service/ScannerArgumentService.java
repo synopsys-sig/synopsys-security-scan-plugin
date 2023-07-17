@@ -40,13 +40,14 @@ public class ScannerArgumentService {
     public List<String> getCommandLineArgs(Map<String, Object> scanParameters) {
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE));
 
-        BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
+        BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
         BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
 
         SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
         Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters);
 
-        commandLineArgs.add(createBlackDuckInputJson(blackDuck, blackDuck.getAutomation().getPrcomment() || blackDuck.getAutomation().getFixpr() ? scmObject : null));
+        commandLineArgs.add(createBlackDuckInputJson(blackDuck, blackDuck.getAutomation().getPrcomment()
+                || blackDuck.getAutomation().getFixpr() ? scmObject : null));
 
         return commandLineArgs;
     }
@@ -71,7 +72,8 @@ public class ScannerArgumentService {
             jsonPath = writeBlackDuckJsonToFile(blackDuckJson);
             setBlackDuckInputJsonFilePath(jsonPath);
         } catch (Exception e) {
-            e.printStackTrace();
+            listener.getLogger().println("An exception occurred while creating blackduck_input.json file: " + e.getMessage());
+
         }
 
         return jsonPath;
@@ -85,7 +87,7 @@ public class ScannerArgumentService {
             Files.writeString(tempFilePath, blackDuckJson);
             blackDuckInputJsonPath = tempFilePath.toAbsolutePath().toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            listener.getLogger().println("Exception occurred while writing into blackduck_input.json file: " + e.getMessage());
         }
 
         return blackDuckInputJsonPath;

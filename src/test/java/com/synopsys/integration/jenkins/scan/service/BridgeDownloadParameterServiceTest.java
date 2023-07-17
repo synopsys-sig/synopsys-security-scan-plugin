@@ -2,22 +2,27 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BridgeDownloadParameterServiceTest {
     private BridgeDownloadParametersService bridgeDownloadParametersService;
     private  BridgeDownloadParameters bridgeDownloadParameters;
+    private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
 
     @BeforeEach
     void setUp() {
         bridgeDownloadParameters = new BridgeDownloadParameters();
-        bridgeDownloadParametersService = new BridgeDownloadParametersService();
+        bridgeDownloadParametersService = new BridgeDownloadParametersService(listenerMock);
+        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
     @Test
@@ -50,14 +55,15 @@ public class BridgeDownloadParameterServiceTest {
         String os = System.getProperty("os.name").toLowerCase();
         String userHome = System.getProperty("user.home");
 
-        String validPath = userHome;
-        String invalidPath = "/path/absent";
+        String validPath = null;
+        String invalidPath = null;
         if (os.contains("win")) {
             validPath = String.join("\\", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
-            invalidPath = String.join("\\", invalidPath, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
-        } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
+            invalidPath = String.join("\\", "\\path\\absent", ApplicationConstants.DEFAULT_DIRECTORY_NAME);
+        }
+        else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
             validPath = String.join("/", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
-            invalidPath = String.join("/", invalidPath, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
+            invalidPath = String.join("/", "/path/absent", ApplicationConstants.DEFAULT_DIRECTORY_NAME);
         }
 
         assertTrue(bridgeDownloadParametersService.isValidInstallationPath(validPath));
@@ -68,14 +74,23 @@ public class BridgeDownloadParameterServiceTest {
     void getBridgeDownloadParamsTest() {
         Map<String, Object> scanParams = new HashMap<>();
 
+        String bridgeDownloadUrl = "https://myown.repo.com/release/synopsys-bridge/latest/synopsys-bridge-linux64.zip";
         scanParams.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, "3.0.0");
-        scanParams.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, "/path/to/bridge");
+        scanParams.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, bridgeDownloadUrl );
 
         BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
-        assertEquals(ApplicationConstants.BRIDGE_ARTIFACTORY_URL, result.getBridgeDownloadUrl());
-        assertEquals("3.0.0", result.getBridgeDownloadVersion());
-        assertEquals("/path/to/bridge", result.getBridgeInstallationPath());
+        assertEquals(bridgeDownloadUrl, result.getBridgeDownloadUrl());
+        assertNotEquals("3.0.0", result.getBridgeDownloadVersion());
+
+        Map<String, Object> scanParamsWithoutUrl = new HashMap<>();
+
+        scanParamsWithoutUrl.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, "3.0.0");
+        String bridgeDownloadUrlWithVersion = String.join("/", ApplicationConstants.BRIDGE_ARTIFACTORY_URL, "3.0.0",
+                ApplicationConstants.getSynopsysBridgeZipFileName(bridgeDownloadParametersService.getPlatform(), "3.0.0"));
+        BridgeDownloadParameters resultWithoutUrl = bridgeDownloadParametersService.getBridgeDownloadParams(scanParamsWithoutUrl, bridgeDownloadParameters);
+
+        assertEquals(bridgeDownloadUrlWithVersion, resultWithoutUrl.getBridgeDownloadUrl());
     }
 
     @Test
