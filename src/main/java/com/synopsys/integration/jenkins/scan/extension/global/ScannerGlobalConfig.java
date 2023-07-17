@@ -18,7 +18,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @HelpMarkdown("Provide the Black Duck api token through which black duck server can be accessed with proper authorization.")
     private String blackDuckApiToken;
 
-    @HelpMarkdown("Provide the Synopsys Bridge artifactory URL from where synopsys-bridge zip file can be downloaded. \r\n" +
+    @HelpMarkdown("Provide the Synopsys Bridge artifactory URL from where synopsys-bridge zip file can be downloaded. " +
         "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrl;
 
