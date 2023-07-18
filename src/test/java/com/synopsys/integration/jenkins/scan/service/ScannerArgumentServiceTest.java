@@ -7,13 +7,17 @@ import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
+import hudson.EnvVars;
 import hudson.FilePath;
 
+import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +27,9 @@ public class ScannerArgumentServiceTest {
     private BlackDuck blackDuck;
     private Bitbucket bitBucket;
     private ScannerArgumentService scannerArgumentService;
+    private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
+    private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
+
 
     @BeforeEach
     void setUp() {
@@ -32,7 +39,8 @@ public class ScannerArgumentServiceTest {
 
         bitBucket = new Bitbucket();
 
-        scannerArgumentService = new ScannerArgumentService(null, null);
+        scannerArgumentService = new ScannerArgumentService(listenerMock, envVarsMock);
+        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
     @Test
