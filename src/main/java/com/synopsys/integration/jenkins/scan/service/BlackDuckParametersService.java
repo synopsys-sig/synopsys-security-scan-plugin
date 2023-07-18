@@ -62,7 +62,7 @@ public class BlackDuckParametersService {
                     break;
                 case ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY:
                     if (value.equals("true") || value.equals("false")) {
-                        blackDuck.getAutomation().setPrcomment(Boolean.parseBoolean(value));
+                        blackDuck.getAutomation().setPrComment(Boolean.parseBoolean(value));
                     }
                     break;
             }

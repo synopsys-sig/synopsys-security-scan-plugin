@@ -46,7 +46,7 @@ public class ScannerArgumentService {
         SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
         Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters);
 
-        commandLineArgs.add(createBlackDuckInputJson(blackDuck, blackDuck.getAutomation().getPrcomment() || blackDuck.getAutomation().getFixpr() ? scmObject : null));
+        commandLineArgs.add(createBlackDuckInputJson(blackDuck, blackDuck.getAutomation().getPrComment() || blackDuck.getAutomation().getFixpr() ? scmObject : null));
 
         return commandLineArgs;
     }

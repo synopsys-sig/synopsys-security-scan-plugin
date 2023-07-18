@@ -44,7 +44,7 @@ public class BlackDuckParametersServiceTest {
         assertEquals(TEST_BLACKDUCK_INSTALL_DIRECTORY_PATH, blackDuck.getInstallDirectory());
 
         assertEquals(true, blackDuck.getAutomation().getFixpr());
-        assertEquals(false, blackDuck.getAutomation().getPrcomment());
+        assertEquals(false, blackDuck.getAutomation().getPrComment());
         assertEquals(true, blackDuck.getScan().getFull());
         assertEquals(List.of("BLOCKER", "CRITICAL", "MAJOR", "MINOR"), blackDuck.getScan().getFailureSeverities());
     }

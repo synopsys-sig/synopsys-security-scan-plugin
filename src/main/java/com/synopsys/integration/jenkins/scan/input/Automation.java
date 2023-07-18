@@ -7,8 +7,8 @@ public class Automation {
 
     @JsonProperty("fixpr")
     private Boolean fixpr;
-    @JsonProperty("prcomment")
-    private Boolean prcomment;
+    @JsonProperty("prComment")
+    private Boolean prComment;
 
     public Boolean getFixpr() {
         return fixpr;
@@ -18,11 +18,12 @@ public class Automation {
         this.fixpr = fixpr;
     }
 
-    public Boolean getPrcomment() {
-        return prcomment;
+    public Boolean getPrComment() {
+        return prComment;
     }
 
-    public void setPrcomment(Boolean prcomment) {
-        this.prcomment = prcomment;
+    public void setPrComment(Boolean prComment) {
+        this.prComment = prComment;
     }
 }
+
