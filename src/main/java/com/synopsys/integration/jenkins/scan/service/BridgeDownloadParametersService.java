@@ -54,13 +54,21 @@ public class BridgeDownloadParametersService {
         }
     }
 
+    public String getBridgeDownloadUrlFromGlobalConfig() {
+        ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
+        if (config != null && !Utility.isStringNullOrBlank(config.getSynopsysBridgeDownloadUrl())) {
+            return config.getSynopsysBridgeDownloadUrl().trim();
+        }
+        return null;
+    }
+
     public BridgeDownloadParameters getBridgeDownloadParams(Map<String, Object> scanParameters, BridgeDownloadParameters bridgeDownloadParameters) {
         if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_URL)) {
             bridgeDownloadParameters.setBridgeDownloadUrl(scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_URL).toString());
         } else {
-            ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
-            if (config != null && !Utility.isStringNullOrBlank(config.getSynopsysBridgeDownloadUrl())) {
-                bridgeDownloadParameters.setBridgeDownloadUrl(config.getSynopsysBridgeDownloadUrl().trim());
+            String bridgeDownloadUrlFromGlobalConfig = getBridgeDownloadUrlFromGlobalConfig();
+            if (bridgeDownloadUrlFromGlobalConfig != null) {
+                bridgeDownloadParameters.setBridgeDownloadUrl(bridgeDownloadUrlFromGlobalConfig);
             }
         }
 
