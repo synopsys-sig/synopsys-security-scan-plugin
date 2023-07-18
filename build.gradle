@@ -47,6 +47,9 @@ jenkinsPlugin {
 }
 
 dependencies {
+    annotationProcessor 'com.synopsys.integration:jenkins-annotation-processor:0.0.7'
+
+    implementation 'com.synopsys.integration:jenkins-common:0.5.5'
     implementation 'org.jenkins-ci.plugins:cloudbees-bitbucket-branch-source:809.vc1d904b_30426'
     implementation 'org.jsoup:jsoup:1.16.1'
 

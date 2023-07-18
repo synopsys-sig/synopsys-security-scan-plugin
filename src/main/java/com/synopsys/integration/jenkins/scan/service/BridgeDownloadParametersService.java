@@ -1,8 +1,10 @@
 package com.synopsys.integration.jenkins.scan.service;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
+import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 
+import com.synopsys.integration.jenkins.scan.global.Utility;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import jenkins.model.GlobalConfiguration;
 
 public class BridgeDownloadParametersService {
 
@@ -52,9 +55,13 @@ public class BridgeDownloadParametersService {
     }
 
     public BridgeDownloadParameters getBridgeDownloadParams(Map<String, Object> scanParameters, BridgeDownloadParameters bridgeDownloadParameters) {
-
         if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_URL)) {
             bridgeDownloadParameters.setBridgeDownloadUrl(scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_URL).toString());
+        } else {
+            ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
+            if (config != null && !Utility.isStringNullOrBlank(config.getSynopsysBridgeDownloadUrl())) {
+                bridgeDownloadParameters.setBridgeDownloadUrl(config.getSynopsysBridgeDownloadUrl().trim());
+            }
         }
 
         if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION)) {
