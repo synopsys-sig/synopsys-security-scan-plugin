@@ -49,31 +49,17 @@ public class BitbucketRepositoryService {
                     listener.getLogger().println("There is an exception while getting the BitbucketRepository from BitbucketApi");
                 }
 
+                String serverUrl = bitbucketSCMSource.getServerUrl();
+                String repositoryName = null;
+                String projectKey = null;
+
                 if(bitbucketRepository != null) {
                     listener.getLogger().println("Repository Name: " + bitbucketRepository.getRepositoryName());
+                    repositoryName = bitbucketRepository.getRepositoryName();
+                    projectKey = bitbucketRepository.getProject().getKey();
                 }
 
-                Api bitbucketApi = new Api();
-                bitbucketApi.setUrl(bitbucketSCMSource.getServerUrl());
-                bitbucketApi.setToken(bitBucketToken);
-
-                Pull pull = new Pull();
-                pull.setNumber(projectRepositoryPullNumber);
-
-                Repository repository = new Repository();
-                if(bitbucketRepository != null) {
-                    repository.setName(bitbucketRepository.getRepositoryName());
-                }
-                repository.setPull(pull);
-
-                Project project = new Project();
-                if(bitbucketRepository != null) {
-                    project.setKey(bitbucketRepository.getProject().getKey());
-                }
-                project.setRepository(repository);
-
-                bitbucket.setApi(bitbucketApi);
-                bitbucket.setProject(project);
+                bitbucket = createBitbucketObject(serverUrl, bitBucketToken, projectRepositoryPullNumber, repositoryName, projectKey);
 
             } else {
                 listener.getLogger().println("Ignoring bitbucket_automation_fixpr and bitbucket_automation_prcomment since couldn't find any valid Bitbucket SCM source.");
@@ -81,6 +67,24 @@ public class BitbucketRepositoryService {
         } else {
             listener.getLogger().println("Jenkins instance not found.");
         }
+        return bitbucket;
+    }
+
+    public static Bitbucket createBitbucketObject(String serverUrl, String bitBucketToken, Integer projectRepositoryPullNumber, String repositoryName, String projectKey) {
+        Bitbucket bitbucket = new Bitbucket();
+        bitbucket.getApi().setUrl(serverUrl);
+        bitbucket.getApi().setToken(bitBucketToken);
+
+        Pull pull = new Pull();
+        pull.setNumber(projectRepositoryPullNumber);
+
+        Repository repository = new Repository();
+        repository.setName(repositoryName);
+        repository.setPull(pull);
+
+        bitbucket.getProject().setKey(projectKey);
+        bitbucket.getProject().setRepository(repository);
+
         return bitbucket;
     }
 
