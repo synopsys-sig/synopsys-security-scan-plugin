@@ -1,7 +1,6 @@
 package com.synopsys.integration.jenkins.scan.extension.global;
 
 
-import com.synopsys.integration.jenkins.annotations.HelpMarkdown;
 import hudson.Extension;
 import java.io.Serializable;
 import jenkins.model.GlobalConfiguration;
@@ -12,14 +11,10 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
 
-    @HelpMarkdown("Provide the URL that lets you access your Black Duck server.")
     private String blackDuckUrl;
 
-    @HelpMarkdown("Provide the Black Duck api token through which black duck server can be accessed with proper authorization.")
     private String blackDuckApiToken;
 
-    @HelpMarkdown("Provide the Synopsys Bridge artifactory URL from where synopsys-bridge zip file can be downloaded. " +
-        "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrl;
 
     @DataBoundConstructor
