@@ -5,7 +5,6 @@ import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
 import com.synopsys.integration.jenkins.scan.service.scm.BitbucketRepositoryService;
 import jenkins.model.Jenkins;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;

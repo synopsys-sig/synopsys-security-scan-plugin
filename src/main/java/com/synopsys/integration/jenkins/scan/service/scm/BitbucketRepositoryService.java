@@ -72,9 +72,8 @@ public class BitbucketRepositoryService {
 
     public static Bitbucket createBitbucketObject(String serverUrl, String bitBucketToken, Integer projectRepositoryPullNumber, String repositoryName, String projectKey) {
         Bitbucket bitbucket = new Bitbucket();
-        Api bitbucketApi = new Api();
-        bitbucketApi.setUrl(serverUrl);
-        bitbucketApi.setToken(bitBucketToken);
+        bitbucket.getApi().setUrl(serverUrl);
+        bitbucket.getApi().setToken(bitBucketToken);
 
         Pull pull = new Pull();
         pull.setNumber(projectRepositoryPullNumber);
@@ -83,12 +82,8 @@ public class BitbucketRepositoryService {
         repository.setName(repositoryName);
         repository.setPull(pull);
 
-        Project project = new Project();
-        project.setKey(projectKey);
-        project.setRepository(repository);
-
-        bitbucket.setApi(bitbucketApi);
-        bitbucket.setProject(project);
+        bitbucket.getProject().setKey(projectKey);
+        bitbucket.getProject().setRepository(repository);
 
         return bitbucket;
     }
