@@ -57,7 +57,7 @@ public class BlackDuckParametersService {
                         for (String input : failureSeveritiesInput) {
                             failureSeverities.add(input.trim());
                         }
-                        blackDuck.getScan().setFailureSeverities(failureSeverities);
+                        blackDuck.getScan().getFailure().setSeverities(failureSeverities);
                     }
                     break;
                 case ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY:

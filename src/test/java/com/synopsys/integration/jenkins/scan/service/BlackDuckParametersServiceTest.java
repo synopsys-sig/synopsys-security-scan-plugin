@@ -4,16 +4,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
-
 import hudson.model.TaskListener;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class BlackDuckParametersServiceTest {
     private BlackDuckParametersService blackDuckParametersService;
@@ -51,7 +49,7 @@ public class BlackDuckParametersServiceTest {
         assertEquals(true, blackDuck.getAutomation().getFixpr());
         assertEquals(false, blackDuck.getAutomation().getPrComment());
         assertEquals(true, blackDuck.getScan().getFull());
-        assertEquals(List.of("BLOCKER", "CRITICAL", "MAJOR", "MINOR"), blackDuck.getScan().getFailureSeverities());
+        assertEquals(List.of("BLOCKER", "CRITICAL", "MAJOR", "MINOR"), blackDuck.getScan().getFailure().getSeverities());
     }
 
     @Test
