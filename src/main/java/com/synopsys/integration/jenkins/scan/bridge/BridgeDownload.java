@@ -1,5 +1,6 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
+import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 
@@ -16,20 +17,38 @@ public class BridgeDownload {
 
     public FilePath downloadSynopsysBridge(String bridgeDownloadUrl) {
         FilePath tempFilePath = null;
+
         if (checkIfBridgeUrlExists(bridgeDownloadUrl)) {
             try {
-                listener.getLogger().println("Downloading synopsys bridge from: " + bridgeDownloadUrl);
-                File tempFile = File.createTempFile("bridge", ".zip");
+                int retryCount = 1;
+                boolean downloadSuccess = false;
 
-                tempFilePath = new FilePath(tempFile);
-                tempFilePath.copyFrom(new URL(bridgeDownloadUrl));
+                while (!downloadSuccess && retryCount <= ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES) {
+                    try {
+                        listener.getLogger().println("Downloading Synopsys Bridge from: " + bridgeDownloadUrl);
+                        File tempFile = File.createTempFile("bridge", ".zip");
+                        tempFilePath = new FilePath(tempFile);
 
-            } catch (Exception e) {
-                listener.getLogger().println("Synopsys bridge download failed");
+                        tempFilePath.copyFrom(new URL(bridgeDownloadUrl));
+                        downloadSuccess = true;
+
+                        listener.getLogger().println("Synopsys Bridge download is successful!");
+                    } catch (Exception e) {
+                        listener.getLogger().printf("Synopsys Bridge download failed. Attempt#%s to download again.%n", retryCount);
+                        Thread.sleep(2500);
+                        retryCount++;
+                    }
+                }
+
+                if (!downloadSuccess) {
+                    listener.getLogger().printf("Synopsys Bridge download failed after %s attempts.%n", ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES);
+                }
+            } catch (InterruptedException e) {
+                listener.getLogger().println("Interrupted while waiting to retry Synopsys Bridge download");
+                e.printStackTrace();
             }
-        }
-        else {
-            listener.getLogger().println("Invalid synopsys bridge download url: " + bridgeDownloadUrl);
+        } else {
+            listener.getLogger().println("Invalid Synopsys Bridge download URL: " + bridgeDownloadUrl);
         }
         return tempFilePath;
     }
