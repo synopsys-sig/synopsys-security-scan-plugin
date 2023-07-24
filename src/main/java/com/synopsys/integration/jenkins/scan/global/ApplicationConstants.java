@@ -3,7 +3,8 @@ package com.synopsys.integration.jenkins.scan.global;
 public class ApplicationConstants {
     public static final String DISPLAY_NAME = "Synopsys Scan";
     public static final String PIPELINE_NAME = "synopsys_scan";
-    public static final String BRIDGE_ARTIFACTORY_URL = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/";
+    public static final String BRIDGE_ARTIFACTORY_URL =
+            "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge";
     public static final String SYNOPSYS_BRIDGE_RUN_COMMAND = "./synopsys-bridge";
     public static final String SYNOPSYS_BRIDGE_LATEST_VERSION = "latest";
     public static final String BRIDGE_DOWNLOAD_FILE_PATH = "/tmp/synopsys-security-scan";
@@ -24,6 +25,7 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck_automation_prcomment";
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
     public static final String DEFAULT_DIRECTORY_NAME = "synopsys-bridge";
+    public static final int BRIDGE_DOWNLOAD_MAX_RETRIES = 3;
 
     public static String getSynopsysBridgeZipFileName(String platform) {
         return "synopsys-bridge-".concat(platform).concat(".zip");
@@ -31,5 +33,4 @@ public class ApplicationConstants {
     public static String getSynopsysBridgeZipFileName(String platform, String version) {
         return "synopsys-bridge-".concat(version).concat("-").concat(platform).concat(".zip");
     }
-
 }

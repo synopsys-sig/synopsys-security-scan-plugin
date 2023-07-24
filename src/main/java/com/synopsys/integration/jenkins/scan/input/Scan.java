@@ -1,13 +1,16 @@
 package com.synopsys.integration.jenkins.scan.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.List;
 
 public class Scan {
     @JsonProperty("full")
     private Boolean full;
-    @JsonProperty("failure.severities")
-    private List<String> failureSeverities;
+    @JsonProperty("failure")
+    private Failure failure;
+
+    public Scan() {
+        failure = new Failure();
+    }
 
     public Boolean getFull() {
         return full;
@@ -17,12 +20,12 @@ public class Scan {
         this.full = full;
     }
 
-    public List<String> getFailureSeverities() {
-        return failureSeverities;
+    public Failure getFailure() {
+        return failure;
     }
 
-    public void setFailureSeverities(List<String> failureSeverities) {
-        this.failureSeverities = failureSeverities;
+    public void setFailure(Failure failure) {
+        this.failure = failure;
     }
 
 }
