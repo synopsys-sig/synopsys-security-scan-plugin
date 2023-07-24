@@ -25,7 +25,7 @@ public class ScanPipelineCommands {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (exitCode > 0) {
+        if (exitCode != 0) {
             throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
         }
 
