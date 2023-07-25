@@ -193,7 +193,7 @@ public class SecurityScanStep extends Step implements Serializable {
         }
 
         @Override
-        protected Integer run() throws IOException, InterruptedException, ScannerJenkinsException {
+        protected Integer run() throws ScannerJenkinsException {
             return ScanCommandsFactory.createPipelineCommand(listener, envVars, launcher, node, workspace)
                 .runScanner(getParametersMap());
         }
