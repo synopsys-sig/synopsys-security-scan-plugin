@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ScannerArgumentService {
     private final TaskListener listener;
@@ -48,6 +49,10 @@ public class ScannerArgumentService {
 
         commandLineArgs.add(createBlackDuckInputJson(blackDuck, blackDuck.getAutomation().getPrComment()
                 || blackDuck.getAutomation().getFixpr() ? scmObject : null));
+
+        if (Objects.equals(scanParameters.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
+            commandLineArgs.add(BridgeParams.DIAGNOSTICS_OPTION);
+        }
 
         return commandLineArgs;
     }
