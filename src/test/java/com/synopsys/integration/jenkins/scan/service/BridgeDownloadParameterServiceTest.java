@@ -74,32 +74,37 @@ public class BridgeDownloadParameterServiceTest {
     void getBridgeDownloadParamsTest() {
         Map<String, Object> scanParams = new HashMap<>();
 
-        String bridgeDownloadUrl = "https://myown.repo.com/release/synopsys-bridge/latest/synopsys-bridge-linux64.zip";
         scanParams.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, "3.0.0");
-        scanParams.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, bridgeDownloadUrl );
+        scanParams.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, "/path/to/bridge");
 
-        BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
+        BridgeDownloadParametersService mockedBridgeDownloadParametersService = Mockito.spy(new BridgeDownloadParametersService(null));
 
-        assertEquals(bridgeDownloadUrl, result.getBridgeDownloadUrl());
-        assertNotEquals("3.0.0", result.getBridgeDownloadVersion());
+        Mockito.doReturn("https://fake.url.com")
+                .when(mockedBridgeDownloadParametersService)
+                .getBridgeDownloadUrlFromGlobalConfig();
+        BridgeDownloadParameters result = mockedBridgeDownloadParametersService
+                .getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
-        Map<String, Object> scanParamsWithoutUrl = new HashMap<>();
-
-        scanParamsWithoutUrl.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, "3.0.0");
-        String bridgeDownloadUrlWithVersion = String.join("/", ApplicationConstants.BRIDGE_ARTIFACTORY_URL, "3.0.0",
-                ApplicationConstants.getSynopsysBridgeZipFileName(bridgeDownloadParametersService.getPlatform(), "3.0.0"));
-        BridgeDownloadParameters resultWithoutUrl = bridgeDownloadParametersService.getBridgeDownloadParams(scanParamsWithoutUrl, bridgeDownloadParameters);
-
-        assertEquals(bridgeDownloadUrlWithVersion, resultWithoutUrl.getBridgeDownloadUrl());
+        assertEquals("https://fake.url.com", result.getBridgeDownloadUrl());
+        assertEquals("/path/to/bridge", result.getBridgeInstallationPath());
     }
 
     @Test
     void getBridgeDownloadParamsNullTest() {
         Map<String, Object> scanParamsNull = new HashMap<>();
 
-        BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParamsNull, bridgeDownloadParameters);
+        BridgeDownloadParametersService mockedBridgeDownloadParametersService = Mockito.spy(new BridgeDownloadParametersService(null));
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
+
+        Mockito.doReturn(null)
+                .when(mockedBridgeDownloadParametersService)
+                .getBridgeDownloadUrlFromGlobalConfig();
+        BridgeDownloadParameters result = mockedBridgeDownloadParametersService
+                .getBridgeDownloadParams(scanParamsNull, bridgeDownloadParameters);
 
         assertNotNull(result);
+        assertNotNull(result.getBridgeDownloadUrl());
         assertNotNull(result.getBridgeDownloadVersion());
+        assertNotNull(result.getBridgeInstallationPath());
     }
 }
