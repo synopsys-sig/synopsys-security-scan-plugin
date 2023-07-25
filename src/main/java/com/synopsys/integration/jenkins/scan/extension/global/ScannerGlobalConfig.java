@@ -17,7 +17,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     private String synopsysBridgeDownloadUrl;
 
-    private String bitbucketApiToken;
+    private String bitbucketToken;
 
     @DataBoundConstructor
     public ScannerGlobalConfig() {
@@ -36,16 +36,11 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         save();
     }
 
-    public String getBitbucketApiToken() {
-        return bitbucketApiToken;
-    }
-
     @DataBoundSetter
-    public void setBitbucketApiToken(String bitbucketApiToken) {
-        this.bitbucketApiToken = bitbucketApiToken;
+    public void setBitbucketToken(String bitbucketToken) {
+        this.bitbucketToken = bitbucketToken;
         save();
     }
-
 
     @DataBoundSetter
     public void setSynopsysBridgeDownloadUrl(String synopsysBridgeDownloadUrl) {
@@ -62,6 +57,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getSynopsysBridgeDownloadUrl() {
         return synopsysBridgeDownloadUrl;
+    }
+
+    public String getBitbucketToken() {
+        return bitbucketToken;
     }
 
 }

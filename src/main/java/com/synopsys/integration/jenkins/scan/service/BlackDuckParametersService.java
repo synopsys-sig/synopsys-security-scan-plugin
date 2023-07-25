@@ -125,7 +125,6 @@ public class BlackDuckParametersService {
         try {
             blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl().trim());
             blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, config.getBlackDuckApiToken().trim());
-            blackDuckParametersFromJenkinsUI.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, config.getBitbucketApiToken().trim());
         } catch (Exception e) {
             blackDuckParametersFromJenkinsUI.clear();
         }

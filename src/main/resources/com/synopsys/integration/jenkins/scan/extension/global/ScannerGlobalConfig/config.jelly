@@ -9,7 +9,7 @@
         <f:entry field="synopsysBridgeDownloadUrl" title="Synopsys Bridge Download URL (Optional)">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bitbucketApiToken" title="Bitbucket Api Token (Optional)">
+        <f:entry field="bitbucketToken" title="Bitbucket Token (Optional)">
             <f:password/>
         </f:entry>
     </f:section>

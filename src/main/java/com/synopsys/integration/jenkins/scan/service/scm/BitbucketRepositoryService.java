@@ -3,6 +3,9 @@ package com.synopsys.integration.jenkins.scan.service.scm;
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketApi;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
+import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
+import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Api;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Project;
@@ -12,6 +15,7 @@ import hudson.model.*;
 import java.io.IOException;
 import java.util.Map;
 
+import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
 
@@ -35,10 +39,20 @@ public class BitbucketRepositoryService {
             if (scmSource instanceof BitbucketSCMSource) {
                 BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
 
-                String bitBucketToken = (String) scanParameters.get("bitbucket_token");
-//                if(bitBucketToken == null) {
-//                    bitBucketToken = SCMRepositoryService.getCredentialsToken(bitbucketSCMSource.getCredentialsId());
-//                }
+                String bitbucketToken = (String) scanParameters.get("bitbucket_token");
+
+                if (Utility.isStringNullOrBlank(bitbucketToken)) {
+                    if (!Utility.isStringNullOrBlank(getBitbucketTokenFromGlobalConfig())) {
+                        bitbucketToken = getBitbucketTokenFromGlobalConfig();
+                    } else {
+//                        bitbucketToken = SCMRepositoryService.getCredentialsToken(bitbucketSCMSource.getCredentialsId());
+                        try {
+                            throw new ScannerJenkinsException("PrComment is set true but not found any bitbucket token!");
+                        } catch (ScannerJenkinsException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
 
                 BitbucketApi bitbucketApiFromSCMSource = bitbucketSCMSource.buildBitbucketClient(bitbucketSCMSource.getRepoOwner(), bitbucketSCMSource.getRepository());
 
@@ -59,7 +73,7 @@ public class BitbucketRepositoryService {
                     projectKey = bitbucketRepository.getProject().getKey();
                 }
 
-                bitbucket = createBitbucketObject(serverUrl, bitBucketToken, projectRepositoryPullNumber, repositoryName, projectKey);
+                bitbucket = createBitbucketObject(serverUrl, bitbucketToken, projectRepositoryPullNumber, repositoryName, projectKey);
 
             } else {
                 listener.getLogger().println("Ignoring bitbucket_automation_fixpr and bitbucket_automation_prcomment since couldn't find any valid Bitbucket SCM source.");
@@ -70,10 +84,10 @@ public class BitbucketRepositoryService {
         return bitbucket;
     }
 
-    public static Bitbucket createBitbucketObject(String serverUrl, String bitBucketToken, Integer projectRepositoryPullNumber, String repositoryName, String projectKey) {
+    public static Bitbucket createBitbucketObject(String serverUrl, String bitbucketToken, Integer projectRepositoryPullNumber, String repositoryName, String projectKey) {
         Bitbucket bitbucket = new Bitbucket();
         bitbucket.getApi().setUrl(serverUrl);
-        bitbucket.getApi().setToken(bitBucketToken);
+        bitbucket.getApi().setToken(bitbucketToken);
 
         Pull pull = new Pull();
         pull.setNumber(projectRepositoryPullNumber);
@@ -86,6 +100,14 @@ public class BitbucketRepositoryService {
         bitbucket.getProject().setRepository(repository);
 
         return bitbucket;
+    }
+
+    private String getBitbucketTokenFromGlobalConfig() {
+        ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
+        if (config != null && !Utility.isStringNullOrBlank(config.getBitbucketToken())) {
+            return config.getBitbucketToken().trim();
+        }
+        return null;
     }
 
 }
