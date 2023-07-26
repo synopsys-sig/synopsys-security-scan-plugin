@@ -1,5 +1,6 @@
 package com.synopsys.integration.jenkins.scan.service;
 
+import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
 import com.synopsys.integration.jenkins.scan.service.scm.BitbucketRepositoryService;
@@ -25,7 +26,7 @@ public class BitbucketRepositoryServiceTest {
     Map<String, Object> bitbucketParametersMap = new HashMap<>();
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws ScannerJenkinsException {
         Bitbucket bitbucket = BitbucketRepositoryService.createBitbucketObject(TEST_BITBUCKET_URL, TEST_BITBUCKET_TOKEN, TEST_REPOSITORY_PULL_NUMBER, TEST_REPOSITORY_NAME, TEST_PROJECT_KEY);
 
         bitbucketParametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, TEST_BITBUCKET_TOKEN);
@@ -34,7 +35,7 @@ public class BitbucketRepositoryServiceTest {
     }
 
     @Test
-    void createBitbucketObjectTest() {
+    void createBitbucketObjectTest() throws ScannerJenkinsException {
         Bitbucket bitbucket = bitbucketRepositoryServiceMock.fetchBitbucketRepositoryDetails(jenkinsMock, bitbucketParametersMap, TEST_REPOSITORY_PULL_NUMBER);
 
         assertEquals(TEST_BITBUCKET_URL, bitbucket.getApi().getUrl());

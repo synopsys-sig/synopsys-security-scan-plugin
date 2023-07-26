@@ -7,14 +7,8 @@ import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
-import com.synopsys.integration.jenkins.scan.input.bitbucket.Api;
-import com.synopsys.integration.jenkins.scan.input.bitbucket.Project;
-import hudson.EnvVars;
 import hudson.model.*;
-
-import java.io.IOException;
 import java.util.Map;
-
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
@@ -27,7 +21,7 @@ public class BitbucketRepositoryService {
         this.listener = listener;
     }
 
-    public Bitbucket fetchBitbucketRepositoryDetails(Jenkins jenkins, Map<String, Object> scanParameters, Integer projectRepositoryPullNumber) {
+    public Bitbucket fetchBitbucketRepositoryDetails(Jenkins jenkins, Map<String, Object> scanParameters, Integer projectRepositoryPullNumber) throws ScannerJenkinsException {
         listener.getLogger().println("Getting bitbucket repository details");
 
         Bitbucket bitbucket = new Bitbucket();
@@ -46,10 +40,9 @@ public class BitbucketRepositoryService {
                         bitbucketToken = getBitbucketTokenFromGlobalConfig();
                     } else {
 //                        bitbucketToken = SCMRepositoryService.getCredentialsToken(bitbucketSCMSource.getCredentialsId());
-                        try {
+                        Boolean prComment = (Boolean) scanParameters.get("blackduck_automation_prcomment");
+                        if(prComment) {
                             throw new ScannerJenkinsException("PrComment is set true but not found any bitbucket token!");
-                        } catch (ScannerJenkinsException e) {
-                            e.printStackTrace();
                         }
                     }
                 }
