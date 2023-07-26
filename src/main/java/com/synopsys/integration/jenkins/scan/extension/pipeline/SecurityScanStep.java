@@ -41,6 +41,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_download_url;
     private String bridge_download_version;
     private String synopsys_bridge_path;
+    private boolean include_diagnostics = false;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -102,6 +103,11 @@ public class SecurityScanStep extends Step implements Serializable {
         this.synopsys_bridge_path = synopsys_bridge_path;
     }
 
+    @DataBoundSetter
+    public void setInclude_diagnostics(boolean include_diagnostics) {
+        this.include_diagnostics = include_diagnostics;
+    }
+
     public String getBlackduck_url() {
         return blackduck_url;
     }
@@ -144,6 +150,10 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public String getSynopsys_bridge_path() {
         return synopsys_bridge_path;
+    }
+
+    public boolean getInclude_diagnostics() {
+        return include_diagnostics;
     }
 
     private Map<String, Object> getParametersMap() {

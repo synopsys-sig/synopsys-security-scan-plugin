@@ -23,6 +23,7 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck_scan_failure_severities";
     public static final String BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck_automation_fixpr";
     public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck_automation_prcomment";
+    public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
     public static final String DEFAULT_DIRECTORY_NAME = "synopsys-bridge";
     public static final int BRIDGE_DOWNLOAD_MAX_RETRIES = 3;
 

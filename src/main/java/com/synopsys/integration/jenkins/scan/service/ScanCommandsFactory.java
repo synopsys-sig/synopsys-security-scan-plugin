@@ -70,6 +70,7 @@ public class ScanCommandsFactory {
         if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_path())) {
             parametersMap.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, scanStep.getSynopsys_bridge_path());
         }
+        parametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, scanStep.getInclude_diagnostics());
 
         return parametersMap;
     }
