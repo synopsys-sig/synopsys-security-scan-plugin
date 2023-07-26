@@ -9,7 +9,7 @@ public class ExceptionMessages {
     }
 
     public static String scannerFailureMessage(String message) {
-        return "Scanner failure! " + message;
+        return "Scanner failed! " + message;
     }
 
 }

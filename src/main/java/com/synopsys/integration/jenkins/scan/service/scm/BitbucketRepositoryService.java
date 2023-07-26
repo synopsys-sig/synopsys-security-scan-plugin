@@ -5,6 +5,7 @@ import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketApi;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
+import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
 import hudson.model.*;
@@ -40,7 +41,7 @@ public class BitbucketRepositoryService {
                         bitbucketToken = getBitbucketTokenFromGlobalConfig();
                     } else {
 //                        bitbucketToken = SCMRepositoryService.getCredentialsToken(bitbucketSCMSource.getCredentialsId());
-                        Boolean prComment = (Boolean) scanParameters.get("blackduck_automation_prcomment");
+                        Boolean prComment = (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY);
                         if(prComment) {
                             throw new ScannerJenkinsException("PrComment is set true but not found any bitbucket token!");
                         }
