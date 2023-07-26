@@ -4,6 +4,7 @@ import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardCredentials;
 import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
+import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import hudson.EnvVars;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
@@ -27,7 +28,7 @@ public class SCMRepositoryService {
         this.envVars = envVars;
     }
 
-    public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters) {
+    public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters) throws ScannerJenkinsException {
         jenkins = Jenkins.getInstanceOrNull();
         jobName = envVars.get("JOB_NAME").substring(0, envVars.get("JOB_NAME").indexOf("/"));
         Integer projectRepositoryPullNumber = envVars.get("CHANGE_ID") != null ? Integer.parseInt(envVars.get("CHANGE_ID")) : null;
