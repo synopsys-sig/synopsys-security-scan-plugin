@@ -2,8 +2,8 @@ package com.synopsys.integration.jenkins.scan.global;
 
 import hudson.FilePath;
 
-import org.apache.commons.io.FileUtils;
-
+import hudson.model.TaskListener;
+import jenkins.model.Jenkins;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,7 +25,7 @@ public class Utility {
         }
     }
 
-    public static void deleteDirectory(File directory) {
+   /* public static void deleteDirectory(File directory) {
         File[] files = directory.listFiles();
         if (files != null) {
             for (File file : files) {
@@ -37,56 +37,82 @@ public class Utility {
             }
         }
         directory.delete();
-    }
+    }*/
 
-    public static void copyRepository(String pluginWorkspaceDirectory, String targetDirectory) {
-        File workspaceDirectory = Utility.stringToFile(pluginWorkspaceDirectory);
-        File targetDir = Utility.stringToFile(targetDirectory);
+    public static void copyRepository(String targetDirectory, FilePath workspace, TaskListener listener) {
+        FilePath targetDir = new FilePath(workspace.getChannel(), targetDirectory);
 
-        File gitDirectory = new File(targetDirectory, ".git");
-
-        if (gitDirectory.exists() && gitDirectory.isDirectory()) {
-            Utility.deleteDirectory(gitDirectory);
-        }
-
-        if (!targetDir.exists()) {
-            targetDir.mkdirs();
-        }
         try {
-            FileUtils.copyDirectory(workspaceDirectory, targetDir);
-        } catch (IOException e) {
-            e.printStackTrace();
+            FilePath gitDirectory = targetDir.child(".git");
+            if (gitDirectory.exists()) {
+                gitDirectory.deleteRecursive();
+            }
+
+            if (!targetDir.exists()) {
+                targetDir.mkdirs();
+            }
+            workspace.copyRecursiveTo(targetDir);
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("An exception occurred while copying the repository: " + e.getMessage());
         }
     }
 
-    public static String defaultBridgeInstallationPath() {
+    public static String defaultBridgeInstallationPath(FilePath workspace, TaskListener listener) {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        String separator = getDirectorySeparator(workspace, listener);
         String defaultInstallationPath = null;
 
-        String os = System.getProperty("os.name").toLowerCase();
-        String userHome = System.getProperty("user.home");
-
-        if (os.contains("win")) {
-            defaultInstallationPath = String.join("\\", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
-        } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
-            defaultInstallationPath = String.join("/", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
+        if (jenkins != null && workspace.isRemote()) {
+            listener.getLogger().println("Method: defaultBridgeInstallationPath() Jenkins is running on agent node remotely.");
+        } else {
+            listener.getLogger().println("Method: defaultBridgeInstallationPath() Jenkins is running on the master node.");
         }
 
-        verifyAndCreateInstallationPath(defaultInstallationPath);
+        try {
+            defaultInstallationPath = workspace.act(new GetHomeDirectoryTask(separator));
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("Failed to fetch plugin's default installation path.");
+        }
+
+        listener.getLogger().println("Method: defaultBridgeInstallationPath() Plugin's default installation path for this build is : " + defaultInstallationPath);
+        verifyAndCreateInstallationPath(defaultInstallationPath, workspace, listener);
 
         return defaultInstallationPath;
     }
 
-    public static void verifyAndCreateInstallationPath(String bridgeInstallationPath) {
-        File directory = new File(bridgeInstallationPath);
-        if (!directory.exists()) {
-            boolean created = directory.mkdirs();
-            if (!created) {
-                System.out.println("Failed to create directory: " + bridgeInstallationPath);
+    public static String getDirectorySeparator(FilePath workspace, TaskListener listener) {
+        String os = null;
+        if (workspace.isRemote()) {
+            try {
+                os = workspace.act(new GetOsNameTask());
+            } catch (IOException | InterruptedException e) {
+                listener.getLogger().println("Exception occurred while getting directory separator for the agent node: " + e.getMessage());
             }
+        } else {
+            os = System.getProperty("os.name").toLowerCase();
+        }
+
+        if (os.contains("win")) {
+            return "\\";
+        }  else {
+            return "/";
         }
     }
 
-    public static FilePath stringToFilePath(String path) {
+    public static void verifyAndCreateInstallationPath(String bridgeInstallationPath, FilePath workspace, TaskListener listener) {
+        FilePath directory = new FilePath(workspace.getChannel(), bridgeInstallationPath);
+        try {
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            listener.getLogger().println("Created bridge installation directory at: " + directory.getRemote());
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("Failed to create directory: " + directory.getRemote());
+
+        }
+    }
+
+   /* public static FilePath stringToFilePath(String path) {
         FilePath filePath = new FilePath(new File(path));
         return filePath;
     }
@@ -100,13 +126,19 @@ public class Utility {
         String filePathString = filePath.getRemote();
         File file = new File(filePathString);
         return file;
-    }
+    }*/
 
-    public static void cleanupInputJson(String inputJsonPath) {
-        File file = new File(inputJsonPath);
+    public static void cleanupInputJson(String inputJsonPath, FilePath workspace, TaskListener listener) {
+        listener.getLogger().println("Method: cleanupInputJson blackduck_input.json path: " + inputJsonPath);
+        try {
+            FilePath file = new FilePath(workspace.getChannel(), inputJsonPath);
+            file = file.absolutize();
 
-        if (file.exists()) {
-            file.delete();
+            if (file.exists()) {
+                file.delete();
+            }
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("An exception occurred while cleaning up the input JSON file: " + e.getMessage());
         }
     }
 

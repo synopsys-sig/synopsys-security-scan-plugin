@@ -6,6 +6,7 @@ public class ApplicationConstants {
     public static final String BRIDGE_ARTIFACTORY_URL =
             "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge";
     public static final String SYNOPSYS_BRIDGE_RUN_COMMAND = "./synopsys-bridge";
+    public static final String SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS = "C:\\Users\\jraihan\\synopsys-bridge\\synopsys-bridge.exe";
     public static final String SYNOPSYS_BRIDGE_LATEST_VERSION = "latest";
     public static final String BRIDGE_DOWNLOAD_FILE_PATH = "/tmp/synopsys-security-scan";
     public static final String BRIDGE_ZIP_FILE_FORMAT = "bridge.zip";

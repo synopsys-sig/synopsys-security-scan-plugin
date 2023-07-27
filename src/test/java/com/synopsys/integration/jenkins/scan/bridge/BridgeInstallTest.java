@@ -16,11 +16,12 @@ import static org.mockito.Mockito.verify;
 public class BridgeInstallTest {
     private final BridgeInstall bridgeInstallMock = Mockito.mock(BridgeInstall.class);
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
+    private final FilePath workspaceMock = Mockito.mock(FilePath.class);
     private BridgeInstall BridgeInstall;
 
     @BeforeEach
     public void setup() {
-        BridgeInstall = new BridgeInstall(listenerMock);
+        BridgeInstall = new BridgeInstall(listenerMock, workspaceMock);
     }
 
     @Test

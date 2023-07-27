@@ -13,6 +13,7 @@ import hudson.Launcher;
 import hudson.model.TaskListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +36,8 @@ public class SecurityScanner {
     public int runScanner(Map<String, Object> scanParams) {
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
 
-        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
-        BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService(listener);
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);
+        BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService(workspace, listener);
         BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
         Map<String, Object> blackDuckParameters = blackDuckParametersService.prepareBlackDuckParameterValidation(scanParams);
@@ -48,7 +49,13 @@ public class SecurityScanner {
             FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
             List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams);
 
-            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(listener);
+
+
+            String argsAsString = String.join(" ", commandLineArgs);
+            listener.getLogger().println("Method runScanner(): bridgeArgs: " + argsAsString);
+
+
+            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace,listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
 
             if (isBridgeDownloadRequired) {
@@ -57,22 +64,32 @@ public class SecurityScanner {
                 listener.getLogger().println("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
             }
 
-            Utility.copyRepository(workspace.getRemote(), bridgeDownloadParams.getBridgeInstallationPath());
+            Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace, listener);
 
             printMessages(LogMessages.START_SCANNER);
+
+            FilePath directory = new FilePath(new File("C:\\Users\\jraihan\\synopsys-bridge"));
+
+            try {
+                int mode = directory.mode();
+                listener.getLogger().println(" >>>>>>>>>>>>>>>>>>>> >>>> :::::: Directory permissions: " + Integer.toOctalString(mode));
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
 
             try {
                 scanner = launcher.launch()
                         .cmds(commandLineArgs)
                         .envs(envVars)
                         .pwd(bridgeInstallationPath)
+//                        .pwd("C:\\Users\\jraihan\\synopsys-bridge")
                         .stdout(listener)
                         .quiet(true)
                         .join();
             } catch (Exception e) {
                 listener.getLogger().println("Exception occurred while invoking synopsys-bridge from the plugin : " + e.getMessage());
             } finally {
-                Utility.cleanupInputJson(scannerArgumentService.getBlackDuckInputJsonFilePath());
+                Utility.cleanupInputJson(scannerArgumentService.getBlackDuckInputJsonFilePath(), workspace, listener);
             }
         }
 
@@ -82,13 +99,13 @@ public class SecurityScanner {
     }
 
     private void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
-        BridgeDownload bridgeDownload = new BridgeDownload(listener);
-        BridgeInstall bridgeInstall = new BridgeInstall(listener);
+        BridgeDownload bridgeDownload = new BridgeDownload(listener, workspace);
+        BridgeInstall bridgeInstall = new BridgeInstall(listener, workspace);
 
         String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();
 
-        Utility.verifyAndCreateInstallationPath(bridgeInstallationPath);
+        Utility.verifyAndCreateInstallationPath(bridgeInstallationPath, workspace, listener);
 
         try {
             FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl);

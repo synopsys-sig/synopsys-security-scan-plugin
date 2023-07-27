@@ -3,8 +3,12 @@ package com.synopsys.integration.jenkins.scan.service;
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.GetOsNameTask;
 import com.synopsys.integration.jenkins.scan.global.Utility;
+import hudson.FilePath;
 import hudson.model.TaskListener;
+
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +20,9 @@ import jenkins.model.GlobalConfiguration;
 
 public class BridgeDownloadParametersService {
     private final TaskListener listener;
-    public BridgeDownloadParametersService(TaskListener listener) {
+    private final FilePath workspace;
+    public BridgeDownloadParametersService(FilePath workspace, TaskListener listener) {
+        this.workspace = workspace;
         this.listener = listener;
     }
 
@@ -61,18 +67,31 @@ public class BridgeDownloadParametersService {
     }
 
     public boolean isValidInstallationPath(String installationPath) {
-        Path path = Paths.get(installationPath);
-        Path parentPath = path.getParent();
+        try {
+            FilePath path = new FilePath(workspace.getChannel(), installationPath);
+            FilePath parentPath = path.getParent();
 
-        if (parentPath != null && Files.exists(parentPath) && Files.isWritable(parentPath)) {
-            return true;
-        } else {
-            if(parentPath == null && !Files.exists(parentPath)) {
-                listener.getLogger().printf("The path: %s doesn't exist.%n" , path.toString());
+            if (parentPath != null && parentPath.exists() && parentPath.isDirectory()) {
+                FilePath tempFile = parentPath.createTempFile("temp", null);
+                boolean isWritable = tempFile.delete();
+
+                if (isWritable) {
+                    return true;
+                } else {
+                    listener.getLogger().printf("The path: %s is not writable.%n", parentPath.toURI());
+                    return false;
+                }
+            } else {
+                if (parentPath == null || !parentPath.exists()) {
+                    listener.getLogger().printf("The path: %s doesn't exist.%n", path.toURI());
+                } else if (!parentPath.isDirectory()) {
+                    listener.getLogger().printf("The path: %s is not a directory.%n", parentPath.toURI());
+                }
+                return false;
             }
-            else if(!Files.isWritable(parentPath)) {
-                listener.getLogger().printf("The path: %s is not writable.%n" , path.toString());
-            }
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("Exception occurred while validating the installation path: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
@@ -115,7 +134,17 @@ public class BridgeDownloadParametersService {
     }
 
     public String getPlatform() {
-        String os = System.getProperty("os.name").toLowerCase();
+        String os = null;
+
+        if (workspace.isRemote()) {
+            try {
+                os = workspace.act(new GetOsNameTask());
+            } catch (IOException | InterruptedException e) {
+                listener.getLogger().println("Exception occurred while fetching the OS information for the agent node: " + e.getMessage());
+            }
+        } else {
+            os = System.getProperty("os.name").toLowerCase();
+        }
 
         if (os.contains("win")) {
             return ApplicationConstants.PLATFORM_WINDOWS;

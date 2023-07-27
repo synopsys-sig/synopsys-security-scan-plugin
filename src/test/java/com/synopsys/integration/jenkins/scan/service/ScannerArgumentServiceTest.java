@@ -29,7 +29,7 @@ public class ScannerArgumentServiceTest {
     private ScannerArgumentService scannerArgumentService;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
     private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
-
+    private final FilePath workspaceMock = Mockito.mock(FilePath.class);
 
     @BeforeEach
     void setUp() {
@@ -39,7 +39,7 @@ public class ScannerArgumentServiceTest {
 
         bitBucket = new Bitbucket();
 
-        scannerArgumentService = new ScannerArgumentService(listenerMock, envVarsMock);
+        scannerArgumentService = new ScannerArgumentService(listenerMock, envVarsMock, workspaceMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 

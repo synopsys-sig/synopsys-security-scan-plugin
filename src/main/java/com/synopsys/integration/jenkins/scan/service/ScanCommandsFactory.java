@@ -35,7 +35,7 @@ public class ScanCommandsFactory {
     public static ScanPipelineCommands createPipelineCommand(TaskListener listener, EnvVars envVars,
                                                              Launcher launcher, Node node, FilePath workspace) {
         return new ScanPipelineCommands(
-            new SecurityScanner(listener, launcher, workspace, envVars, new ScannerArgumentService(listener, envVars)));
+            new SecurityScanner(listener, launcher, workspace, envVars, new ScannerArgumentService(listener, envVars, workspace)));
     }
 
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep) {

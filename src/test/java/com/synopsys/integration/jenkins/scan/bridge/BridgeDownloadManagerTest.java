@@ -1,6 +1,8 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
+import hudson.FilePath;
 import hudson.model.TaskListener;
+import hudson.remoting.Channel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,10 +16,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 public class BridgeDownloadManagerTest {
     private BridgeDownloadManager bridgeDownloadManager;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
+    private final FilePath workspaceMock = Mockito.mock(FilePath.class);
+    FilePath workspaceSpy = Mockito.spy(workspaceMock);
 
     @BeforeEach
     void setup() {
-        bridgeDownloadManager = new BridgeDownloadManager(listenerMock);
+        bridgeDownloadManager = new BridgeDownloadManager(workspaceSpy, listenerMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
@@ -33,7 +37,7 @@ public class BridgeDownloadManagerTest {
 
     @Test
     void isSynopsysBridgeDownloadRequiredTest() {
-        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspaceMock, listenerMock);
         bridgeDownloadParameters.setBridgeDownloadUrl("https://fake.url.com/bridge");
         bridgeDownloadParameters.setBridgeInstallationPath("/path/to/bridge");
 
