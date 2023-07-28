@@ -42,8 +42,8 @@ public class ScannerArgumentService {
         this.blackDuckInputJsonFilePath = blackDuckInputJsonFilePath;
     }
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters) {
-        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE));
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, String bridgeInstallationPath) {
+        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE, bridgeInstallationPath));
 
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
         BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
@@ -97,12 +97,14 @@ public class ScannerArgumentService {
         return blackDuckInputJsonPath;
     }
 
-    public List<String> getInitialBridgeArgs(String stage) {
+    public List<String> getInitialBridgeArgs(String stage, String bridgeInstallationPath) {
         List<String> initBridgeArgs = new ArrayList<>();
         String os = getAgentOs();
 
         if(os.contains("win")) {
-            initBridgeArgs.add(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS);
+            listener.getLogger().println(">>>>>>>>>>>>>>>> Method: getInitialBridgeArgs() bridgeBinary: "
+                    + String.join("\\", bridgeInstallationPath, ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS));
+            initBridgeArgs.add(String.join("\\", bridgeInstallationPath, ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS));
         } else {
             initBridgeArgs.add(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND);
         }

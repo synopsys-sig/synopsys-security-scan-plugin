@@ -13,7 +13,6 @@ import hudson.Launcher;
 import hudson.model.TaskListener;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -46,13 +45,8 @@ public class SecurityScanner {
         if (blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParameters)
                 && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
 
-            FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
-            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams);
-
-
-
-            String argsAsString = String.join(" ", commandLineArgs);
-            listener.getLogger().println("Method runScanner(): bridgeArgs: " + argsAsString);
+//            FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
+//            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeDownloadParams.getBridgeInstallationPath());
 
 
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace,listener);
@@ -65,31 +59,26 @@ public class SecurityScanner {
             }
 
             Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace, listener);
+            FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
+            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeDownloadParams.getBridgeInstallationPath());
+            String argsAsString = String.join(" ", commandLineArgs);
+            listener.getLogger().println("Method runScanner(): bridgeArgs: " + argsAsString);
 
             printMessages(LogMessages.START_SCANNER);
-
-            FilePath directory = new FilePath(new File("C:\\Users\\jraihan\\synopsys-bridge"));
-
-            try {
-                int mode = directory.mode();
-                listener.getLogger().println(" >>>>>>>>>>>>>>>>>>>> >>>> :::::: Directory permissions: " + Integer.toOctalString(mode));
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
 
             try {
                 scanner = launcher.launch()
                         .cmds(commandLineArgs)
                         .envs(envVars)
                         .pwd(bridgeInstallationPath)
-//                        .pwd("C:\\Users\\jraihan\\synopsys-bridge")
                         .stdout(listener)
                         .quiet(true)
                         .join();
             } catch (Exception e) {
                 listener.getLogger().println("Exception occurred while invoking synopsys-bridge from the plugin : " + e.getMessage());
             } finally {
-                Utility.cleanupInputJson(scannerArgumentService.getBlackDuckInputJsonFilePath(), workspace, listener);
+                Utility.removeFile(scannerArgumentService.getBlackDuckInputJsonFilePath(), workspace, listener);
+                Utility.cleanupOtherFiles(workspace, listener);
             }
         }
 

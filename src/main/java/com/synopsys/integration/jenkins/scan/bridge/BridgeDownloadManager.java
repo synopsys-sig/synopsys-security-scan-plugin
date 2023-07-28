@@ -1,6 +1,7 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.global.GetOsNameTask;
+import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 
@@ -93,6 +94,8 @@ public class BridgeDownloadManager {
             if(versionFileAvailable(directoryUrl)) {
                 String versionFilePath = downloadVersionFile(directoryUrl);
                 String latestVersion = getBridgeVersionFromVersionFile(versionFilePath);
+
+                Utility.removeFile(versionFilePath, workspace, listener);
                 listener.getLogger().println("Extracted version from the artifactory's 'versions.txt' is: " + latestVersion);
 
                 return latestVersion;

@@ -4,41 +4,9 @@ import hudson.FilePath;
 
 import hudson.model.TaskListener;
 import jenkins.model.Jenkins;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public class Utility {
-    public static FilePath createTempDir(String directoryName) throws IOException, InterruptedException {
-        FilePath tempFilePath = new FilePath(Files.createTempDirectory(directoryName).toFile());
-        tempFilePath.mkdirs();
-        return tempFilePath;
-    }
-
-    public static void cleanupTempDir(FilePath tempDir){
-        try {
-            if (tempDir.exists()) {
-                tempDir.deleteRecursive();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-   /* public static void deleteDirectory(File directory) {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    deleteDirectory(file);
-                } else {
-                    file.delete();
-                }
-            }
-        }
-        directory.delete();
-    }*/
-
     public static void copyRepository(String targetDirectory, FilePath workspace, TaskListener listener) {
         FilePath targetDir = new FilePath(workspace.getChannel(), targetDirectory);
 
@@ -112,33 +80,72 @@ public class Utility {
         }
     }
 
-   /* public static FilePath stringToFilePath(String path) {
-        FilePath filePath = new FilePath(new File(path));
-        return filePath;
-    }
-
-    public static File stringToFile(String path) {
-        File file = new File(path);
-        return file;
-    }
-
-    public static File filePathToFile(FilePath filePath) {
-        String filePathString = filePath.getRemote();
-        File file = new File(filePathString);
-        return file;
-    }*/
-
-    public static void cleanupInputJson(String inputJsonPath, FilePath workspace, TaskListener listener) {
-        listener.getLogger().println("Method: cleanupInputJson blackduck_input.json path: " + inputJsonPath);
+    public static void cleanupOtherFiles(FilePath workspace, TaskListener listener) {
         try {
-            FilePath file = new FilePath(workspace.getChannel(), inputJsonPath);
+            FilePath extensionsDir = workspace.child("extensions");
+            if (extensionsDir.exists()) {
+                extensionsDir.deleteRecursive();
+                listener.getLogger().println("Deleted 'extensions' directory");
+            }
+
+            FilePath licenseFile = workspace.child("LICENSE.txt");
+            if (fileExistsIgnoreCase(licenseFile, listener)) {
+                licenseFile.delete();
+                listener.getLogger().println("Deleted 'LICENSE.txt' file");
+            }
+
+            FilePath versionsFile = workspace.child("versions.txt");
+            if (fileExistsIgnoreCase(versionsFile, listener)) {
+                versionsFile.delete();
+                listener.getLogger().println("Deleted 'versions.txt' file");
+            }
+
+            FilePath synopsysBridgeFile = workspace.child("synopsys-bridge");
+            if (fileExistsIgnoreCase(synopsysBridgeFile, listener)) {
+                synopsysBridgeFile.delete();
+                listener.getLogger().println("Deleted 'synopsys-bridge' binary");
+            } else {
+                FilePath synopsysBridgeExeFile = workspace.child("synopsys-bridge.exe");
+                if (fileExistsIgnoreCase(synopsysBridgeExeFile, listener)) {
+                    synopsysBridgeExeFile.delete();
+                    listener.getLogger().println("Deleted 'synopsys-bridge.exe' binary");
+                }
+            }
+
+        } catch (Exception e) {
+            listener.getLogger().println("Failed to clean up files: " + e.getMessage());
+            e.printStackTrace(listener.getLogger());
+        }
+    }
+
+    private static boolean fileExistsIgnoreCase(FilePath workspace, TaskListener listener) {
+        try {
+            FilePath[] files = workspace.getParent().list(workspace.getName().toLowerCase());
+
+            for (FilePath f : files) {
+                if (f.getName().equalsIgnoreCase(workspace.getName())) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            listener.getLogger().println("Failed to check file existence: " + e.getMessage());
+            e.printStackTrace(listener.getLogger());
+        }
+
+        return false;
+    }
+
+    public static void removeFile(String filePath, FilePath workspace, TaskListener listener) {
+        listener.getLogger().println("Method: cleanup file path: " + filePath);
+        try {
+            FilePath file = new FilePath(workspace.getChannel(), filePath);
             file = file.absolutize();
 
             if (file.exists()) {
                 file.delete();
             }
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("An exception occurred while cleaning up the input JSON file: " + e.getMessage());
+            listener.getLogger().println("An exception occurred while cleaning up file: " + e.getMessage());
         }
     }
 
