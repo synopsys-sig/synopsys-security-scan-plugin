@@ -17,12 +17,12 @@ public class ApplicationConstants {
     public static final String PLATFORM_MAC = "macosx";
     public static final String BLACKDUCK_URL_KEY = "blackduck_url";
     public static final String BLACKDUCK_API_TOKEN_KEY = "blackduck_api_token";
-    public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
     public static final String BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck_install_directory";
     public static final String BLACKDUCK_SCAN_FULL_KEY = "blackduck_scan_full";
     public static final String BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck_scan_failure_severities";
     public static final String BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck_automation_fixpr";
     public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck_automation_prcomment";
+    public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
     public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
     public static final String DEFAULT_DIRECTORY_NAME = "synopsys-bridge";
     public static final String BRIDGE_DIAGNOSTICS_DIRECTORY = ".bridge";
