@@ -78,7 +78,6 @@ public class SecurityScanner {
                 listener.getLogger().println("Exception occurred while invoking synopsys-bridge from the plugin : " + e.getMessage());
             } finally {
                 Utility.cleanupInputJson(scannerArgumentService.getBlackDuckInputJsonFilePath());
-
                 if ( Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
                     DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars);
                     diagnosticsService.archiveDiagnostics(bridgeInstallationPath.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
