@@ -10,9 +10,9 @@ public class BridgeDownload {
     private final TaskListener listener;
     private final FilePath workspace;
 
-    public BridgeDownload(TaskListener listener, FilePath workspace) {
-        this.listener = listener;
+    public BridgeDownload(FilePath workspace, TaskListener listener) {
         this.workspace = workspace;
+        this.listener = listener;
     }
 
     public FilePath downloadSynopsysBridge(String bridgeDownloadUrl) {

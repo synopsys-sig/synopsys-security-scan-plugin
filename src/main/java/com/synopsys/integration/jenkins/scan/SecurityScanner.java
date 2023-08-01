@@ -88,8 +88,8 @@ public class SecurityScanner {
     }
 
     private void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
-        BridgeDownload bridgeDownload = new BridgeDownload(listener, workspace);
-        BridgeInstall bridgeInstall = new BridgeInstall(listener, workspace);
+        BridgeDownload bridgeDownload = new BridgeDownload(workspace, listener);
+        BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
 
         String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();

@@ -29,23 +29,25 @@ public class ScannerArgumentServiceTest {
     private ScannerArgumentService scannerArgumentService;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
     private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
-    private final FilePath workspaceMock = Mockito.mock(FilePath.class);
+    private FilePath workspace;
 
     @BeforeEach
     void setUp() {
+        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
+        workspace = new FilePath(new File(getHomeDirectory()));
+
         blackDuck = new BlackDuck();
         blackDuck.setUrl("https://fake.blackduck.url");
         blackDuck.setToken("MDJDSROSVC56FAKEKEY");
 
         bitBucket = new Bitbucket();
 
-        scannerArgumentService = new ScannerArgumentService(listenerMock, envVarsMock, workspaceMock);
-        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
+        scannerArgumentService = new ScannerArgumentService(listenerMock, envVarsMock, workspace);
     }
 
     @Test
     void createBlackDuckInputJsonTest() {
-        String inputJsonPath =scannerArgumentService.createBlackDuckInputJson(blackDuck, bitBucket);
+        String inputJsonPath = scannerArgumentService.createBlackDuckInputJson(blackDuck, bitBucket);
         Path filePath = Paths.get(inputJsonPath);
 
         assertTrue(Files.exists(filePath), String.format("File %s does not exist at the specified path.", BridgeParams.BLACKDUCK_JSON_FILE_NAME));
@@ -98,6 +100,9 @@ public class ScannerArgumentServiceTest {
                 e.printStackTrace();
             }
         }
+    }
+    public String getHomeDirectory() {
+        return System.getProperty("user.home");
     }
 
 }

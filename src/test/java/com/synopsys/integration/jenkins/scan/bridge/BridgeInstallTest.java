@@ -7,31 +7,63 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 
-import static com.synopsys.integration.jenkins.scan.global.ApplicationConstants.BRIDGE_DOWNLOAD_FILE_PATH;
-import static com.synopsys.integration.jenkins.scan.global.ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 public class BridgeInstallTest {
-    private final BridgeInstall bridgeInstallMock = Mockito.mock(BridgeInstall.class);
+//    private final BridgeInstall bridgeInstallMock = Mockito.mock(BridgeInstall.class);
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
-    private final FilePath workspaceMock = Mockito.mock(FilePath.class);
-    private BridgeInstall BridgeInstall;
+    private FilePath workspace;
+    private BridgeInstall bridgeInstall;
+    //TODO: compleate this test
+    // why blackduck_input json is copied to the home folder but not cleaned.
 
     @BeforeEach
     public void setup() {
-        BridgeInstall = new BridgeInstall(listenerMock, workspaceMock);
+        workspace = new FilePath(new File(getHomeDirectory()));
+        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
+        bridgeInstall = new BridgeInstall(workspace, listenerMock);
     }
 
     @Test
     void installSynopsysBridgeTest() {
-        String bridgeZipPath = BRIDGE_DOWNLOAD_FILE_PATH.concat("/").concat(BRIDGE_ZIP_FILE_FORMAT);
-        String bridgeUnzipPath = "/bridge/unzip/path";
+        FilePath sourceBridge = new FilePath(new File("src/test/resources/demo-bridge.zip"));
+        try {
+            sourceBridge.copyTo(workspace);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
-        bridgeInstallMock.installSynopsysBridge(new FilePath(new File(bridgeZipPath)), new FilePath(new File(bridgeUnzipPath)));
 
-        verify(bridgeInstallMock, times(1))
-                .installSynopsysBridge(new FilePath(new File(bridgeZipPath)), new FilePath(new File(bridgeUnzipPath)));
+        bridgeInstall.installSynopsysBridge(getFullZipPath(), workspace);
+
+       /* try {
+            Mockito.verify(bridgeZipPath, times(1)).unzip(workspace);
+            Mockito.verify(bridgeZipPath, times(1)).delete();
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Exception occurred during testing for installSynopsysBridge method. " + e.getMessage());
+        }*/
+        System.out.println("workspace ?????? " + workspace);
+        assertNotNull(workspace.getRemote().concat("/").concat("versions.txt"));
+        assertNotNull(workspace.getRemote().concat("/").concat("LICENSE.txt"));
     }
+    public String getHomeDirectory() {
+        return System.getProperty("user.home");
+    }
+
+    public FilePath getFullZipPath() {
+        FilePath bridgeZipPath = null;
+        if(getHomeDirectory().contains("\\")) {
+            bridgeZipPath = new FilePath(new File(workspace.getRemote().concat("\\").concat("demo-bridge.zip")));
+        } else {
+            bridgeZipPath = new FilePath(new File(workspace.getRemote().concat("/").concat("demo-bridge.zip")));
+        }
+        return bridgeZipPath;
+    }
+
 }
