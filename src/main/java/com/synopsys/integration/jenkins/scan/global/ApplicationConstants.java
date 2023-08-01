@@ -25,7 +25,6 @@ public class ApplicationConstants {
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
     public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
     public static final String DEFAULT_DIRECTORY_NAME = "synopsys-bridge";
-    public static final String BRIDGE_DIAGNOSTICS_DIRECTORY = ".bridge";
     public static final int BRIDGE_DOWNLOAD_MAX_RETRIES = 3;
 
     public static String getSynopsysBridgeZipFileName(String platform) {

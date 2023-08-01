@@ -12,7 +12,6 @@ import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Node;
-import hudson.model.Run;
 import hudson.model.TaskListener;
 
 import java.util.HashMap;
@@ -33,12 +32,10 @@ public class ScanCommandsFactory {
         this.workspace = workspace;
     }
 
-    public static ScanPipelineCommands createPipelineCommand(Run<?, ?> run, TaskListener listener,
-                                                             EnvVars envVars, Launcher launcher,
-                                                             Node node, FilePath workspace) {
+    public static ScanPipelineCommands createPipelineCommand(TaskListener listener, EnvVars envVars,
+                                                             Launcher launcher, Node node, FilePath workspace) {
         return new ScanPipelineCommands(
-            new SecurityScanner(run, listener, launcher, workspace, envVars,
-                new ScannerArgumentService(listener, envVars)));
+            new SecurityScanner(listener, launcher, workspace, envVars, new ScannerArgumentService(listener, envVars)));
     }
 
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep) {

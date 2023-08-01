@@ -1,35 +1,30 @@
 package com.synopsys.integration.jenkins.scan;
 
 import com.synopsys.integration.jenkins.scan.bridge.*;
-import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
-import com.synopsys.integration.jenkins.scan.service.DiagnosticsService;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
+
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.Run;
 import hudson.model.TaskListener;
+
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class SecurityScanner {
-    private final Run<?, ?> run;
     private final TaskListener listener;
     private final Launcher launcher;
     private final FilePath workspace;
     private final EnvVars envVars;
     private final ScannerArgumentService scannerArgumentService;
 
-    public SecurityScanner( Run<?, ?> run, TaskListener listener, Launcher launcher, FilePath workspace,
+    public SecurityScanner(TaskListener listener, Launcher launcher, FilePath workspace,
                            EnvVars envVars, ScannerArgumentService scannerArgumentService) {
-        this.run = run;
         this.listener = listener;
         this.launcher = launcher;
         this.workspace = workspace;
@@ -37,7 +32,7 @@ public class SecurityScanner {
         this.scannerArgumentService = scannerArgumentService;
     }
 
-  public int runScanner(Map<String, Object> scanParams) throws IOException, InterruptedException {
+    public int runScanner(Map<String, Object> scanParams) {
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
@@ -78,10 +73,6 @@ public class SecurityScanner {
                 listener.getLogger().println("Exception occurred while invoking synopsys-bridge from the plugin : " + e.getMessage());
             } finally {
                 Utility.cleanupInputJson(scannerArgumentService.getBlackDuckInputJsonFilePath());
-                if ( Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
-                    DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars);
-                    diagnosticsService.archiveDiagnostics(bridgeInstallationPath.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
-                }
             }
         }
 
