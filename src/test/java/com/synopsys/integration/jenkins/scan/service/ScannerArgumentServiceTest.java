@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
+import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
@@ -34,7 +35,7 @@ public class ScannerArgumentServiceTest {
     @BeforeEach
     void setUp() {
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
-        workspace = new FilePath(new File(getHomeDirectory()));
+        workspace = new FilePath(new File(getHomeDirectoryForTest()));
 
         blackDuck = new BlackDuck();
         blackDuck.setUrl("https://fake.blackduck.url");
@@ -51,8 +52,7 @@ public class ScannerArgumentServiceTest {
         Path filePath = Paths.get(inputJsonPath);
 
         assertTrue(Files.exists(filePath), String.format("File %s does not exist at the specified path.", BridgeParams.BLACKDUCK_JSON_FILE_NAME));
-
-        cleanup();
+        Utility.removeFile(filePath.toString(), workspace, listenerMock);
     }
 
     @Test
@@ -70,38 +70,10 @@ public class ScannerArgumentServiceTest {
         assertTrue(Files.exists(Path.of(jsonPath)), String.format("%s does not exist at the specified path.", BridgeParams.BLACKDUCK_JSON_FILE_NAME));
         assertEquals(jsonString,fileContent);
 
-        cleanup();
+        Utility.removeFile(jsonPath, workspace, listenerMock);
     }
 
-    public FilePath workspacePath() {
-        String pathString = System.getProperty("user.dir").concat("/tmp");
-        Path path = Paths.get(pathString);
-
-        if (!Files.exists(path)) {
-            try {
-                Files.createDirectories(path);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return new FilePath(path.toFile());
-    }
-
-    public void cleanup() {
-        Path directory = Paths.get(workspacePath().getRemote());
-
-        if (Files.exists(directory)) {
-            try {
-                Files.walk(directory)
-                        .sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    public String getHomeDirectory() {
+    public String getHomeDirectoryForTest() {
         return System.getProperty("user.home");
     }
 

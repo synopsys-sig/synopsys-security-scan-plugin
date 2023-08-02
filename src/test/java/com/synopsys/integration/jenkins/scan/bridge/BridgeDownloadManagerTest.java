@@ -29,7 +29,16 @@ public class BridgeDownloadManagerTest {
 
     @Test
     public void getInstalledBridgeVersionTest() {
-        String versionFilePath = new File("src/test/resources/versions.txt").getAbsolutePath();
+        String versionFilePath = null;
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if(os.contains("win")) {
+            versionFilePath = new File("src\\test\\resources\\versions.txt").getAbsolutePath();
+
+        } else {
+            versionFilePath = new File("src/test/resources/versions.txt").getAbsolutePath();
+        }
+
         String installedVersion = bridgeDownloadManager.getBridgeVersionFromVersionFile(versionFilePath);
 
         assertNotNull(versionFilePath, "version.txt file not found");

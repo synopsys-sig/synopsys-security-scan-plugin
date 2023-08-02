@@ -10,16 +10,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.times;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class BridgeInstallTest {
-//    private final BridgeInstall bridgeInstallMock = Mockito.mock(BridgeInstall.class);
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
     private FilePath workspace;
     private BridgeInstall bridgeInstall;
-    //TODO: compleate this test
-    // why blackduck_input json is copied to the home folder but not cleaned.
 
     @BeforeEach
     public void setup() {
@@ -30,27 +27,30 @@ public class BridgeInstallTest {
 
     @Test
     void installSynopsysBridgeTest() {
-        FilePath sourceBridge = new FilePath(new File("src/test/resources/demo-bridge.zip"));
-        try {
-            sourceBridge.copyTo(workspace);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        FilePath sourceBridge = null;
+        String os = System.getProperty("os.name").toLowerCase();
+        FilePath destinationBridge = workspace.child("demo-bridge.zip");
+
+        if(os.contains("win")) {
+            sourceBridge = new FilePath(new File("src\\test\\resources\\demo-bridge.zip"));
+        } else {
+            sourceBridge = new FilePath(new File("src/test/resources/demo-bridge.zip"));
         }
 
+        try {
+            sourceBridge.copyTo(destinationBridge);
+            bridgeInstall.installSynopsysBridge(getFullZipPath(), workspace);
 
-        bridgeInstall.installSynopsysBridge(getFullZipPath(), workspace);
+            assertFalse(destinationBridge.exists());
+            assertTrue(workspace.child("demo-bridge-extensions").isDirectory());
+            assertTrue(workspace.child("demo-bridge-versions.txt").exists());
+            assertTrue(workspace.child("demo-bridge-LICENSE.txt").exists());
 
-       /* try {
-            Mockito.verify(bridgeZipPath, times(1)).unzip(workspace);
-            Mockito.verify(bridgeZipPath, times(1)).delete();
+            cleanupWorkspace(workspace);
+
         } catch (IOException | InterruptedException e) {
             System.out.println("Exception occurred during testing for installSynopsysBridge method. " + e.getMessage());
-        }*/
-        System.out.println("workspace ?????? " + workspace);
-        assertNotNull(workspace.getRemote().concat("/").concat("versions.txt"));
-        assertNotNull(workspace.getRemote().concat("/").concat("LICENSE.txt"));
+        }
     }
     public String getHomeDirectory() {
         return System.getProperty("user.home");
@@ -66,4 +66,24 @@ public class BridgeInstallTest {
         return bridgeZipPath;
     }
 
+    public static void cleanupWorkspace(FilePath workspace) {
+        try {
+            FilePath versionsFile = workspace.child("demo-bridge-versions.txt");
+            if (versionsFile.exists()) {
+                versionsFile.delete();
+            }
+
+            FilePath licenseFile = workspace.child("demo-bridge-LICENSE.txt");
+            if (licenseFile.exists()) {
+                licenseFile.delete();
+            }
+
+            FilePath extensionsDirectory = workspace.child("demo-bridge-extensions");
+            if (extensionsDirectory.isDirectory()) {
+                extensionsDirectory.deleteRecursive();
+            }
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Error while cleaning up workspace: " + e.getMessage());
+        }
+    }
 }
