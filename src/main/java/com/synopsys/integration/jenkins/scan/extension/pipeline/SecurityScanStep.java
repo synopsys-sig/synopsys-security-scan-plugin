@@ -25,7 +25,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 public class SecurityScanStep extends Step implements Serializable {
-
     private static final long serialVersionUID = 6294070801130995534L;
 
     private String blackduck_url;

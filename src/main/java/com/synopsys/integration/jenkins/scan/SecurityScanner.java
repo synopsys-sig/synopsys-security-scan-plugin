@@ -44,11 +44,6 @@ public class SecurityScanner {
 
         if (blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParameters)
                 && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
-
-//            FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
-//            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeDownloadParams.getBridgeInstallationPath());
-
-
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace,listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
 
@@ -61,6 +56,7 @@ public class SecurityScanner {
             Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace, listener);
             FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
             List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeDownloadParams.getBridgeInstallationPath());
+
             String argsAsString = String.join(" ", commandLineArgs);
             listener.getLogger().println("Method runScanner(): bridgeArgs: " + argsAsString);
 
@@ -83,7 +79,6 @@ public class SecurityScanner {
         }
 
         printMessages(LogMessages.END_SCANNER);
-
         return scanner;
     }
 

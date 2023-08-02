@@ -1,8 +1,6 @@
 package com.synopsys.integration.jenkins.scan.exception;
 
-
 public class ScannerJenkinsException extends Exception {
-
     private static final long serialVersionUID = 3172941819259598261L;
     
     public ScannerJenkinsException() {

@@ -7,16 +7,13 @@ import com.synopsys.integration.jenkins.scan.global.GetOsNameTask;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import jenkins.model.GlobalConfiguration;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import jenkins.model.GlobalConfiguration;
 
 public class BridgeDownloadParametersService {
     private final TaskListener listener;
