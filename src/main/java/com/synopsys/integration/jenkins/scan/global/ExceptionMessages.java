@@ -8,8 +8,4 @@ public class ExceptionMessages {
         return "Scanner failed with exit code " + exitCode;
     }
 
-    public static String scannerFailureMessage(String message) {
-        return "Scanner failed! " + message;
-    }
-
 }

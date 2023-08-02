@@ -23,7 +23,6 @@ public class ScanPipelineCommands {
             exitCode = scanner.runScanner(scanParameters);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ScannerJenkinsException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
         }
         if (exitCode != 0) {
             throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));

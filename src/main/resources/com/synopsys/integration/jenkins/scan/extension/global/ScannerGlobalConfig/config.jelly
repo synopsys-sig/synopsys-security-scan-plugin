@@ -7,11 +7,8 @@
         <f:entry field="blackDuckApiToken" title="Black Duck Api Token">
             <f:password/>
         </f:entry>
-        <f:entry field="synopsysBridgeDownloadUrl" title="Synopsys Bridge Download URL (Optional)">
+        <f:entry field="synopsysBridgeDownloadUrl" title="Synopsys Bridge Download URL">
             <f:textbox/>
-        </f:entry>
-        <f:entry field="bitbucketToken" title="Bitbucket Token (Optional)">
-            <f:password/>
         </f:entry>
     </f:section>
 </j:jelly>
