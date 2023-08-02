@@ -2,6 +2,7 @@ package com.synopsys.integration.jenkins.scan;
 
 import com.synopsys.integration.jenkins.scan.bridge.*;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
@@ -14,7 +15,6 @@ import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,7 +37,7 @@ public class SecurityScanner {
         this.scannerArgumentService = scannerArgumentService;
     }
 
-  public int runScanner(Map<String, Object> scanParams) throws IOException, InterruptedException {
+    public int runScanner(Map<String, Object> scanParams) throws ScannerJenkinsException {
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
