@@ -53,7 +53,6 @@ dependencies {
     annotationProcessor 'com.synopsys.integration:jenkins-annotation-processor:0.0.7'
 
     implementation 'org.jenkins-ci.plugins:credentials:1139.veb_9579fca_33b_'
-    implementation 'com.synopsys.integration:blackduck-common:66.1.4'
     implementation 'com.synopsys.integration:jenkins-common:0.5.5'
     implementation 'org.jvnet.localizer:localizer:1.31'
     implementation 'org.jsoup:jsoup:1.16.1'
