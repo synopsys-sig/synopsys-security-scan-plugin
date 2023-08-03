@@ -26,7 +26,9 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck_automation_prcomment";
     public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
     public static final String DEFAULT_DIRECTORY_NAME = "synopsys-bridge";
+    public static final String BRIDGE_DIAGNOSTICS_DIRECTORY = ".bridge";
     public static final int BRIDGE_DOWNLOAD_MAX_RETRIES = 3;
+    public static final String ALL_FILES_WILDCARD_SYMBOL = "**";
 
     public static String getSynopsysBridgeZipFileName(String platform) {
         return "synopsys-bridge-".concat(platform).concat(".zip");
