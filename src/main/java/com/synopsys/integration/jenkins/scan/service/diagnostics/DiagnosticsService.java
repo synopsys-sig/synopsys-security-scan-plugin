@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service;
+package com.synopsys.integration.jenkins.scan.service.diagnostics;
 
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -8,25 +8,26 @@ import hudson.model.TaskListener;
 import hudson.tasks.ArtifactArchiver;
 
 public class DiagnosticsService {
-    public static final String ALL_FILES_WILDCARD_SYMBOL = "**";
     private final Run<?, ?> run;
     private final TaskListener listener;
     private final Launcher launcher;
     private final EnvVars envVars;
+    private final ArtifactArchiver artifactArchiver;
 
-    public DiagnosticsService( Run<?, ?> run, TaskListener listener, Launcher launcher, EnvVars envVars) {
+    public DiagnosticsService(Run<?, ?> run, TaskListener listener, Launcher launcher, EnvVars envVars,
+                              ArtifactArchiver artifactArchiver) {
         this.run = run;
         this.listener = listener;
         this.launcher = launcher;
         this.envVars = envVars;
+        this.artifactArchiver = artifactArchiver;
     }
 
     public void archiveDiagnostics(FilePath diagnosticsPath) {
-        listener.getLogger().println("Archiving diagnostics from: " + diagnosticsPath.getRemote());
-
         try {
             if (diagnosticsPath.exists()) {
-                ArtifactArchiver artifactArchiver = new ArtifactArchiver(ALL_FILES_WILDCARD_SYMBOL);
+                listener.getLogger().println("Archiving diagnostics from: " + diagnosticsPath.getRemote());
+
                 artifactArchiver.perform(run, diagnosticsPath, envVars, launcher, listener);
             } else {
                 listener.getLogger().println("Diagnostics path not found at: " + diagnosticsPath.getRemote());

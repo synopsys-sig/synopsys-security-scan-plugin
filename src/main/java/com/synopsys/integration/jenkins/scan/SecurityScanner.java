@@ -7,13 +7,14 @@ import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
-import com.synopsys.integration.jenkins.scan.service.DiagnosticsService;
+import com.synopsys.integration.jenkins.scan.service.diagnostics.DiagnosticsService;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.tasks.ArtifactArchiver;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +81,8 @@ public class SecurityScanner {
                 Utility.cleanupInputJson(scannerArgumentService.getBlackDuckInputJsonFilePath());
 
                 if ( Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
-                    DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars);
+                    DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,
+                        new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
                     diagnosticsService.archiveDiagnostics(bridgeInstallationPath.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
                 }
             }
