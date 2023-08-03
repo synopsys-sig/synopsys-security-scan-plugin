@@ -43,8 +43,7 @@ public class DiagnosticsServiceTest {
     @Test
     public void testArchiveDiagnosticsWhenPathExistsShouldArchiveSuccessfully() {
         FilePath homePath = new FilePath(new File(System.getProperty("user.home")));
-        FilePath diagnosticsPath = homePath.child(ApplicationConstants.DEFAULT_DIRECTORY_NAME)
-            .child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY);
+        FilePath diagnosticsPath = homePath.child("diagnostics");
 
         try {
             diagnosticsPath.mkdirs();
