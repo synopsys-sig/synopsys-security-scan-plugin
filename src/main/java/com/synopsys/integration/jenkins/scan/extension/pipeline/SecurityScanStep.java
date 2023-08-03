@@ -8,6 +8,7 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Node;
+import hudson.model.Run;
 import hudson.model.TaskListener;
 import java.io.IOException;
 import java.io.Serializable;
@@ -169,7 +170,7 @@ public class SecurityScanStep extends Step implements Serializable {
     public static final class DescriptorImpl extends StepDescriptor {
         @Override
         public Set<? extends Class<?>> getRequiredContext() {
-            return new HashSet<>(Arrays.asList(TaskListener.class, EnvVars.class, FilePath.class, Launcher.class, Node.class));
+            return new HashSet<>(Arrays.asList(Run.class, TaskListener.class, EnvVars.class, FilePath.class, Launcher.class, Node.class));
         }
 
         @Override
@@ -187,6 +188,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public class Execution extends SynchronousNonBlockingStepExecution<Integer> {
         private static final long serialVersionUID = -2514079516220990421L;
+        private final transient Run<?, ?> run;
         private final transient TaskListener listener;
         private final transient EnvVars envVars;
         private final transient FilePath workspace;
@@ -195,6 +197,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
         protected Execution(@Nonnull StepContext context) throws InterruptedException, IOException {
             super(context);
+            run = context.get(Run.class);
             listener = context.get(TaskListener.class);
             envVars = context.get(EnvVars.class);
             workspace = context.get(FilePath.class);
@@ -204,7 +207,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
         @Override
         protected Integer run() throws ScannerJenkinsException {
-            return ScanCommandsFactory.createPipelineCommand(listener, envVars, launcher, node, workspace)
+            return ScanCommandsFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
                 .runScanner(getParametersMap());
         }
 
