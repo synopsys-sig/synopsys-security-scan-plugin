@@ -43,16 +43,18 @@ public class DiagnosticsServiceTest {
     @Test
     public void testArchiveDiagnosticsWhenPathExistsShouldArchiveSuccessfully() {
         FilePath homePath = new FilePath(new File(System.getProperty("user.home")));
-        FilePath diagnosticsPath = homePath.child(ApplicationConstants.DEFAULT_DIRECTORY_NAME)
-            .child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY);
+        FilePath diagnosticsPath = homePath.child("diagnostics");
 
         try {
+            diagnosticsPath.mkdirs();
             assertTrue(diagnosticsPath.exists());
             
             doNothing().when(artifactArchiverMock).perform(eq(runMock), eq(diagnosticsPath), eq(envVarsMock), eq(launcherMock), eq(listenerMock));
 
             diagnosticsService.archiveDiagnostics(diagnosticsPath);
             verify(artifactArchiverMock).perform(runMock, diagnosticsPath, envVarsMock, launcherMock, listenerMock);
+            
+            diagnosticsPath.deleteRecursive();
         } catch (IOException | InterruptedException e) {
             System.out.println("Exception occurred during testing for archiveDiagnostics method: " + e.getMessage());
         }
