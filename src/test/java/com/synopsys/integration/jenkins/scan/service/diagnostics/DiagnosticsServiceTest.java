@@ -47,12 +47,15 @@ public class DiagnosticsServiceTest {
             .child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY);
 
         try {
+            diagnosticsPath.mkdirs();
             assertTrue(diagnosticsPath.exists());
             
             doNothing().when(artifactArchiverMock).perform(eq(runMock), eq(diagnosticsPath), eq(envVarsMock), eq(launcherMock), eq(listenerMock));
 
             diagnosticsService.archiveDiagnostics(diagnosticsPath);
             verify(artifactArchiverMock).perform(runMock, diagnosticsPath, envVarsMock, launcherMock, listenerMock);
+            
+            diagnosticsPath.deleteRecursive();
         } catch (IOException | InterruptedException e) {
             System.out.println("Exception occurred during testing for archiveDiagnostics method: " + e.getMessage());
         }
