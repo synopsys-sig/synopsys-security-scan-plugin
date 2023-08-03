@@ -77,6 +77,7 @@ public class BridgeDownloadParameterServiceTest {
     void getBridgeDownloadParamsTest() {
         Map<String, Object> scanParams = new HashMap<>();
 
+        String bridgeDownloadUrl = "https://myown.repo.com/release/synopsys-bridge/latest/synopsys-bridge-linux64.zip";
         scanParams.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, "3.0.0");
         scanParams.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, "/path/to/bridge");
 

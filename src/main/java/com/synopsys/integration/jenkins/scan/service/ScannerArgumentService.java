@@ -2,6 +2,7 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.global.GetOsNameTask;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ScannerArgumentService {
     private final TaskListener listener;
@@ -42,7 +44,8 @@ public class ScannerArgumentService {
         this.blackDuckInputJsonFilePath = blackDuckInputJsonFilePath;
     }
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, String bridgeInstallationPath) {
+
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, String bridgeInstallationPath) throws ScannerJenkinsException {
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE, bridgeInstallationPath));
 
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
@@ -53,6 +56,10 @@ public class ScannerArgumentService {
 
         commandLineArgs.add(createBlackDuckInputJson(blackDuck, blackDuck.getAutomation().getPrComment()
                 || blackDuck.getAutomation().getFixpr() ? scmObject : null));
+
+        if (Objects.equals(scanParameters.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
+            commandLineArgs.add(BridgeParams.DIAGNOSTICS_OPTION);
+        }
 
         return commandLineArgs;
     }

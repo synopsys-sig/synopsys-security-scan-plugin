@@ -37,6 +37,9 @@
             <f:entry field="synopsys_bridge_path" title="Synopsys Bridge Path">
                 <f:textbox/>
             </f:entry>
+            <f:entry field="include_diagnostics" title="Include Diagnostics">
+                <f:checkbox/>
+            </f:entry>
         </f:section>
     </f:advanced>
 
