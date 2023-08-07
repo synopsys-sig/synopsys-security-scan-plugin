@@ -2,7 +2,6 @@ package com.synopsys.integration.jenkins.scan.global;
 
 import hudson.remoting.VirtualChannel;
 import jenkins.MasterToSlaveFileCallable;
-
 import java.io.File;
 import java.io.IOException;
 public class GetHomeDirectoryTask extends MasterToSlaveFileCallable<String> {

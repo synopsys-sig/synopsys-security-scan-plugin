@@ -11,15 +11,10 @@ import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.Utility;
-import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
-import hudson.model.*;
 import java.util.Map;
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
-
-import java.util.Map;
-
 
 public class BitbucketRepositoryService {
     private final TaskListener listener;

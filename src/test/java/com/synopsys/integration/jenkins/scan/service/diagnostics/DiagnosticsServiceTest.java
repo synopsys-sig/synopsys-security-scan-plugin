@@ -3,7 +3,6 @@ package com.synopsys.integration.jenkins.scan.service.diagnostics;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import hudson.EnvVars;
 import hudson.FilePath;

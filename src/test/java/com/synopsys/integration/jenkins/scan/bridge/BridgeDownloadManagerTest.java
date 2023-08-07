@@ -6,11 +6,9 @@ import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 

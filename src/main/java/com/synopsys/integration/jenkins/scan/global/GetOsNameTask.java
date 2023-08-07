@@ -3,7 +3,6 @@ package com.synopsys.integration.jenkins.scan.global;
 import hudson.FilePath;
 import hudson.remoting.VirtualChannel;
 import org.jenkinsci.remoting.RoleChecker;
-
 import java.io.File;
 import java.io.IOException;
 

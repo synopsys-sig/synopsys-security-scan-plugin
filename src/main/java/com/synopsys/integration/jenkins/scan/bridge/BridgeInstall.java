@@ -14,14 +14,8 @@ public class BridgeInstall {
 
     public void installSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath) {
         try {
-            listener.getLogger().println("Method: installSynopsysBridge() Bridge zip path: " + bridgeZipPath);
-            listener.getLogger().println("Method: installSynopsysBridge() Bridge installation path: " + bridgeInstallationPath);
-
-            listener.getLogger().println("Method: installSynopsysBridge() Temp unzipped Path: " + workspace.getRemote());
-
             bridgeZipPath.unzip(workspace);
             bridgeZipPath.delete();
-
             listener.getLogger().printf("Bridge zip path: %s and bridge installation path: %s%n",
                     bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
         } catch (Exception e) {

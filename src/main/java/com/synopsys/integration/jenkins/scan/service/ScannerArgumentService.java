@@ -9,14 +9,13 @@ import com.synopsys.integration.jenkins.scan.global.GetOsNameTask;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
+import com.synopsys.integration.jenkins.scan.service.scan.blackDuck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.scm.SCMRepositoryService;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,8 +108,6 @@ public class ScannerArgumentService {
         String os = getAgentOs();
 
         if(os.contains("win")) {
-            listener.getLogger().println(">>>>>>>>>>>>>>>> Method: getInitialBridgeArgs() bridgeBinary: "
-                    + String.join("\\", bridgeInstallationPath, ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS));
             initBridgeArgs.add(String.join("\\", bridgeInstallationPath, ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS));
         } else {
             initBridgeArgs.add(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND);

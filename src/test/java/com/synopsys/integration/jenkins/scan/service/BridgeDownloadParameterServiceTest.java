@@ -2,15 +2,12 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;

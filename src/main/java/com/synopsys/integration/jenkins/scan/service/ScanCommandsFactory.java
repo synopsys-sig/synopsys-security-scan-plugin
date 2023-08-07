@@ -5,7 +5,6 @@ import com.synopsys.integration.jenkins.scan.SecurityScanner;
 import com.synopsys.integration.jenkins.scan.extension.pipeline.SecurityScanStep;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
-
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.AbortException;
 import hudson.EnvVars;
@@ -14,7 +13,6 @@ import hudson.Launcher;
 import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
-
 import java.util.HashMap;
 import java.util.Map;
 

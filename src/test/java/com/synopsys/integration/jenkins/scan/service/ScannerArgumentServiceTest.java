@@ -2,27 +2,22 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
-
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
 import hudson.EnvVars;
 import hudson.FilePath;
-
 import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
 
 public class ScannerArgumentServiceTest {
     private BlackDuck blackDuck;

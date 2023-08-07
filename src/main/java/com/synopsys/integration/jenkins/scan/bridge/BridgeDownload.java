@@ -49,7 +49,6 @@ public class BridgeDownload {
         } else {
             listener.getLogger().println("Invalid Synopsys Bridge download URL: " + bridgeDownloadUrl);
         }
-        listener.getLogger().println("Method downloadSynopsysBridge(): bridge zip file path: " + bridgeZipFilePath);
         return bridgeZipFilePath;
     }
 

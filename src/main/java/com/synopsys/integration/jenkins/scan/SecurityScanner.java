@@ -5,7 +5,7 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
-import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
+import com.synopsys.integration.jenkins.scan.service.scan.blackDuck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.diagnostics.DiagnosticsService;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
@@ -62,9 +62,6 @@ public class SecurityScanner {
             Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace, listener);
             FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
             List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeDownloadParams.getBridgeInstallationPath());
-
-            String argsAsString = String.join(" ", commandLineArgs);
-            listener.getLogger().println("Method runScanner(): bridgeArgs: " + argsAsString);
 
             printMessages(LogMessages.START_SCANNER);
 

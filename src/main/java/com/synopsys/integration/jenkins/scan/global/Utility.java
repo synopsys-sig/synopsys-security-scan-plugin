@@ -1,7 +1,6 @@
 package com.synopsys.integration.jenkins.scan.global;
 
 import hudson.FilePath;
-
 import hudson.model.TaskListener;
 import jenkins.model.Jenkins;
 import java.io.IOException;
@@ -9,16 +8,16 @@ import java.io.IOException;
 public class Utility {
     public static void copyRepository(String targetDirectory, FilePath workspace, TaskListener listener) {
         FilePath targetDir = new FilePath(workspace.getChannel(), targetDirectory);
-
         try {
             FilePath gitDirectory = targetDir.child(".git");
+
             if (gitDirectory.exists()) {
                 gitDirectory.deleteRecursive();
             }
-
             if (!targetDir.exists()) {
                 targetDir.mkdirs();
             }
+
             workspace.copyRecursiveTo(targetDir);
         } catch (IOException | InterruptedException e) {
             listener.getLogger().println("An exception occurred while copying the repository: " + e.getMessage());
@@ -31,9 +30,9 @@ public class Utility {
         String defaultInstallationPath = null;
 
         if (jenkins != null && workspace.isRemote()) {
-            listener.getLogger().println("Method: defaultBridgeInstallationPath() Jenkins is running on agent node remotely.");
+            listener.getLogger().println("Jenkins is running on agent node remotely.");
         } else {
-            listener.getLogger().println("Method: defaultBridgeInstallationPath() Jenkins is running on the master node.");
+            listener.getLogger().println("Jenkins is running on the master node.");
         }
 
         try {
@@ -41,8 +40,6 @@ public class Utility {
         } catch (IOException | InterruptedException e) {
             listener.getLogger().println("Failed to fetch plugin's default installation path.");
         }
-
-        listener.getLogger().println("Method: defaultBridgeInstallationPath() Plugin's default installation path for this build is : " + defaultInstallationPath);
         verifyAndCreateInstallationPath(defaultInstallationPath, workspace, listener);
 
         return defaultInstallationPath;
@@ -85,33 +82,27 @@ public class Utility {
             FilePath extensionsDir = workspace.child("extensions");
             if (extensionsDir.exists()) {
                 extensionsDir.deleteRecursive();
-                listener.getLogger().println("Deleted 'extensions' directory");
             }
 
             FilePath licenseFile = workspace.child("LICENSE.txt");
             if (fileExistsIgnoreCase(licenseFile, listener)) {
                 licenseFile.delete();
-                listener.getLogger().println("Deleted 'LICENSE.txt' file");
             }
 
             FilePath versionsFile = workspace.child("versions.txt");
             if (fileExistsIgnoreCase(versionsFile, listener)) {
                 versionsFile.delete();
-                listener.getLogger().println("Deleted 'versions.txt' file");
             }
 
             FilePath synopsysBridgeFile = workspace.child("synopsys-bridge");
             if (fileExistsIgnoreCase(synopsysBridgeFile, listener)) {
                 synopsysBridgeFile.delete();
-                listener.getLogger().println("Deleted 'synopsys-bridge' binary");
             } else {
                 FilePath synopsysBridgeExeFile = workspace.child("synopsys-bridge.exe");
                 if (fileExistsIgnoreCase(synopsysBridgeExeFile, listener)) {
                     synopsysBridgeExeFile.delete();
-                    listener.getLogger().println("Deleted 'synopsys-bridge.exe' binary");
                 }
             }
-
         } catch (Exception e) {
             listener.getLogger().println("Failed to clean up files: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
@@ -136,7 +127,6 @@ public class Utility {
     }
 
     public static void removeFile(String filePath, FilePath workspace, TaskListener listener) {
-        listener.getLogger().println("Method: cleanup file path: " + filePath);
         try {
             FilePath file = new FilePath(workspace.getChannel(), filePath);
             file = file.absolutize();

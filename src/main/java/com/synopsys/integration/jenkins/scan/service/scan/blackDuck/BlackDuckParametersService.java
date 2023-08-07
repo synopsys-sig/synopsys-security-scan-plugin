@@ -1,12 +1,10 @@
-package com.synopsys.integration.jenkins.scan.service;
+package com.synopsys.integration.jenkins.scan.service.scan.blackDuck;
 
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
-
 import hudson.model.TaskListener;
 import jenkins.model.GlobalConfiguration;
-
 import java.util.*;
 import java.util.stream.Stream;
 

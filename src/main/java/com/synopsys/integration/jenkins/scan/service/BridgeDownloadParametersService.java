@@ -8,7 +8,6 @@ import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import jenkins.model.GlobalConfiguration;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
