@@ -2,7 +2,6 @@ package com.synopsys.integration.jenkins.scan.global;
 
 import hudson.FilePath;
 import hudson.model.TaskListener;
-import jenkins.model.Jenkins;
 import java.io.IOException;
 
 public class Utility {
@@ -24,32 +23,11 @@ public class Utility {
         }
     }
 
-    public static String defaultBridgeInstallationPath(FilePath workspace, TaskListener listener) {
-        Jenkins jenkins = Jenkins.getInstanceOrNull();
-        String separator = getDirectorySeparator(workspace, listener);
-        String defaultInstallationPath = null;
-
-        if (jenkins != null && workspace.isRemote()) {
-            listener.getLogger().println("Jenkins is running on agent node remotely.");
-        } else {
-            listener.getLogger().println("Jenkins is running on the master node.");
-        }
-
-        try {
-            defaultInstallationPath = workspace.act(new GetHomeDirectoryTask(separator));
-        } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("Failed to fetch plugin's default installation path.");
-        }
-        verifyAndCreateInstallationPath(defaultInstallationPath, workspace, listener);
-
-        return defaultInstallationPath;
-    }
-
     public static String getDirectorySeparator(FilePath workspace, TaskListener listener) {
         String os = null;
         if (workspace.isRemote()) {
             try {
-                os = workspace.act(new GetOsNameTask());
+                os = workspace.act(new OsNameTask());
             } catch (IOException | InterruptedException e) {
                 listener.getLogger().println("Exception occurred while getting directory separator for the agent node: " + e.getMessage());
             }
@@ -57,7 +35,7 @@ public class Utility {
             os = System.getProperty("os.name").toLowerCase();
         }
 
-        if (os.contains("win")) {
+        if (os != null && os.contains("win")) {
             return "\\";
         }  else {
             return "/";
@@ -79,26 +57,26 @@ public class Utility {
 
     public static void cleanupOtherFiles(FilePath workspace, TaskListener listener) {
         try {
-            FilePath extensionsDir = workspace.child("extensions");
+            FilePath extensionsDir = workspace.child(ApplicationConstants.EXTENSIONS_DIRECTORY);
             if (extensionsDir.exists()) {
                 extensionsDir.deleteRecursive();
             }
 
-            FilePath licenseFile = workspace.child("LICENSE.txt");
+            FilePath licenseFile = workspace.child(ApplicationConstants.LICENSE_FILE);
             if (fileExistsIgnoreCase(licenseFile, listener)) {
                 licenseFile.delete();
             }
 
-            FilePath versionsFile = workspace.child("versions.txt");
+            FilePath versionsFile = workspace.child(ApplicationConstants.VERSION_FILE);
             if (fileExistsIgnoreCase(versionsFile, listener)) {
                 versionsFile.delete();
             }
 
-            FilePath synopsysBridgeFile = workspace.child("synopsys-bridge");
+            FilePath synopsysBridgeFile = workspace.child(ApplicationConstants.BRIDGE_BINARY);
             if (fileExistsIgnoreCase(synopsysBridgeFile, listener)) {
                 synopsysBridgeFile.delete();
             } else {
-                FilePath synopsysBridgeExeFile = workspace.child("synopsys-bridge.exe");
+                FilePath synopsysBridgeExeFile = workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS);
                 if (fileExistsIgnoreCase(synopsysBridgeExeFile, listener)) {
                     synopsysBridgeExeFile.delete();
                 }

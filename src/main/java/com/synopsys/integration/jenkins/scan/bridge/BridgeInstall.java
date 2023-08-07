@@ -1,7 +1,12 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
+import com.synopsys.integration.jenkins.scan.global.HomeDirectoryTask;
+import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import jenkins.model.Jenkins;
+
+import java.io.IOException;
 
 public class BridgeInstall {
     private final TaskListener listener;
@@ -22,5 +27,26 @@ public class BridgeInstall {
             listener.getLogger().println("Synopsys bridge unzipping failed: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
+    }
+
+    public String defaultBridgeInstallationPath(FilePath workspace, TaskListener listener) {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        String separator = Utility.getDirectorySeparator(workspace, listener);
+        String defaultInstallationPath = null;
+
+        if (jenkins != null && workspace.isRemote()) {
+            listener.getLogger().println("Jenkins is running on agent node remotely.");
+        } else {
+            listener.getLogger().println("Jenkins is running on the master node.");
+        }
+
+        try {
+            defaultInstallationPath = workspace.act(new HomeDirectoryTask(separator));
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("Failed to fetch plugin's default installation path.");
+        }
+        Utility.verifyAndCreateInstallationPath(defaultInstallationPath, workspace, listener);
+
+        return defaultInstallationPath;
     }
 }

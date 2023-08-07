@@ -1,7 +1,6 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 
@@ -13,11 +12,12 @@ public class BridgeDownloadParameters {
     private final TaskListener listener;
 
     public BridgeDownloadParameters(FilePath workspace, TaskListener listener) {
+        BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
         this.workspace = workspace;
         this.listener = listener;
         this.bridgeDownloadUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL;
         this.bridgeDownloadVersion = ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION;
-        this.bridgeInstallationPath = Utility.defaultBridgeInstallationPath(workspace, listener);
+        this.bridgeInstallationPath = bridgeInstall.defaultBridgeInstallationPath(workspace, listener);
     }
 
     public String getBridgeDownloadUrl() {

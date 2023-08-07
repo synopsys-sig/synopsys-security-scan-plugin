@@ -1,6 +1,7 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
-import com.synopsys.integration.jenkins.scan.global.GetOsNameTask;
+import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.OsNameTask;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -12,10 +13,6 @@ import java.util.regex.Pattern;
 public class BridgeDownloadManager {
     private final TaskListener listener;
     private final FilePath workspace;
-    private final String bridgeBinary = "synopsys-bridge";
-    private final String bridgeBinaryWindows = "synopsys-bridge.exe";
-    private final String extensionsDirectory = "extensions";
-    private final String versionFile = "versions.txt";
 
     public BridgeDownloadManager(FilePath workspace, TaskListener listener) {
         this.workspace = workspace;
@@ -33,9 +30,9 @@ public class BridgeDownloadManager {
         String installedBridgeVersionFilePath = null;
         String os = getOsName();
         if (os.contains("win")) {
-            installedBridgeVersionFilePath = String.join("\\", bridgeInstallationPath, versionFile);
+            installedBridgeVersionFilePath = String.join("\\", bridgeInstallationPath, ApplicationConstants.VERSION_FILE);
         } else {
-            installedBridgeVersionFilePath = String.join("/", bridgeInstallationPath, versionFile);
+            installedBridgeVersionFilePath = String.join("/", bridgeInstallationPath, ApplicationConstants.VERSION_FILE);
         }
 
         String installedBridgeVersion = getBridgeVersionFromVersionFile(installedBridgeVersionFilePath);
@@ -49,10 +46,10 @@ public class BridgeDownloadManager {
             FilePath installationDirectory = new FilePath(workspace.getChannel(), synopsysBridgeInstallationPath);
 
             if (installationDirectory.exists() && installationDirectory.isDirectory()) {
-                FilePath extensionsDir = installationDirectory.child(extensionsDirectory);
-                FilePath bridgeBinaryFile = installationDirectory.child(bridgeBinary);
-                FilePath bridgeBinaryFileWindows = installationDirectory.child(bridgeBinaryWindows);
-                FilePath versionFile = installationDirectory.child(this.versionFile);
+                FilePath extensionsDir = installationDirectory.child(ApplicationConstants.EXTENSIONS_DIRECTORY);
+                FilePath bridgeBinaryFile = installationDirectory.child(ApplicationConstants.BRIDGE_BINARY);
+                FilePath bridgeBinaryFileWindows = installationDirectory.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS);
+                FilePath versionFile = installationDirectory.child(ApplicationConstants.VERSION_FILE);
 
                 return extensionsDir.isDirectory() && (bridgeBinaryFile.exists() || bridgeBinaryFileWindows.exists()) && versionFile.exists();
             }
@@ -102,7 +99,7 @@ public class BridgeDownloadManager {
     }
 
     public String downloadVersionFile(String directoryUrl) {
-        String versionFileUrl = String.join("/", directoryUrl, versionFile);
+        String versionFileUrl = String.join("/", directoryUrl, ApplicationConstants.VERSION_FILE);
         String tempVersionFilePath = null;
 
         try {
@@ -119,7 +116,7 @@ public class BridgeDownloadManager {
 
     public boolean versionFileAvailable(String directoryUrl) {
         try {
-            URL url = new URL(String.join("/",directoryUrl,versionFile));
+            URL url = new URL(String.join("/",directoryUrl,ApplicationConstants.VERSION_FILE));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("HEAD");
             return (connection.getResponseCode() >= 200 && connection.getResponseCode() < 300);
@@ -167,7 +164,7 @@ public class BridgeDownloadManager {
         String os = null;
         if (workspace.isRemote()) {
             try {
-                os = workspace.act(new GetOsNameTask());
+                os = workspace.act(new OsNameTask());
             } catch (IOException | InterruptedException e) {
                 listener.getLogger().println("Exception occurred while fetching the OS information for the agent node: " + e.getMessage());
             }

@@ -3,7 +3,7 @@ package com.synopsys.integration.jenkins.scan.service;
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.GetOsNameTask;
+import com.synopsys.integration.jenkins.scan.global.OsNameTask;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -134,7 +134,7 @@ public class BridgeDownloadParametersService {
 
         if (workspace.isRemote()) {
             try {
-                os = workspace.act(new GetOsNameTask());
+                os = workspace.act(new OsNameTask());
             } catch (IOException | InterruptedException e) {
                 listener.getLogger().println("Exception occurred while fetching the OS information for the agent node: " + e.getMessage());
             }

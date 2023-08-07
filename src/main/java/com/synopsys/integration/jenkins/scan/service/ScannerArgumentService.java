@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
-import com.synopsys.integration.jenkins.scan.global.GetOsNameTask;
+import com.synopsys.integration.jenkins.scan.global.OsNameTask;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
@@ -125,7 +125,7 @@ public class ScannerArgumentService {
 
         if (workspace.isRemote()) {
             try {
-                os = workspace.act(new GetOsNameTask());
+                os = workspace.act(new OsNameTask());
             } catch (IOException | InterruptedException e) {
                 listener.getLogger().println("Exception occurred while fetching the OS information for determining bridge executable name: " + e.getMessage());
             }

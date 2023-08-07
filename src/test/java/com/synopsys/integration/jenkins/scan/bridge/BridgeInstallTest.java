@@ -45,11 +45,11 @@ public class BridgeInstallTest {
             assertTrue(workspace.child("demo-bridge-LICENSE.txt").exists());
 
             cleanupWorkspace(workspace);
-
         } catch (IOException | InterruptedException e) {
             System.out.println("Exception occurred during testing for installSynopsysBridge method. " + e.getMessage());
         }
     }
+
     public String getHomeDirectory() {
         return System.getProperty("user.home");
     }

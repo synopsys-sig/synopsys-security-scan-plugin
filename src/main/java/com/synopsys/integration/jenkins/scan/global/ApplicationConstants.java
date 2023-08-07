@@ -29,6 +29,11 @@ public class ApplicationConstants {
     public static final String BRIDGE_DIAGNOSTICS_DIRECTORY = ".bridge";
     public static final int BRIDGE_DOWNLOAD_MAX_RETRIES = 3;
     public static final String ALL_FILES_WILDCARD_SYMBOL = "**";
+    public static final String BRIDGE_BINARY = "synopsys-bridge";
+    public static final String BRIDGE_BINARY_WINDOWS = "synopsys-bridge.exe";
+    public static final String EXTENSIONS_DIRECTORY = "extensions";
+    public static final String VERSION_FILE = "versions.txt";
+    public static final String LICENSE_FILE = "LICENSE.txt";
 
     public static String getSynopsysBridgeZipFileName(String platform) {
         return "synopsys-bridge-".concat(platform).concat(".zip");

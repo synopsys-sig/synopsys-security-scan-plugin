@@ -1,7 +1,8 @@
-package com.synopsys.integration.jenkins.scan.service;
+package com.synopsys.integration.jenkins.scan.service.scan.blackDuck;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,7 +110,6 @@ public class BridgeDownloadParameterServiceTest {
         assertNotNull(result.getBridgeDownloadVersion());
         assertNotNull(result.getBridgeInstallationPath());
     }
-
 
     public String getHomeDirectory() {
         return System.getProperty("user.home");
