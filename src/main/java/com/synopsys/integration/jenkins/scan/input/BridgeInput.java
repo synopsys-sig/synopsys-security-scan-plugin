@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
 
 public class BridgeInput {
-
     @JsonProperty("blackduck")
     private BlackDuck blackDuck;
 

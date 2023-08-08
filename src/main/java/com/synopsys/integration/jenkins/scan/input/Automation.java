@@ -1,10 +1,8 @@
 package com.synopsys.integration.jenkins.scan.input;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Automation {
-
     @JsonProperty("fixpr")
     private Boolean fixpr;
     @JsonProperty("prComment")

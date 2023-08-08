@@ -1,112 +1,119 @@
 package com.synopsys.integration.jenkins.scan.global;
 
 import hudson.FilePath;
-
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
+import hudson.model.TaskListener;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public class Utility {
-    public static FilePath createTempDir(String directoryName) throws IOException, InterruptedException {
-        FilePath tempFilePath = new FilePath(Files.createTempDirectory(directoryName).toFile());
-        tempFilePath.mkdirs();
-        return tempFilePath;
-    }
-
-    public static void cleanupTempDir(FilePath tempDir){
+    public static void copyRepository(String targetDirectory, FilePath workspace, TaskListener listener) {
+        FilePath targetDir = new FilePath(workspace.getChannel(), targetDirectory);
         try {
-            if (tempDir.exists()) {
-                tempDir.deleteRecursive();
+            FilePath gitDirectory = targetDir.child(".git");
+
+            if (gitDirectory.exists()) {
+                gitDirectory.deleteRecursive();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (!targetDir.exists()) {
+                targetDir.mkdirs();
+            }
+
+            workspace.copyRecursiveTo(targetDir);
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("An exception occurred while copying the repository: " + e.getMessage());
         }
     }
 
-    public static void deleteDirectory(File directory) {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    deleteDirectory(file);
-                } else {
-                    file.delete();
+    public static String getDirectorySeparator(FilePath workspace, TaskListener listener) {
+        String os = null;
+        if (workspace.isRemote()) {
+            try {
+                os = workspace.act(new OsNameTask());
+            } catch (IOException | InterruptedException e) {
+                listener.getLogger().println("Exception occurred while getting directory separator for the agent node: " + e.getMessage());
+            }
+        } else {
+            os = System.getProperty("os.name").toLowerCase();
+        }
+
+        if (os != null && os.contains("win")) {
+            return "\\";
+        }  else {
+            return "/";
+        }
+    }
+
+    public static void verifyAndCreateInstallationPath(String bridgeInstallationPath, FilePath workspace, TaskListener listener) {
+        FilePath directory = new FilePath(workspace.getChannel(), bridgeInstallationPath);
+        try {
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            listener.getLogger().println("Created bridge installation directory at: " + directory.getRemote());
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("Failed to create directory: " + directory.getRemote());
+
+        }
+    }
+
+    public static void cleanupOtherFiles(FilePath workspace, TaskListener listener) {
+        try {
+            FilePath extensionsDir = workspace.child(ApplicationConstants.EXTENSIONS_DIRECTORY);
+            if (extensionsDir.exists()) {
+                extensionsDir.deleteRecursive();
+            }
+
+            FilePath licenseFile = workspace.child(ApplicationConstants.LICENSE_FILE);
+            if (fileExistsIgnoreCase(licenseFile, listener)) {
+                licenseFile.delete();
+            }
+
+            FilePath versionsFile = workspace.child(ApplicationConstants.VERSION_FILE);
+            if (fileExistsIgnoreCase(versionsFile, listener)) {
+                versionsFile.delete();
+            }
+
+            FilePath synopsysBridgeFile = workspace.child(ApplicationConstants.BRIDGE_BINARY);
+            if (fileExistsIgnoreCase(synopsysBridgeFile, listener)) {
+                synopsysBridgeFile.delete();
+            } else {
+                FilePath synopsysBridgeExeFile = workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS);
+                if (fileExistsIgnoreCase(synopsysBridgeExeFile, listener)) {
+                    synopsysBridgeExeFile.delete();
                 }
             }
+        } catch (Exception e) {
+            listener.getLogger().println("Failed to clean up files: " + e.getMessage());
+            e.printStackTrace(listener.getLogger());
         }
-        directory.delete();
     }
 
-    public static void copyRepository(String pluginWorkspaceDirectory, String targetDirectory) {
-        File workspaceDirectory = Utility.stringToFile(pluginWorkspaceDirectory);
-        File targetDir = Utility.stringToFile(targetDirectory);
-
-        File gitDirectory = new File(targetDirectory, ".git");
-
-        if (gitDirectory.exists() && gitDirectory.isDirectory()) {
-            Utility.deleteDirectory(gitDirectory);
-        }
-
-        if (!targetDir.exists()) {
-            targetDir.mkdirs();
-        }
+    private static boolean fileExistsIgnoreCase(FilePath workspace, TaskListener listener) {
         try {
-            FileUtils.copyDirectory(workspaceDirectory, targetDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+            FilePath[] files = workspace.getParent().list(workspace.getName().toLowerCase());
 
-    public static String defaultBridgeInstallationPath() {
-        String defaultInstallationPath = null;
-
-        String os = System.getProperty("os.name").toLowerCase();
-        String userHome = System.getProperty("user.home");
-
-        if (os.contains("win")) {
-            defaultInstallationPath = String.join("\\", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
-        } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
-            defaultInstallationPath = String.join("/", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
-        }
-
-        verifyAndCreateInstallationPath(defaultInstallationPath);
-
-        return defaultInstallationPath;
-    }
-
-    public static void verifyAndCreateInstallationPath(String bridgeInstallationPath) {
-        File directory = new File(bridgeInstallationPath);
-        if (!directory.exists()) {
-            boolean created = directory.mkdirs();
-            if (!created) {
-                System.out.println("Failed to create directory: " + bridgeInstallationPath);
+            for (FilePath f : files) {
+                if (f.getName().equalsIgnoreCase(workspace.getName())) {
+                    return true;
+                }
             }
+        } catch (Exception e) {
+            listener.getLogger().println("Failed to check file existence: " + e.getMessage());
+            e.printStackTrace(listener.getLogger());
         }
+
+        return false;
     }
 
-    public static FilePath stringToFilePath(String path) {
-        FilePath filePath = new FilePath(new File(path));
-        return filePath;
-    }
+    public static void removeFile(String filePath, FilePath workspace, TaskListener listener) {
+        try {
+            FilePath file = new FilePath(workspace.getChannel(), filePath);
+            file = file.absolutize();
 
-    public static File stringToFile(String path) {
-        File file = new File(path);
-        return file;
-    }
-
-    public static File filePathToFile(FilePath filePath) {
-        String filePathString = filePath.getRemote();
-        File file = new File(filePathString);
-        return file;
-    }
-
-    public static void cleanupInputJson(String inputJsonPath) {
-        File file = new File(inputJsonPath);
-
-        if (file.exists()) {
-            file.delete();
+            if (file.exists()) {
+                file.delete();
+            }
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("An exception occurred while cleaning up file: " + e.getMessage());
         }
     }
 

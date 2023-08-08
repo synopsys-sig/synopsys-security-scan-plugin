@@ -1,29 +1,41 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
+import com.synopsys.integration.jenkins.scan.global.Utility;
+import hudson.FilePath;
 import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 
 public class BridgeDownloadManagerTest {
     private BridgeDownloadManager bridgeDownloadManager;
+
+    private FilePath workspace;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
 
     @BeforeEach
     void setup() {
-        bridgeDownloadManager = new BridgeDownloadManager(listenerMock);
+        workspace = new FilePath(new File(getHomeDirectory()));
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
+        bridgeDownloadManager = new BridgeDownloadManager(workspace, listenerMock);
     }
 
     @Test
     public void getInstalledBridgeVersionTest() {
-        String versionFilePath = new File("src/test/resources/versions.txt").getAbsolutePath();
+        String versionFilePath = null;
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if(os.contains("win")) {
+            versionFilePath = new File("src\\test\\resources\\versions.txt").getAbsolutePath();
+
+        } else {
+            versionFilePath = new File("src/test/resources/versions.txt").getAbsolutePath();
+        }
 
         String installedVersion = bridgeDownloadManager.getBridgeVersionFromVersionFile(versionFilePath);
 
@@ -33,13 +45,16 @@ public class BridgeDownloadManagerTest {
 
     @Test
     void isSynopsysBridgeDownloadRequiredTest() {
-        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
         bridgeDownloadParameters.setBridgeDownloadUrl("https://fake.url.com/bridge");
         bridgeDownloadParameters.setBridgeInstallationPath("/path/to/bridge");
 
         BridgeDownloadManager mockedBridgeDownloadManager = Mockito.mock(BridgeDownloadManager.class);
 
+        BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listenerMock);
+
         Mockito.when(mockedBridgeDownloadManager.checkIfBridgeInstalled(anyString())).thenReturn(true);
+        Mockito.when(mockedBridgeDownloadManager.getOsName()).thenReturn(getOperatingSystem());
         boolean isDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParameters);
 
         assertTrue(isDownloadRequired);
@@ -47,6 +62,8 @@ public class BridgeDownloadManagerTest {
 
     @Test
     public void getDirectoryUrlTest() {
+        BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listenerMock);
+
         String downloadUrlWithoutTrailingSlash = "https://myown.artifactory.com/release/synopsys-bridge/0.3.59/synopsys-bridge-0.3.59-linux64.zip";
         String directoryUrl = "https://myown.artifactory.com/release/synopsys-bridge/0.3.59";
 
@@ -60,6 +77,8 @@ public class BridgeDownloadManagerTest {
 
     @Test
     public void versionFileAvailableTest() {
+        BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listenerMock);
+
         String directoryUrlWithoutVersionFile = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.3.1/";
         String directoryUrlWithVersionFile = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/";
 
@@ -69,6 +88,8 @@ public class BridgeDownloadManagerTest {
 
     @Test
     public void extractVersionFromUrlTest() {
+        BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listenerMock);
+
         String urlWithVersion = "https://myown.artifactory.com/synopsys-bridge/0.3.59/synopsys-bridge-0.3.59-linux64.zip";
         String expectedVersionWithVersion = "0.3.59";
 
@@ -82,16 +103,25 @@ public class BridgeDownloadManagerTest {
 
     @Test
     public void downloadVersionFileTest() {
+        BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listenerMock);
+
         String directoryUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest";
         String tempVersionFilePath = bridgeDownloadManager.downloadVersionFile(directoryUrl);
-        File tempVersionFile = new File(tempVersionFilePath);
+        FilePath tempVersionFile = new FilePath(new File(tempVersionFilePath));
 
         assertNotNull(tempVersionFilePath);
-        assertTrue(tempVersionFile.exists());
+        try {
+            assertTrue(tempVersionFile.exists());
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Exception while checking the existence of downloaded version file.");
+        }
+        Utility.removeFile(tempVersionFilePath, new FilePath(new File(getHomeDirectory())), listenerMock );
     }
 
     @Test
     void getLatestBridgeVersionFromArtifactoryTest() {
+        BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listenerMock);
+
         String urlWithVersion = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.3.1/synopsys-bridge-0.3.1-linux64.zip ";
         String resultWithVersion = bridgeDownloadManager.getLatestBridgeVersionFromArtifactory(urlWithVersion);
 
@@ -105,5 +135,18 @@ public class BridgeDownloadManagerTest {
         String resultWithoutVersion = mockedBridgeDownloadManager.getLatestBridgeVersionFromArtifactory(urlWithoutVersion);
 
         assertEquals(expectedVersion, resultWithoutVersion);
+    }
+
+    public String getOperatingSystem() {
+        String osName = System.getProperty("os.name");
+        if(osName.contains("win")) {
+            return "win";
+        } else {
+            return osName;
+        }
+    }
+
+    public String getHomeDirectory() {
+        return System.getProperty("user.home");
     }
 }

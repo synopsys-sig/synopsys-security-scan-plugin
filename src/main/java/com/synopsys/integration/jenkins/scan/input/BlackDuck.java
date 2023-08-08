@@ -1,6 +1,5 @@
 package com.synopsys.integration.jenkins.scan.input;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BlackDuck {

@@ -5,15 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
+import com.synopsys.integration.jenkins.scan.global.OsNameTask;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
+import com.synopsys.integration.jenkins.scan.service.scan.blackDuck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.scm.SCMRepositoryService;
 import hudson.EnvVars;
+import hudson.FilePath;
 import hudson.model.TaskListener;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,12 +25,14 @@ import java.util.Objects;
 public class ScannerArgumentService {
     private final TaskListener listener;
     private final EnvVars envVars;
+    private final FilePath workspace;
     private static final String DATA_KEY = "data";
     private String blackDuckInputJsonFilePath;
 
-    public ScannerArgumentService(TaskListener listener, EnvVars envVars) {
+    public ScannerArgumentService(TaskListener listener, EnvVars envVars, FilePath workspace) {
         this.listener = listener;
         this.envVars = envVars;
+        this.workspace = workspace;
     }
 
     public String getBlackDuckInputJsonFilePath() {
@@ -39,8 +43,9 @@ public class ScannerArgumentService {
         this.blackDuckInputJsonFilePath = blackDuckInputJsonFilePath;
     }
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters) throws ScannerJenkinsException {
-        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE));
+
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, String bridgeInstallationPath) throws ScannerJenkinsException {
+        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE, bridgeInstallationPath));
 
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
         BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
@@ -79,7 +84,6 @@ public class ScannerArgumentService {
             setBlackDuckInputJsonFilePath(jsonPath);
         } catch (Exception e) {
             listener.getLogger().println("An exception occurred while creating blackduck_input.json file: " + e.getMessage());
-
         }
 
         return jsonPath;
@@ -89,9 +93,9 @@ public class ScannerArgumentService {
         String blackDuckInputJsonPath = null;
 
         try {
-            Path tempFilePath = Files.createTempFile("blackduck_input", ".json");
-            Files.writeString(tempFilePath, blackDuckJson);
-            blackDuckInputJsonPath = tempFilePath.toAbsolutePath().toString();
+            FilePath tempFile = workspace.createTempFile("blackduck_input", ".json");
+            tempFile.write(blackDuckJson, StandardCharsets.UTF_8.name());
+            blackDuckInputJsonPath = tempFile.getRemote();
         } catch (Exception e) {
             listener.getLogger().println("Exception occurred while writing into blackduck_input.json file: " + e.getMessage());
         }
@@ -99,13 +103,36 @@ public class ScannerArgumentService {
         return blackDuckInputJsonPath;
     }
 
-    public static List<String> getInitialBridgeArgs(String stage) {
+    public List<String> getInitialBridgeArgs(String stage, String bridgeInstallationPath) {
         List<String> initBridgeArgs = new ArrayList<>();
-        initBridgeArgs.add(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND);
+        String os = getAgentOs();
+
+        if(os.contains("win")) {
+            initBridgeArgs.add(String.join("\\", bridgeInstallationPath, ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS));
+        } else {
+            initBridgeArgs.add(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND);
+        }
+
         initBridgeArgs.add(BridgeParams.STAGE_OPTION);
         initBridgeArgs.add(stage);
         initBridgeArgs.add(BridgeParams.INPUT_OPTION);
 
         return initBridgeArgs;
+    }
+
+    public String getAgentOs() {
+        String os =  null;
+
+        if (workspace.isRemote()) {
+            try {
+                os = workspace.act(new OsNameTask());
+            } catch (IOException | InterruptedException e) {
+                listener.getLogger().println("Exception occurred while fetching the OS information for determining bridge executable name: " + e.getMessage());
+            }
+        } else {
+            os = System.getProperty("os.name").toLowerCase();
+        }
+
+        return os;
     }
 }

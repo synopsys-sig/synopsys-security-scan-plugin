@@ -3,17 +3,18 @@ package com.synopsys.integration.jenkins.scan.service.scm;
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketApi;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.Pull;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.Repository;
+import hudson.model.TaskListener;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.Utility;
-import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
-import hudson.model.*;
 import java.util.Map;
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
-
 
 public class BitbucketRepositoryService {
     private final TaskListener listener;

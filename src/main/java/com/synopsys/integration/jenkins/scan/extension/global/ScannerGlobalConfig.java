@@ -1,6 +1,5 @@
 package com.synopsys.integration.jenkins.scan.extension.global;
 
-
 import hudson.Extension;
 import java.io.Serializable;
 import jenkins.model.GlobalConfiguration;

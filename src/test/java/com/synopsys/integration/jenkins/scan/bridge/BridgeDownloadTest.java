@@ -1,12 +1,9 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-
 import hudson.FilePath;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import java.io.File;
-
 import static com.synopsys.integration.jenkins.scan.global.ApplicationConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -1,9 +1,9 @@
 package com.synopsys.integration.jenkins.scan.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
+import com.synopsys.integration.jenkins.scan.service.scan.blackDuck.BlackDuckParametersService;
 import hudson.model.TaskListener;
 import java.io.PrintStream;
 import java.util.HashMap;

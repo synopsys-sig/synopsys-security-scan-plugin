@@ -5,7 +5,7 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
-import com.synopsys.integration.jenkins.scan.service.BlackDuckParametersService;
+import com.synopsys.integration.jenkins.scan.service.scan.blackDuck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.diagnostics.DiagnosticsService;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
@@ -41,8 +41,8 @@ public class SecurityScanner {
     public int runScanner(Map<String, Object> scanParams) throws ScannerJenkinsException {
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
 
-        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
-        BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService(listener);
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);
+        BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService(workspace, listener);
         BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
         Map<String, Object> blackDuckParameters = blackDuckParametersService.prepareBlackDuckParameterValidation(scanParams);
@@ -50,11 +50,7 @@ public class SecurityScanner {
 
         if (blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParameters)
                 && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
-
-            FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
-            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams);
-
-            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(listener);
+            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace,listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
 
             if (isBridgeDownloadRequired) {
@@ -63,7 +59,9 @@ public class SecurityScanner {
                 listener.getLogger().println("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
             }
 
-            Utility.copyRepository(workspace.getRemote(), bridgeDownloadParams.getBridgeInstallationPath());
+            Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace, listener);
+            FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
+            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeDownloadParams.getBridgeInstallationPath());
 
             printMessages(LogMessages.START_SCANNER);
 
@@ -78,29 +76,29 @@ public class SecurityScanner {
             } catch (Exception e) {
                 listener.getLogger().println("Exception occurred while invoking synopsys-bridge from the plugin : " + e.getMessage());
             } finally {
-                Utility.cleanupInputJson(scannerArgumentService.getBlackDuckInputJsonFilePath());
+                Utility.removeFile(scannerArgumentService.getBlackDuckInputJsonFilePath(), workspace, listener);
+                Utility.cleanupOtherFiles(workspace, listener);
 
                 if ( Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
                     DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,
-                        new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
+                            new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
                     diagnosticsService.archiveDiagnostics(bridgeInstallationPath.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
                 }
             }
         }
 
         printMessages(LogMessages.END_SCANNER);
-
         return scanner;
     }
 
     private void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
-        BridgeDownload bridgeDownload = new BridgeDownload(listener);
-        BridgeInstall bridgeInstall = new BridgeInstall(listener);
+        BridgeDownload bridgeDownload = new BridgeDownload(workspace, listener);
+        BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
 
         String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();
 
-        Utility.verifyAndCreateInstallationPath(bridgeInstallationPath);
+        Utility.verifyAndCreateInstallationPath(bridgeInstallationPath, workspace, listener);
 
         try {
             FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl);

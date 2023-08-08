@@ -1,17 +1,14 @@
-package com.synopsys.integration.jenkins.scan.service;
+package com.synopsys.integration.jenkins.scan.service.scm;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
-import com.synopsys.integration.jenkins.scan.service.scm.BitbucketRepositoryService;
 import jenkins.model.Jenkins;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 

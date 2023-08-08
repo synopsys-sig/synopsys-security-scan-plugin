@@ -3,7 +3,6 @@ package com.synopsys.integration.jenkins.scan.input.bitbucket;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Repository {
-
     @JsonProperty("pull")
     private Pull pull;
 

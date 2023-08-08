@@ -3,20 +3,20 @@ package com.synopsys.integration.jenkins.scan.bridge;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import hudson.FilePath;
 import hudson.model.TaskListener;
-
-import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class BridgeDownload {
     private final TaskListener listener;
+    private final FilePath workspace;
 
-    public BridgeDownload(TaskListener listener) {
+    public BridgeDownload(FilePath workspace, TaskListener listener) {
+        this.workspace = workspace;
         this.listener = listener;
     }
 
     public FilePath downloadSynopsysBridge(String bridgeDownloadUrl) {
-        FilePath tempFilePath = null;
+        FilePath bridgeZipFilePath = null;
 
         if (checkIfBridgeUrlExists(bridgeDownloadUrl)) {
             try {
@@ -26,13 +26,12 @@ public class BridgeDownload {
                 while (!downloadSuccess && retryCount <= ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES) {
                     try {
                         listener.getLogger().println("Downloading Synopsys Bridge from: " + bridgeDownloadUrl);
-                        File tempFile = File.createTempFile("bridge", ".zip");
-                        tempFilePath = new FilePath(tempFile);
 
-                        tempFilePath.copyFrom(new URL(bridgeDownloadUrl));
+                        bridgeZipFilePath = workspace.child("bridge.zip");
+                        bridgeZipFilePath.copyFrom(new URL(bridgeDownloadUrl));
                         downloadSuccess = true;
 
-                        listener.getLogger().println("Synopsys Bridge download is successful!");
+                        listener.getLogger().println("Synopsys Bridge download is successful and bridge is downloaded in: " + bridgeZipFilePath);
                     } catch (Exception e) {
                         listener.getLogger().printf("Synopsys Bridge download failed. Attempt#%s to download again.%n", retryCount);
                         Thread.sleep(2500);
@@ -45,12 +44,12 @@ public class BridgeDownload {
                 }
             } catch (InterruptedException e) {
                 listener.getLogger().println("Interrupted while waiting to retry Synopsys Bridge download");
-                e.printStackTrace();
+                e.printStackTrace(listener.getLogger());
             }
         } else {
             listener.getLogger().println("Invalid Synopsys Bridge download URL: " + bridgeDownloadUrl);
         }
-        return tempFilePath;
+        return bridgeZipFilePath;
     }
 
     public boolean checkIfBridgeUrlExists(String bridgeDownloadUrl) {

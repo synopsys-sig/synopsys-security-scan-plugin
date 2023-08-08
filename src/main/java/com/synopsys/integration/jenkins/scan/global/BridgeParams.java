@@ -1,7 +1,6 @@
 package com.synopsys.integration.jenkins.scan.global;
 
 public class BridgeParams {
-
     public static final String STAGE_OPTION = "--stage";
     public static final String INPUT_OPTION = "--input";
     public static final String DIAGNOSTICS_OPTION = "--diagnostics";
