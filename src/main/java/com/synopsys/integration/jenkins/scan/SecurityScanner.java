@@ -80,9 +80,7 @@ public class SecurityScanner {
                 Utility.cleanupOtherFiles(workspace, listener);
 
                 if ( Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
-                    DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,
-                            new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
-                    diagnosticsService.archiveDiagnostics(bridgeInstallationPath.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
+                    uploadDiagnostics(bridgeInstallationPath);
                 }
             }
         }
@@ -112,6 +110,15 @@ public class SecurityScanner {
         listener.getLogger().println(LogMessages.ASTERISKS);
         listener.getLogger().println(message);
         listener.getLogger().println(LogMessages.ASTERISKS);
+    }
+
+    private void uploadDiagnostics(FilePath bridgeInstallationPath) {
+        DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,
+            new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
+        FilePath diagnosticsPath = new FilePath(workspace.getChannel(), bridgeInstallationPath.getRemote()
+                .concat(Utility.getDirectorySeparator(workspace, listener))
+                .concat(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
+        diagnosticsService.archiveDiagnostics(diagnosticsPath);
     }
 
 }
