@@ -1,14 +1,14 @@
 package com.synopsys.integration.jenkins.scan;
 
 import com.synopsys.integration.jenkins.scan.bridge.*;
-import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
-import com.synopsys.integration.jenkins.scan.service.scan.blackDuck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
-import com.synopsys.integration.jenkins.scan.service.diagnostics.DiagnosticsService;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
+import com.synopsys.integration.jenkins.scan.service.diagnostics.DiagnosticsService;
+import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -63,9 +63,9 @@ public class SecurityScanner {
             FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
             List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeDownloadParams.getBridgeInstallationPath());
 
-            printMessages(LogMessages.START_SCANNER);
-
             try {
+                printBridgeExecutionLogs(LogMessages.START_BRIDGE_EXECUTION);
+
                 scanner = launcher.launch()
                         .cmds(commandLineArgs)
                         .envs(envVars)
@@ -76,6 +76,8 @@ public class SecurityScanner {
             } catch (Exception e) {
                 listener.getLogger().println("Exception occurred while invoking synopsys-bridge from the plugin : " + e.getMessage());
             } finally {
+                printBridgeExecutionLogs(LogMessages.END_BRIDGE_EXECUTION);
+
                 Utility.removeFile(scannerArgumentService.getBlackDuckInputJsonFilePath(), workspace, listener);
                 Utility.cleanupOtherFiles(workspace, listener);
 
@@ -85,7 +87,6 @@ public class SecurityScanner {
             }
         }
 
-        printMessages(LogMessages.END_SCANNER);
         return scanner;
     }
 
@@ -106,7 +107,7 @@ public class SecurityScanner {
         }
     }
 
-    public void printMessages(String message) {
+    public void printBridgeExecutionLogs(String message) {
         listener.getLogger().println(LogMessages.ASTERISKS);
         listener.getLogger().println(message);
         listener.getLogger().println(LogMessages.ASTERISKS);

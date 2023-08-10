@@ -1,7 +1,8 @@
-package com.synopsys.integration.jenkins.scan.service.scan.blackDuck;
+package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
 
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import hudson.model.TaskListener;
 import jenkins.model.GlobalConfiguration;
@@ -13,6 +14,7 @@ public class BlackDuckParametersService {
     public BlackDuckParametersService(TaskListener listener) {
         this.listener = listener;
     }
+
     public BlackDuck prepareBlackDuckInputForBridge(Map<String, Object> blackDuckParametersFromPipeline) {
         Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
         Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFromPipeline, blackDuckParametersMapFromUI);
@@ -21,8 +23,7 @@ public class BlackDuckParametersService {
 
     public Map<String, Object> prepareBlackDuckParameterValidation(Map<String, Object> blackDuckParametersFromPipeline) {
         Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
-        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFromPipeline, blackDuckParametersMapFromUI);
-        return blackDuckParametersMap;
+        return getCombinedBlackDuckParameters(blackDuckParametersFromPipeline, blackDuckParametersMapFromUI);
     }
 
     public BlackDuck createBlackDuckObject(Map<String, Object> blackDuckParametersMap) {
@@ -48,7 +49,7 @@ public class BlackDuckParametersService {
                     }
                     break;
                 case ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY:
-                    if (value.length() > 0) {
+                    if (!value.isEmpty()) {
                         List<String> failureSeverities = new ArrayList<>();
                         String[] failureSeveritiesInput = value.toUpperCase().split(",");
 
@@ -85,16 +86,16 @@ public class BlackDuckParametersService {
                             && !blackDuckParams.get(key).toString().isEmpty();
 
                     if (!isKeyValid) {
-                        listener.getLogger().printf("BlackDuck parameter validation failed for %s%n", key);
+                        listener.getLogger().printf(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED_FOR_PARAM, key);
                     }
                     return isKeyValid;
                 });
 
-        if(isValid) {
-            listener.getLogger().println("BlackDuck parameters are validated successfully.");
+        if (isValid) {
+            listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATED_SUCCESSFULLY);
             return true;
         } else {
-            listener.getLogger().println("BlackDuck parameters are not valid.");
+            listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
             return false;
         }
     }

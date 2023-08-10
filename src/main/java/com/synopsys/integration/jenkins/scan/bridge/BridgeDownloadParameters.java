@@ -8,13 +8,9 @@ public class BridgeDownloadParameters {
     private String bridgeDownloadUrl;
     private String bridgeDownloadVersion;
     private String bridgeInstallationPath;
-    private final FilePath workspace;
-    private final TaskListener listener;
 
     public BridgeDownloadParameters(FilePath workspace, TaskListener listener) {
         BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
-        this.workspace = workspace;
-        this.listener = listener;
         this.bridgeDownloadUrl = ApplicationConstants.BRIDGE_ARTIFACTORY_URL;
         this.bridgeDownloadVersion = ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION;
         this.bridgeInstallationPath = bridgeInstall.defaultBridgeInstallationPath(workspace, listener);
