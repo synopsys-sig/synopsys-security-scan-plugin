@@ -56,7 +56,7 @@ public class SecurityScanner {
             if (isBridgeDownloadRequired) {
                 initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
             } else {
-                listener.getLogger().println("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
+                listener.getLogger().printf(LogMessages.BRIDGE_INSTALLATION_ALREADY_FOUND_IN_PATH, bridgeDownloadParams.getBridgeInstallationPath());
             }
 
             Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace, listener);
@@ -74,7 +74,7 @@ public class SecurityScanner {
                         .quiet(true)
                         .join();
             } catch (Exception e) {
-                listener.getLogger().println("Exception occurred while invoking synopsys-bridge from the plugin : " + e.getMessage());
+                listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_INVOKING_SYNOPSYS_BRIDGE, e.getMessage());
             } finally {
                 printBridgeExecutionLogs(LogMessages.END_BRIDGE_EXECUTION);
 
@@ -103,7 +103,7 @@ public class SecurityScanner {
             FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl);
             bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(new File(bridgeInstallationPath)));
         } catch (Exception e) {
-            listener.getLogger().println("There is an exception while downloading/installing Synopsys-bridge: " + e.getMessage());
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
         }
     }
 

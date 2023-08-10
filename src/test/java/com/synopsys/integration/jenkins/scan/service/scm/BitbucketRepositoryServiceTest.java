@@ -1,20 +1,19 @@
 package com.synopsys.integration.jenkins.scan.service.scm;
 
-import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
-import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
-import jenkins.model.Jenkins;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import java.util.HashMap;
-import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 public class BitbucketRepositoryServiceTest {
     private final BitbucketRepositoryService bitbucketRepositoryServiceMock = Mockito.mock(BitbucketRepositoryService.class);
-    private final Jenkins jenkinsMock = Mockito.mock(Jenkins.class);
     private final String TEST_BITBUCKET_URL = "https://fake.bitbucket.url";
     private final String TEST_BITBUCKET_TOKEN = "MSDFSGOIIEGWGWEGFAKEKEY" ;
     private final Integer TEST_REPOSITORY_PULL_NUMBER = 7;
@@ -28,12 +27,12 @@ public class BitbucketRepositoryServiceTest {
 
         bitbucketParametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, TEST_BITBUCKET_TOKEN);
 
-        when(bitbucketRepositoryServiceMock.fetchBitbucketRepositoryDetails(jenkinsMock, bitbucketParametersMap, TEST_REPOSITORY_PULL_NUMBER)).thenReturn(bitbucket);
+        when(bitbucketRepositoryServiceMock.fetchBitbucketRepositoryDetails(bitbucketParametersMap, TEST_REPOSITORY_PULL_NUMBER)).thenReturn(bitbucket);
     }
 
     @Test
     void createBitbucketObjectTest() throws ScannerJenkinsException {
-        Bitbucket bitbucket = bitbucketRepositoryServiceMock.fetchBitbucketRepositoryDetails(jenkinsMock, bitbucketParametersMap, TEST_REPOSITORY_PULL_NUMBER);
+        Bitbucket bitbucket = bitbucketRepositoryServiceMock.fetchBitbucketRepositoryDetails(bitbucketParametersMap, TEST_REPOSITORY_PULL_NUMBER);
 
         assertEquals(TEST_BITBUCKET_URL, bitbucket.getApi().getUrl());
         assertEquals(TEST_BITBUCKET_TOKEN, bitbucket.getApi().getToken());

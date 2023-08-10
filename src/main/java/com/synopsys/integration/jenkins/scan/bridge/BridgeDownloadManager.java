@@ -2,7 +2,6 @@ package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
-import com.synopsys.integration.jenkins.scan.global.OsNameTask;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -29,7 +28,7 @@ public class BridgeDownloadManager {
         }
 
         String installedBridgeVersionFilePath;
-        String os = getOsName();
+        String os = Utility.getAgentOs(workspace, listener);
         if (os.contains("win")) {
             installedBridgeVersionFilePath = String.join("\\", bridgeInstallationPath, ApplicationConstants.VERSION_FILE);
         } else {
@@ -160,18 +159,5 @@ public class BridgeDownloadManager {
 
         return version;
     }
-
-    public String getOsName() {
-        String os = null;
-        if (workspace.isRemote()) {
-            try {
-                os = workspace.act(new OsNameTask());
-            } catch (IOException | InterruptedException e) {
-                listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_GETTING_OS_INFO_FROM_AGENT_NODE, e.getMessage());
-            }
-        } else {
-            os = System.getProperty("os.name").toLowerCase();
-        }
-        return os;
-    }
+    
 }
