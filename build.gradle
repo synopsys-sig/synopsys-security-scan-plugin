@@ -1,0 +1,71 @@
+buildscript {
+    apply from: "https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle", to: buildscript
+    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
+}
+
+plugins {
+    id 'org.jenkins-ci.jpi' version '0.43.0'
+}
+
+group = 'com.synopsys.integration'
+version = '1.0.0-SNAPSHOT'
+description = 'Synopsys Security Scan Plugin'
+
+java {
+    registerFeature('workflowJob') {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature('workflowJobDsl') {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature('workflowCps') {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature('workflowStepApi') {
+        usingSourceSet(sourceSets.main)
+    }
+}
+
+repositories {
+    maven {
+        url 'https://repo.jenkins-ci.org/releases/'
+    }
+}
+
+apply plugin: 'com.synopsys.integration.solution'
+
+artifactory {
+    publish {
+        defaults { publications('mavenJpi') }
+    }
+}
+
+jenkinsPlugin {
+    pluginId = 'synopsys-security-scan-plugin'
+    jenkinsVersion = '2.377'
+    displayName = 'Synopsys Security Scan Plugin'
+}
+
+dependencies {
+    implementation 'org.jenkins-ci.plugins:cloudbees-bitbucket-branch-source:805.v7f97d29dc0f5'
+    implementation 'org.jenkins-ci.plugins:matrix-project:785.v06b_7f47b_c631'
+    implementation 'org.jenkins-ci.plugins:cloudbees-folder:6.15'
+    annotationProcessor 'com.synopsys.integration:jenkins-annotation-processor:0.0.7'
+
+    implementation 'org.jenkins-ci.plugins:credentials:1139.veb_9579fca_33b_'
+    implementation 'com.synopsys.integration:jenkins-common:0.5.5'
+    implementation 'org.jvnet.localizer:localizer:1.31'
+    implementation 'org.jsoup:jsoup:1.16.1'
+
+    implementation 'org.jenkins-ci.plugins:plain-credentials:1.8'
+
+    workflowJobDslApi 'org.jenkins-ci.plugins:job-dsl:1.80'
+    workflowJobApi 'org.jenkins-ci.plugins.workflow:workflow-job:1203.v7b_7023424efe'
+    workflowCpsApi 'org.jenkins-ci.plugins.workflow:workflow-cps:2729.2732.vda_e3f07b_5a_f8'
+    workflowStepApiApi 'org.jenkins-ci.plugins.workflow:workflow-step-api:622.vb_8e7c15b_c95a_'
+
+    testImplementation group: 'org.jenkins-ci.main', name: 'jenkins-test-harness', version: '1812.v6d4e97d91fd8'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.6.2'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
+}
