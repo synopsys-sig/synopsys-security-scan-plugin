@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service.scan.blackDuck;
+package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;

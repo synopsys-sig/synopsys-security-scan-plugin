@@ -54,7 +54,6 @@ public class BridgeDownloadManagerTest {
         BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listenerMock);
 
         Mockito.when(mockedBridgeDownloadManager.checkIfBridgeInstalled(anyString())).thenReturn(true);
-        Mockito.when(mockedBridgeDownloadManager.getOsName()).thenReturn(getOperatingSystem());
         boolean isDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParameters);
 
         assertTrue(isDownloadRequired);

@@ -19,21 +19,12 @@ public class Utility {
 
             workspace.copyRecursiveTo(targetDir);
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("An exception occurred while copying the repository: " + e.getMessage());
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_COPYING_REPO, e.getMessage());
         }
     }
 
     public static String getDirectorySeparator(FilePath workspace, TaskListener listener) {
-        String os = null;
-        if (workspace.isRemote()) {
-            try {
-                os = workspace.act(new OsNameTask());
-            } catch (IOException | InterruptedException e) {
-                listener.getLogger().println("Exception occurred while getting directory separator for the agent node: " + e.getMessage());
-            }
-        } else {
-            os = System.getProperty("os.name").toLowerCase();
-        }
+        String os = getAgentOs(workspace, listener);
 
         if (os != null && os.contains("win")) {
             return "\\";
@@ -42,15 +33,31 @@ public class Utility {
         }
     }
 
+    public static String getAgentOs(FilePath workspace, TaskListener listener) {
+        String os =  null;
+
+        if (workspace.isRemote()) {
+            try {
+                os = workspace.act(new OsNameTask());
+            } catch (IOException | InterruptedException e) {
+                listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_GETTING_OS_INFO_FROM_AGENT_NODE, e.getMessage());
+            }
+        } else {
+            os = System.getProperty("os.name").toLowerCase();
+        }
+
+        return os;
+    }
+
     public static void verifyAndCreateInstallationPath(String bridgeInstallationPath, FilePath workspace, TaskListener listener) {
         FilePath directory = new FilePath(workspace.getChannel(), bridgeInstallationPath);
         try {
             if (!directory.exists()) {
                 directory.mkdirs();
             }
-            listener.getLogger().println("Created bridge installation directory at: " + directory.getRemote());
+            listener.getLogger().printf(LogMessages.BRIDGE_INSTALLATION_DIRECTORY_CREATED, directory.getRemote());
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("Failed to create directory: " + directory.getRemote());
+            listener.getLogger().printf(LogMessages.FAILED_TO_CREATE_DIRECTORY, directory.getRemote());
 
         }
     }
@@ -82,7 +89,7 @@ public class Utility {
                 }
             }
         } catch (Exception e) {
-            listener.getLogger().println("Failed to clean up files: " + e.getMessage());
+            listener.getLogger().printf(LogMessages.FAILED_TO_CLEAN_UP_FILES, e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
     }
@@ -97,7 +104,7 @@ public class Utility {
                 }
             }
         } catch (Exception e) {
-            listener.getLogger().println("Failed to check file existence: " + e.getMessage());
+            listener.getLogger().printf(LogMessages.FAILED_TO_CHECK_FILE_EXISTENCE, e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
 
@@ -113,7 +120,7 @@ public class Utility {
                 file.delete();
             }
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("An exception occurred while cleaning up file: " + e.getMessage());
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_DELETING_FILE, e.getMessage());
         }
     }
 

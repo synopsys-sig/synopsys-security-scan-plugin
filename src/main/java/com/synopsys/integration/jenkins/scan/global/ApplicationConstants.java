@@ -34,6 +34,9 @@ public class ApplicationConstants {
     public static final String EXTENSIONS_DIRECTORY = "extensions";
     public static final String VERSION_FILE = "versions.txt";
     public static final String LICENSE_FILE = "LICENSE.txt";
+    public static final String NOT_AVAILABLE = "NA";
+    public static final String ENV_JOB_NAME_KEY = "JOB_NAME";
+    public static final String ENV_CHANGE_ID_KEY = "CHANGE_ID";
 
     public static String getSynopsysBridgeZipFileName(String platform) {
         return "synopsys-bridge-".concat(platform).concat(".zip");

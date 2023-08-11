@@ -1,6 +1,7 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.global.HomeDirectoryTask;
+import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -21,10 +22,10 @@ public class BridgeInstall {
         try {
             bridgeZipPath.unzip(workspace);
             bridgeZipPath.delete();
-            listener.getLogger().printf("Bridge zip path: %s and bridge installation path: %s%n",
+            listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_ZIP_PATH_AND_INSTALLATION_PATH,
                     bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
         } catch (Exception e) {
-            listener.getLogger().println("Synopsys bridge unzipping failed: " + e.getMessage());
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_UNZIPPING_SYNOPSYS_BRIDGE, e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
     }
@@ -35,15 +36,15 @@ public class BridgeInstall {
         String defaultInstallationPath = null;
 
         if (jenkins != null && workspace.isRemote()) {
-            listener.getLogger().println("Jenkins is running on agent node remotely.");
+            listener.getLogger().println(LogMessages.JOB_RUNNING_ON_AGENT_NODE);
         } else {
-            listener.getLogger().println("Jenkins is running on the master node.");
+            listener.getLogger().println(LogMessages.JOB_RUNNING_ON_MASTER_NODE);
         }
 
         try {
             defaultInstallationPath = workspace.act(new HomeDirectoryTask(separator));
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("Failed to fetch plugin's default installation path.");
+            listener.getLogger().printf(LogMessages.FAILED_TO_FETCH_PLUGINS_DEFAULT_INSTALLATION_PATH, e.getMessage());
         }
         Utility.verifyAndCreateInstallationPath(defaultInstallationPath, workspace, listener);
 

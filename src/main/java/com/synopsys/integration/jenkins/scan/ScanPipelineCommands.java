@@ -18,7 +18,7 @@ public class ScanPipelineCommands {
             }
         }
 
-        int exitCode = -1;
+        int exitCode;
         try {
             exitCode = scanner.runScanner(scanParameters);
         } catch (Exception e) {

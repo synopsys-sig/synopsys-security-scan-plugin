@@ -1,7 +1,7 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.OsNameTask;
+import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -27,8 +27,8 @@ public class BridgeDownloadManager {
             return true;
         }
 
-        String installedBridgeVersionFilePath = null;
-        String os = getOsName();
+        String installedBridgeVersionFilePath;
+        String os = Utility.getAgentOs(workspace, listener);
         if (os.contains("win")) {
             installedBridgeVersionFilePath = String.join("\\", bridgeInstallationPath, ApplicationConstants.VERSION_FILE);
         } else {
@@ -54,7 +54,7 @@ public class BridgeDownloadManager {
                 return extensionsDir.isDirectory() && (bridgeBinaryFile.exists() || bridgeBinaryFileWindows.exists()) && versionFile.exists();
             }
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("An exception occurred while checking if the bridge is installed: " + e.getMessage());
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_CHECKING_BRIDGE_INSTALLATION, e.getMessage());
         }
         return false;
     }
@@ -72,14 +72,14 @@ public class BridgeDownloadManager {
                 }
             }
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("An exception occurred while extracting bridge-version from the versions.txt: " + e.getMessage());
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_EXTRACTING_BRIDGE_VERSION, e.getMessage());
         }
         return null;
     }
 
     public String getLatestBridgeVersionFromArtifactory(String bridgeDownloadUrl) {
         String extractedVersionNumber = extractVersionFromUrl(bridgeDownloadUrl);
-        if(extractedVersionNumber.equals("NA")) {
+        if(extractedVersionNumber.equals(ApplicationConstants.NOT_AVAILABLE)) {
             String directoryUrl = getDirectoryUrl(bridgeDownloadUrl);
             if(versionFileAvailable(directoryUrl)) {
                 String versionFilePath = downloadVersionFile(directoryUrl);
@@ -90,7 +90,7 @@ public class BridgeDownloadManager {
                 return latestVersion;
             }
             else {
-                return "NA";
+                return ApplicationConstants.NOT_AVAILABLE;
             }
         }
         else {
@@ -109,7 +109,7 @@ public class BridgeDownloadManager {
             tempFilePath.copyFrom(url);
             tempVersionFilePath = tempFilePath.getRemote();
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("An exception occurred while downloading 'versions.txt': " + e.getMessage());
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_VERSION_FILE, e.getMessage());
         }
         return tempVersionFilePath;
     }
@@ -121,7 +121,7 @@ public class BridgeDownloadManager {
             connection.setRequestMethod("HEAD");
             return (connection.getResponseCode() >= 200 && connection.getResponseCode() < 300);
         } catch (IOException e) {
-            listener.getLogger().println("An exception occurred while checking if 'versions.txt' is available or not in the URL : " + e.getMessage());
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_CHECKING_VERSION_FILE_AVAILABILITY, e.getMessage());
             return false;
         }
     }
@@ -139,7 +139,7 @@ public class BridgeDownloadManager {
             String directoryPath = path.substring(0, path.lastIndexOf('/'));
             directoryUrl = uri.getScheme().concat("://").concat(uri.getHost()).concat(directoryPath);
         } catch (URISyntaxException e) {
-            listener.getLogger().println("An exception occurred while getting directoryUrl from downloadUrl: " + e.getMessage());
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_GETTING_DIRECTORY_URL_FROM_DOWNLOAD_URL, e.getMessage());
         }
         return directoryUrl;
     }
@@ -154,23 +154,10 @@ public class BridgeDownloadManager {
         if (matcher.find()) {
             version = matcher.group(1);
         } else {
-            version = "NA";
+            version = ApplicationConstants.NOT_AVAILABLE;
         }
 
         return version;
     }
-
-    public String getOsName() {
-        String os = null;
-        if (workspace.isRemote()) {
-            try {
-                os = workspace.act(new OsNameTask());
-            } catch (IOException | InterruptedException e) {
-                listener.getLogger().println("Exception occurred while fetching the OS information for the agent node: " + e.getMessage());
-            }
-        } else {
-            os = System.getProperty("os.name").toLowerCase();
-        }
-        return os;
-    }
+    
 }
