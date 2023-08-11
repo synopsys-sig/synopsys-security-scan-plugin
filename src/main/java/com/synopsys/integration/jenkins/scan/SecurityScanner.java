@@ -28,7 +28,7 @@ public class SecurityScanner {
     private final EnvVars envVars;
     private final ScannerArgumentService scannerArgumentService;
 
-    public SecurityScanner( Run<?, ?> run, TaskListener listener, Launcher launcher, FilePath workspace,
+    public SecurityScanner(Run<?, ?> run, TaskListener listener, Launcher launcher, FilePath workspace,
                            EnvVars envVars, ScannerArgumentService scannerArgumentService) {
         this.run = run;
         this.listener = listener;
@@ -50,7 +50,7 @@ public class SecurityScanner {
 
         if (blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParameters)
                 && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
-            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace,listener);
+            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
 
             if (isBridgeDownloadRequired) {

@@ -7,11 +7,11 @@ public class LogMessages {
 
     public static final String DOWNLOADING_SYNOPSYS_BRIDGE_FROM_URL = "Downloading Synopsys Bridge from: %s %n";
     public static final String SYNOPSYS_BRIDGE_SUCCESSFULLY_DOWNLOADED_IN_PATH = "Synopsys Bridge successfully downloaded in: %s %n";
-    public static final String SYNOPSYS_BRIDGE_DOWNLOADED_FAILED_AND_RETRY = "Synopsys Bridge download failed and attempt#%s to download again %n";
-    public static final String SYNOPSYS_BRIDGE_DOWNLOADED_FAILED_AND_WITH_MAX_ATTEMPT = "Synopsys Bridge download failed after %s attempts %n";
-    public static final String SYNOPSYS_BRIDGE_DOWNLOADED_INTERRUPTED = "Interrupted while waiting to retry Synopsys Bridge download";
+    public static final String SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_RETRY = "Synopsys Bridge download failed and attempt#%s to download again %n";
+    public static final String SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WITH_MAX_ATTEMPT = "Synopsys Bridge download failed after %s attempts %n";
+    public static final String SYNOPSYS_BRIDGE_DOWNLOAD_INTERRUPTED = "Interrupted while waiting to retry Synopsys Bridge download";
     public static final String INVALID_SYNOPSYS_BRIDGE_DOWNLOAD_URL = "Invalid Synopsys Bridge download URL: %s %n";
-    public static final String EXCEPTION_OCCURRED_WHILE_CHECKING_BRIDGE_URL_EXISTENCE = "An exception occurred while checking bridge url exits or not: %s %n";
+    public static final String EXCEPTION_OCCURRED_WHILE_CHECKING_BRIDGE_URL_EXISTENCE = "An exception occurred while checking bridge url exists or not: %s %n";
 
     public static final String EXCEPTION_OCCURRED_WHILE_CHECKING_BRIDGE_INSTALLATION = "An exception occurred while checking if the bridge is installed: %s %n";
     public static final String EXCEPTION_OCCURRED_WHILE_EXTRACTING_BRIDGE_VERSION = "An exception occurred while extracting bridge-version from the versions.txt: %s %n";
@@ -36,7 +36,7 @@ public class LogMessages {
     public static final String BLACKDUCK_PARAMETER_VALIDATED_SUCCESSFULLY = "BlackDuck parameters are validated successfully";
 
     public static final String GETTING_BITBUCKET_REPOSITORY_DETAILS = "Getting bitbucket repository details";
-    public static final String NO_BITBUCKET_TOKEN_FOUND = "rComment is set true but no bitbucket token found!";
+    public static final String NO_BITBUCKET_TOKEN_FOUND = "PrComment is set true but no bitbucket token found!";
     public static final String EXCEPTION_OCCURRED_WHILE_GETTING_BITBUCKET_REPO_DETAILS = "An exception occurred while getting the BitbucketRepository from BitbucketApi: %s %n";
     public static final String BITBUCKET_REPO_NAME = "Bitbucket repository name: %s %n";
     public static final String IGNORING_PRCOMMENT_AND_FIXPR_FOR_INVALID_SCM_SOURCE = "Ignoring 'bitbucket_automation_fixpr' and 'bitbucket_automation_prcomment' since couldn't find any valid Bitbucket SCM source.";

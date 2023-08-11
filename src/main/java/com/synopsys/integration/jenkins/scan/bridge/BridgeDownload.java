@@ -34,17 +34,17 @@ public class BridgeDownload {
 
                         listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_SUCCESSFULLY_DOWNLOADED_IN_PATH, bridgeZipFilePath);
                     } catch (Exception e) {
-                        listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_DOWNLOADED_FAILED_AND_RETRY, retryCount);
+                        listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_RETRY, retryCount);
                         Thread.sleep(2500);
                         retryCount++;
                     }
                 }
 
                 if (!downloadSuccess) {
-                    listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_DOWNLOADED_FAILED_AND_WITH_MAX_ATTEMPT, ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES);
+                    listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WITH_MAX_ATTEMPT, ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES);
                 }
             } catch (InterruptedException e) {
-                listener.getLogger().println(LogMessages.SYNOPSYS_BRIDGE_DOWNLOADED_INTERRUPTED);
+                listener.getLogger().println(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_INTERRUPTED);
                 e.printStackTrace(listener.getLogger());
             }
         } else {
