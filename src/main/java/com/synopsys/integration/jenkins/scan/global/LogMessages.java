@@ -7,6 +7,7 @@ public class LogMessages {
 
     public static final String DOWNLOADING_SYNOPSYS_BRIDGE_FROM_URL = "Downloading Synopsys Bridge from: %s %n";
     public static final String SYNOPSYS_BRIDGE_SUCCESSFULLY_DOWNLOADED_IN_PATH = "Synopsys Bridge successfully downloaded in: %s %n";
+    public static final String SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_WITH_STATUS = "Synopsys Bridge download failed with status code: %s and plugin won't retry to download. %n";
     public static final String SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_RETRY = "Synopsys Bridge download failed and attempt#%s to download again %n";
     public static final String SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WITH_MAX_ATTEMPT = "Synopsys Bridge download failed after %s attempts %n";
     public static final String SYNOPSYS_BRIDGE_DOWNLOAD_INTERRUPTED = "Interrupted while waiting to retry Synopsys Bridge download";

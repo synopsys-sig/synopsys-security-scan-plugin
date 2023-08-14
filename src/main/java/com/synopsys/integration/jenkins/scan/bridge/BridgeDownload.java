@@ -4,6 +4,8 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import hudson.FilePath;
 import hudson.model.TaskListener;
+
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -33,9 +35,15 @@ public class BridgeDownload {
                         downloadSuccess = true;
 
                         listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_SUCCESSFULLY_DOWNLOADED_IN_PATH, bridgeZipFilePath);
+
                     } catch (Exception e) {
+                        int statusCode = getHttpStatusCode(bridgeDownloadUrl);
+                        if (terminateRetry(statusCode)) {
+                            listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_WITH_STATUS, statusCode);
+                            break;
+                        }
+                        Thread.sleep(10000);
                         listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_RETRY, retryCount);
-                        Thread.sleep(2500);
                         retryCount++;
                     }
                 }
@@ -51,6 +59,29 @@ public class BridgeDownload {
             listener.getLogger().printf(LogMessages.INVALID_SYNOPSYS_BRIDGE_DOWNLOAD_URL, bridgeDownloadUrl);
         }
         return bridgeZipFilePath;
+    }
+
+    private int getHttpStatusCode(String url) {
+        int statusCode = -1;
+
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setRequestMethod("HEAD");
+            statusCode = connection.getResponseCode();
+            connection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return statusCode;
+    }
+
+    private boolean terminateRetry(int statusCode) {
+        return statusCode == HttpURLConnection.HTTP_UNAUTHORIZED ||
+                statusCode == HttpURLConnection.HTTP_FORBIDDEN ||
+                statusCode == HttpURLConnection.HTTP_OK ||
+                statusCode == HttpURLConnection.HTTP_CREATED ||
+                statusCode == 416;
     }
 
     public boolean checkIfBridgeUrlExists(String bridgeDownloadUrl) {
