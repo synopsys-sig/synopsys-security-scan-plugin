@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
-import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
@@ -83,7 +82,7 @@ public class ScannerArgumentService {
             jsonPath = writeBlackDuckJsonToFile(blackDuckJson);
             setBlackDuckInputJsonFilePath(jsonPath);
         } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_CREATING_BLACKDUCK_INPUT_JSON, e.getMessage());
+            listener.getLogger().println("An exception occurred while creating blackduck_input.json file: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
 
@@ -98,7 +97,7 @@ public class ScannerArgumentService {
             tempFile.write(blackDuckJson, StandardCharsets.UTF_8.name());
             blackDuckInputJsonPath = tempFile.getRemote();
         } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_WRITING_INTO_BLACKDUCK_INPUT_JSON, e.getMessage());
+            listener.getLogger().println("An exception occurred while writing into blackduck_input.json file: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
 

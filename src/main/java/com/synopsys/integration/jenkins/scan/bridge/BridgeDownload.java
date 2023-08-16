@@ -26,15 +26,15 @@ public class BridgeDownload {
 
                 while (!downloadSuccess && retryCount <= ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES) {
                     try {
-                        listener.getLogger().printf(LogMessages.DOWNLOADING_SYNOPSYS_BRIDGE_FROM_URL, bridgeDownloadUrl);
+                        listener.getLogger().println("Downloading Synopsys Bridge from: " + bridgeDownloadUrl);
 
                         bridgeZipFilePath = workspace.child(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT);
                         bridgeZipFilePath.copyFrom(new URL(bridgeDownloadUrl));
                         downloadSuccess = true;
 
-                        listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_SUCCESSFULLY_DOWNLOADED_IN_PATH, bridgeZipFilePath);
+                        listener.getLogger().println("Synopsys Bridge successfully downloaded in: " + bridgeZipFilePath);
                     } catch (Exception e) {
-                        listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_RETRY, retryCount);
+                        listener.getLogger().printf("Synopsys Bridge download failed and attempt#%s to download again %n", retryCount);
                         Thread.sleep(2500);
                         retryCount++;
                     }
@@ -44,7 +44,7 @@ public class BridgeDownload {
                     listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WITH_MAX_ATTEMPT, ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES);
                 }
             } catch (InterruptedException e) {
-                listener.getLogger().println(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_INTERRUPTED);
+                listener.getLogger().println("Interrupted while waiting to retry Synopsys Bridge download");
                 e.printStackTrace(listener.getLogger());
             }
         } else {
@@ -60,7 +60,7 @@ public class BridgeDownload {
             connection.setRequestMethod("HEAD");
             return (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
         } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_CHECKING_BRIDGE_URL_EXISTENCE, e.getMessage());
+            listener.getLogger().println("An exception occurred while checking bridge url exists or not: " + e.getMessage());
             return false;
         }
     }

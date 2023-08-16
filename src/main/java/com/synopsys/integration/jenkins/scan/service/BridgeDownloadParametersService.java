@@ -30,7 +30,7 @@ public class BridgeDownloadParametersService {
         boolean validInstallationPath = isValidInstallationPath(bridgeDownloadParameters.getBridgeInstallationPath());
 
         if(validUrl && validVersion && validInstallationPath) {
-            listener.getLogger().println(LogMessages.BRIDGE_DOWNLOAD_PARAMETERS_VALIDATED_SUCCESSFULLY);
+            listener.getLogger().println("Bridge download parameters are validated successfully");
             return true;
         } else {
             listener.getLogger().println(LogMessages.INVALID_BRIDGE_DOWNLOAD_PARAMETERS);
@@ -76,19 +76,19 @@ public class BridgeDownloadParametersService {
                 if (isWritable) {
                     return true;
                 } else {
-                    listener.getLogger().printf(LogMessages.PATH_NOT_WRITABLE, parentPath.toURI());
+                    listener.getLogger().printf(LogMessages.BRIDGE_INSTALLATION_PARENT_PATH_IS_NOT_WRITABLE, parentPath.toURI());
                     return false;
                 }
             } else {
                 if (parentPath == null || !parentPath.exists()) {
-                    listener.getLogger().printf(LogMessages.PATH_NOT_EXIST, path.toURI());
+                    listener.getLogger().printf(LogMessages.BRIDGE_INSTALLATION_PARENT_PATH_DOES_NOT_EXIST, path.toURI());
                 } else if (!parentPath.isDirectory()) {
-                    listener.getLogger().printf(LogMessages.PATH_NOT_A_DIRECTORY, parentPath.toURI());
+                    listener.getLogger().printf(LogMessages.BRIDGE_INSTALLATION_PARENT_PATH_IS_NOT_A_DIRECTORY, parentPath.toURI());
                 }
                 return false;
             }
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_VALIDATING_INSTALLATION_PATH, e.getMessage());
+            listener.getLogger().println("An exception occurred while validating the installation path: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
             return false;
         }
@@ -138,7 +138,7 @@ public class BridgeDownloadParametersService {
             try {
                 os = workspace.act(new OsNameTask());
             } catch (IOException | InterruptedException e) {
-                listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_GETTING_OS_INFO_FROM_AGENT_NODE, e.getMessage());
+                listener.getLogger().println("An exception occurred while fetching the OS information for the agent node: " + e.getMessage());
             }
         } else {
             os = System.getProperty("os.name").toLowerCase();
