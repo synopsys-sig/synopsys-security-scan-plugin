@@ -19,7 +19,7 @@ public class Utility {
 
             workspace.copyRecursiveTo(targetDir);
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_COPYING_REPO, e.getMessage());
+            listener.getLogger().println("An exception occurred while copying the repository: " + e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class Utility {
             try {
                 os = workspace.act(new OsNameTask());
             } catch (IOException | InterruptedException e) {
-                listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_GETTING_OS_INFO_FROM_AGENT_NODE, e.getMessage());
+                listener.getLogger().println("An exception occurred while fetching the OS information for the agent node: " + e.getMessage());
             }
         } else {
             os = System.getProperty("os.name").toLowerCase();
@@ -55,9 +55,9 @@ public class Utility {
             if (!directory.exists()) {
                 directory.mkdirs();
             }
-            listener.getLogger().printf(LogMessages.BRIDGE_INSTALLATION_DIRECTORY_CREATED, directory.getRemote());
+            listener.getLogger().println("Created bridge installation directory at: " + directory.getRemote());
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().printf(LogMessages.FAILED_TO_CREATE_DIRECTORY, directory.getRemote());
+            listener.getLogger().println("Failed to create directory: " + directory.getRemote());
 
         }
     }
@@ -89,7 +89,7 @@ public class Utility {
                 }
             }
         } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.FAILED_TO_CLEAN_UP_FILES, e.getMessage());
+            listener.getLogger().println("Failed to clean up files: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
     }
@@ -104,7 +104,7 @@ public class Utility {
                 }
             }
         } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.FAILED_TO_CHECK_FILE_EXISTENCE, e.getMessage());
+            listener.getLogger().println("Failed to check file existence: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
 
@@ -120,7 +120,7 @@ public class Utility {
                 file.delete();
             }
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_DELETING_FILE, e.getMessage());
+            listener.getLogger().println("An exception occurred while deleting file: " + e.getMessage());
         }
     }
 

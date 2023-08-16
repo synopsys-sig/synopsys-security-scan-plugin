@@ -4,7 +4,6 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import hudson.FilePath;
 import hudson.model.TaskListener;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -52,7 +51,7 @@ public class BridgeDownload {
                     listener.getLogger().printf("Synopsys Bridge download failed after %s attempts %n", ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES);
                 }
             } catch (InterruptedException e) {
-                listener.getLogger().println(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_INTERRUPTED);
+                listener.getLogger().println("Interrupted while waiting to retry Synopsys Bridge download");
                 e.printStackTrace(listener.getLogger());
             }
         } else {
@@ -91,7 +90,7 @@ public class BridgeDownload {
             connection.setRequestMethod("HEAD");
             return (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
         } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_CHECKING_BRIDGE_URL_EXISTENCE, e.getMessage());
+            listener.getLogger().println("An exception occurred while checking bridge url exists or not: " + e.getMessage());
             return false;
         }
     }
