@@ -1,6 +1,5 @@
 package com.synopsys.integration.jenkins.scan.service.diagnostics;
 
-import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -27,19 +26,19 @@ public class DiagnosticsService {
     public void archiveDiagnostics(FilePath diagnosticsPath) {
         try {
             if (diagnosticsPath.exists()) {
-                listener.getLogger().printf(LogMessages.ARCHIVING_DIAGNOSTICS_FROM_PATH, diagnosticsPath.getRemote());
+                listener.getLogger().println("Archiving diagnostics jenkins artifact from: " + diagnosticsPath.getRemote());
 
                 artifactArchiver.perform(run, diagnosticsPath, envVars, launcher, listener);
             } else {
-                listener.getLogger().printf(LogMessages.DIAGNOSTICS_PATH_NOT_FOUND, diagnosticsPath.getRemote());
+                listener.getLogger().println("Archiving diagnostics failed as diagnostics path not found at: " + diagnosticsPath.getRemote());
                 return;
             }
         } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_ARCHIVING_DIAGNOSTICS, e.getMessage());
+            listener.getLogger().println("An exception occurred while archiving diagnostics in jenkins artifact: " + e.getMessage());
             return;
         }
 
-        listener.getLogger().println(LogMessages.DIAGNOSTICS_ARCHIVED_SUCCESSFULLY);
+        listener.getLogger().println("Diagnostics archived successfully in jenkins artifact");
     }
 
 }

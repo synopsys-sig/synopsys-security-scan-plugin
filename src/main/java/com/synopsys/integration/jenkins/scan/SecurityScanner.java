@@ -52,7 +52,7 @@ public class SecurityScanner {
             if (isBridgeDownloadRequired) {
                 initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
             } else {
-                listener.getLogger().printf(LogMessages.BRIDGE_INSTALLATION_ALREADY_FOUND_IN_PATH, bridgeDownloadParams.getBridgeInstallationPath());
+                listener.getLogger().println("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
             }
 
             Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace, listener);
@@ -60,7 +60,7 @@ public class SecurityScanner {
             List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, scanStrategyService, bridgeDownloadParams.getBridgeInstallationPath());
 
             try {
-                printBridgeExecutionLogs(LogMessages.START_BRIDGE_EXECUTION);
+                printBridgeExecutionLogs("START EXECUTION OF SYNOPSYS BRIDGE");
 
                 scanner = launcher.launch()
                         .cmds(commandLineArgs)
@@ -72,7 +72,7 @@ public class SecurityScanner {
             } catch (Exception e) {
                 listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_INVOKING_SYNOPSYS_BRIDGE, e.getMessage());
             } finally {
-                printBridgeExecutionLogs(LogMessages.END_BRIDGE_EXECUTION);
+                printBridgeExecutionLogs("END EXECUTION OF SYNOPSYS BRIDGE");
 
                 Utility.removeFile(scannerArgumentService.getBlackDuckInputJsonFilePath(), workspace, listener);
                 Utility.cleanupOtherFiles(workspace, listener);
@@ -104,9 +104,9 @@ public class SecurityScanner {
     }
 
     public void printBridgeExecutionLogs(String message) {
-        listener.getLogger().println(LogMessages.ASTERISKS);
+        listener.getLogger().println("******************************************************************************");
         listener.getLogger().println(message);
-        listener.getLogger().println(LogMessages.ASTERISKS);
+        listener.getLogger().println("******************************************************************************");
     }
 
     private void uploadDiagnostics(FilePath bridgeInstallationPath) {

@@ -136,15 +136,6 @@ public class BridgeDownloadManagerTest {
         assertEquals(expectedVersion, resultWithoutVersion);
     }
 
-    public String getOperatingSystem() {
-        String osName = System.getProperty("os.name");
-        if(osName.contains("win")) {
-            return "win";
-        } else {
-            return osName;
-        }
-    }
-
     public String getHomeDirectory() {
         return System.getProperty("user.home");
     }

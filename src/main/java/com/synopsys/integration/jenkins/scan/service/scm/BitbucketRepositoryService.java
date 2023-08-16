@@ -24,7 +24,7 @@ public class BitbucketRepositoryService {
     }
 
     public Bitbucket fetchBitbucketRepositoryDetails(Map<String, Object> scanParameters, Integer projectRepositoryPullNumber) throws ScannerJenkinsException {
-        listener.getLogger().println(LogMessages.GETTING_BITBUCKET_REPOSITORY_DETAILS);
+        listener.getLogger().println("Getting bitbucket repository details");
 
         Bitbucket bitbucket = new Bitbucket();
 
@@ -52,7 +52,7 @@ public class BitbucketRepositoryService {
             try {
                 bitbucketRepository = bitbucketApiFromSCMSource.getRepository();
             } catch (Exception e) {
-                listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_GETTING_BITBUCKET_REPO_DETAILS, e.getMessage());
+                listener.getLogger().println("An exception occurred while getting the BitbucketRepository from BitbucketApi: " + e.getMessage());
             }
 
             String serverUrl = bitbucketSCMSource.getServerUrl();
@@ -60,7 +60,7 @@ public class BitbucketRepositoryService {
             String projectKey = null;
 
             if (bitbucketRepository != null) {
-                listener.getLogger().printf(LogMessages.BITBUCKET_REPO_NAME, bitbucketRepository.getRepositoryName());
+                listener.getLogger().println("Bitbucket repository name: " + bitbucketRepository.getRepositoryName());
 
                 repositoryName = bitbucketRepository.getRepositoryName();
                 projectKey = bitbucketRepository.getProject().getKey();
@@ -69,7 +69,7 @@ public class BitbucketRepositoryService {
             bitbucket = createBitbucketObject(serverUrl, bitbucketToken, projectRepositoryPullNumber, repositoryName, projectKey);
 
         } else {
-            listener.getLogger().println(LogMessages.IGNORING_PRCOMMENT_AND_FIXPR_FOR_INVALID_SCM_SOURCE);
+            listener.getLogger().println("Ignoring 'bitbucket_automation_fixpr' and 'bitbucket_automation_prcomment' since couldn't find any valid Bitbucket SCM source.");
         }
         
         return bitbucket;

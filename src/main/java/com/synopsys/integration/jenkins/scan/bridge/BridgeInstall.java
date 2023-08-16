@@ -22,10 +22,9 @@ public class BridgeInstall {
         try {
             bridgeZipPath.unzip(workspace);
             bridgeZipPath.delete();
-            listener.getLogger().printf(LogMessages.SYNOPSYS_BRIDGE_ZIP_PATH_AND_INSTALLATION_PATH,
-                    bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
+            listener.getLogger().printf("Synopsys Bridge zip path: %s and bridge installation path: %s %n", bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
         } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_UNZIPPING_SYNOPSYS_BRIDGE, e.getMessage());
+            listener.getLogger().println("An exception occurred while unzipping Synopsys Bridge zip file: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
     }
@@ -36,9 +35,9 @@ public class BridgeInstall {
         String defaultInstallationPath = null;
 
         if (jenkins != null && workspace.isRemote()) {
-            listener.getLogger().println(LogMessages.JOB_RUNNING_ON_AGENT_NODE);
+            listener.getLogger().println("Jenkins job is running on agent node remotely");
         } else {
-            listener.getLogger().println(LogMessages.JOB_RUNNING_ON_MASTER_NODE);
+            listener.getLogger().println("Jenkins job is running on master node");
         }
 
         try {
