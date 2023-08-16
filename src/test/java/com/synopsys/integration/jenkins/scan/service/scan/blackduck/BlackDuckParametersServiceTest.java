@@ -1,11 +1,13 @@
 package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
-import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
 import hudson.model.TaskListener;
 import java.io.PrintStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,13 @@ public class BlackDuckParametersServiceTest {
     void setUp() {
         blackDuckParametersService = new BlackDuckParametersService(listenerMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
+    }
+    
+    @Test
+    void getScanTypeTest() {
+        assertEquals(ScanType.BLACKDUCK, blackDuckParametersService.getScanType());
+        assertNotEquals(ScanType.POLARIS, blackDuckParametersService.getScanType());
+        assertNotEquals(ScanType.COVERITY, blackDuckParametersService.getScanType());
     }
 
     @Test
@@ -57,8 +66,14 @@ public class BlackDuckParametersServiceTest {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
+
+        BlackDuckParametersService blackDuckParametersServiceMock = Mockito.spy(new BlackDuckParametersService(listenerMock));
+
+        Mockito.doReturn(Collections.EMPTY_MAP)
+            .when(blackDuckParametersServiceMock)
+            .createBlackDuckParametersMapFromJenkinsUI();
         
-        assertTrue(blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParametersMap));
+        assertTrue(blackDuckParametersServiceMock.isValidScanParameters(blackDuckParametersMap));
     }
 
     @Test
@@ -66,19 +81,30 @@ public class BlackDuckParametersServiceTest {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
 
-        assertFalse(blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParametersMap));
+        BlackDuckParametersService blackDuckParametersServiceMock = Mockito.spy(new BlackDuckParametersService(listenerMock));
+
+        Mockito.doReturn(Collections.EMPTY_MAP)
+            .when(blackDuckParametersServiceMock)
+            .createBlackDuckParametersMapFromJenkinsUI();
+        
+        assertFalse(blackDuckParametersServiceMock.isValidScanParameters(blackDuckParametersMap));
     }
 
     @Test
     void validateBlackDuckParametersForNullAndEmptyTest() {
-        BlackDuckParametersService service = new BlackDuckParametersService(listenerMock);
-        assertFalse(service.performBlackDuckParameterValidation(null));
+        BlackDuckParametersService blackDuckParametersServiceMock = Mockito.spy(new BlackDuckParametersService(listenerMock));
+
+        Mockito.doReturn(Collections.EMPTY_MAP)
+            .when(blackDuckParametersServiceMock)
+            .createBlackDuckParametersMapFromJenkinsUI();
+        
+        assertFalse(blackDuckParametersServiceMock.isValidScanParameters(null));
 
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, "");
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
-
-        assertFalse(blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParametersMap));
+        
+        assertFalse(blackDuckParametersServiceMock.isValidScanParameters(blackDuckParametersMap));
     }
 
     @Test
