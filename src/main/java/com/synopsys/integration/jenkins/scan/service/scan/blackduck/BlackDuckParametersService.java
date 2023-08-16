@@ -40,7 +40,7 @@ public class BlackDuckParametersService implements ScanStrategyService {
             });
 
         if (isValid) {
-            listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATED_SUCCESSFULLY);
+            listener.getLogger().println("BlackDuck parameters are validated successfully");
             return true;
         } else {
             listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
