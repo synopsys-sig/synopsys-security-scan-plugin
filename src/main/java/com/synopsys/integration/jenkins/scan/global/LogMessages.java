@@ -16,9 +16,6 @@ public class LogMessages {
     public static final String EMPTY_BRIDGE_DOWNLOAD_URL_PROVIDED = "The provided Bridge download URL is empty";
     public static final String INVALID_BRIDGE_DOWNLOAD_URL_PROVIDED = "The provided Bridge download URL is not valid: %s %n";
     public static final String INVALID_BRIDGE_DOWNLOAD_VERSION_PROVIDED = "The provided Bridge download version is not valid: %s %n";
-    public static final String BRIDGE_INSTALLATION_PARENT_PATH_IS_NOT_WRITABLE = "The bridge installation parent path: %s is not writable %n";
-    public static final String BRIDGE_INSTALLATION_PARENT_PATH_DOES_NOT_EXIST = "The bridge installation parent path: %s doesn't exist %n";
-    public static final String BRIDGE_INSTALLATION_PARENT_PATH_IS_NOT_A_DIRECTORY = "The bridge installation parent path: %s is not a directory %n";
 
     public static final String EXCEPTION_OCCURRED_WHILE_INVOKING_SYNOPSYS_BRIDGE = "An exception occurred while invoking synopsys-bridge from the plugin: %s %n";
     public static final String EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE = "An exception occurred while installing/downloading synopsys-bridge: %s %n";

@@ -76,14 +76,14 @@ public class BridgeDownloadParametersService {
                 if (isWritable) {
                     return true;
                 } else {
-                    listener.getLogger().printf(LogMessages.BRIDGE_INSTALLATION_PARENT_PATH_IS_NOT_WRITABLE, parentPath.toURI());
+                    listener.getLogger().printf("The bridge installation parent path: %s is not writable %n", parentPath.toURI());
                     return false;
                 }
             } else {
                 if (parentPath == null || !parentPath.exists()) {
-                    listener.getLogger().printf(LogMessages.BRIDGE_INSTALLATION_PARENT_PATH_DOES_NOT_EXIST, path.toURI());
+                    listener.getLogger().printf("The bridge installation parent path: %s doesn't exist %n", path.toURI());
                 } else if (!parentPath.isDirectory()) {
-                    listener.getLogger().printf(LogMessages.BRIDGE_INSTALLATION_PARENT_PATH_IS_NOT_A_DIRECTORY, parentPath.toURI());
+                    listener.getLogger().printf("The bridge installation parent path: %s is not a directory %n", parentPath.toURI());
                 }
                 return false;
             }
