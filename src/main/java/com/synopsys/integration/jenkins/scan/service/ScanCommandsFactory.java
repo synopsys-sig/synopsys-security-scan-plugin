@@ -6,6 +6,8 @@ import com.synopsys.integration.jenkins.scan.extension.pipeline.SecurityScanStep
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
+import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
+import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyFactory;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -42,6 +44,25 @@ public class ScanCommandsFactory {
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep) {
         Map<String, Object> parametersMap = new HashMap<>();
 
+        if (!Utility.isStringNullOrBlank(scanStep.getScan_type())) {
+            parametersMap.put(ApplicationConstants.SCAN_TYPE_KEY, scanStep.getScan_type());
+        }
+
+        ScanType scanType = ScanStrategyFactory.getScanType(scanStep.getScan_type());
+        if (scanType.equals(ScanType.COVERITY)) {
+            // prepareCoverityParametersMap
+        } else if (scanType.equals(ScanType.POLARIS)) {
+            // preparePolarisParametersMap
+        } else {
+            prepareBlackDuckParametersMap(scanStep, parametersMap);
+        }
+
+        prepareBridgeParametersMap(scanStep, parametersMap);
+
+        return parametersMap;
+    }
+
+    private static void prepareBlackDuckParametersMap(SecurityScanStep scanStep, Map<String, Object> parametersMap) {
         if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_url())) {
             parametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, scanStep.getBlackduck_url());
         }
@@ -61,19 +82,19 @@ public class ScanCommandsFactory {
         parametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, scanStep.getBlackduck_scan_full());
         parametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, scanStep.getBlackduck_automation_fixpr());
         parametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, scanStep.getBlackduck_automation_prcomment());
+    }
 
+    private static void prepareBridgeParametersMap(SecurityScanStep scanStep, Map<String, Object> parametersMap) {
         if (!Utility.isStringNullOrBlank(scanStep.getBridge_download_url())) {
-            parametersMap.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, scanStep.getBridge_download_url());
+          parametersMap.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, scanStep.getBridge_download_url());
         }
         if (!Utility.isStringNullOrBlank(scanStep.getBridge_download_version())) {
-            parametersMap.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, scanStep.getBridge_download_version());
+          parametersMap.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, scanStep.getBridge_download_version());
         }
         if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_path())) {
-            parametersMap.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, scanStep.getSynopsys_bridge_path());
+          parametersMap.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, scanStep.getSynopsys_bridge_path());
         }
         parametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, scanStep.getInclude_diagnostics());
-
-        return parametersMap;
     }
-    
+
 }
