@@ -16,6 +16,8 @@ public class ApplicationConstants {
     public static final String PLATFORM_LINUX = "linux64";
     public static final String PLATFORM_WINDOWS = "win64";
     public static final String PLATFORM_MAC = "macosx";
+
+    public static final String SCAN_TYPE_KEY = "scan_type";
     public static final String BLACKDUCK_URL_KEY = "blackduck_url";
     public static final String BLACKDUCK_API_TOKEN_KEY = "blackduck_api_token";
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";

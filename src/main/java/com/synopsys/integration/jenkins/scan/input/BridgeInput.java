@@ -7,6 +7,12 @@ public class BridgeInput {
     @JsonProperty("blackduck")
     private BlackDuck blackDuck;
 
+    @JsonProperty("coverity")
+    private Coverity coverity;
+
+    @JsonProperty("polaris")
+    private Polaris polaris;
+
     @JsonProperty("bitbucket")
     private Bitbucket bitbucket;
 
@@ -16,6 +22,22 @@ public class BridgeInput {
 
     public void setBlackDuck(BlackDuck blackDuck) {
         this.blackDuck = blackDuck;
+    }
+
+    public Coverity getCoverity() {
+        return coverity;
+    }
+
+    public void setCoverity(Coverity coverity) {
+        this.coverity = coverity;
+    }
+
+    public Polaris getPolaris() {
+        return polaris;
+    }
+
+    public void setPolaris(Polaris polaris) {
+        this.polaris = polaris;
     }
 
     public Bitbucket getBitbucket() {
