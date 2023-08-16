@@ -3,21 +3,55 @@ package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
+import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
+import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
 import hudson.model.TaskListener;
 import jenkins.model.GlobalConfiguration;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class BlackDuckParametersService {
+public class BlackDuckParametersService implements ScanStrategyService {
     private final TaskListener listener;
     public BlackDuckParametersService(TaskListener listener) {
         this.listener = listener;
     }
 
-    public BlackDuck prepareBlackDuckInputForBridge(Map<String, Object> blackDuckParametersFromPipeline) {
+    @Override
+    public ScanType getScanType() {
+        return ScanType.BLACKDUCK;
+    }
+
+    @Override
+    public boolean isValidScanParameters(Map<String, Object> blackDuckParametersFromPipeline) {
+        Map<String, Object> blackDuckParams = prepareBlackDuckParameterValidation(blackDuckParametersFromPipeline);
+
+        boolean isValid =  blackDuckParams != null
+            && Stream.of(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
+            .allMatch(key -> {
+                boolean isKeyValid = blackDuckParams.containsKey(key)
+                    && blackDuckParams.get(key) != null
+                    && !blackDuckParams.get(key).toString().isEmpty();
+
+                if (!isKeyValid) {
+                    listener.getLogger().printf(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED_FOR_PARAM, key);
+                }
+                return isKeyValid;
+            });
+
+        if (isValid) {
+            listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATED_SUCCESSFULLY);
+            return true;
+        } else {
+            listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
+            return false;
+        }
+    }
+
+    @Override
+    public BlackDuck prepareScanInputForBridge(Map<String, Object> parametersFromPipeline) {
         Map<String, Object> blackDuckParametersMapFromUI = createBlackDuckParametersMapFromJenkinsUI();
-        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(blackDuckParametersFromPipeline, blackDuckParametersMapFromUI);
+        Map<String, Object> blackDuckParametersMap = getCombinedBlackDuckParameters(parametersFromPipeline, blackDuckParametersMapFromUI);
         return createBlackDuckObject(blackDuckParametersMap);
     }
 
@@ -75,29 +109,6 @@ public class BlackDuckParametersService {
         }
 
         return blackDuck;
-    }
-
-    public boolean performBlackDuckParameterValidation(Map<String, Object> blackDuckParams) {
-        boolean isValid =  blackDuckParams != null
-                && Stream.of(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
-                .allMatch(key -> {
-                    boolean isKeyValid = blackDuckParams.containsKey(key)
-                            && blackDuckParams.get(key) != null
-                            && !blackDuckParams.get(key).toString().isEmpty();
-
-                    if (!isKeyValid) {
-                        listener.getLogger().printf(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED_FOR_PARAM, key);
-                    }
-                    return isKeyValid;
-                });
-
-        if (isValid) {
-            listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATED_SUCCESSFULLY);
-            return true;
-        } else {
-            listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
-            return false;
-        }
     }
 
     public Map<String, Object> getCombinedBlackDuckParameters(Map<String, Object> blackDuckParamsFromPipeline, Map<String, Object> blackDuckParametersMapFromUI) {

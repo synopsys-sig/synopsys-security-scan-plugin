@@ -7,10 +7,13 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
+import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
+import com.synopsys.integration.jenkins.scan.input.Coverity;
+import com.synopsys.integration.jenkins.scan.input.Polaris;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
-import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
+import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
 import com.synopsys.integration.jenkins.scan.service.scm.SCMRepositoryService;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -43,18 +46,15 @@ public class ScannerArgumentService {
         this.blackDuckInputJsonFilePath = blackDuckInputJsonFilePath;
     }
 
-
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, String bridgeInstallationPath) throws ScannerJenkinsException {
-        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE, bridgeInstallationPath));
-
-        BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
-        BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, ScanStrategyService scanStrategyService, String bridgeInstallationPath) throws ScannerJenkinsException {
+        ScanType scanType = scanStrategyService.getScanType();
+        Object scanObject = scanStrategyService.prepareScanInputForBridge(scanParameters);
 
         SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
         Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters);
 
-        commandLineArgs.add(createBlackDuckInputJson(blackDuck, blackDuck.getAutomation().getPrComment()
-                || blackDuck.getAutomation().getFixpr() ? scmObject : null));
+        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(scanType, bridgeInstallationPath));
+        commandLineArgs.add(createBridgeInputJson(scanObject, scmObject));
 
         if (Objects.equals(scanParameters.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
             commandLineArgs.add(BridgeParams.DIAGNOSTICS_OPTION);
@@ -63,13 +63,11 @@ public class ScannerArgumentService {
         return commandLineArgs;
     }
 
-    public String createBlackDuckInputJson(BlackDuck blackDuck, Object scm) {
+    public String createBridgeInputJson(Object scanObject, Object scmObject) {
         BridgeInput bridgeInput = new BridgeInput();
-        bridgeInput.setBlackDuck(blackDuck);
-        if (scm instanceof Bitbucket) {
-            Bitbucket bitbucket = (Bitbucket) scm;
-            bridgeInput.setBitbucket(bitbucket);
-        }
+        
+        setScanObject(bridgeInput, scanObject);
+        setScmObject(bridgeInput, scmObject);
 
         Map<String, Object> blackDuckJsonMap = new HashMap<>();
         blackDuckJsonMap.put(DATA_KEY, bridgeInput);
@@ -89,6 +87,22 @@ public class ScannerArgumentService {
 
         return jsonPath;
     }
+    
+    private void setScanObject(BridgeInput bridgeInput, Object scanObject) {
+        if (scanObject instanceof BlackDuck) {
+            bridgeInput.setBlackDuck((BlackDuck) scanObject);
+        } else if (scanObject instanceof Coverity) {
+            bridgeInput.setCoverity((Coverity) scanObject);
+        } else if (scanObject instanceof Polaris) {
+            bridgeInput.setPolaris((Polaris) scanObject);
+        }
+    }
+
+    private void setScmObject(BridgeInput bridgeInput, Object scmObject) {
+        if (scmObject instanceof Bitbucket) {
+            bridgeInput.setBitbucket((Bitbucket) scmObject);
+        }
+    }
 
     public String writeBlackDuckJsonToFile(String blackDuckJson) {
         String blackDuckInputJsonPath = null;
@@ -105,7 +119,7 @@ public class ScannerArgumentService {
         return blackDuckInputJsonPath;
     }
 
-    public List<String> getInitialBridgeArgs(String stage, String bridgeInstallationPath) {
+    public List<String> getInitialBridgeArgs(ScanType scanType, String bridgeInstallationPath) {
         List<String> initBridgeArgs = new ArrayList<>();
         String os = Utility.getAgentOs(workspace, listener);
 
@@ -116,10 +130,20 @@ public class ScannerArgumentService {
         }
 
         initBridgeArgs.add(BridgeParams.STAGE_OPTION);
-        initBridgeArgs.add(stage);
+        initBridgeArgs.add(getScanStage(scanType));
         initBridgeArgs.add(BridgeParams.INPUT_OPTION);
 
         return initBridgeArgs;
+    }
+
+    private String getScanStage(ScanType scanType) {
+        if (scanType.equals(ScanType.COVERITY)) {
+            return BridgeParams.COVERITY_STAGE;
+        } else if (scanType.equals(ScanType.POLARIS)) {
+            return BridgeParams.POLARIS_STAGE;
+        } else {
+            return BridgeParams.BLACKDUCK_STAGE;
+        }
     }
 
 }

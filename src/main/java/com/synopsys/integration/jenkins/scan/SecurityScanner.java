@@ -8,7 +8,7 @@ import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 import com.synopsys.integration.jenkins.scan.service.diagnostics.DiagnosticsService;
-import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
+import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -38,18 +38,14 @@ public class SecurityScanner {
         this.scannerArgumentService = scannerArgumentService;
     }
 
-    public int runScanner(Map<String, Object> scanParams) throws ScannerJenkinsException {
-        BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
-
+    public int runScanner(Map<String, Object> scanParams, ScanStrategyService scanStrategyService) throws ScannerJenkinsException {
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);
         BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService(workspace, listener);
         BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
-        Map<String, Object> blackDuckParameters = blackDuckParametersService.prepareBlackDuckParameterValidation(scanParams);
         int scanner = 1;
 
-        if (blackDuckParametersService.performBlackDuckParameterValidation(blackDuckParameters)
-                && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
+        if (bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
 
@@ -61,7 +57,7 @@ public class SecurityScanner {
 
             Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace, listener);
             FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
-            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeDownloadParams.getBridgeInstallationPath());
+            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, scanStrategyService, bridgeDownloadParams.getBridgeInstallationPath());
 
             try {
                 printBridgeExecutionLogs(LogMessages.START_BRIDGE_EXECUTION);

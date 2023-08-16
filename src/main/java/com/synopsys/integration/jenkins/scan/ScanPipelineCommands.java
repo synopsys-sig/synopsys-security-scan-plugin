@@ -2,6 +2,8 @@ package com.synopsys.integration.jenkins.scan;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
+import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyFactory;
+import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
 import java.util.Map;
 
 public class ScanPipelineCommands {
@@ -11,25 +13,34 @@ public class ScanPipelineCommands {
         this.scanner = scanner;
     }
 
-    public int runScanner(Map<String, Object> scanParameters) throws ScannerJenkinsException {
+    public int runScanner(Map<String, Object> scanParameters, ScanStrategyFactory scanStrategyFactory) throws ScannerJenkinsException {
+        setValueForNullInputs(scanParameters);
+
+        ScanStrategyService scanStrategyService = scanStrategyFactory.getParametersService(scanParameters);
+
+        int exitCode = -1;
+
+        if (scanStrategyService.isValidScanParameters(scanParameters)) {
+            try {
+                exitCode = scanner.runScanner(scanParameters, scanStrategyService);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new ScannerJenkinsException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
+            }
+            if (exitCode != 0) {
+                throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
+            }
+        }
+
+        return exitCode;
+    }
+
+    private void setValueForNullInputs(Map<String, Object> scanParameters) {
         for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
             if (entry.getValue().equals("null")) {
                 entry.setValue(null);
             }
         }
-
-        int exitCode;
-        try {
-            exitCode = scanner.runScanner(scanParameters);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ScannerJenkinsException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
-        }
-        if (exitCode != 0) {
-            throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
-        }
-
-        return exitCode;
     }
 
 }
