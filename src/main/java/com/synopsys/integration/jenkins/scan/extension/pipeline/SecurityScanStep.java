@@ -3,6 +3,7 @@ package com.synopsys.integration.jenkins.scan.extension.pipeline;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
+import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyFactory;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -28,6 +29,8 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class SecurityScanStep extends Step implements Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
+    private String scan_type;
+
     private String blackduck_url;
     private String blackduck_api_token;
 
@@ -46,6 +49,11 @@ public class SecurityScanStep extends Step implements Serializable {
     @DataBoundConstructor
     public SecurityScanStep() {
         /* Intentionally left empty */
+    }
+
+    @DataBoundSetter
+    public void setScan_type(String scan_type) {
+        this.scan_type = scan_type;
     }
 
     @DataBoundSetter
@@ -106,6 +114,10 @@ public class SecurityScanStep extends Step implements Serializable {
     @DataBoundSetter
     public void setInclude_diagnostics(boolean include_diagnostics) {
         this.include_diagnostics = include_diagnostics;
+    }
+
+    public String getScan_type() {
+        return scan_type;
     }
 
     public String getBlackduck_url() {
@@ -207,7 +219,7 @@ public class SecurityScanStep extends Step implements Serializable {
         @Override
         protected Integer run() throws ScannerJenkinsException {
             return ScanCommandsFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
-                .runScanner(getParametersMap());
+                .runScanner(getParametersMap(), new ScanStrategyFactory(listener));
         }
 
     }
