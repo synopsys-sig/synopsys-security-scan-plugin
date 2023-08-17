@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
-import com.synopsys.integration.jenkins.scan.input.BlackDuck;
+import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import hudson.model.TaskListener;
 import java.io.PrintStream;
 import java.util.Collections;
@@ -53,7 +53,7 @@ public class BlackDuckParametersServiceTest {
 
         assertEquals(TEST_BLACKDUCK_URL, blackDuck.getUrl());
         assertEquals(TEST_BLACKDUCK_TOKEN, blackDuck.getToken());
-        assertEquals(TEST_BLACKDUCK_INSTALL_DIRECTORY_PATH, blackDuck.getInstallDirectory());
+        assertEquals(TEST_BLACKDUCK_INSTALL_DIRECTORY_PATH, blackDuck.getInstall().getDirectory());
 
         assertEquals(true, blackDuck.getAutomation().getFixpr());
         assertEquals(false, blackDuck.getAutomation().getPrComment());

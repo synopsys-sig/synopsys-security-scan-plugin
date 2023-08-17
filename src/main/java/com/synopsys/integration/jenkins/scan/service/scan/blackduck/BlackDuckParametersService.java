@@ -4,7 +4,7 @@ import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfi
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
-import com.synopsys.integration.jenkins.scan.input.BlackDuck;
+import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
 import hudson.model.TaskListener;
 import jenkins.model.GlobalConfiguration;
@@ -75,7 +75,7 @@ public class BlackDuckParametersService implements ScanStrategyService {
                     blackDuck.setToken(value);
                     break;
                 case ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY:
-                    blackDuck.setInstallDirectory(value);
+                    blackDuck.getInstall().setDirectory(value);
                     break;
                 case ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY:
                     if (value.equals("true") || value.equals("false")) {

@@ -2,6 +2,9 @@ package com.synopsys.integration.jenkins.scan.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
+import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
+import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
+import com.synopsys.integration.jenkins.scan.input.polaris.Polaris;
 
 public class BridgeInput {
     @JsonProperty("blackduck")

@@ -1,7 +1,7 @@
 package com.synopsys.integration.jenkins.scan.service.scan.polaris;
 
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
-import com.synopsys.integration.jenkins.scan.input.Polaris;
+import com.synopsys.integration.jenkins.scan.input.polaris.Polaris;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
 import hudson.model.TaskListener;
 import java.util.Map;

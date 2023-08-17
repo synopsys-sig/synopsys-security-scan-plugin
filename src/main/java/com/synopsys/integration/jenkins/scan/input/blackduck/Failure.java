@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.input;
+package com.synopsys.integration.jenkins.scan.input.blackduck;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;

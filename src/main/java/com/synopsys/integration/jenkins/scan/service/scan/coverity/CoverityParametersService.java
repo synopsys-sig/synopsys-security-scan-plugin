@@ -1,7 +1,7 @@
 package com.synopsys.integration.jenkins.scan.service.scan.coverity;
 
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
-import com.synopsys.integration.jenkins.scan.input.Coverity;
+import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
 import hudson.model.TaskListener;
 import java.util.Map;

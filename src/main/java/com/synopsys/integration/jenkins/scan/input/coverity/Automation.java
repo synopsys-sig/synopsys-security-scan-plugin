@@ -1,20 +1,10 @@
-package com.synopsys.integration.jenkins.scan.input;
+package com.synopsys.integration.jenkins.scan.input.coverity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Automation {
-    @JsonProperty("fixpr")
-    private Boolean fixpr;
     @JsonProperty("prComment")
     private Boolean prComment;
-
-    public Boolean getFixpr() {
-        return fixpr;
-    }
-
-    public void setFixpr(Boolean fixpr) {
-        this.fixpr = fixpr;
-    }
 
     public Boolean getPrComment() {
         return prComment;
@@ -24,4 +14,3 @@ public class Automation {
         this.prComment = prComment;
     }
 }
-
