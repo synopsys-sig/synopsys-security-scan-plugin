@@ -59,6 +59,8 @@ public class SecurityScanner {
             FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
             List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, scanStrategyService, bridgeDownloadParams.getBridgeInstallationPath());
 
+            listener.getLogger().println("Executable command line arguments: " + commandLineArgs.toString());
+
             try {
                 printBridgeExecutionLogs("START EXECUTION OF SYNOPSYS BRIDGE");
 
