@@ -2,6 +2,7 @@ package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyFactory;
 import hudson.EnvVars;
@@ -11,6 +12,7 @@ import hudson.Launcher;
 import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.util.ListBoxModel;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -195,6 +197,11 @@ public class SecurityScanStep extends Step implements Serializable {
             return ApplicationConstants.DISPLAY_NAME;
         }
 
+        public ListBoxModel doFillScan_typeItems() {
+            ListBoxModel items = new ListBoxModel();
+            Arrays.stream(ScanType.values()).forEach(scanType -> items.add(String.valueOf(scanType)));
+            return items;
+        }
     }
 
     public class Execution extends SynchronousNonBlockingStepExecution<Integer> {
