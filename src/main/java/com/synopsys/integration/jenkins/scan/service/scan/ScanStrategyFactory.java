@@ -1,6 +1,7 @@
 package com.synopsys.integration.jenkins.scan.service.scan;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParametersService;
@@ -31,6 +32,9 @@ public class ScanStrategyFactory {
     }
 
     public static ScanType getScanType(String scanTypeFromInput) {
+        if (Utility.isStringNullOrBlank(scanTypeFromInput)) {
+            return ScanType.BLACKDUCK;
+        }
         scanTypeFromInput = scanTypeFromInput.trim().toUpperCase();
         
         ScanType scanType;
