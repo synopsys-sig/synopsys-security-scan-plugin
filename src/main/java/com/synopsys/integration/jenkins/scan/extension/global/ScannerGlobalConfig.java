@@ -1,8 +1,11 @@
 package com.synopsys.integration.jenkins.scan.extension.global;
 
 import com.synopsys.integration.jenkins.annotations.HelpMarkdown;
+import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import hudson.Extension;
+import hudson.util.ListBoxModel;
 import java.io.Serializable;
+import java.util.Arrays;
 import jenkins.model.GlobalConfiguration;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -10,6 +13,9 @@ import org.kohsuke.stapler.DataBoundSetter;
 @Extension
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
+
+    @HelpMarkdown("Select the Scan type that you to perform.")
+    private String scanType;
 
     @HelpMarkdown("Provide the URL that lets you access your Black Duck server.")
     private String blackDuckUrl;
@@ -27,6 +33,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundConstructor
     public ScannerGlobalConfig() {
         load();
+    }
+
+    @DataBoundSetter
+    public void setScanType(String scanType) {
+        this.scanType = scanType;
+        save();
     }
 
     @DataBoundSetter
@@ -50,6 +62,11 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundSetter
     public void setSynopsysBridgeDownloadUrl(String synopsysBridgeDownloadUrl) {
         this.synopsysBridgeDownloadUrl = synopsysBridgeDownloadUrl;
+        save();
+    }
+
+    public String getScanType() {
+        return scanType;
     }
 
     public String getBlackDuckUrl() {
@@ -66,6 +83,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getBitbucketToken() {
         return bitbucketToken;
+    }
+    
+    public ListBoxModel doFillScanTypeItems() {
+        ListBoxModel items = new ListBoxModel();
+        Arrays.stream(ScanType.values()).forEach(scanType -> items.add(String.valueOf(scanType)));
+        return items;
     }
 
 }

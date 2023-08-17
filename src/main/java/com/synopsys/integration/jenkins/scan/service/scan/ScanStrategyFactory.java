@@ -1,5 +1,6 @@
 package com.synopsys.integration.jenkins.scan.service.scan;
 
+import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
@@ -8,6 +9,7 @@ import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParam
 import com.synopsys.integration.jenkins.scan.service.scan.polaris.PolarisParametersService;
 import hudson.model.TaskListener;
 import java.util.Map;
+import jenkins.model.GlobalConfiguration;
 
 public class ScanStrategyFactory {
     private final TaskListener listener;
@@ -32,22 +34,24 @@ public class ScanStrategyFactory {
     }
 
     public static ScanType getScanType(String scanTypeFromInput) {
-        if (Utility.isStringNullOrBlank(scanTypeFromInput)) {
+        String scanType = ScanType.BLACKDUCK.name();
+
+        if (!Utility.isStringNullOrBlank(scanTypeFromInput)) {
+            scanType = scanTypeFromInput.trim().toUpperCase();
+        } else {
+            ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
+            if (config != null && !Utility.isStringNullOrBlank(config.getScanType())) {
+                scanType = config.getScanType().trim().toUpperCase();
+            }
+        }
+
+        if (scanType.equals(ScanType.COVERITY.name())) {
+            return ScanType.COVERITY;
+        } else if (scanType.equals(ScanType.POLARIS.name())) {
+            return ScanType.POLARIS;
+        } else {
             return ScanType.BLACKDUCK;
         }
-        scanTypeFromInput = scanTypeFromInput.trim().toUpperCase();
-        
-        ScanType scanType;
-
-        if (scanTypeFromInput.equals("COVERITY")) {
-            scanType = ScanType.COVERITY;
-        } else if (scanTypeFromInput.equals("POLARIS")) {
-            scanType = ScanType.POLARIS;
-        } else {
-            scanType = ScanType.BLACKDUCK;
-        }
-
-        return scanType;
     }
 
 }
