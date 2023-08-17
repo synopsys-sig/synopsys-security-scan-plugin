@@ -104,9 +104,9 @@ public class SecurityScanner {
     }
 
     public void printBridgeExecutionLogs(String message) {
-        listener.getLogger().println("******************************************************************************");
+        listener.getLogger().println(LogMessages.ASTERISKS);
         listener.getLogger().println(message);
-        listener.getLogger().println("******************************************************************************");
+        listener.getLogger().println(LogMessages.ASTERISKS);
     }
 
     private void uploadDiagnostics(FilePath bridgeInstallationPath) {

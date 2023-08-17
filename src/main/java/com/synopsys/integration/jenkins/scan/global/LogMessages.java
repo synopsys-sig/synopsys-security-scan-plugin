@@ -1,6 +1,7 @@
 package com.synopsys.integration.jenkins.scan.global;
 
 public class LogMessages {
+    public static final String ASTERISKS = "******************************************************************************";
     public static final String SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WITH_MAX_ATTEMPT = "Synopsys Bridge download failed after %s attempts %n";
     public static final String INVALID_SYNOPSYS_BRIDGE_DOWNLOAD_URL = "Invalid Synopsys Bridge download URL: %s %n";
 
