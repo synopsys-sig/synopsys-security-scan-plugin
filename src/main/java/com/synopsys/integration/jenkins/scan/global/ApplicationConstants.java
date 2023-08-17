@@ -30,6 +30,7 @@ public class ApplicationConstants {
     public static final String DEFAULT_DIRECTORY_NAME = "synopsys-bridge";
     public static final String BRIDGE_DIAGNOSTICS_DIRECTORY = ".bridge";
     public static final int BRIDGE_DOWNLOAD_MAX_RETRIES = 3;
+    public static final int INTERVAL_BETWEEN_CONSECUTIVE_RETRY_ATTEMPTS = 10000;
     public static final String ALL_FILES_WILDCARD_SYMBOL = "**";
     public static final String BRIDGE_BINARY = "synopsys-bridge";
     public static final String BRIDGE_BINARY_WINDOWS = "synopsys-bridge.exe";
