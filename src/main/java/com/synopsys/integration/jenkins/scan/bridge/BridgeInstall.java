@@ -45,7 +45,6 @@ public class BridgeInstall {
         } catch (IOException | InterruptedException e) {
             listener.getLogger().printf(LogMessages.FAILED_TO_FETCH_PLUGINS_DEFAULT_INSTALLATION_PATH, e.getMessage());
         }
-        Utility.verifyAndCreateInstallationPath(defaultInstallationPath, workspace, listener);
 
         return defaultInstallationPath;
     }
