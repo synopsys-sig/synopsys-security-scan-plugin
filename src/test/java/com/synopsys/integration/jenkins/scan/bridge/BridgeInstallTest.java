@@ -1,15 +1,17 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import hudson.FilePath;
 import hudson.model.TaskListener;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class BridgeInstallTest {
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
@@ -40,8 +42,10 @@ public class BridgeInstallTest {
             bridgeInstall.installSynopsysBridge(getFullZipPath(), bridgeInstallationPath);
 
             assertFalse(destinationBridge.exists());
-            assertTrue(bridgeInstallationPath.child("demo-bridge-extensions").isDirectory());
-            assertTrue(bridgeInstallationPath.child("demo-bridge-versions.txt").exists());
+            assertTrue(
+                bridgeInstallationPath.child("demo-bridge-extensions").isDirectory());
+            assertTrue(
+                bridgeInstallationPath.child("demo-bridge-versions.txt").exists());
             assertTrue(bridgeInstallationPath.child("demo-bridge-LICENSE.txt").exists());
 
             cleanupBridgeInstallationPath(bridgeInstallationPath);
