@@ -80,8 +80,8 @@ public class BridgeDownloadManager {
         String extractedVersionNumber = extractVersionFromUrl(bridgeDownloadUrl);
         if(extractedVersionNumber.equals(ApplicationConstants.NOT_AVAILABLE)) {
             String directoryUrl = getDirectoryUrl(bridgeDownloadUrl);
-            if(versionFileAvailable(directoryUrl)) {
-                String versionFilePath = downloadVersionFile(directoryUrl);
+            if(isVersionFileAvailableInArtifactory(directoryUrl)) {
+                String versionFilePath = downloadVersionFileFromArtifactory(directoryUrl);
                 String latestVersion = getBridgeVersionFromVersionFile(versionFilePath);
 
                 Utility.removeFile(versionFilePath, workspace, listener);
@@ -97,7 +97,7 @@ public class BridgeDownloadManager {
         }
     }
 
-    public String downloadVersionFile(String directoryUrl) {
+    public String downloadVersionFileFromArtifactory(String directoryUrl) {
         String versionFileUrl = String.join("/", directoryUrl, ApplicationConstants.VERSION_FILE);
         String tempVersionFilePath = null;
 
@@ -113,7 +113,7 @@ public class BridgeDownloadManager {
         return tempVersionFilePath;
     }
 
-    public boolean versionFileAvailable(String directoryUrl) {
+    public boolean isVersionFileAvailableInArtifactory(String directoryUrl) {
         try {
             URL url = new URL(String.join("/",directoryUrl,ApplicationConstants.VERSION_FILE));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

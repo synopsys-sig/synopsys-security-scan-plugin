@@ -78,6 +78,7 @@ public class BlackDuckParametersService {
     }
 
     public boolean performBlackDuckParameterValidation(Map<String, Object> blackDuckParams) {
+        List<String> invalidParams = new ArrayList<>();
         boolean isValid =  blackDuckParams != null
                 && Stream.of(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
                 .allMatch(key -> {
@@ -86,7 +87,7 @@ public class BlackDuckParametersService {
                             && !blackDuckParams.get(key).toString().isEmpty();
 
                     if (!isKeyValid) {
-                        listener.getLogger().printf(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED_FOR_PARAM, key);
+                        invalidParams.add(key);
                     }
                     return isKeyValid;
                 });
@@ -96,6 +97,7 @@ public class BlackDuckParametersService {
             return true;
         } else {
             listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
+            listener.getLogger().println("Invalid BlackDuck parameters: " + invalidParams);
             return false;
         }
     }

@@ -118,14 +118,14 @@ public class BridgeDownloadParametersService {
         else if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION)) {
             String desiredVersion = scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION).toString().trim();
             String bridgeDownloadUrl = String.join("/", ApplicationConstants.BRIDGE_ARTIFACTORY_URL,
-                    desiredVersion, ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform(), desiredVersion));
+                    desiredVersion, getSynopsysBridgeZipFileName(desiredVersion));
 
             bridgeDownloadParameters.setBridgeDownloadUrl(bridgeDownloadUrl);
             bridgeDownloadParameters.setBridgeDownloadVersion(desiredVersion);
         }
         else {
             String bridgeDownloadUrl = String.join("/", ApplicationConstants.BRIDGE_ARTIFACTORY_URL,
-                    ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION, ApplicationConstants.getSynopsysBridgeZipFileName(getPlatform()));
+                    ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION, getSynopsysBridgeZipFileName());
             bridgeDownloadParameters.setBridgeDownloadUrl(bridgeDownloadUrl);
         }
         return bridgeDownloadParameters;
@@ -151,5 +151,12 @@ public class BridgeDownloadParametersService {
         } else {
             return ApplicationConstants.PLATFORM_LINUX;
         }
+    }
+
+    public String getSynopsysBridgeZipFileName() {
+        return "synopsys-bridge-".concat(getPlatform()).concat(".zip");
+    }
+    public String getSynopsysBridgeZipFileName(String version) {
+        return "synopsys-bridge-".concat(version).concat("-").concat(getPlatform()).concat(".zip");
     }
 }

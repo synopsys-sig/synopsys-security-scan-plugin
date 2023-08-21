@@ -39,10 +39,4 @@ public class ApplicationConstants {
     public static final String ENV_JOB_NAME_KEY = "JOB_NAME";
     public static final String ENV_CHANGE_ID_KEY = "CHANGE_ID";
 
-    public static String getSynopsysBridgeZipFileName(String platform) {
-        return "synopsys-bridge-".concat(platform).concat(".zip");
-    }
-    public static String getSynopsysBridgeZipFileName(String platform, String version) {
-        return "synopsys-bridge-".concat(version).concat("-").concat(platform).concat(".zip");
-    }
 }
