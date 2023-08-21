@@ -48,4 +48,16 @@ public class BridgeInstall {
 
         return defaultInstallationPath;
     }
+
+    public void verifyAndCreateInstallationPath(String bridgeInstallationPath) {
+        FilePath directory = new FilePath(workspace.getChannel(), bridgeInstallationPath);
+        try {
+            if (!directory.exists()) {
+                directory.mkdirs();
+                listener.getLogger().println("Created bridge installation directory at: " + directory.getRemote());
+            }
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("Failed to create directory: " + directory.getRemote());
+        }
+    }
 }

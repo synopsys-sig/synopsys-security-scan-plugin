@@ -43,7 +43,7 @@ public class ScannerArgumentService {
     }
 
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, String bridgeInstallationPath) throws ScannerJenkinsException {
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE, bridgeInstallationPath));
 
         BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
@@ -104,14 +104,14 @@ public class ScannerArgumentService {
         return blackDuckInputJsonPath;
     }
 
-    public List<String> getInitialBridgeArgs(String stage, String bridgeInstallationPath) {
+    public List<String> getInitialBridgeArgs(String stage, FilePath bridgeInstallationPath) {
         List<String> initBridgeArgs = new ArrayList<>();
         String os = Utility.getAgentOs(workspace, listener);
 
         if(os.contains("win")) {
-            initBridgeArgs.add(String.join("\\", bridgeInstallationPath, ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS));
+            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS).getRemote());
         } else {
-            initBridgeArgs.add(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND);
+            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND).getRemote());
         }
 
         initBridgeArgs.add(BridgeParams.STAGE_OPTION);

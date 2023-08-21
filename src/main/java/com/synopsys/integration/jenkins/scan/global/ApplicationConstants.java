@@ -5,7 +5,7 @@ public class ApplicationConstants {
     public static final String PIPELINE_NAME = "synopsys_scan";
     public static final String BRIDGE_ARTIFACTORY_URL =
             "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge";
-    public static final String SYNOPSYS_BRIDGE_RUN_COMMAND = "./synopsys-bridge";
+    public static final String SYNOPSYS_BRIDGE_RUN_COMMAND = "synopsys-bridge";
     public static final String SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS = "synopsys-bridge.exe";
     public static final String SYNOPSYS_BRIDGE_LATEST_VERSION = "latest";
     public static final String BRIDGE_DOWNLOAD_FILE_PATH = "/tmp/synopsys-security-scan";
@@ -34,7 +34,6 @@ public class ApplicationConstants {
     public static final String BRIDGE_BINARY_WINDOWS = "synopsys-bridge.exe";
     public static final String EXTENSIONS_DIRECTORY = "extensions";
     public static final String VERSION_FILE = "versions.txt";
-    public static final String LICENSE_FILE = "LICENSE.txt";
     public static final String NOT_AVAILABLE = "NA";
     public static final String ENV_JOB_NAME_KEY = "JOB_NAME";
     public static final String ENV_CHANGE_ID_KEY = "CHANGE_ID";

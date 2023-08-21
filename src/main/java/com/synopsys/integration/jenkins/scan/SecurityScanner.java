@@ -58,10 +58,10 @@ public class SecurityScanner {
             } else {
                 listener.getLogger().println("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
             }
+            FilePath bridgeInstallationPath = new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
+            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeInstallationPath);
 
-            Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace, listener);
-            FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
-            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeDownloadParams.getBridgeInstallationPath());
+            listener.getLogger().println("Command line arguments: " + commandLineArgs);
 
             try {
                 printBridgeExecutionLogs("START EXECUTION OF SYNOPSYS BRIDGE");
@@ -69,7 +69,7 @@ public class SecurityScanner {
                 scanner = launcher.launch()
                         .cmds(commandLineArgs)
                         .envs(envVars)
-                        .pwd(bridgeInstallationPath)
+                        .pwd(workspace)
                         .stdout(listener)
                         .quiet(true)
                         .join();
@@ -79,7 +79,6 @@ public class SecurityScanner {
                 printBridgeExecutionLogs("END EXECUTION OF SYNOPSYS BRIDGE");
 
                 Utility.removeFile(scannerArgumentService.getBlackDuckInputJsonFilePath(), workspace, listener);
-                Utility.cleanupOtherFiles(workspace, listener);
 
                 if ( Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
                     uploadDiagnostics(bridgeInstallationPath);
@@ -97,7 +96,7 @@ public class SecurityScanner {
         String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();
 
-        Utility.verifyAndCreateInstallationPath(bridgeInstallationPath, workspace, listener);
+        bridgeInstall.verifyAndCreateInstallationPath(bridgeInstallationPath);
 
         try {
             FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl);

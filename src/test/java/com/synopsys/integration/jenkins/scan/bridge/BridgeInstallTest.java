@@ -64,7 +64,7 @@ public class BridgeInstallTest {
         return bridgeZipPath;
     }
 
-    public static void cleanupWorkspace(FilePath workspace) {
+    public void cleanupWorkspace(FilePath workspace) {
         try {
             FilePath versionsFile = workspace.child("demo-bridge-versions.txt");
             if (versionsFile.exists()) {
