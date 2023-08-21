@@ -20,7 +20,7 @@ public class BridgeInstall {
 
     public void installSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath) {
         try {
-            bridgeZipPath.unzip(workspace);
+            bridgeZipPath.unzip(bridgeInstallationPath);
             bridgeZipPath.delete();
             listener.getLogger().printf("Synopsys Bridge zip path: %s and bridge installation path: %s %n", bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
         } catch (Exception e) {
