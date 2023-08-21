@@ -13,21 +13,21 @@ import static org.junit.Assert.assertTrue;
 
 public class BridgeInstallTest {
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
-    private FilePath workspace;
+    private FilePath bridgeInstallationPath;
     private BridgeInstall bridgeInstall;
 
     @BeforeEach
     public void setup() {
-        workspace = new FilePath(new File(getHomeDirectory()));
+        bridgeInstallationPath = new FilePath(new File(getHomeDirectory()));
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
-        bridgeInstall = new BridgeInstall(workspace, listenerMock);
+        bridgeInstall = new BridgeInstall(bridgeInstallationPath, listenerMock);
     }
 
     @Test
     void installSynopsysBridgeTest() {
-        FilePath sourceBridge = null;
+        FilePath sourceBridge;
         String os = System.getProperty("os.name").toLowerCase();
-        FilePath destinationBridge = workspace.child("demo-bridge.zip");
+        FilePath destinationBridge = bridgeInstallationPath.child("demo-bridge.zip");
 
         if(os.contains("win")) {
             sourceBridge = new FilePath(new File("src\\test\\resources\\demo-bridge.zip"));
@@ -37,14 +37,14 @@ public class BridgeInstallTest {
 
         try {
             sourceBridge.copyTo(destinationBridge);
-            bridgeInstall.installSynopsysBridge(getFullZipPath(), workspace);
+            bridgeInstall.installSynopsysBridge(getFullZipPath(), bridgeInstallationPath);
 
             assertFalse(destinationBridge.exists());
-            assertTrue(workspace.child("demo-bridge-extensions").isDirectory());
-            assertTrue(workspace.child("demo-bridge-versions.txt").exists());
-            assertTrue(workspace.child("demo-bridge-LICENSE.txt").exists());
+            assertTrue(bridgeInstallationPath.child("demo-bridge-extensions").isDirectory());
+            assertTrue(bridgeInstallationPath.child("demo-bridge-versions.txt").exists());
+            assertTrue(bridgeInstallationPath.child("demo-bridge-LICENSE.txt").exists());
 
-            cleanupWorkspace(workspace);
+            cleanupBridgeInstallationPath(bridgeInstallationPath);
         } catch (IOException | InterruptedException e) {
             System.out.println("Exception occurred during testing for installSynopsysBridge method. " + e.getMessage());
         }
@@ -55,33 +55,33 @@ public class BridgeInstallTest {
     }
 
     public FilePath getFullZipPath() {
-        FilePath bridgeZipPath = null;
+        FilePath bridgeZipPath;
         if(getHomeDirectory().contains("\\")) {
-            bridgeZipPath = new FilePath(new File(workspace.getRemote().concat("\\").concat("demo-bridge.zip")));
+            bridgeZipPath = new FilePath(new File(bridgeInstallationPath.getRemote().concat("\\").concat("demo-bridge.zip")));
         } else {
-            bridgeZipPath = new FilePath(new File(workspace.getRemote().concat("/").concat("demo-bridge.zip")));
+            bridgeZipPath = new FilePath(new File(bridgeInstallationPath.getRemote().concat("/").concat("demo-bridge.zip")));
         }
         return bridgeZipPath;
     }
 
-    public void cleanupWorkspace(FilePath workspace) {
+    public void cleanupBridgeInstallationPath(FilePath bridgeInstallationPath) {
         try {
-            FilePath versionsFile = workspace.child("demo-bridge-versions.txt");
+            FilePath versionsFile = bridgeInstallationPath.child("demo-bridge-versions.txt");
             if (versionsFile.exists()) {
                 versionsFile.delete();
             }
 
-            FilePath licenseFile = workspace.child("demo-bridge-LICENSE.txt");
+            FilePath licenseFile = bridgeInstallationPath.child("demo-bridge-LICENSE.txt");
             if (licenseFile.exists()) {
                 licenseFile.delete();
             }
 
-            FilePath extensionsDirectory = workspace.child("demo-bridge-extensions");
+            FilePath extensionsDirectory = bridgeInstallationPath.child("demo-bridge-extensions");
             if (extensionsDirectory.isDirectory()) {
                 extensionsDirectory.deleteRecursive();
             }
         } catch (IOException | InterruptedException e) {
-            System.out.println("Error while cleaning up workspace: " + e.getMessage());
+            System.out.println("Error while cleaning up bridgeInstallationPath: " + e.getMessage());
         }
     }
 }
