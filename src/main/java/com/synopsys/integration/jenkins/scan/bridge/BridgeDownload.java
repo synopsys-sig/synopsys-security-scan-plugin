@@ -17,8 +17,9 @@ public class BridgeDownload {
         this.listener = listener;
     }
 
-    public FilePath downloadSynopsysBridge(String bridgeDownloadUrl) {
+    public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath) {
         FilePath bridgeZipFilePath = null;
+        FilePath bridgeInstallationFilePath = new FilePath(workspace.getChannel(), bridgeInstallationPath);
 
         if (checkIfBridgeUrlExists(bridgeDownloadUrl)) {
             try {
@@ -29,7 +30,7 @@ public class BridgeDownload {
                     try {
                         listener.getLogger().println("Downloading Synopsys Bridge from: " + bridgeDownloadUrl);
 
-                        bridgeZipFilePath = workspace.child(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT);
+                        bridgeZipFilePath = bridgeInstallationFilePath.child(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT);
                         bridgeZipFilePath.copyFrom(new URL(bridgeDownloadUrl));
                         downloadSuccess = true;
 

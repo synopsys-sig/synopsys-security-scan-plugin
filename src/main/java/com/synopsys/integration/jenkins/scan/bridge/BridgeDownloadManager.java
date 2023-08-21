@@ -1,9 +1,11 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.*;
 import java.util.regex.Matcher;
@@ -16,6 +18,23 @@ public class BridgeDownloadManager {
     public BridgeDownloadManager(FilePath workspace, TaskListener listener) {
         this.workspace = workspace;
         this.listener = listener;
+    }
+
+    public void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
+        BridgeDownload bridgeDownload = new BridgeDownload(workspace, listener);
+        BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
+
+        String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
+        String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();
+
+        bridgeInstall.verifyAndCreateInstallationPath(bridgeInstallationPath);
+
+        try {
+            FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl, bridgeInstallationPath);
+            bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(new File(bridgeInstallationPath)));
+        } catch (Exception e) {
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
+        }
     }
 
     public boolean isSynopsysBridgeDownloadRequired(BridgeDownloadParameters bridgeDownloadParameters) {

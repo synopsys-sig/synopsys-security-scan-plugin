@@ -15,7 +15,6 @@ import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.ArtifactArchiver;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,7 +53,7 @@ public class SecurityScanner {
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
 
             if (isBridgeDownloadRequired) {
-                initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
+                bridgeDownloadManager.initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
             } else {
                 listener.getLogger().println("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
             }
@@ -87,23 +86,6 @@ public class SecurityScanner {
         }
 
         return scanner;
-    }
-
-    private void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
-        BridgeDownload bridgeDownload = new BridgeDownload(workspace, listener);
-        BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
-
-        String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
-        String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();
-
-        bridgeInstall.verifyAndCreateInstallationPath(bridgeInstallationPath);
-
-        try {
-            FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl);
-            bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(new File(bridgeInstallationPath)));
-        } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
-        }
     }
 
     public void printBridgeExecutionLogs(String message) {
