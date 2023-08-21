@@ -14,15 +14,16 @@ public class BridgeDownloadTest {
     @Test
     void downloadSynopsysBridgeTest() {
         String bridgeDownloadUrl = null;
+        String bridgeInstallationPath = "/path/to/bridge";
 
         FilePath outputDownloadFilePath = new FilePath(new File(ApplicationConstants.BRIDGE_DOWNLOAD_FILE_PATH
                 .concat(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT)));
 
         Mockito.when(bridgeDownloadMock.downloadSynopsysBridge
-                (bridgeDownloadUrl)).thenReturn(outputDownloadFilePath);
+                (bridgeDownloadUrl, bridgeInstallationPath)).thenReturn(outputDownloadFilePath);
 
         assertEquals(outputDownloadFilePath, bridgeDownloadMock.downloadSynopsysBridge
-                (bridgeDownloadUrl));
+                (bridgeDownloadUrl, bridgeInstallationPath));
     }
 
     @Test
