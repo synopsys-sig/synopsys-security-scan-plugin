@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.global.Utility;
-import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
+import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -47,7 +47,7 @@ public class ScannerArgumentServiceTest {
         String inputJsonPath = scannerArgumentService.createBridgeInputJson(blackDuck, bitBucket);
         Path filePath = Paths.get(inputJsonPath);
 
-        assertTrue(Files.exists(filePath), String.format("File %s does not exist at the specified path.", BridgeParams.BLACKDUCK_JSON_FILE_NAME));
+        assertTrue(Files.exists(filePath), String.format("File %s does not exist at the specified path.", BridgeParams.INPUT_JSON_FILE_NAME));
         Utility.removeFile(filePath.toString(), workspace, listenerMock);
     }
 
@@ -55,7 +55,7 @@ public class ScannerArgumentServiceTest {
     void writeBlackDuckJsonToFileTest() {
         String jsonString = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"}}}";
 
-        String jsonPath = scannerArgumentService.writeBlackDuckJsonToFile(jsonString);
+        String jsonPath = scannerArgumentService.writeInputJsonToFile(jsonString);
         String fileContent = null;
         try {
             fileContent = new String(Files.readAllBytes(Paths.get(jsonPath)));
@@ -63,7 +63,7 @@ public class ScannerArgumentServiceTest {
             e.printStackTrace();
         }
 
-        assertTrue(Files.exists(Path.of(jsonPath)), String.format("%s does not exist at the specified path.", BridgeParams.BLACKDUCK_JSON_FILE_NAME));
+        assertTrue(Files.exists(Path.of(jsonPath)), String.format("%s does not exist at the specified path.", BridgeParams.INPUT_JSON_FILE_NAME));
         assertEquals(jsonString,fileContent);
 
         Utility.removeFile(jsonPath, workspace, listenerMock);

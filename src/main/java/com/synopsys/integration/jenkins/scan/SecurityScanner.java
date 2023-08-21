@@ -76,7 +76,7 @@ public class SecurityScanner {
             } finally {
                 printBridgeExecutionLogs("END EXECUTION OF SYNOPSYS BRIDGE");
 
-                Utility.removeFile(scannerArgumentService.getBlackDuckInputJsonFilePath(), workspace, listener);
+                Utility.removeFile(scannerArgumentService.getInputJsonFilePath(), workspace, listener);
                 Utility.cleanupOtherFiles(workspace, listener);
 
                 if ( Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {

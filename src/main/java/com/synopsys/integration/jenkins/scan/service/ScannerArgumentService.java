@@ -29,7 +29,7 @@ public class ScannerArgumentService {
     private final EnvVars envVars;
     private final FilePath workspace;
     private static final String DATA_KEY = "data";
-    private String blackDuckInputJsonFilePath;
+    private String inputJsonFilePath;
 
     public ScannerArgumentService(TaskListener listener, EnvVars envVars, FilePath workspace) {
         this.listener = listener;
@@ -37,12 +37,12 @@ public class ScannerArgumentService {
         this.workspace = workspace;
     }
 
-    public String getBlackDuckInputJsonFilePath() {
-        return blackDuckInputJsonFilePath;
+    public String getInputJsonFilePath() {
+        return inputJsonFilePath;
     }
 
-    public void setBlackDuckInputJsonFilePath(String blackDuckInputJsonFilePath) {
-        this.blackDuckInputJsonFilePath = blackDuckInputJsonFilePath;
+    public void setInputJsonFilePath(String inputJsonFilePath) {
+        this.inputJsonFilePath = inputJsonFilePath;
     }
 
     public List<String> getCommandLineArgs(Map<String, Object> scanParameters, ScanStrategyService scanStrategyService, String bridgeInstallationPath) throws ScannerJenkinsException {
@@ -68,19 +68,19 @@ public class ScannerArgumentService {
         setScanObject(bridgeInput, scanObject);
         setScmObject(bridgeInput, scmObject);
 
-        Map<String, Object> blackDuckJsonMap = new HashMap<>();
-        blackDuckJsonMap.put(DATA_KEY, bridgeInput);
+        Map<String, Object> inputJsonMap = new HashMap<>();
+        inputJsonMap.put(DATA_KEY, bridgeInput);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         String jsonPath = null;
         try {
-            String blackDuckJson = mapper.writeValueAsString(blackDuckJsonMap);
-            jsonPath = writeBlackDuckJsonToFile(blackDuckJson);
-            setBlackDuckInputJsonFilePath(jsonPath);
+            String inputJson = mapper.writeValueAsString(inputJsonMap);
+            jsonPath = writeInputJsonToFile(inputJson);
+            setInputJsonFilePath(jsonPath);
         } catch (Exception e) {
-            listener.getLogger().println("An exception occurred while creating blackduck_input.json file: " + e.getMessage());
+            listener.getLogger().println("An exception occurred while creating input.json file: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
 
@@ -103,19 +103,19 @@ public class ScannerArgumentService {
         }
     }
 
-    public String writeBlackDuckJsonToFile(String blackDuckJson) {
-        String blackDuckInputJsonPath = null;
+    public String writeInputJsonToFile(String inputJson) {
+        String inputJsonPath = null;
 
         try {
-            FilePath tempFile = workspace.createTempFile("blackduck_input", ".json");
-            tempFile.write(blackDuckJson, StandardCharsets.UTF_8.name());
-            blackDuckInputJsonPath = tempFile.getRemote();
+            FilePath tempFile = workspace.createTempFile("input", ".json");
+            tempFile.write(inputJson, StandardCharsets.UTF_8.name());
+            inputJsonPath = tempFile.getRemote();
         } catch (Exception e) {
-            listener.getLogger().println("An exception occurred while writing into blackduck_input.json file: " + e.getMessage());
+            listener.getLogger().println("An exception occurred while writing into input.json file: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
 
-        return blackDuckInputJsonPath;
+        return inputJsonPath;
     }
 
     public List<String> getInitialBridgeArgs(ScanType scanType, String bridgeInstallationPath) {

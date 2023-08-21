@@ -1,9 +1,8 @@
 package com.synopsys.integration.jenkins.scan.global;
 
 import hudson.remoting.VirtualChannel;
-import jenkins.MasterToSlaveFileCallable;
 import java.io.File;
-import java.io.IOException;
+import jenkins.MasterToSlaveFileCallable;
 
 public class HomeDirectoryTask extends MasterToSlaveFileCallable<String> {
     private final String separator;
@@ -13,7 +12,7 @@ public class HomeDirectoryTask extends MasterToSlaveFileCallable<String> {
     }
 
     @Override
-    public String invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
+    public String invoke(File f, VirtualChannel channel) {
         return System.getProperty("user.home").concat(separator).concat(ApplicationConstants.DEFAULT_DIRECTORY_NAME);
     }
 }
