@@ -79,7 +79,7 @@ public class SecurityScanner {
 
                 Utility.removeFile(scannerArgumentService.getBlackDuckInputJsonFilePath(), workspace, listener);
 
-                if ( Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
+                if (Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
                     DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,
                         new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
                     diagnosticsService.archiveDiagnostics(workspace.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
