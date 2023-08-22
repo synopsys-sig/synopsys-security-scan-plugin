@@ -1,7 +1,6 @@
 package com.synopsys.integration.jenkins.scan.input.coverity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.synopsys.integration.jenkins.scan.input.blackduck.Automation;
 import com.synopsys.integration.jenkins.scan.input.blackduck.Install;
 
 public class Coverity {

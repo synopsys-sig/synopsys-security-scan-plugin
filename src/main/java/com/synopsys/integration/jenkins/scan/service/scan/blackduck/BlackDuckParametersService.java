@@ -7,7 +7,6 @@ import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
 import hudson.model.TaskListener;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class BlackDuckParametersService implements ScanStrategyService {
     private final TaskListener listener;
@@ -22,11 +21,15 @@ public class BlackDuckParametersService implements ScanStrategyService {
 
     @Override
     public boolean isValidScanParameters(Map<String, Object> blackDuckParameters) {
+        if (blackDuckParameters == null || blackDuckParameters.isEmpty()) {
+            return false;
+        }
+        
         List<String> invalidParams = new ArrayList<>();
 
-        boolean isValid =  blackDuckParameters != null
-            && Stream.of(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
-            .allMatch(key -> {
+        Arrays.asList(ApplicationConstants.BLACKDUCK_URL_KEY,
+                ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
+            .forEach(key -> {
                 boolean isKeyValid = blackDuckParameters.containsKey(key)
                     && blackDuckParameters.get(key) != null
                     && !blackDuckParameters.get(key).toString().isEmpty();
@@ -34,10 +37,9 @@ public class BlackDuckParametersService implements ScanStrategyService {
                 if (!isKeyValid) {
                     invalidParams.add(key);
                 }
-                return isKeyValid;
             });
 
-        if (isValid) {
+        if (invalidParams.isEmpty()) {
             listener.getLogger().println("BlackDuck parameters are validated successfully");
             return true;
         } else {

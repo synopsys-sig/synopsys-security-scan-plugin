@@ -14,8 +14,6 @@ public class ScanPipelineCommands {
     }
 
     public int runScanner(Map<String, Object> scanParameters, ScanStrategyFactory scanStrategyFactory) throws ScannerJenkinsException {
-        setValueForNullInputs(scanParameters);
-
         ScanStrategyService scanStrategyService = scanStrategyFactory.getParametersService(scanParameters);
 
         int exitCode = -1;
@@ -27,20 +25,13 @@ public class ScanPipelineCommands {
                 e.printStackTrace();
                 throw new ScannerJenkinsException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
             }
-            if (exitCode != 0) {
-                throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
-            }
+        }
+
+        if (exitCode != 0) {
+            throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
         }
 
         return exitCode;
-    }
-
-    private void setValueForNullInputs(Map<String, Object> scanParameters) {
-        for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
-            if (entry.getValue().equals("null")) {
-                entry.setValue(null);
-            }
-        }
     }
 
 }

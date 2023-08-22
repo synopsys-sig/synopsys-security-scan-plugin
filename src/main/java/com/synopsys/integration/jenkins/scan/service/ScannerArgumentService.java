@@ -49,11 +49,13 @@ public class ScannerArgumentService {
         ScanType scanType = scanStrategyService.getScanType();
         Object scanObject = scanStrategyService.prepareScanInputForBridge(scanParameters);
 
+        boolean fixPrOrPrComment = isFixPrOrPrCommentValueSet(scanObject);
+
         SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
-        Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters);
+        Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters, fixPrOrPrComment);
 
         List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(scanType, bridgeInstallationPath));
-        commandLineArgs.add(createBridgeInputJson(scanObject, scmObject));
+        commandLineArgs.add(createBridgeInputJson(scanObject, scmObject, fixPrOrPrComment));
 
         if (Objects.equals(scanParameters.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
             commandLineArgs.add(BridgeParams.DIAGNOSTICS_OPTION);
@@ -79,11 +81,14 @@ public class ScannerArgumentService {
         return initBridgeArgs;
     }
 
-    public String createBridgeInputJson(Object scanObject, Object scmObject) {
+    public String createBridgeInputJson(Object scanObject, Object scmObject, boolean fixPrOrPrComment) {
         BridgeInput bridgeInput = new BridgeInput();
 
         setScanObject(bridgeInput, scanObject, scmObject);
-        setScmObject(bridgeInput, scmObject);
+
+        if (fixPrOrPrComment) {
+            setScmObject(bridgeInput, scmObject);
+        }
 
         Map<String, Object> inputJsonMap = new HashMap<>();
         inputJsonMap.put(DATA_KEY, bridgeInput);
@@ -166,6 +171,17 @@ public class ScannerArgumentService {
         } else {
             return BridgeParams.BLACKDUCK_STAGE;
         }
+    }
+
+    private boolean isFixPrOrPrCommentValueSet(Object scanObject) {
+        if (scanObject instanceof BlackDuck) {
+            BlackDuck blackDuck = (BlackDuck) scanObject;
+            return blackDuck.getAutomation().getFixpr() || blackDuck.getAutomation().getPrComment();
+        } else if (scanObject instanceof Coverity) {
+            Coverity coverity = (Coverity) scanObject;
+            return coverity.getAutomation().getPrComment();
+        }
+        return false;
     }
 
 }

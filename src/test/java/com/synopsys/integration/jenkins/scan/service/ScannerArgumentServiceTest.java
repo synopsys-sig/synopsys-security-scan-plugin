@@ -58,9 +58,8 @@ public class ScannerArgumentServiceTest {
         blackDuck.setUrl("https://fake.blackduck.url");
         blackDuck.setToken("MDJDSROSVC56FAKEKEY");
         
-        String inputJsonPath = scannerArgumentService.createBridgeInputJson(blackDuck, bitBucket);
+        String inputJsonPath = scannerArgumentService.createBridgeInputJson(blackDuck, bitBucket, false);
         Path filePath = Paths.get(inputJsonPath);
-        System.out.println(inputJsonPath);
 
         assertTrue(Files.exists(filePath), String.format("File %s does not exist at the specified path.", BridgeParams.INPUT_JSON_FILE_NAME));
         Utility.removeFile(filePath.toString(), workspace, listenerMock);
@@ -95,7 +94,7 @@ public class ScannerArgumentServiceTest {
         coverity.getConnect().getUser().setName("fake-user");
         coverity.getConnect().getUser().setPassword("fakeUserPassword");
 
-        String inputJsonPath = scannerArgumentService.createBridgeInputJson(coverity, bitBucket);
+        String inputJsonPath = scannerArgumentService.createBridgeInputJson(coverity, bitBucket, false);
         Path filePath = Paths.get(inputJsonPath);
 
         assertTrue(Files.exists(filePath), String.format("File %s does not exist at the specified path.", BridgeParams.INPUT_JSON_FILE_NAME));

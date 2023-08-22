@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Automation {
     @JsonProperty("prComment")
-    private Boolean prComment;
+    private boolean prComment;
 
-    public Boolean getPrComment() {
+    public boolean getPrComment() {
         return prComment;
     }
 
-    public void setPrComment(Boolean prComment) {
+    public void setPrComment(boolean prComment) {
         this.prComment = prComment;
     }
 }

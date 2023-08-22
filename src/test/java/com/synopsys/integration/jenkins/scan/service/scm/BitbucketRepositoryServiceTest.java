@@ -32,12 +32,15 @@ public class BitbucketRepositoryServiceTest {
 
         bitbucketSCMSourceMock = mock(BitbucketSCMSource.class);
 
-        when(bitbucketRepositoryServiceMock.fetchBitbucketRepositoryDetails(bitbucketParametersMap, bitbucketSCMSourceMock, TEST_REPOSITORY_PULL_NUMBER)).thenReturn(bitbucket);
+        when(bitbucketRepositoryServiceMock
+            .fetchBitbucketRepositoryDetails(bitbucketParametersMap, bitbucketSCMSourceMock, TEST_REPOSITORY_PULL_NUMBER, false))
+            .thenReturn(bitbucket);
     }
 
     @Test
     void createBitbucketObjectTest() throws ScannerJenkinsException {
-        Bitbucket bitbucket = bitbucketRepositoryServiceMock.fetchBitbucketRepositoryDetails(bitbucketParametersMap, bitbucketSCMSourceMock, TEST_REPOSITORY_PULL_NUMBER);
+        Bitbucket bitbucket = bitbucketRepositoryServiceMock.
+            fetchBitbucketRepositoryDetails(bitbucketParametersMap, bitbucketSCMSourceMock, TEST_REPOSITORY_PULL_NUMBER, false);
 
         assertEquals(TEST_BITBUCKET_URL, bitbucket.getApi().getUrl());
         assertEquals(TEST_BITBUCKET_TOKEN, bitbucket.getApi().getToken());

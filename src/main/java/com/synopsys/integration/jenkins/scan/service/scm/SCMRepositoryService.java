@@ -19,7 +19,7 @@ public class SCMRepositoryService {
         this.envVars = envVars;
     }
 
-    public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters) throws ScannerJenkinsException {
+    public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters, boolean isFixPrOrPrComment) throws ScannerJenkinsException {
         Integer projectRepositoryPullNumber = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null ?
                 Integer.parseInt(envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY)) : null;
 
@@ -27,7 +27,8 @@ public class SCMRepositoryService {
         if (scmSource instanceof BitbucketSCMSource) {
             BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
-            return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(scanParameters, bitbucketSCMSource, projectRepositoryPullNumber);
+            return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
+                scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isFixPrOrPrComment);
         }
         return null;
     }

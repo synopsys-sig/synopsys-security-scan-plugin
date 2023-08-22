@@ -22,15 +22,13 @@ public class BitbucketRepositoryService {
 
     public Bitbucket fetchBitbucketRepositoryDetails(Map<String, Object> scanParameters, 
                                                      BitbucketSCMSource bitbucketSCMSource, 
-                                                     Integer projectRepositoryPullNumber) throws ScannerJenkinsException {
+                                                     Integer projectRepositoryPullNumber,
+                                                     boolean isFixPrOrPrComment) throws ScannerJenkinsException {
         listener.getLogger().println("Getting bitbucket repository details");
 
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
-        if (Utility.isStringNullOrBlank(bitbucketToken)) {
-            Boolean prComment = (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY);
-            if (prComment) {
-                throw new ScannerJenkinsException(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
-            }
+        if (Utility.isStringNullOrBlank(bitbucketToken) && isFixPrOrPrComment) {
+            throw new ScannerJenkinsException(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
         }
 
         BitbucketApi bitbucketApiFromSCMSource = bitbucketSCMSource.buildBitbucketClient(bitbucketSCMSource.getRepoOwner(), bitbucketSCMSource.getRepository());

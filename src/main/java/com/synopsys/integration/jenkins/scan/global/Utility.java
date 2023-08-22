@@ -47,6 +47,6 @@ public class Utility {
     }
 
     public static boolean isStringNullOrBlank(String str) {
-        return str == null || str.isBlank();
+        return str == null || str.isBlank() || str.equals("null");
     }
 }

@@ -7,9 +7,9 @@ import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
 import hudson.model.TaskListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class CoverityParametersService implements ScanStrategyService {
     private final TaskListener listener;
@@ -25,13 +25,16 @@ public class CoverityParametersService implements ScanStrategyService {
 
     @Override
     public boolean isValidScanParameters(Map<String, Object> coverityParameters) {
+        if (coverityParameters == null || coverityParameters.isEmpty()) {
+            return false;
+        }
+        
         List<String> invalidParams = new ArrayList<>();
 
-        boolean isValid =  coverityParameters != null
-            && Stream.of(ApplicationConstants.COVERITY_CONNECT_URL_KEY,
-                ApplicationConstants.COVERITY_CONNECT_USER_NAME_KEY,
-                ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY)
-            .allMatch(key -> {
+        Arrays.asList(ApplicationConstants.COVERITY_CONNECT_URL_KEY,
+            ApplicationConstants.COVERITY_CONNECT_USER_NAME_KEY,
+            ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY)
+            .forEach(key -> {
                 boolean isKeyValid = coverityParameters.containsKey(key)
                     && coverityParameters.get(key) != null
                     && !coverityParameters.get(key).toString().isEmpty();
@@ -39,10 +42,9 @@ public class CoverityParametersService implements ScanStrategyService {
                 if (!isKeyValid) {
                     invalidParams.add(key);
                 }
-                return isKeyValid;
             });
 
-        if (isValid) {
+        if (invalidParams.isEmpty()) {
             listener.getLogger().println("Coverity parameters are validated successfully");
             return true;
         } else {

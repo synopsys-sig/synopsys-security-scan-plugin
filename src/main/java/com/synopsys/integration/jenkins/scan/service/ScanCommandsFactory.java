@@ -106,7 +106,7 @@ public class ScanCommandsFactory {
             }
 
             if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeDownloadUrl())) {
-                parametersMap.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, config.getBlackDuckApiToken());
+                parametersMap.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, config.getSynopsysBridgeDownloadUrl());
             }
         }
     }
