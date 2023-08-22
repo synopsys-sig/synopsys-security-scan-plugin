@@ -1,26 +1,29 @@
-package com.synopsys.integration.jenkins.scan.service;
+package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
+import hudson.model.TaskListener;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class BlackDuckParametersServiceTest {
     private BlackDuckParametersService blackDuckParametersService;
+    private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
     private final String TEST_BLACKDUCK_URL = "https://fake.blackduck.url";
     private final String TEST_BLACKDUCK_TOKEN = "MDJDSROSVC56FAKEKEY";
     private final String TEST_BLACKDUCK_INSTALL_DIRECTORY_PATH = "/path/to/blackduck/directory";
     
     @BeforeEach
     void setUp() {
-        blackDuckParametersService = new BlackDuckParametersService();
+        blackDuckParametersService = new BlackDuckParametersService(listenerMock);
+        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
     @Test
@@ -44,9 +47,9 @@ public class BlackDuckParametersServiceTest {
         assertEquals(TEST_BLACKDUCK_INSTALL_DIRECTORY_PATH, blackDuck.getInstallDirectory());
 
         assertEquals(true, blackDuck.getAutomation().getFixpr());
-        assertEquals(false, blackDuck.getAutomation().getPrcomment());
+        assertEquals(false, blackDuck.getAutomation().getPrComment());
         assertEquals(true, blackDuck.getScan().getFull());
-        assertEquals(List.of("BLOCKER", "CRITICAL", "MAJOR", "MINOR"), blackDuck.getScan().getFailureSeverities());
+        assertEquals(List.of("BLOCKER", "CRITICAL", "MAJOR", "MINOR"), blackDuck.getScan().getFailure().getSeverities());
     }
 
     @Test
@@ -68,7 +71,7 @@ public class BlackDuckParametersServiceTest {
 
     @Test
     void validateBlackDuckParametersForNullAndEmptyTest() {
-        BlackDuckParametersService service = new BlackDuckParametersService();
+        BlackDuckParametersService service = new BlackDuckParametersService(listenerMock);
         assertFalse(service.performBlackDuckParameterValidation(null));
 
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
@@ -105,5 +108,4 @@ public class BlackDuckParametersServiceTest {
 
         assertNull(combinedMap);
     }
-
 }

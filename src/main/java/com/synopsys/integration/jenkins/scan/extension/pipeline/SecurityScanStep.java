@@ -1,15 +1,22 @@
 package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
+import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
-
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Node;
+import hudson.model.Run;
 import hudson.model.TaskListener;
-
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.Nonnull;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -18,21 +25,11 @@ import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 public class SecurityScanStep extends Step implements Serializable {
-
     private static final long serialVersionUID = 6294070801130995534L;
 
-    private final String blackduck_url;
-    private final String blackduck_api_token;
+    private String blackduck_url;
+    private String blackduck_api_token;
 
     private String blackduck_install_directory;
     private boolean blackduck_scan_full = true;
@@ -44,19 +41,21 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_download_url;
     private String bridge_download_version;
     private String synopsys_bridge_path;
+    private boolean include_diagnostics = false;
 
     @DataBoundConstructor
-    public SecurityScanStep(String blackduck_url, String blackduck_api_token) {
-        this.blackduck_url = blackduck_url;
-        this.blackduck_api_token = blackduck_api_token;
-    }
-    
-    public String getBlackduck_url() {
-        return blackduck_url;
+    public SecurityScanStep() {
+        /* Intentionally left empty */
     }
 
-    public String getBlackduck_api_token() {
-        return blackduck_api_token;
+    @DataBoundSetter
+    public void setBlackduck_url(String blackduck_url) {
+        this.blackduck_url = blackduck_url;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_api_token(String blackduck_api_token) {
+        this.blackduck_api_token = blackduck_api_token;
     }
 
     @DataBoundSetter
@@ -65,7 +64,7 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBlackduck_scan_full(Boolean blackduck_scan_full) {
+    public void setBlackduck_scan_full(boolean blackduck_scan_full) {
         this.blackduck_scan_full = blackduck_scan_full;
     }
 
@@ -75,12 +74,12 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBlackduck_automation_fixpr(Boolean blackduck_automation_fixpr) {
+    public void setBlackduck_automation_fixpr(boolean blackduck_automation_fixpr) {
         this.blackduck_automation_fixpr = blackduck_automation_fixpr;
     }
 
     @DataBoundSetter
-    public void setBlackduck_automation_prcomment(Boolean blackduck_automation_prcomment) {
+    public void setBlackduck_automation_prcomment(boolean blackduck_automation_prcomment) {
         this.blackduck_automation_prcomment = blackduck_automation_prcomment;
     }
 
@@ -102,6 +101,19 @@ public class SecurityScanStep extends Step implements Serializable {
     @DataBoundSetter
     public void setSynopsys_bridge_path(String synopsys_bridge_path) {
         this.synopsys_bridge_path = synopsys_bridge_path;
+    }
+
+    @DataBoundSetter
+    public void setInclude_diagnostics(boolean include_diagnostics) {
+        this.include_diagnostics = include_diagnostics;
+    }
+
+    public String getBlackduck_url() {
+        return blackduck_url;
+    }
+
+    public String getBlackduck_api_token() {
+        return blackduck_api_token;
     }
 
     public String getBlackduck_install_directory() {
@@ -140,6 +152,10 @@ public class SecurityScanStep extends Step implements Serializable {
         return synopsys_bridge_path;
     }
 
+    public boolean getInclude_diagnostics() {
+        return include_diagnostics;
+    }
+
     private Map<String, Object> getParametersMap() {
         return ScanCommandsFactory.preparePipelineParametersMap(this);
     }
@@ -153,7 +169,7 @@ public class SecurityScanStep extends Step implements Serializable {
     public static final class DescriptorImpl extends StepDescriptor {
         @Override
         public Set<? extends Class<?>> getRequiredContext() {
-            return new HashSet<>(Arrays.asList(TaskListener.class, EnvVars.class, FilePath.class, Launcher.class, Node.class));
+            return new HashSet<>(Arrays.asList(Run.class, TaskListener.class, EnvVars.class, FilePath.class, Launcher.class, Node.class));
         }
 
         @Override
@@ -171,6 +187,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public class Execution extends SynchronousNonBlockingStepExecution<Integer> {
         private static final long serialVersionUID = -2514079516220990421L;
+        private final transient Run<?, ?> run;
         private final transient TaskListener listener;
         private final transient EnvVars envVars;
         private final transient FilePath workspace;
@@ -179,6 +196,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
         protected Execution(@Nonnull StepContext context) throws InterruptedException, IOException {
             super(context);
+            run = context.get(Run.class);
             listener = context.get(TaskListener.class);
             envVars = context.get(EnvVars.class);
             workspace = context.get(FilePath.class);
@@ -187,8 +205,8 @@ public class SecurityScanStep extends Step implements Serializable {
         }
 
         @Override
-        protected Integer run() {
-            return ScanCommandsFactory.createPipelineCommand(listener, envVars, launcher, node, workspace)
+        protected Integer run() throws ScannerJenkinsException {
+            return ScanCommandsFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
                 .runScanner(getParametersMap());
         }
 

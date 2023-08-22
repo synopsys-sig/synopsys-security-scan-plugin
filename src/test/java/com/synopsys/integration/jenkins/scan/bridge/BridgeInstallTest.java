@@ -1,36 +1,91 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.io.File;
-
-import static com.synopsys.integration.jenkins.scan.global.ApplicationConstants.BRIDGE_DOWNLOAD_FILE_PATH;
-import static com.synopsys.integration.jenkins.scan.global.ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 public class BridgeInstallTest {
-    private final BridgeInstall bridgeInstallMock = Mockito.mock(BridgeInstall.class);
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
-    private BridgeInstall BridgeInstall;
+    private FilePath bridgeInstallationPath;
+    private BridgeInstall bridgeInstall;
 
     @BeforeEach
     public void setup() {
-        BridgeInstall = new BridgeInstall(listenerMock);
+        bridgeInstallationPath = new FilePath(new File(getHomeDirectory()));
+        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
+        bridgeInstall = new BridgeInstall(bridgeInstallationPath, listenerMock);
     }
 
     @Test
     void installSynopsysBridgeTest() {
-        String bridgeZipPath = BRIDGE_DOWNLOAD_FILE_PATH.concat("/").concat(BRIDGE_ZIP_FILE_FORMAT);
-        String bridgeUnzipPath = "/bridge/unzip/path";
+        FilePath sourceBridge;
+        String os = System.getProperty("os.name").toLowerCase();
+        FilePath destinationBridge = bridgeInstallationPath.child("demo-bridge.zip");
 
-        bridgeInstallMock.installSynopsysBridge(new FilePath(new File(bridgeZipPath)), new FilePath(new File(bridgeUnzipPath)));
+        if(os.contains("win")) {
+            sourceBridge = new FilePath(new File("src\\test\\resources\\demo-bridge.zip"));
+        } else {
+            sourceBridge = new FilePath(new File("src/test/resources/demo-bridge.zip"));
+        }
 
-        verify(bridgeInstallMock, times(1))
-                .installSynopsysBridge(new FilePath(new File(bridgeZipPath)), new FilePath(new File(bridgeUnzipPath)));
+        try {
+            sourceBridge.copyTo(destinationBridge);
+            bridgeInstall.installSynopsysBridge(getFullZipPath(), bridgeInstallationPath);
+
+            assertFalse(destinationBridge.exists());
+            assertTrue(
+                bridgeInstallationPath.child("demo-bridge-extensions").isDirectory());
+            assertTrue(
+                bridgeInstallationPath.child("demo-bridge-versions.txt").exists());
+            assertTrue(bridgeInstallationPath.child("demo-bridge-LICENSE.txt").exists());
+
+            cleanupBridgeInstallationPath(bridgeInstallationPath);
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Exception occurred during testing for installSynopsysBridge method. " + e.getMessage());
+        }
+    }
+
+    public String getHomeDirectory() {
+        return System.getProperty("user.home");
+    }
+
+    public FilePath getFullZipPath() {
+        FilePath bridgeZipPath;
+        if(getHomeDirectory().contains("\\")) {
+            bridgeZipPath = new FilePath(new File(bridgeInstallationPath.getRemote().concat("\\").concat("demo-bridge.zip")));
+        } else {
+            bridgeZipPath = new FilePath(new File(bridgeInstallationPath.getRemote().concat("/").concat("demo-bridge.zip")));
+        }
+        return bridgeZipPath;
+    }
+
+    public void cleanupBridgeInstallationPath(FilePath bridgeInstallationPath) {
+        try {
+            FilePath versionsFile = bridgeInstallationPath.child("demo-bridge-versions.txt");
+            if (versionsFile.exists()) {
+                versionsFile.delete();
+            }
+
+            FilePath licenseFile = bridgeInstallationPath.child("demo-bridge-LICENSE.txt");
+            if (licenseFile.exists()) {
+                licenseFile.delete();
+            }
+
+            FilePath extensionsDirectory = bridgeInstallationPath.child("demo-bridge-extensions");
+            if (extensionsDirectory.isDirectory()) {
+                extensionsDirectory.deleteRecursive();
+            }
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Error while cleaning up bridgeInstallationPath: " + e.getMessage());
+        }
     }
 }

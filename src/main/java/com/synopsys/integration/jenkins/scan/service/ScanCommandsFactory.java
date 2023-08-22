@@ -5,15 +5,14 @@ import com.synopsys.integration.jenkins.scan.SecurityScanner;
 import com.synopsys.integration.jenkins.scan.extension.pipeline.SecurityScanStep;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
-
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Node;
+import hudson.model.Run;
 import hudson.model.TaskListener;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,9 +31,12 @@ public class ScanCommandsFactory {
         this.workspace = workspace;
     }
 
-    public static ScanPipelineCommands createPipelineCommand(TaskListener listener, EnvVars envVars, Launcher launcher, Node node, FilePath workspace) {
+    public static ScanPipelineCommands createPipelineCommand(Run<?, ?> run, TaskListener listener,
+                                                             EnvVars envVars, Launcher launcher,
+                                                             Node node, FilePath workspace) {
         return new ScanPipelineCommands(
-            new SecurityScanner(listener, launcher, workspace, envVars, new ScannerArgumentService()));
+            new SecurityScanner(run, listener, launcher, workspace, envVars,
+                new ScannerArgumentService(listener, envVars, workspace)));
     }
 
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep) {
@@ -69,6 +71,7 @@ public class ScanCommandsFactory {
         if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_path())) {
             parametersMap.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, scanStep.getSynopsys_bridge_path());
         }
+        parametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, scanStep.getInclude_diagnostics());
 
         return parametersMap;
     }

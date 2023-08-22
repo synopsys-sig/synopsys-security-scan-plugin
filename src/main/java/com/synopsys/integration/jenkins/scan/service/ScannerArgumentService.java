@@ -2,21 +2,37 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
+import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.input.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
+import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
+import com.synopsys.integration.jenkins.scan.service.scm.SCMRepositoryService;
+import hudson.EnvVars;
+import hudson.FilePath;
+import hudson.model.TaskListener;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ScannerArgumentService {
+    private final TaskListener listener;
+    private final EnvVars envVars;
+    private final FilePath workspace;
     private static final String DATA_KEY = "data";
     private String blackDuckInputJsonFilePath;
+
+    public ScannerArgumentService(TaskListener listener, EnvVars envVars, FilePath workspace) {
+        this.listener = listener;
+        this.envVars = envVars;
+        this.workspace = workspace;
+    }
 
     public String getBlackDuckInputJsonFilePath() {
         return blackDuckInputJsonFilePath;
@@ -26,19 +42,33 @@ public class ScannerArgumentService {
         this.blackDuckInputJsonFilePath = blackDuckInputJsonFilePath;
     }
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters) {
-        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE));
 
-        BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService();
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
+        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(BridgeParams.BLACKDUCK_STAGE, bridgeInstallationPath));
+
+        BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
         BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckInputForBridge(scanParameters);
-        commandLineArgs.add(createBlackDuckInputJson(blackDuck));
+
+        SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
+        Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters);
+
+        commandLineArgs.add(createBlackDuckInputJson(blackDuck, blackDuck.getAutomation().getPrComment()
+                || blackDuck.getAutomation().getFixpr() ? scmObject : null));
+
+        if (Objects.equals(scanParameters.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
+            commandLineArgs.add(BridgeParams.DIAGNOSTICS_OPTION);
+        }
 
         return commandLineArgs;
     }
 
-    public String createBlackDuckInputJson(BlackDuck blackDuck) {
+    public String createBlackDuckInputJson(BlackDuck blackDuck, Object scm) {
         BridgeInput bridgeInput = new BridgeInput();
         bridgeInput.setBlackDuck(blackDuck);
+        if (scm instanceof Bitbucket) {
+            Bitbucket bitbucket = (Bitbucket) scm;
+            bridgeInput.setBitbucket(bitbucket);
+        }
 
         Map<String, Object> blackDuckJsonMap = new HashMap<>();
         blackDuckJsonMap.put(DATA_KEY, bridgeInput);
@@ -52,7 +82,8 @@ public class ScannerArgumentService {
             jsonPath = writeBlackDuckJsonToFile(blackDuckJson);
             setBlackDuckInputJsonFilePath(jsonPath);
         } catch (Exception e) {
-            e.printStackTrace();
+            listener.getLogger().println("An exception occurred while creating blackduck_input.json file: " + e.getMessage());
+            e.printStackTrace(listener.getLogger());
         }
 
         return jsonPath;
@@ -62,23 +93,32 @@ public class ScannerArgumentService {
         String blackDuckInputJsonPath = null;
 
         try {
-            Path tempFilePath = Files.createTempFile("blackduck_input", ".json");
-            Files.writeString(tempFilePath, blackDuckJson);
-            blackDuckInputJsonPath = tempFilePath.toAbsolutePath().toString();
+            FilePath tempFile = workspace.createTempFile("blackduck_input", ".json");
+            tempFile.write(blackDuckJson, StandardCharsets.UTF_8.name());
+            blackDuckInputJsonPath = tempFile.getRemote();
         } catch (Exception e) {
-            e.printStackTrace();
+            listener.getLogger().println("An exception occurred while writing into blackduck_input.json file: " + e.getMessage());
+            e.printStackTrace(listener.getLogger());
         }
 
         return blackDuckInputJsonPath;
     }
 
-    public static List<String> getInitialBridgeArgs(String stage) {
+    public List<String> getInitialBridgeArgs(String stage, FilePath bridgeInstallationPath) {
         List<String> initBridgeArgs = new ArrayList<>();
-        initBridgeArgs.add(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND);
+        String os = Utility.getAgentOs(workspace, listener);
+
+        if(os.contains("win")) {
+            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS).getRemote());
+        } else {
+            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND).getRemote());
+        }
+
         initBridgeArgs.add(BridgeParams.STAGE_OPTION);
         initBridgeArgs.add(stage);
         initBridgeArgs.add(BridgeParams.INPUT_OPTION);
 
         return initBridgeArgs;
     }
+
 }

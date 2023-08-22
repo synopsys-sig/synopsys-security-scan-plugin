@@ -1,100 +1,180 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
+import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.LogMessages;
+import com.synopsys.integration.jenkins.scan.global.Utility;
+import hudson.FilePath;
+import hudson.model.TaskListener;
+import java.io.IOException;
+import java.net.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 public class BridgeDownloadManager {
-    private final String bridgeBinary = "synopsys-bridge";
-    private final String extensionsDirectory = "extensions";
-    private final String versionFile = "versions.txt";
+    private final TaskListener listener;
+    private final FilePath workspace;
+
+    public BridgeDownloadManager(FilePath workspace, TaskListener listener) {
+        this.workspace = workspace;
+        this.listener = listener;
+    }
+
+    public void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
+        BridgeDownload bridgeDownload = new BridgeDownload(workspace, listener);
+        BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
+
+        String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
+        String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();
+
+        bridgeInstall.verifyAndCreateInstallationPath(bridgeInstallationPath);
+
+        try {
+            FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl, bridgeInstallationPath);
+            bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(workspace.getChannel(), bridgeInstallationPath));
+        } catch (Exception e) {
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
+        }
+    }
 
     public boolean isSynopsysBridgeDownloadRequired(BridgeDownloadParameters bridgeDownloadParameters) {
         String bridgeDownloadUrl = bridgeDownloadParameters.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParameters.getBridgeInstallationPath();
-        String bridgeDownloadVersion = bridgeDownloadParameters.getBridgeDownloadVersion();
 
         if (!checkIfBridgeInstalled(bridgeInstallationPath)) {
             return true;
         }
 
-        String installedBridgeVersion = getInstalledBridgeVersion(bridgeInstallationPath);
-        List<String> availableVersions = getAllAvailableBridgeVersionsFromArtifactory(bridgeDownloadUrl);
-        String desiredBridgeVersion = bridgeDownloadVersion.equals(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION)
-                ? getLatestVersion(availableVersions) : bridgeDownloadVersion;
+        String installedBridgeVersionFilePath;
+        String os = Utility.getAgentOs(workspace, listener);
+        if (os.contains("win")) {
+            installedBridgeVersionFilePath = String.join("\\", bridgeInstallationPath, ApplicationConstants.VERSION_FILE);
+        } else {
+            installedBridgeVersionFilePath = String.join("/", bridgeInstallationPath, ApplicationConstants.VERSION_FILE);
+        }
 
-        return !desiredBridgeVersion.equals(installedBridgeVersion);
+        String installedBridgeVersion = getBridgeVersionFromVersionFile(installedBridgeVersionFilePath);
+        String latestBridgeVersion = getLatestBridgeVersionFromArtifactory(bridgeDownloadUrl);
+
+        return !latestBridgeVersion.equals(installedBridgeVersion);
     }
 
     public boolean checkIfBridgeInstalled(String synopsysBridgeInstallationPath) {
-        File installationDirectory = new File(synopsysBridgeInstallationPath);
+        try {
+            FilePath installationDirectory = new FilePath(workspace.getChannel(), synopsysBridgeInstallationPath);
 
-        if (installationDirectory.exists() && installationDirectory.isDirectory()) {
-            return new File(installationDirectory, extensionsDirectory).isDirectory()
-                    && new File(installationDirectory, bridgeBinary).isFile()
-                    && new File(installationDirectory, versionFile).isFile();
+            if (installationDirectory.exists() && installationDirectory.isDirectory()) {
+                FilePath extensionsDir = installationDirectory.child(ApplicationConstants.EXTENSIONS_DIRECTORY);
+                FilePath bridgeBinaryFile = installationDirectory.child(ApplicationConstants.BRIDGE_BINARY);
+                FilePath bridgeBinaryFileWindows = installationDirectory.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS);
+                FilePath versionFile = installationDirectory.child(ApplicationConstants.VERSION_FILE);
+
+                return extensionsDir.isDirectory() && (bridgeBinaryFile.exists() || bridgeBinaryFileWindows.exists()) && versionFile.exists();
+            }
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("An exception occurred while checking if the bridge is installed: " + e.getMessage());
         }
         return false;
     }
 
-    public String getInstalledBridgeVersion(String synopsysBridgeInstallationPath) {
-        File installationDirectory = new File(synopsysBridgeInstallationPath);
-
+    public String getBridgeVersionFromVersionFile(String versionFilePath) {
         try {
-            String versionsFileContent = Files.readString(installationDirectory.toPath().resolve(versionFile));
-            Matcher matcher = Pattern.compile("Synopsys Bridge Package: (\\d+\\.\\d+\\.\\d+)")
-                    .matcher(versionsFileContent);
+            FilePath file = new FilePath(workspace.getChannel(), versionFilePath);
+            if (file.exists()) {
+                String versionsFileContent = file.readToString();
+                Matcher matcher = Pattern.compile("Synopsys Bridge Package: (\\d+\\.\\d+\\.\\d+)")
+                        .matcher(versionsFileContent);
 
-            if (matcher.find()) {
-                return matcher.group(1);
+                if (matcher.find()) {
+                    return matcher.group(1);
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("An exception occurred while extracting bridge-version from the 'versions.txt': " + e.getMessage());
         }
-
         return null;
     }
 
-    public List<String> getAllAvailableBridgeVersionsFromArtifactory(String url) {
-        List<String> availableVersions = new ArrayList<>();
+    public String getLatestBridgeVersionFromArtifactory(String bridgeDownloadUrl) {
+        String extractedVersionNumber = extractVersionFromUrl(bridgeDownloadUrl);
+        if(extractedVersionNumber.equals(ApplicationConstants.NOT_AVAILABLE)) {
+            String directoryUrl = getDirectoryUrl(bridgeDownloadUrl);
+            if(isVersionFileAvailableInArtifactory(directoryUrl)) {
+                String versionFilePath = downloadVersionFileFromArtifactory(directoryUrl);
+                String latestVersion = getBridgeVersionFromVersionFile(versionFilePath);
+
+                Utility.removeFile(versionFilePath, workspace, listener);
+
+                return latestVersion;
+            }
+            else {
+                return ApplicationConstants.NOT_AVAILABLE;
+            }
+        }
+        else {
+            return extractedVersionNumber;
+        }
+    }
+
+    public String downloadVersionFileFromArtifactory(String directoryUrl) {
+        String versionFileUrl = String.join("/", directoryUrl, ApplicationConstants.VERSION_FILE);
+        String tempVersionFilePath = null;
 
         try {
-            Document doc = Jsoup.connect(url).get();
-            Elements elements = doc.getElementsByTag("a");
+            FilePath tempFilePath = workspace.createTempFile("versions", ".txt");
+            URL url = new URL(versionFileUrl);
 
-            for (Element element : elements) {
-                String content = element.text().endsWith("/") ? element.text().substring(0, element.text().length() - 1) : element.text();
-                String version = content.matches("^[0-9]+\\.[0-9]+\\.[0-9]+") ? content : null;
-                if (version != null) {
-                    availableVersions.add(version);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            tempFilePath.copyFrom(url);
+            tempVersionFilePath = tempFilePath.getRemote();
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("An exception occurred while downloading 'versions.txt': " + e.getMessage());
         }
-
-        return availableVersions;
-
+        return tempVersionFilePath;
     }
 
-    public String getLatestVersion(List<String> versions) {
-        String latestVersion = "0.0.0";
+    public boolean isVersionFileAvailableInArtifactory(String directoryUrl) {
+        try {
+            URL url = new URL(String.join("/",directoryUrl,ApplicationConstants.VERSION_FILE));
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("HEAD");
+            return (connection.getResponseCode() >= 200 && connection.getResponseCode() < 300);
+        } catch (IOException e) {
+            listener.getLogger().println("An exception occurred while checking if 'versions.txt' is available or not in the URL: " + e.getMessage());
+            return false;
+        }
+    }
 
-        for (String version : versions) {
-            if (version.compareTo(latestVersion) > 0) {
-                latestVersion = version;
+    public String getDirectoryUrl(String downloadUrl) {
+        String directoryUrl = null;
+        try {
+            URI uri = new URI(downloadUrl);
+            String path = uri.getPath();
+
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
             }
+
+            String directoryPath = path.substring(0, path.lastIndexOf('/'));
+            directoryUrl = uri.getScheme().concat("://").concat(uri.getHost()).concat(directoryPath);
+        } catch (URISyntaxException e) {
+            listener.getLogger().println("An exception occurred while getting directoryUrl from downloadUrl: " + e.getMessage());
+        }
+        return directoryUrl;
+    }
+
+    public String extractVersionFromUrl(String url) {
+        String regex = "/(\\d+\\.\\d+\\.\\d+)/";
+        Pattern pattern = Pattern.compile(regex);
+        String version;
+
+        Matcher matcher = pattern.matcher(url);
+
+        if (matcher.find()) {
+            version = matcher.group(1);
+        } else {
+            version = ApplicationConstants.NOT_AVAILABLE;
         }
 
-        return latestVersion;
+        return version;
     }
+    
 }

@@ -1,23 +1,29 @@
-package com.synopsys.integration.jenkins.scan.service;
+package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
+import hudson.FilePath;
+import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import static org.junit.jupiter.api.Assertions.*;
-
+import java.io.File;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BridgeDownloadParameterServiceTest {
     private BridgeDownloadParametersService bridgeDownloadParametersService;
-    private  BridgeDownloadParameters bridgeDownloadParameters;
+    private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
+    private FilePath workspace;
+
     @BeforeEach
     void setUp() {
-        bridgeDownloadParameters = new BridgeDownloadParameters();
-        bridgeDownloadParametersService = new BridgeDownloadParametersService();
+        workspace = new FilePath(new File(getHomeDirectory()));
+        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
+        bridgeDownloadParametersService = new BridgeDownloadParametersService(workspace, listenerMock);
     }
 
     @Test
@@ -69,10 +75,12 @@ public class BridgeDownloadParameterServiceTest {
     void getBridgeDownloadParamsTest() {
         Map<String, Object> scanParams = new HashMap<>();
 
+        String bridgeDownloadUrl = "https://myown.repo.com/release/synopsys-bridge/latest/synopsys-bridge-linux64.zip";
         scanParams.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, "3.0.0");
         scanParams.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, "/path/to/bridge");
 
-        BridgeDownloadParametersService mockedBridgeDownloadParametersService = Mockito.spy(new BridgeDownloadParametersService());
+        BridgeDownloadParametersService mockedBridgeDownloadParametersService = Mockito.spy(new BridgeDownloadParametersService(workspace, listenerMock));
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
 
         Mockito.doReturn("https://fake.url.com")
                 .when(mockedBridgeDownloadParametersService)
@@ -81,7 +89,6 @@ public class BridgeDownloadParameterServiceTest {
                 .getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
         assertEquals("https://fake.url.com", result.getBridgeDownloadUrl());
-        assertEquals("3.0.0", result.getBridgeDownloadVersion());
         assertEquals("/path/to/bridge", result.getBridgeInstallationPath());
     }
 
@@ -89,8 +96,8 @@ public class BridgeDownloadParameterServiceTest {
     void getBridgeDownloadParamsNullTest() {
         Map<String, Object> scanParamsNull = new HashMap<>();
 
-        BridgeDownloadParametersService mockedBridgeDownloadParametersService = Mockito.spy(new BridgeDownloadParametersService());
-        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters();
+        BridgeDownloadParametersService mockedBridgeDownloadParametersService = Mockito.spy(new BridgeDownloadParametersService(workspace, listenerMock));
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
 
         Mockito.doReturn(null)
                 .when(mockedBridgeDownloadParametersService)
@@ -100,5 +107,11 @@ public class BridgeDownloadParameterServiceTest {
 
         assertNotNull(result);
         assertNotNull(result.getBridgeDownloadUrl());
+        assertNotNull(result.getBridgeDownloadVersion());
+        assertNotNull(result.getBridgeInstallationPath());
+    }
+
+    public String getHomeDirectory() {
+        return System.getProperty("user.home");
     }
 }

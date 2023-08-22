@@ -1,6 +1,5 @@
 package com.synopsys.integration.jenkins.scan.extension.global;
 
-
 import com.synopsys.integration.jenkins.annotations.HelpMarkdown;
 import hudson.Extension;
 import java.io.Serializable;
@@ -22,6 +21,9 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrl;
 
+    @HelpMarkdown("Provide the bitbucket api access token through which PrComment and FixPr will be done.")
+    private String bitbucketToken;
+
     @DataBoundConstructor
     public ScannerGlobalConfig() {
         load();
@@ -40,6 +42,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     }
 
     @DataBoundSetter
+    public void setBitbucketToken(String bitbucketToken) {
+        this.bitbucketToken = bitbucketToken;
+        save();
+    }
+
+    @DataBoundSetter
     public void setSynopsysBridgeDownloadUrl(String synopsysBridgeDownloadUrl) {
         this.synopsysBridgeDownloadUrl = synopsysBridgeDownloadUrl;
     }
@@ -54,6 +62,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getSynopsysBridgeDownloadUrl() {
         return synopsysBridgeDownloadUrl;
+    }
+
+    public String getBitbucketToken() {
+        return bitbucketToken;
     }
 
 }
