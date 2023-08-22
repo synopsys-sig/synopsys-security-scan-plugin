@@ -154,9 +154,9 @@ public class BridgeDownloadParametersService {
     }
 
     public String getSynopsysBridgeZipFileName() {
-        return "synopsys-bridge-".concat(getPlatform()).concat(".zip");
+        return ApplicationConstants.BRIDGE_BINARY.concat("-").concat(getPlatform()).concat(".zip");
     }
     public String getSynopsysBridgeZipFileName(String version) {
-        return "synopsys-bridge-".concat(version).concat("-").concat(getPlatform()).concat(".zip");
+        return ApplicationConstants.BRIDGE_BINARY.concat("-").concat(version).concat("-").concat(getPlatform()).concat(".zip");
     }
 }
