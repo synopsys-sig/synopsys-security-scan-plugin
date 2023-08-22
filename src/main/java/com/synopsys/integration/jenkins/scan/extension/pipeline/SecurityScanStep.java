@@ -35,12 +35,21 @@ public class SecurityScanStep extends Step implements Serializable {
 
     private String blackduck_url;
     private String blackduck_api_token;
-
     private String blackduck_install_directory;
     private boolean blackduck_scan_full = true;
     private String blackduck_scan_failure_severities;
     private boolean blackduck_automation_fixpr = false;
     private boolean blackduck_automation_prcomment = false;
+
+    private String coverity_connect_url;
+    private String coverity_connect_user_name;
+    private String coverity_connect_user_password;
+    private String coverity_connect_project_name;
+    private String coverity_connect_stream_name;
+    private String coverity_connect_policy_view;
+    private String coverity_install_directory;
+    private boolean coverity_automation_prcomment = false;
+
     private String bitbucket_token;
 
     private String bridge_download_url;
@@ -91,6 +100,46 @@ public class SecurityScanStep extends Step implements Serializable {
     @DataBoundSetter
     public void setBlackduck_automation_prcomment(boolean blackduck_automation_prcomment) {
         this.blackduck_automation_prcomment = blackduck_automation_prcomment;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_connect_url(String coverity_connect_url) {
+        this.coverity_connect_url = coverity_connect_url;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_connect_user_name(String coverity_connect_user_name) {
+        this.coverity_connect_user_name = coverity_connect_user_name;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_connect_user_password(String coverity_connect_user_password) {
+        this.coverity_connect_user_password = coverity_connect_user_password;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_connect_project_name(String coverity_connect_project_name) {
+        this.coverity_connect_project_name = coverity_connect_project_name;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_connect_stream_name(String coverity_connect_stream_name) {
+        this.coverity_connect_stream_name = coverity_connect_stream_name;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_connect_policy_view(String coverity_connect_policy_view) {
+        this.coverity_connect_policy_view = coverity_connect_policy_view;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_install_directory(String coverity_install_directory) {
+        this.coverity_install_directory = coverity_install_directory;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_automation_prcomment(boolean coverity_automation_prcomment) {
+        this.coverity_automation_prcomment = coverity_automation_prcomment;
     }
 
     @DataBoundSetter
@@ -148,6 +197,38 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public boolean getBlackduck_automation_prcomment() {
         return blackduck_automation_prcomment;
+    }
+
+    public String getCoverity_connect_url() {
+        return coverity_connect_url;
+    }
+
+    public String getCoverity_connect_user_name() {
+        return coverity_connect_user_name;
+    }
+
+    public String getCoverity_connect_user_password() {
+        return coverity_connect_user_password;
+    }
+
+    public String getCoverity_connect_project_name() {
+        return coverity_connect_project_name;
+    }
+
+    public String getCoverity_connect_stream_name() {
+        return coverity_connect_stream_name;
+    }
+
+    public String getCoverity_connect_policy_view() {
+        return coverity_connect_policy_view;
+    }
+
+    public String getCoverity_install_directory() {
+        return coverity_install_directory;
+    }
+
+    public boolean getCoverity_automation_prcomment() {
+        return coverity_automation_prcomment;
     }
 
     public String getBitbucket_token() {

@@ -10,11 +10,20 @@
         <f:entry field="blackDuckApiToken" title="Black Duck Api Token">
             <f:password/>
         </f:entry>
-        <f:entry field="synopsysBridgeDownloadUrl" title="Synopsys Bridge Download URL (Optional)">
+        <f:entry field="coverityConnectUrl" title="Coverity Connect URL">
             <f:textbox/>
+        </f:entry>
+        <f:entry field="coverityConnectUserName" title="Coverity Connect Username">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="coverityConnectUserPassword" title="Coverity Connect User Password">
+            <f:password/>
         </f:entry>
         <f:entry field="bitbucketToken" title="Bitbucket Token (Optional)">
             <f:password/>
+        </f:entry>
+        <f:entry field="synopsysBridgeDownloadUrl" title="Synopsys Bridge Download URL (Optional)">
+            <f:textbox/>
         </f:entry>
     </f:section>
 </j:jelly>

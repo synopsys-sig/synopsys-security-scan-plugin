@@ -23,6 +23,15 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @HelpMarkdown("Provide the Black Duck api token through which black duck server can be accessed with proper authorization.")
     private String blackDuckApiToken;
 
+    @HelpMarkdown("Provide the URL that lets you access your Coverity server.")
+    private String coverityConnectUrl;
+
+    @HelpMarkdown("Provide the Coverity username through which coverity server can be accessed with proper authorization.")
+    private String coverityConnectUserName;
+
+    @HelpMarkdown("Provide the Coverity password through which coverity server can be accessed with proper authorization.")
+    private String coverityConnectUserPassword;
+
     @HelpMarkdown("Provide the Synopsys Bridge artifactory URL from where synopsys-bridge zip file can be downloaded. " +
         "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrl;
@@ -48,8 +57,26 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     }
 
     @DataBoundSetter
-    public void setBlackDuckApiToken(String blackDuckCredentialsId) {
-        this.blackDuckApiToken = blackDuckCredentialsId;
+    public void setBlackDuckApiToken(String blackDuckApiToken) {
+        this.blackDuckApiToken = blackDuckApiToken;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setCoverityConnectUrl(String coverityConnectUrl) {
+        this.coverityConnectUrl = coverityConnectUrl;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setCoverityConnectUserName(String coverityConnectUserName) {
+        this.coverityConnectUserName = coverityConnectUserName;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setCoverityConnectUserPassword(String coverityConnectUserPassword) {
+        this.coverityConnectUserPassword = coverityConnectUserPassword;
         save();
     }
 
@@ -75,6 +102,18 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getBlackDuckApiToken() {
         return blackDuckApiToken;
+    }
+
+    public String getCoverityConnectUrl() {
+        return coverityConnectUrl;
+    }
+
+    public String getCoverityConnectUserName() {
+        return coverityConnectUserName;
+    }
+
+    public String getCoverityConnectUserPassword() {
+        return coverityConnectUserPassword;
     }
 
     public String getSynopsysBridgeDownloadUrl() {
