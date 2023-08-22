@@ -54,7 +54,7 @@ public class SecurityScanner {
                 listener.getLogger().println("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
             }
             FilePath bridgeInstallationPath = new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
-            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeInstallationPath);
+            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, scanStrategyService, bridgeInstallationPath);
 
             listener.getLogger().println("Executable command line arguments: " + commandLineArgs);
 
@@ -73,7 +73,7 @@ public class SecurityScanner {
             } finally {
                 printBridgeExecutionLogs("END EXECUTION OF SYNOPSYS BRIDGE");
 
-                Utility.removeFile(scannerArgumentService.getBlackDuckInputJsonFilePath(), workspace, listener);
+                Utility.removeFile(scannerArgumentService.getInputJsonFilePath(), workspace, listener);
 
                 if (Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
                     DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,

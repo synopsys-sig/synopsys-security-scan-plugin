@@ -45,7 +45,7 @@ public class ScannerArgumentService {
         this.inputJsonFilePath = inputJsonFilePath;
     }
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, ScanStrategyService scanStrategyService, String bridgeInstallationPath) throws ScannerJenkinsException {
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, ScanStrategyService scanStrategyService, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
         ScanType scanType = scanStrategyService.getScanType();
         Object scanObject = scanStrategyService.prepareScanInputForBridge(scanParameters);
 
