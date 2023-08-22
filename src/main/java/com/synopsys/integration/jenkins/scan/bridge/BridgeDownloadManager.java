@@ -1,6 +1,7 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -16,6 +17,23 @@ public class BridgeDownloadManager {
     public BridgeDownloadManager(FilePath workspace, TaskListener listener) {
         this.workspace = workspace;
         this.listener = listener;
+    }
+
+    public void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
+        BridgeDownload bridgeDownload = new BridgeDownload(workspace, listener);
+        BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
+
+        String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
+        String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();
+
+        bridgeInstall.verifyAndCreateInstallationPath(bridgeInstallationPath);
+
+        try {
+            FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl, bridgeInstallationPath);
+            bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(workspace.getChannel(), bridgeInstallationPath));
+        } catch (Exception e) {
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
+        }
     }
 
     public boolean isSynopsysBridgeDownloadRequired(BridgeDownloadParameters bridgeDownloadParameters) {
@@ -80,8 +98,8 @@ public class BridgeDownloadManager {
         String extractedVersionNumber = extractVersionFromUrl(bridgeDownloadUrl);
         if(extractedVersionNumber.equals(ApplicationConstants.NOT_AVAILABLE)) {
             String directoryUrl = getDirectoryUrl(bridgeDownloadUrl);
-            if(versionFileAvailable(directoryUrl)) {
-                String versionFilePath = downloadVersionFile(directoryUrl);
+            if(isVersionFileAvailableInArtifactory(directoryUrl)) {
+                String versionFilePath = downloadVersionFileFromArtifactory(directoryUrl);
                 String latestVersion = getBridgeVersionFromVersionFile(versionFilePath);
 
                 Utility.removeFile(versionFilePath, workspace, listener);
@@ -97,7 +115,7 @@ public class BridgeDownloadManager {
         }
     }
 
-    public String downloadVersionFile(String directoryUrl) {
+    public String downloadVersionFileFromArtifactory(String directoryUrl) {
         String versionFileUrl = String.join("/", directoryUrl, ApplicationConstants.VERSION_FILE);
         String tempVersionFilePath = null;
 
@@ -113,7 +131,7 @@ public class BridgeDownloadManager {
         return tempVersionFilePath;
     }
 
-    public boolean versionFileAvailable(String directoryUrl) {
+    public boolean isVersionFileAvailableInArtifactory(String directoryUrl) {
         try {
             URL url = new URL(String.join("/",directoryUrl,ApplicationConstants.VERSION_FILE));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

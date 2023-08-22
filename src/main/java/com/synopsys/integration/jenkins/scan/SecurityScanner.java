@@ -15,7 +15,6 @@ import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.ArtifactArchiver;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -50,16 +49,14 @@ public class SecurityScanner {
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
 
             if (isBridgeDownloadRequired) {
-                initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
+                bridgeDownloadManager.initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
             } else {
                 listener.getLogger().println("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
             }
+            FilePath bridgeInstallationPath = new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
+            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeInstallationPath);
 
-            Utility.copyRepository(bridgeDownloadParams.getBridgeInstallationPath(), workspace, listener);
-            FilePath bridgeInstallationPath = new FilePath(new File(bridgeDownloadParams.getBridgeInstallationPath()));
-            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, scanStrategyService, bridgeDownloadParams.getBridgeInstallationPath());
-
-            listener.getLogger().println("Executable command line arguments: " + commandLineArgs.toString());
+            listener.getLogger().println("Executable command line arguments: " + commandLineArgs);
 
             try {
                 printBridgeExecutionLogs("START EXECUTION OF SYNOPSYS BRIDGE");
@@ -67,7 +64,7 @@ public class SecurityScanner {
                 scanner = launcher.launch()
                         .cmds(commandLineArgs)
                         .envs(envVars)
-                        .pwd(bridgeInstallationPath)
+                        .pwd(workspace)
                         .stdout(listener)
                         .quiet(true)
                         .join();
@@ -76,11 +73,12 @@ public class SecurityScanner {
             } finally {
                 printBridgeExecutionLogs("END EXECUTION OF SYNOPSYS BRIDGE");
 
-                Utility.removeFile(scannerArgumentService.getInputJsonFilePath(), workspace, listener);
-                Utility.cleanupOtherFiles(workspace, listener);
+                Utility.removeFile(scannerArgumentService.getBlackDuckInputJsonFilePath(), workspace, listener);
 
-                if ( Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
-                    uploadDiagnostics(bridgeInstallationPath);
+                if (Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
+                    DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,
+                        new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
+                    diagnosticsService.archiveDiagnostics(workspace.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
                 }
             }
         }
@@ -88,36 +86,10 @@ public class SecurityScanner {
         return scanner;
     }
 
-    private void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
-        BridgeDownload bridgeDownload = new BridgeDownload(workspace, listener);
-        BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
-
-        String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
-        String bridgeInstallationPath = bridgeDownloadParams.getBridgeInstallationPath();
-
-        Utility.verifyAndCreateInstallationPath(bridgeInstallationPath, workspace, listener);
-
-        try {
-            FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl);
-            bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(new File(bridgeInstallationPath)));
-        } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
-        }
-    }
-
     public void printBridgeExecutionLogs(String message) {
         listener.getLogger().println(LogMessages.ASTERISKS);
         listener.getLogger().println(message);
         listener.getLogger().println(LogMessages.ASTERISKS);
-    }
-
-    private void uploadDiagnostics(FilePath bridgeInstallationPath) {
-        DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,
-            new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
-        FilePath diagnosticsPath = new FilePath(workspace.getChannel(), bridgeInstallationPath.getRemote()
-                .concat(Utility.getDirectorySeparator(workspace, listener))
-                .concat(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
-        diagnosticsService.archiveDiagnostics(diagnosticsPath);
     }
 
 }

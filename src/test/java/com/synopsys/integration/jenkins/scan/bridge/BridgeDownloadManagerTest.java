@@ -81,8 +81,8 @@ public class BridgeDownloadManagerTest {
         String directoryUrlWithoutVersionFile = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.3.1/";
         String directoryUrlWithVersionFile = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/";
 
-        assertFalse(bridgeDownloadManager.versionFileAvailable(directoryUrlWithoutVersionFile));
-        assertTrue(bridgeDownloadManager.versionFileAvailable(directoryUrlWithVersionFile));
+        assertFalse(bridgeDownloadManager.isVersionFileAvailableInArtifactory(directoryUrlWithoutVersionFile));
+        assertTrue(bridgeDownloadManager.isVersionFileAvailableInArtifactory(directoryUrlWithVersionFile));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class BridgeDownloadManagerTest {
         BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listenerMock);
 
         String directoryUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest";
-        String tempVersionFilePath = bridgeDownloadManager.downloadVersionFile(directoryUrl);
+        String tempVersionFilePath = bridgeDownloadManager.downloadVersionFileFromArtifactory(directoryUrl);
         FilePath tempVersionFile = new FilePath(new File(tempVersionFilePath));
 
         assertNotNull(tempVersionFilePath);

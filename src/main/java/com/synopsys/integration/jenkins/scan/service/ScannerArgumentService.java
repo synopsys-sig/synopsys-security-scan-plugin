@@ -64,7 +64,7 @@ public class ScannerArgumentService {
 
     public String createBridgeInputJson(Object scanObject, Object scmObject) {
         BridgeInput bridgeInput = new BridgeInput();
-        
+
         setScanObject(bridgeInput, scanObject);
         setScmObject(bridgeInput, scmObject);
 
@@ -86,7 +86,7 @@ public class ScannerArgumentService {
 
         return jsonPath;
     }
-    
+
     private void setScanObject(BridgeInput bridgeInput, Object scanObject) {
         if (scanObject instanceof BlackDuck) {
             bridgeInput.setBlackDuck((BlackDuck) scanObject);
@@ -118,14 +118,14 @@ public class ScannerArgumentService {
         return inputJsonPath;
     }
 
-    public List<String> getInitialBridgeArgs(ScanType scanType, String bridgeInstallationPath) {
+    public List<String> getInitialBridgeArgs(ScanType scanType, FilePath bridgeInstallationPath) {
         List<String> initBridgeArgs = new ArrayList<>();
         String os = Utility.getAgentOs(workspace, listener);
 
         if(os.contains("win")) {
-            initBridgeArgs.add(String.join("\\", bridgeInstallationPath, ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS));
+            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS).getRemote());
         } else {
-            initBridgeArgs.add(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND);
+            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND).getRemote());
         }
 
         initBridgeArgs.add(BridgeParams.STAGE_OPTION);

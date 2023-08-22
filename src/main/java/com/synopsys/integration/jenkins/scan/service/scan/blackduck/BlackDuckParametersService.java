@@ -26,6 +26,7 @@ public class BlackDuckParametersService implements ScanStrategyService {
     public boolean isValidScanParameters(Map<String, Object> blackDuckParametersFromPipeline) {
         Map<String, Object> blackDuckParams = prepareBlackDuckParameterValidation(blackDuckParametersFromPipeline);
 
+        List<String> invalidParams = new ArrayList<>();
         boolean isValid =  blackDuckParams != null
             && Stream.of(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
             .allMatch(key -> {
@@ -34,7 +35,7 @@ public class BlackDuckParametersService implements ScanStrategyService {
                     && !blackDuckParams.get(key).toString().isEmpty();
 
                 if (!isKeyValid) {
-                    listener.getLogger().printf(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED_FOR_PARAM, key);
+                    invalidParams.add(key);
                 }
                 return isKeyValid;
             });
@@ -44,6 +45,7 @@ public class BlackDuckParametersService implements ScanStrategyService {
             return true;
         } else {
             listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
+            listener.getLogger().println("Invalid BlackDuck parameters: " + invalidParams);
             return false;
         }
     }

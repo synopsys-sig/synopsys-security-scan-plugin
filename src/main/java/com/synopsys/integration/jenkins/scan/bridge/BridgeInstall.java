@@ -20,7 +20,7 @@ public class BridgeInstall {
 
     public void installSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath) {
         try {
-            bridgeZipPath.unzip(workspace);
+            bridgeZipPath.unzip(bridgeInstallationPath);
             bridgeZipPath.delete();
             listener.getLogger().printf("Synopsys Bridge zip path: %s and bridge installation path: %s %n", bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
         } catch (Exception e) {
@@ -47,5 +47,17 @@ public class BridgeInstall {
         }
 
         return defaultInstallationPath;
+    }
+
+    public void verifyAndCreateInstallationPath(String bridgeInstallationPath) {
+        FilePath directory = new FilePath(workspace.getChannel(), bridgeInstallationPath);
+        try {
+            if (!directory.exists()) {
+                directory.mkdirs();
+                listener.getLogger().println("Created bridge installation directory at: " + directory.getRemote());
+            }
+        } catch (IOException | InterruptedException e) {
+            listener.getLogger().println("Failed to create directory: " + directory.getRemote());
+        }
     }
 }
