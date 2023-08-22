@@ -12,7 +12,7 @@ public class Coverity {
     @JsonProperty("automation")
     private Automation automation;
 
-    Coverity() {
+    public Coverity() {
         connect = new Connect();
         install = new Install();
         automation = new Automation();

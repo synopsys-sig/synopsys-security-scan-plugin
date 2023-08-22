@@ -62,10 +62,27 @@ public class ScannerArgumentService {
         return commandLineArgs;
     }
 
+    public List<String> getInitialBridgeArgs(ScanType scanType, FilePath bridgeInstallationPath) {
+        List<String> initBridgeArgs = new ArrayList<>();
+        String os = Utility.getAgentOs(workspace, listener);
+
+        if(os.contains("win")) {
+            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS).getRemote());
+        } else {
+            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND).getRemote());
+        }
+
+        initBridgeArgs.add(BridgeParams.STAGE_OPTION);
+        initBridgeArgs.add(getScanStage(scanType));
+        initBridgeArgs.add(BridgeParams.INPUT_OPTION);
+
+        return initBridgeArgs;
+    }
+
     public String createBridgeInputJson(Object scanObject, Object scmObject) {
         BridgeInput bridgeInput = new BridgeInput();
 
-        setScanObject(bridgeInput, scanObject);
+        setScanObject(bridgeInput, scanObject, scmObject);
         setScmObject(bridgeInput, scmObject);
 
         Map<String, Object> inputJsonMap = new HashMap<>();
@@ -87,14 +104,37 @@ public class ScannerArgumentService {
         return jsonPath;
     }
 
-    private void setScanObject(BridgeInput bridgeInput, Object scanObject) {
+    private void setScanObject(BridgeInput bridgeInput, Object scanObject, Object scmObject) {
         if (scanObject instanceof BlackDuck) {
             bridgeInput.setBlackDuck((BlackDuck) scanObject);
         } else if (scanObject instanceof Coverity) {
-            bridgeInput.setCoverity((Coverity) scanObject);
+            Coverity coverity = (Coverity) scanObject;
+            setCoverityProjectNameAndStreamName(coverity, scmObject);
+
+            bridgeInput.setCoverity(coverity);
         } else if (scanObject instanceof Polaris) {
             bridgeInput.setPolaris((Polaris) scanObject);
         }
+    }
+
+    private void setCoverityProjectNameAndStreamName(Coverity coverity, Object scmObject) {
+        String repositoryName = getRepositoryName(scmObject);
+        String branchName = envVars.get("BRANCH_NAME");
+
+        if (Utility.isStringNullOrBlank(coverity.getConnect().getProject().getName())) {
+            coverity.getConnect().getProject().setName(repositoryName);
+        }
+        if (Utility.isStringNullOrBlank(coverity.getConnect().getStream().getName())) {
+            coverity.getConnect().getStream().setName(repositoryName.concat("-").concat(branchName));
+        }
+    }
+
+    private String getRepositoryName(Object scmObject) {
+        if (scmObject instanceof Bitbucket) {
+            Bitbucket bitbucket = (Bitbucket) scmObject;
+            return bitbucket.getProject().getRepository().getName();
+        }
+        return "";
     }
 
     private void setScmObject(BridgeInput bridgeInput, Object scmObject) {
@@ -116,23 +156,6 @@ public class ScannerArgumentService {
         }
 
         return inputJsonPath;
-    }
-
-    public List<String> getInitialBridgeArgs(ScanType scanType, FilePath bridgeInstallationPath) {
-        List<String> initBridgeArgs = new ArrayList<>();
-        String os = Utility.getAgentOs(workspace, listener);
-
-        if(os.contains("win")) {
-            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS).getRemote());
-        } else {
-            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND).getRemote());
-        }
-
-        initBridgeArgs.add(BridgeParams.STAGE_OPTION);
-        initBridgeArgs.add(getScanStage(scanType));
-        initBridgeArgs.add(BridgeParams.INPUT_OPTION);
-
-        return initBridgeArgs;
     }
 
     private String getScanStage(ScanType scanType) {
