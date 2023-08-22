@@ -62,7 +62,7 @@ public class ScannerArgumentService {
         return commandLineArgs;
     }
 
-    public List<String> getInitialBridgeArgs(ScanType scanType, FilePath bridgeInstallationPath) {
+    private List<String> getInitialBridgeArgs(ScanType scanType, FilePath bridgeInstallationPath) {
         List<String> initBridgeArgs = new ArrayList<>();
         String os = Utility.getAgentOs(workspace, listener);
 
