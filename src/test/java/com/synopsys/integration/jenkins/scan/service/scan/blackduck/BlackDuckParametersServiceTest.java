@@ -7,7 +7,6 @@ import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import hudson.model.TaskListener;
 import java.io.PrintStream;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +47,7 @@ public class BlackDuckParametersServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, "true");
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, "BLOCKER, CRITICAL, MAJOR, MINOR");
 
-
-        BlackDuck blackDuck = blackDuckParametersService.createBlackDuckObject(blackDuckParametersMap);
+        BlackDuck blackDuck = blackDuckParametersService.prepareScanInputForBridge(blackDuckParametersMap);
 
         assertEquals(TEST_BLACKDUCK_URL, blackDuck.getUrl());
         assertEquals(TEST_BLACKDUCK_TOKEN, blackDuck.getToken());
@@ -66,72 +64,27 @@ public class BlackDuckParametersServiceTest {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
-
-        BlackDuckParametersService blackDuckParametersServiceMock = Mockito.spy(new BlackDuckParametersService(listenerMock));
-
-        Mockito.doReturn(Collections.EMPTY_MAP)
-            .when(blackDuckParametersServiceMock)
-            .createBlackDuckParametersMapFromJenkinsUI();
         
-        assertTrue(blackDuckParametersServiceMock.isValidScanParameters(blackDuckParametersMap));
+        assertTrue(blackDuckParametersService.isValidScanParameters(blackDuckParametersMap));
     }
 
     @Test
     void validateBlackDuckParametersForMissingParametersTest() {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
-
-        BlackDuckParametersService blackDuckParametersServiceMock = Mockito.spy(new BlackDuckParametersService(listenerMock));
-
-        Mockito.doReturn(Collections.EMPTY_MAP)
-            .when(blackDuckParametersServiceMock)
-            .createBlackDuckParametersMapFromJenkinsUI();
         
-        assertFalse(blackDuckParametersServiceMock.isValidScanParameters(blackDuckParametersMap));
+        assertFalse(blackDuckParametersService.isValidScanParameters(blackDuckParametersMap));
     }
 
     @Test
     void validateBlackDuckParametersForNullAndEmptyTest() {
-        BlackDuckParametersService blackDuckParametersServiceMock = Mockito.spy(new BlackDuckParametersService(listenerMock));
-
-        Mockito.doReturn(Collections.EMPTY_MAP)
-            .when(blackDuckParametersServiceMock)
-            .createBlackDuckParametersMapFromJenkinsUI();
-        
-        assertFalse(blackDuckParametersServiceMock.isValidScanParameters(null));
+        assertFalse(blackDuckParametersService.isValidScanParameters(null));
 
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, "");
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
         
-        assertFalse(blackDuckParametersServiceMock.isValidScanParameters(blackDuckParametersMap));
+        assertFalse(blackDuckParametersService.isValidScanParameters(blackDuckParametersMap));
     }
 
-    @Test
-    public void getCombinedBlackDuckParametersTest() {
-        Map<String, String> expectedMap = new HashMap<>();
-        expectedMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
-        expectedMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
-
-        Map<String, Object> pipelineMapWithUrl = new HashMap<>();
-        pipelineMapWithUrl.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
-
-        Map<String, Object> uiMapWithToken = new HashMap<>();
-        uiMapWithToken.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
-
-        Map<String, Object> combinedMap = blackDuckParametersService.getCombinedBlackDuckParameters(pipelineMapWithUrl, uiMapWithToken);
-
-        assertEquals(expectedMap, combinedMap);
-        assertEquals(2, expectedMap.size());
-
-        combinedMap.clear();
-        expectedMap.clear();
-
-        Map<String, Object> pipelineMapNull = null;
-        Map<String, Object> uiMapNull = null;
-
-        combinedMap = blackDuckParametersService.getCombinedBlackDuckParameters(pipelineMapNull, uiMapNull);
-
-        assertNull(combinedMap);
-    }
 }
