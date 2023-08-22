@@ -1,6 +1,5 @@
 package com.synopsys.integration.jenkins.scan.service.scan;
 
-import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
@@ -9,7 +8,6 @@ import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParam
 import com.synopsys.integration.jenkins.scan.service.scan.polaris.PolarisParametersService;
 import hudson.model.TaskListener;
 import java.util.Map;
-import jenkins.model.GlobalConfiguration;
 
 public class ScanStrategyFactory {
     private final TaskListener listener;
@@ -40,11 +38,6 @@ public class ScanStrategyFactory {
 
         if (!Utility.isStringNullOrBlank(scanTypeFromInput)) {
             scanType = scanTypeFromInput.trim().toUpperCase();
-        } else {
-            ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
-            if (config != null && !Utility.isStringNullOrBlank(config.getScanType())) {
-                scanType = config.getScanType().trim().toUpperCase();
-            }
         }
 
         if (scanType.equals(ScanType.COVERITY.name())) {
