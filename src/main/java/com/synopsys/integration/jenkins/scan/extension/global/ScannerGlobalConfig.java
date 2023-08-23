@@ -39,6 +39,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @HelpMarkdown("Provide the bitbucket api access token through which PrComment and FixPr will be done.")
     private String bitbucketToken;
 
+    @HelpMarkdown("Provide the URL that lets you access Polaris server.")
+    private String polarisServerUrl;
+
+    @HelpMarkdown("Provide the Polaris access token through which Polaris server can be accessed with proper authorization.")
+    private String polarisAccessToken;
+
     @DataBoundConstructor
     public ScannerGlobalConfig() {
         load();
@@ -92,6 +98,18 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         save();
     }
 
+    @DataBoundSetter
+    public void setPolarisServerUrl(String polarisServerUrl) {
+        this.polarisServerUrl = polarisServerUrl;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setPolarisAccessToken(String polarisAccessToken) {
+        this.polarisAccessToken = polarisAccessToken;
+        save();
+    }
+
     public String getScanType() {
         return scanType;
     }
@@ -122,6 +140,14 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getBitbucketToken() {
         return bitbucketToken;
+    }
+
+    public String getPolarisServerUrl() {
+        return polarisServerUrl;
+    }
+
+    public String getPolarisAccessToken() {
+        return polarisAccessToken;
     }
     
     public ListBoxModel doFillScanTypeItems() {

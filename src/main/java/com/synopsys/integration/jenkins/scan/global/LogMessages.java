@@ -6,6 +6,7 @@ public class LogMessages {
     public static final String FAILED_TO_FETCH_PLUGINS_DEFAULT_INSTALLATION_PATH = "Failed to fetch plugin's default installation path: %s %n";
     public static final String BLACKDUCK_PARAMETER_VALIDATION_FAILED = "BlackDuck parameters are not valid";
     public static final String COVERITY_PARAMETER_VALIDATION_FAILED = "Coverity parameters are not valid";
+    public static final String POLARIS_PARAMETER_VALIDATION_FAILED = "Polaris parameters are not valid";
     public static final String NO_BITBUCKET_TOKEN_FOUND = "PrComment or FixPr is set true but no bitbucket token found!";
     public static final String INVALID_BRIDGE_DOWNLOAD_PARAMETERS = "Bridge download parameters are not valid";
     public static final String EMPTY_BRIDGE_DOWNLOAD_URL_PROVIDED = "The provided Bridge download URL is empty";

@@ -56,6 +56,11 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_download_version;
     private String synopsys_bridge_path;
     private boolean include_diagnostics = false;
+    private String bridge_polaris_serverurl;
+    private String bridge_polaris_accesstoken;
+    private String bridge_polaris_application_name;
+    private String bridge_polaris_project_name;
+    private String bridge_polaris_assessment_types;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -165,6 +170,47 @@ public class SecurityScanStep extends Step implements Serializable {
     @DataBoundSetter
     public void setInclude_diagnostics(boolean include_diagnostics) {
         this.include_diagnostics = include_diagnostics;
+    }
+
+    @DataBoundSetter
+    public void setBridge_polaris_serverurl(String bridge_polaris_serverurl) {
+        this.bridge_polaris_serverurl = bridge_polaris_serverurl;
+    }
+    @DataBoundSetter
+    public void setBridge_polaris_accesstoken(String bridge_polaris_accesstoken) {
+        this.bridge_polaris_accesstoken = bridge_polaris_accesstoken;
+    }
+    @DataBoundSetter
+    public void setBridge_polaris_application_name(String bridge_polaris_application_name) {
+        this.bridge_polaris_application_name = bridge_polaris_application_name;
+    }
+    @DataBoundSetter
+    public void setBridge_polaris_project_name(String bridge_polaris_project_name) {
+        this.bridge_polaris_project_name = bridge_polaris_project_name;
+    }
+    @DataBoundSetter
+    public void setBridge_polaris_assessment_types(String bridge_polaris_assessment_types) {
+        this.bridge_polaris_assessment_types = bridge_polaris_assessment_types;
+    }
+
+    public String getBridge_polaris_serverurl() {
+        return bridge_polaris_serverurl;
+    }
+
+    public String getBridge_polaris_accesstoken() {
+        return bridge_polaris_accesstoken;
+    }
+
+    public String getBridge_polaris_application_name() {
+        return bridge_polaris_application_name;
+    }
+
+    public String getBridge_polaris_project_name() {
+        return bridge_polaris_project_name;
+    }
+
+    public String getBridge_polaris_assessment_types() {
+        return bridge_polaris_assessment_types;
     }
 
     public String getScan_type() {

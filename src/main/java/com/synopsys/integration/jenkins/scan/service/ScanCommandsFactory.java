@@ -56,7 +56,7 @@ public class ScanCommandsFactory {
         if (scanType.equals(ScanType.COVERITY)) {
             prepareCoverityParametersMap(scanStep, parametersMap);
         } else if (scanType.equals(ScanType.POLARIS)) {
-            // preparePolarisParametersMap
+            preparePolarisParametersMap(scanStep);
         } else {
             prepareBlackDuckParametersMap(scanStep, parametersMap);
         }
@@ -91,7 +91,12 @@ public class ScanCommandsFactory {
                     parametersMap.put(ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY, config.getCoverityConnectUserPassword());
                 }
             } else if (scanType.equals(ScanType.POLARIS)) {
-                // set polaris global config values
+                if (!Utility.isStringNullOrBlank(config.getPolarisServerUrl())) {
+                    parametersMap.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, config.getPolarisServerUrl());
+                }
+                if (!Utility.isStringNullOrBlank(config.getPolarisAccessToken())) {
+                    parametersMap.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, config.getPolarisAccessToken());
+                }
             } else {
                 if (!Utility.isStringNullOrBlank(config.getBlackDuckUrl())) {
                     parametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl());
@@ -165,6 +170,29 @@ public class ScanCommandsFactory {
           parametersMap.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, scanStep.getSynopsys_bridge_path());
         }
         parametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, scanStep.getInclude_diagnostics());
+    }
+
+    private static Map<String, Object> preparePolarisParametersMap(SecurityScanStep scanStep) {
+        Map<String, Object> polarisParametersMap = new HashMap<>();
+
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_serverurl())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, scanStep.getBridge_polaris_serverurl());
+        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_accesstoken())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, scanStep.getBridge_polaris_accesstoken());
+        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_application_name())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, scanStep.getBridge_polaris_application_name());
+        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_project_name())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, scanStep.getBridge_polaris_project_name());
+        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_assessment_types())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, scanStep.getBridge_polaris_assessment_types());
+        }
+        polarisParametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, scanStep.getInclude_diagnostics());
+
+        return polarisParametersMap;
     }
 
 }

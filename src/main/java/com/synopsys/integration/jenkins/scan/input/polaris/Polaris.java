@@ -1,3 +1,66 @@
 package com.synopsys.integration.jenkins.scan.input.polaris;
 
-public class Polaris {}
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class Polaris {
+    @JsonProperty("accesstoken")
+    private String accessToken;
+
+    @JsonProperty("application")
+    private ApplicationName applicationName;
+
+    @JsonProperty("project")
+    private ProjectName projectName;
+
+    @JsonProperty("assessment")
+    private AssessmentTypes assessmentTypes;
+
+    @JsonProperty("serverUrl")
+    private String serverUrl;
+
+    public Polaris() {
+        applicationName = new ApplicationName();
+        projectName = new ProjectName();
+        assessmentTypes = new AssessmentTypes();
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public ApplicationName getApplicationName() {
+        return applicationName;
+    }
+
+    public void setApplicationName(ApplicationName applicationName) {
+        this.applicationName = applicationName;
+    }
+
+    public ProjectName getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(ProjectName projectName) {
+        this.projectName = projectName;
+    }
+
+    public AssessmentTypes getAssessmentTypes() {
+        return assessmentTypes;
+    }
+
+    public void setAssessmentTypes(AssessmentTypes assessmentTypes) {
+        this.assessmentTypes = assessmentTypes;
+    }
+
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl;
+    }
+}
