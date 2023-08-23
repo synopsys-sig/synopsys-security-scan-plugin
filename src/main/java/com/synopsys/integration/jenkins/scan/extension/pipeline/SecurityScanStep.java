@@ -4,7 +4,7 @@ import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
-import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyFactory;
+import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategyFactory;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;

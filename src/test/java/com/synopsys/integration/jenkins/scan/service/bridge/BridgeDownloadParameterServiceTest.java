@@ -1,9 +1,10 @@
-package com.synopsys.integration.jenkins.scan.bridge;
+package com.synopsys.integration.jenkins.scan.service.bridge;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
+import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.File;
@@ -78,7 +79,8 @@ public class BridgeDownloadParameterServiceTest {
         scanParams.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, "/path/to/bridge");
         scanParams.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, "https://fake.url.com");
 
-        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+        BridgeDownloadParameters
+            bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
         
         BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 

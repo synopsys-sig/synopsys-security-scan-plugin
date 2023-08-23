@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service.scan;
+package com.synopsys.integration.jenkins.scan.service.scan.strategy;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.Utility;
@@ -16,7 +16,7 @@ public class ScanStrategyFactory {
         this.listener = listener;
     }
 
-    public ScanStrategyService getParametersService(Map<String, Object> parametersMap) {
+    public ScanStrategy getParametersService(Map<String, Object> parametersMap) {
         ScanType scanType;
         if (parametersMap.containsKey(ApplicationConstants.SCAN_TYPE_KEY)) {
             scanType = getScanType(parametersMap.get(ApplicationConstants.SCAN_TYPE_KEY).toString());

@@ -12,7 +12,7 @@ import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
 import com.synopsys.integration.jenkins.scan.input.polaris.Polaris;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
-import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
+import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategy;
 import com.synopsys.integration.jenkins.scan.service.scm.SCMRepositoryService;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -45,9 +45,9 @@ public class ScannerArgumentService {
         this.inputJsonFilePath = inputJsonFilePath;
     }
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, ScanStrategyService scanStrategyService, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
-        ScanType scanType = scanStrategyService.getScanType();
-        Object scanObject = scanStrategyService.prepareScanInputForBridge(scanParameters);
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, ScanStrategy scanStrategy, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
+        ScanType scanType = scanStrategy.getScanType();
+        Object scanObject = scanStrategy.prepareScanInputForBridge(scanParameters);
 
         boolean fixPrOrPrComment = isFixPrOrPrCommentValueSet(scanObject);
 

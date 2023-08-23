@@ -1,13 +1,12 @@
 package com.synopsys.integration.jenkins.scan;
 
-import com.synopsys.integration.jenkins.scan.bridge.*;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 import com.synopsys.integration.jenkins.scan.service.diagnostics.DiagnosticsService;
-import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
+import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategy;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -37,10 +36,10 @@ public class SecurityScanner {
         this.scannerArgumentService = scannerArgumentService;
     }
 
-    public int runScanner(Map<String, Object> scanParams, ScanStrategyService scanStrategyService, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
+    public int runScanner(Map<String, Object> scanParams, ScanStrategy scanStrategy, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
         int scanner = 1;
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, scanStrategyService, bridgeInstallationPath);
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, scanStrategy, bridgeInstallationPath);
 
         listener.getLogger().println("Executable command line arguments: " + 
             commandLineArgs.stream().map(arg -> arg.concat(" ")).collect(Collectors.joining()).trim());
