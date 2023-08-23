@@ -73,32 +73,25 @@ public class ScanCommandsFactory {
 
         ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
         if (config != null) {
-            ScanType scanType = ScanType.BLACKDUCK;
-
             if (!Utility.isStringNullOrBlank(config.getScanType())) {
-                scanType = ScanType.valueOf(config.getScanType());
                 globalParameters.put(ApplicationConstants.SCAN_TYPE_KEY, config.getScanType());
             }
 
-            if (scanType.equals(ScanType.COVERITY)) {
-                if (!Utility.isStringNullOrBlank(config.getCoverityConnectUrl())) {
-                    globalParameters.put(ApplicationConstants.COVERITY_CONNECT_URL_KEY, config.getCoverityConnectUrl());
-                }
-                if (!Utility.isStringNullOrBlank(config.getCoverityConnectUserName())) {
-                    globalParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_NAME_KEY, config.getCoverityConnectUserName());
-                }
-                if (!Utility.isStringNullOrBlank(config.getCoverityConnectUserPassword())) {
-                    globalParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY, config.getCoverityConnectUserPassword());
-                }
-            } else if (scanType.equals(ScanType.POLARIS)) {
-                // set polaris global config values
-            } else {
-                if (!Utility.isStringNullOrBlank(config.getBlackDuckUrl())) {
-                    globalParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl());
-                }
-                if (!Utility.isStringNullOrBlank(config.getBlackDuckApiToken())) {
-                    globalParameters.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, config.getBlackDuckApiToken());
-                }
+            if (!Utility.isStringNullOrBlank(config.getBlackDuckUrl())) {
+                globalParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl());
+            }
+            if (!Utility.isStringNullOrBlank(config.getBlackDuckApiToken())) {
+                globalParameters.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, config.getBlackDuckApiToken());
+            }
+
+            if (!Utility.isStringNullOrBlank(config.getCoverityConnectUrl())) {
+                globalParameters.put(ApplicationConstants.COVERITY_CONNECT_URL_KEY, config.getCoverityConnectUrl());
+            }
+            if (!Utility.isStringNullOrBlank(config.getCoverityConnectUserName())) {
+                globalParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_NAME_KEY, config.getCoverityConnectUserName());
+            }
+            if (!Utility.isStringNullOrBlank(config.getCoverityConnectUserPassword())) {
+                globalParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY, config.getCoverityConnectUserPassword());
             }
 
             if (!Utility.isStringNullOrBlank(config.getBitbucketToken())) {
