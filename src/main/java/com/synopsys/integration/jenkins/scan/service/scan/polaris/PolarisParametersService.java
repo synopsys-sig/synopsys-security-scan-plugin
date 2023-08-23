@@ -34,6 +34,7 @@ public class PolarisParametersService implements ScanStrategyService {
 
         Arrays.asList(ApplicationConstants.POLARIS_SERVER_URL_KEY,
                         ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY,
+                        ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
                         ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY)
                 .forEach(key -> {
                     boolean isKeyValid = polarisParameters.containsKey(key)
