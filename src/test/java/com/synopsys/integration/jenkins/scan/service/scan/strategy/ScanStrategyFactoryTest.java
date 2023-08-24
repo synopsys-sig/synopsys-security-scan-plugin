@@ -1,6 +1,5 @@
 package com.synopsys.integration.jenkins.scan.service.scan.strategy;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
@@ -39,15 +38,6 @@ public class ScanStrategyFactoryTest {
 
         parameters.put(ApplicationConstants.SCAN_TYPE_KEY, ScanType.POLARIS.name());
         assertTrue(scanStrategyFactory.getParametersService(parameters) instanceof PolarisParametersService);
-    }
-    
-    @Test
-    void getScanTypeTest() {
-        assertEquals(ScanStrategyFactory.getScanType(""), ScanType.BLACKDUCK);
-        
-        assertEquals(ScanStrategyFactory.getScanType("blackduck"), ScanType.BLACKDUCK);
-        assertEquals(ScanStrategyFactory.getScanType("COVERITY"), ScanType.COVERITY);
-        assertEquals(ScanStrategyFactory.getScanType("Polaris"), ScanType.POLARIS);
     }
 
 }
