@@ -45,17 +45,8 @@ public class ScanCommandsFactory {
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep) {
         Map<String, Object> parametersMap = new HashMap<>(getGlobalConfigurationValues());
 
-        ScanType scanType = null;
-        if (parametersMap.containsKey(ApplicationConstants.SCAN_TYPE_KEY)) {
-            scanType = ScanType.valueOf(parametersMap.get(ApplicationConstants.SCAN_TYPE_KEY).toString());
-        }
-        if (!Utility.isStringNullOrBlank(scanStep.getScan_type())) {
-            scanType = ScanType.valueOf(scanStep.getScan_type().trim().toUpperCase());
-        }
-        if (scanType == null) {
-            scanType = ScanType.BLACKDUCK;
-        }
-        parametersMap.put(ApplicationConstants.SCAN_TYPE_KEY, scanType.name());
+        ScanType scanType = getScanType(scanStep, parametersMap);
+        parametersMap.put(ApplicationConstants.SCAN_TYPE_KEY, scanType);
         
         if (scanType.equals(ScanType.COVERITY)) {
             parametersMap.putAll(prepareCoverityParametersMap(scanStep));
@@ -110,6 +101,17 @@ public class ScanCommandsFactory {
         }
 
         return globalParameters;
+    }
+
+    private static ScanType getScanType(SecurityScanStep scanStep, Map<String, Object> parametersMap) {
+        ScanType scanType = ScanType.BLACKDUCK;
+        if (parametersMap.containsKey(ApplicationConstants.SCAN_TYPE_KEY)) {
+            scanType = ScanType.valueOf(parametersMap.get(ApplicationConstants.SCAN_TYPE_KEY).toString());
+        }
+        if (!Utility.isStringNullOrBlank(scanStep.getScan_type())) {
+            scanType = ScanType.valueOf(scanStep.getScan_type().trim().toUpperCase());
+        }
+        return scanType;
     }
 
     private static Map<String, Object> prepareBlackDuckParametersMap(SecurityScanStep scanStep) {

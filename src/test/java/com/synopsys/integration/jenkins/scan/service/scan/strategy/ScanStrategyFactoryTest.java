@@ -30,13 +30,13 @@ public class ScanStrategyFactoryTest {
 
         assertTrue(scanStrategyFactory.getParametersService(Collections.EMPTY_MAP) instanceof BlackDuckParametersService);
         
-        parameters.put(ApplicationConstants.SCAN_TYPE_KEY, ScanType.BLACKDUCK.name());
+        parameters.put(ApplicationConstants.SCAN_TYPE_KEY, ScanType.BLACKDUCK);
         assertTrue(scanStrategyFactory.getParametersService(parameters) instanceof BlackDuckParametersService);
 
-        parameters.put(ApplicationConstants.SCAN_TYPE_KEY, ScanType.COVERITY.name());
+        parameters.put(ApplicationConstants.SCAN_TYPE_KEY, ScanType.COVERITY);
         assertTrue(scanStrategyFactory.getParametersService(parameters) instanceof CoverityParametersService);
 
-        parameters.put(ApplicationConstants.SCAN_TYPE_KEY, ScanType.POLARIS.name());
+        parameters.put(ApplicationConstants.SCAN_TYPE_KEY, ScanType.POLARIS);
         assertTrue(scanStrategyFactory.getParametersService(parameters) instanceof PolarisParametersService);
     }
 
