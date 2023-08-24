@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
@@ -51,6 +50,7 @@ public class CoverityParametersServiceTest {
     @Test
     void validScanParametersTest() {
         Map<String, Object> coverityParameters = new HashMap<>();
+
         coverityParameters.put(ApplicationConstants.COVERITY_CONNECT_URL_KEY, TEST_COVERITY_URL);
         coverityParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_NAME_KEY, TEST_COVERITY_USER_NAME);
         coverityParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY, TEST_COVERITY_USER_PASSWORD);
@@ -61,6 +61,7 @@ public class CoverityParametersServiceTest {
     @Test
     void prepareScanInputForBridgeTest() {
         Map<String, Object> coverityParameters = new HashMap<>();
+
         coverityParameters.put(ApplicationConstants.COVERITY_CONNECT_URL_KEY, TEST_COVERITY_URL);
         coverityParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_NAME_KEY, TEST_COVERITY_USER_NAME);
         coverityParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY, TEST_COVERITY_USER_PASSWORD);

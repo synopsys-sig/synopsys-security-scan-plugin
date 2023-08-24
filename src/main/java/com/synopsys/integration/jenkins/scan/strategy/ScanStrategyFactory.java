@@ -17,10 +17,10 @@ public class ScanStrategyFactory {
 
     public ScanStrategy getParametersService(Map<String, Object> parametersMap) {
         ScanType scanType = ScanType.BLACKDUCK;
+
         if (parametersMap.containsKey(ApplicationConstants.SCAN_TYPE_KEY)) {
             scanType = ScanType.valueOf(parametersMap.get(ApplicationConstants.SCAN_TYPE_KEY).toString());
         }
-
         if (scanType.equals(ScanType.COVERITY)) {
             return new CoverityParametersService(listener);
         } else if (scanType.equals(ScanType.POLARIS)) {

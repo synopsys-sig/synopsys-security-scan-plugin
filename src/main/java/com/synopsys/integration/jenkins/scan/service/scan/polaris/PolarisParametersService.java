@@ -92,7 +92,6 @@ public class PolarisParametersService implements ScanStrategy {
                     break;
             }
         }
-
         return polaris;
     }
 }

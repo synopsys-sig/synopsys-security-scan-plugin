@@ -7,7 +7,6 @@ import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.polaris.PolarisParametersService;
-import com.synopsys.integration.jenkins.scan.strategy.ScanStrategyFactory;
 import hudson.model.TaskListener;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,8 +28,8 @@ public class ScanStrategyFactoryTest {
     void getParametersServiceTest() {
         Map<String, Object> parameters = new HashMap<>();
 
-        assertTrue(scanStrategyFactory.getParametersService(Collections.EMPTY_MAP) instanceof BlackDuckParametersService);
-        
+        assertTrue(scanStrategyFactory.getParametersService(Collections.emptyMap()) instanceof BlackDuckParametersService);
+
         parameters.put(ApplicationConstants.SCAN_TYPE_KEY, ScanType.BLACKDUCK.name());
         assertTrue(scanStrategyFactory.getParametersService(parameters) instanceof BlackDuckParametersService);
 

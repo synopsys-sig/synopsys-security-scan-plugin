@@ -93,7 +93,6 @@ public class CoverityParametersService implements ScanStrategy {
                     break;
             }
         }
-
         return coverity;
     }
 }
