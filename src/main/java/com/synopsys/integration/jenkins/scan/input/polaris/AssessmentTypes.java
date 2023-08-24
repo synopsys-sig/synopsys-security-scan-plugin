@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class AssessmentTypes {
-    @JsonProperty("assessment")
+    @JsonProperty("types")
     private List<String> types;
 
     public List<String> getTypes() {
