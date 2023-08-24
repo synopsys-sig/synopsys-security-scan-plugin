@@ -54,7 +54,7 @@ public class ScanCommandsFactory {
         if (scanType.equals(ScanType.COVERITY)) {
             parametersMap.putAll(prepareCoverityParametersMap(scanStep));
         } else if (scanType.equals(ScanType.POLARIS)) {
-            preparePolarisParametersMap(scanStep);
+            parametersMap.putAll(preparePolarisParametersMap(scanStep));
         } else {
             parametersMap.putAll(prepareBlackDuckParametersMap(scanStep));
         }
