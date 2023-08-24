@@ -4,14 +4,14 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
-import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
+import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategy;
 import hudson.model.TaskListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class CoverityParametersService implements ScanStrategyService {
+public class CoverityParametersService implements ScanStrategy {
     private final TaskListener listener;
 
     public CoverityParametersService(TaskListener listener) {

@@ -11,7 +11,7 @@ import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
-import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
+import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategy;
 import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParametersService;
 import hudson.EnvVars;
@@ -109,9 +109,9 @@ public class ScannerArgumentServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, false);
         blackDuckParametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, true);
 
-        ScanStrategyService scanStrategyService = new BlackDuckParametersService(listenerMock);
+        ScanStrategy scanStrategy = new BlackDuckParametersService(listenerMock);
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(blackDuckParametersMap, scanStrategyService, workspace);
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(blackDuckParametersMap, scanStrategy, workspace);
 
         assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest())).child(ApplicationConstants.DEFAULT_DIRECTORY_NAME).getRemote());
         assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
@@ -133,9 +133,9 @@ public class ScannerArgumentServiceTest {
         coverityParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY, "fakeUserPassword");
         coverityParameters.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, true);
 
-        ScanStrategyService scanStrategyService = new CoverityParametersService(listenerMock);
+        ScanStrategy scanStrategy = new CoverityParametersService(listenerMock);
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(coverityParameters, scanStrategyService, workspace);
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(coverityParameters, scanStrategy, workspace);
 
         assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest())).child(ApplicationConstants.DEFAULT_DIRECTORY_NAME).getRemote());
         assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);

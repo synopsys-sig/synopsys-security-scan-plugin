@@ -4,11 +4,11 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
-import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
+import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategy;
 import hudson.model.TaskListener;
 import java.util.*;
 
-public class BlackDuckParametersService implements ScanStrategyService {
+public class BlackDuckParametersService implements ScanStrategy {
     private final TaskListener listener;
     public BlackDuckParametersService(TaskListener listener) {
         this.listener = listener;

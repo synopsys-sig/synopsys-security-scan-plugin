@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service;
+package com.synopsys.integration.jenkins.scan.service.bridge;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;

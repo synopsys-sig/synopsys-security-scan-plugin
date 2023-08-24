@@ -1,14 +1,12 @@
 package com.synopsys.integration.jenkins.scan;
 
-import com.synopsys.integration.jenkins.scan.bridge.*;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
-import com.synopsys.integration.jenkins.scan.service.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 import com.synopsys.integration.jenkins.scan.service.diagnostics.DiagnosticsService;
-import com.synopsys.integration.jenkins.scan.service.scan.ScanStrategyService;
+import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategy;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -18,6 +16,7 @@ import hudson.tasks.ArtifactArchiver;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class SecurityScanner {
     private final Run<?, ?> run;
@@ -37,49 +36,35 @@ public class SecurityScanner {
         this.scannerArgumentService = scannerArgumentService;
     }
 
-    public int runScanner(Map<String, Object> scanParams, ScanStrategyService scanStrategyService) throws ScannerJenkinsException {
-        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);
-        BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService(workspace, listener);
-        BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
-
+    public int runScanner(Map<String, Object> scanParams, ScanStrategy scanStrategy, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
         int scanner = 1;
 
-        if (bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
-            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
-            boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, scanStrategy, bridgeInstallationPath);
 
-            if (isBridgeDownloadRequired) {
-                bridgeDownloadManager.initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
-            } else {
-                listener.getLogger().println("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
-            }
-            FilePath bridgeInstallationPath = new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
-            List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, scanStrategyService, bridgeInstallationPath);
+        listener.getLogger().println("Executable command line arguments: " + 
+            commandLineArgs.stream().map(arg -> arg.concat(" ")).collect(Collectors.joining()).trim());
 
-            listener.getLogger().println("Executable command line arguments: " + commandLineArgs);
+        try {
+            printBridgeExecutionLogs("START EXECUTION OF SYNOPSYS BRIDGE");
 
-            try {
-                printBridgeExecutionLogs("START EXECUTION OF SYNOPSYS BRIDGE");
+            scanner = launcher.launch()
+                .cmds(commandLineArgs)
+                .envs(envVars)
+                .pwd(workspace)
+                .stdout(listener)
+                .quiet(true)
+                .join();
+        } catch (Exception e) {
+            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_INVOKING_SYNOPSYS_BRIDGE, e.getMessage());
+        } finally {
+            printBridgeExecutionLogs("END EXECUTION OF SYNOPSYS BRIDGE");
 
-                scanner = launcher.launch()
-                        .cmds(commandLineArgs)
-                        .envs(envVars)
-                        .pwd(workspace)
-                        .stdout(listener)
-                        .quiet(true)
-                        .join();
-            } catch (Exception e) {
-                listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_INVOKING_SYNOPSYS_BRIDGE, e.getMessage());
-            } finally {
-                printBridgeExecutionLogs("END EXECUTION OF SYNOPSYS BRIDGE");
+            Utility.removeFile(scannerArgumentService.getInputJsonFilePath(), workspace, listener);
 
-                Utility.removeFile(scannerArgumentService.getInputJsonFilePath(), workspace, listener);
-
-                if (Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
-                    DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,
-                        new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
-                    diagnosticsService.archiveDiagnostics(workspace.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
-                }
+            if (Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
+                DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,
+                    new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
+                diagnosticsService.archiveDiagnostics(workspace.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
             }
         }
 
