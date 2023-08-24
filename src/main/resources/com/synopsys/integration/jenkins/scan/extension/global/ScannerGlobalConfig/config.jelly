@@ -19,6 +19,12 @@
         <f:entry field="coverityConnectUserPassword" title="Coverity Connect User Password">
             <f:password/>
         </f:entry>
+        <f:entry field="polarisServerUrl" title="Polaris Server URL">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="polarisAccessToken" title="Polaris Access Token">
+            <f:password/>
+        </f:entry>
         <f:entry field="bitbucketToken" title="Bitbucket Token (Optional)">
             <f:password/>
         </f:entry>

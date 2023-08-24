@@ -21,7 +21,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
 
-    @HelpMarkdown("Select the Scan type that you to perform.")
+    @HelpMarkdown("Select the Scan type that you want to perform.")
     private String scanType;
 
     @HelpMarkdown("Provide the URL that lets you access your Black Duck server.")

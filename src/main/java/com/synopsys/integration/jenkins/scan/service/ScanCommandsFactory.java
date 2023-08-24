@@ -83,8 +83,8 @@ public class ScanCommandsFactory {
 
     private static Map<String, Object> getGlobalConfigurationValues() {
         Map<String, Object> globalParameters = new HashMap<>();
-
         ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
+
         if (config != null) {
             if (!Utility.isStringNullOrBlank(config.getScanType())) {
                 globalParameters.put(ApplicationConstants.SCAN_TYPE_KEY, config.getScanType());
@@ -113,6 +113,14 @@ public class ScanCommandsFactory {
 
             if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeDownloadUrl())) {
                 globalParameters.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, config.getSynopsysBridgeDownloadUrl());
+            }
+
+            if (!Utility.isStringNullOrBlank(config.getPolarisServerUrl())) {
+                globalParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, config.getPolarisServerUrl());
+            }
+
+            if (!Utility.isStringNullOrBlank(config.getPolarisAccessToken())) {
+                globalParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, config.getPolarisAccessToken());
             }
         }
 
