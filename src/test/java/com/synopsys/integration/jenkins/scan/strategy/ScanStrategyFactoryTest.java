@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service.scan.strategy;
+package com.synopsys.integration.jenkins.scan.strategy;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -7,6 +7,7 @@ import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.polaris.PolarisParametersService;
+import com.synopsys.integration.jenkins.scan.strategy.ScanStrategyFactory;
 import hudson.model.TaskListener;
 import java.util.Collections;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service.scan.strategy;
+package com.synopsys.integration.jenkins.scan.strategy;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
