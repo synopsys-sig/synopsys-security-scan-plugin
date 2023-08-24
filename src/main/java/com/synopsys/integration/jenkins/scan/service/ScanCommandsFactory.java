@@ -8,7 +8,6 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
-import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategyFactory;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -46,11 +45,18 @@ public class ScanCommandsFactory {
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep) {
         Map<String, Object> parametersMap = new HashMap<>(getGlobalConfigurationValues());
 
-        if (!Utility.isStringNullOrBlank(scanStep.getScan_type())) {
-            parametersMap.put(ApplicationConstants.SCAN_TYPE_KEY, scanStep.getScan_type());
+        ScanType scanType = null;
+        if (parametersMap.containsKey(ApplicationConstants.SCAN_TYPE_KEY)) {
+            scanType = ScanType.valueOf(parametersMap.get(ApplicationConstants.SCAN_TYPE_KEY).toString());
         }
-
-        ScanType scanType = ScanStrategyFactory.getScanType(scanStep.getScan_type());
+        if (!Utility.isStringNullOrBlank(scanStep.getScan_type())) {
+            scanType = ScanType.valueOf(scanStep.getScan_type().trim().toUpperCase());
+        }
+        if (scanType == null) {
+            scanType = ScanType.BLACKDUCK;
+        }
+        parametersMap.put(ApplicationConstants.SCAN_TYPE_KEY, scanType.name());
+        
         if (scanType.equals(ScanType.COVERITY)) {
             parametersMap.putAll(prepareCoverityParametersMap(scanStep));
         } else if (scanType.equals(ScanType.POLARIS)) {

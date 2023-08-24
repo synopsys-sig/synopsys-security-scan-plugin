@@ -1,7 +1,6 @@
 package com.synopsys.integration.jenkins.scan.service.scan.strategy;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParametersService;
@@ -17,11 +16,11 @@ public class ScanStrategyFactory {
     }
 
     public ScanStrategy getParametersService(Map<String, Object> parametersMap) {
-        ScanType scanType;
+        ScanType scanType = null;
         if (parametersMap.containsKey(ApplicationConstants.SCAN_TYPE_KEY)) {
-            scanType = getScanType(parametersMap.get(ApplicationConstants.SCAN_TYPE_KEY).toString());
+            scanType = ScanType.valueOf(parametersMap.get(ApplicationConstants.SCAN_TYPE_KEY).toString());
         } else {
-            scanType = getScanType(null);
+            scanType = ScanType.BLACKDUCK;
         }
 
         if (scanType.equals(ScanType.COVERITY)) {
@@ -30,22 +29,6 @@ public class ScanStrategyFactory {
             return new PolarisParametersService(listener);
         } else {
             return new BlackDuckParametersService(listener);
-        }
-    }
-
-    public static ScanType getScanType(String scanTypeFromInput) {
-        String scanType = ScanType.BLACKDUCK.name();
-
-        if (!Utility.isStringNullOrBlank(scanTypeFromInput)) {
-            scanType = scanTypeFromInput.trim().toUpperCase();
-        }
-
-        if (scanType.equals(ScanType.COVERITY.name())) {
-            return ScanType.COVERITY;
-        } else if (scanType.equals(ScanType.POLARIS.name())) {
-            return ScanType.POLARIS;
-        } else {
-            return ScanType.BLACKDUCK;
         }
     }
 
