@@ -124,19 +124,10 @@ public class ScannerArgumentService {
             setCoverityProjectNameAndStreamName(coverity, scmObject);
             bridgeInput.setCoverity(coverity);
         } else if (scanObject instanceof Polaris) {
-            Polaris polaris = (Polaris) scanObject;
-            setPolarisProjectName(polaris, scmObject);
             bridgeInput.setPolaris((Polaris) scanObject);
         }
     }
 
-    private void setPolarisProjectName(Polaris polaris , Object scmObject) {
-        String repositoryName = getRepositoryName(scmObject);
-
-        if (Utility.isStringNullOrBlank(polaris.getProjectName().getName())) {
-            polaris.getProjectName().setName(repositoryName);
-        }
-    }
     private void setCoverityProjectNameAndStreamName(Coverity coverity, Object scmObject) {
         String repositoryName = getRepositoryName(scmObject);
         String branchName = envVars.get("BRANCH_NAME");
