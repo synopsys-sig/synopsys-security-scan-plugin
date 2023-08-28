@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service.scan.strategy;
+package com.synopsys.integration.jenkins.scan.strategy;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
