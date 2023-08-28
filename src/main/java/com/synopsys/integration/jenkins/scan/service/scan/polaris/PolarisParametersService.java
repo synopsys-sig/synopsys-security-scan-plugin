@@ -9,6 +9,7 @@ package com.synopsys.integration.jenkins.scan.service.scan.polaris;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.polaris.Polaris;
 import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
@@ -20,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 public class PolarisParametersService implements ScanStrategy {
-    private final TaskListener listener;
+    private final LoggerWrapper logger;
 
     public PolarisParametersService(TaskListener listener) {
-        this.listener = listener;
+        this.logger = new LoggerWrapper(listener);
     }
 
     @Override
@@ -54,11 +55,11 @@ public class PolarisParametersService implements ScanStrategy {
                 });
 
         if (invalidParams.isEmpty()) {
-            listener.getLogger().println("Polaris parameters are validated successfully");
+            logger.info("Polaris parameters are validated successfully");
             return true;
         } else {
-            listener.getLogger().println(LogMessages.POLARIS_PARAMETER_VALIDATION_FAILED);
-            listener.getLogger().println("Invalid Polaris parameters: " + invalidParams);
+            logger.error(LogMessages.POLARIS_PARAMETER_VALIDATION_FAILED);
+            logger.error("Invalid Polaris parameters: " + invalidParams);
             return false;
         }
     }

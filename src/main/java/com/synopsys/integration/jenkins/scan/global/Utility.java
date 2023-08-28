@@ -10,6 +10,8 @@ package com.synopsys.integration.jenkins.scan.global;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class Utility {
 
@@ -25,12 +27,13 @@ public class Utility {
 
     public static String getAgentOs(FilePath workspace, TaskListener listener) {
         String os =  null;
+        LoggerWrapper logger = new LoggerWrapper(listener);
 
         if (workspace.isRemote()) {
             try {
                 os = workspace.act(new OsNameTask());
             } catch (IOException | InterruptedException e) {
-                listener.getLogger().println("An exception occurred while fetching the OS information for the agent node: " + e.getMessage());
+                logger.error("An exception occurred while fetching the OS information for the agent node: " + e.getMessage());
             }
         } else {
             os = System.getProperty("os.name").toLowerCase();
@@ -41,6 +44,7 @@ public class Utility {
 
 
     public static void removeFile(String filePath, FilePath workspace, TaskListener listener) {
+        LoggerWrapper logger = new LoggerWrapper(listener);
         try {
             FilePath file = new FilePath(workspace.getChannel(), filePath);
             file = file.absolutize();
@@ -49,8 +53,14 @@ public class Utility {
                 file.delete();
             }
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("An exception occurred while deleting file: " + e.getMessage());
+            logger.error("An exception occurred while deleting file: " + e.getMessage());
         }
+    }
+
+    public static String currentTimestamp() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS' 'X");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        return sdf.format(timestamp);
     }
 
     public static boolean isStringNullOrBlank(String str) {

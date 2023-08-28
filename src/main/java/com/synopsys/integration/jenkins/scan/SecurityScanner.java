@@ -10,6 +10,7 @@ package com.synopsys.integration.jenkins.scan;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 import com.synopsys.integration.jenkins.scan.service.diagnostics.DiagnosticsService;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class SecurityScanner {
     private final Run<?, ?> run;
     private final TaskListener listener;
+    private final LoggerWrapper logger;
     private final Launcher launcher;
     private final FilePath workspace;
     private final EnvVars envVars;
@@ -41,6 +43,7 @@ public class SecurityScanner {
         this.workspace = workspace;
         this.envVars = envVars;
         this.scannerArgumentService = scannerArgumentService;
+        this.logger = new LoggerWrapper(listener);
     }
 
     public int runScanner(Map<String, Object> scanParams, ScanStrategy scanStrategy, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
@@ -48,8 +51,8 @@ public class SecurityScanner {
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, scanStrategy, bridgeInstallationPath);
 
-        listener.getLogger().println("Executable command line arguments: " + 
-            commandLineArgs.stream().map(arg -> arg.concat(" ")).collect(Collectors.joining()).trim());
+        logger.info("Executable command line arguments: " +
+                commandLineArgs.stream().map(arg -> arg.concat(" ")).collect(Collectors.joining()).trim());
 
         try {
             printBridgeExecutionLogs("START EXECUTION OF SYNOPSYS BRIDGE");
@@ -62,7 +65,7 @@ public class SecurityScanner {
                 .quiet(true)
                 .join();
         } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_INVOKING_SYNOPSYS_BRIDGE, e.getMessage());
+            logger.error(LogMessages.EXCEPTION_OCCURRED_WHILE_INVOKING_SYNOPSYS_BRIDGE, e.getMessage());
         } finally {
             printBridgeExecutionLogs("END EXECUTION OF SYNOPSYS BRIDGE");
 
@@ -79,9 +82,9 @@ public class SecurityScanner {
     }
 
     public void printBridgeExecutionLogs(String message) {
-        listener.getLogger().println(LogMessages.ASTERISKS);
-        listener.getLogger().println(message);
-        listener.getLogger().println(LogMessages.ASTERISKS);
+        logger.println(LogMessages.ASTERISKS);
+        logger.println(message);
+        logger.println(LogMessages.ASTERISKS);
     }
 
 }

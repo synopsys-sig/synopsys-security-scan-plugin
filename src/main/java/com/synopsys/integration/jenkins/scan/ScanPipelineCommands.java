@@ -11,6 +11,7 @@ import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadManager;
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.strategy.ScanStrategyFactory;
 import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
@@ -22,11 +23,13 @@ public class ScanPipelineCommands {
     private final SecurityScanner scanner;
     private final FilePath workspace;
     private final TaskListener listener;
+    private final LoggerWrapper logger;
 
     public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, TaskListener listener) {
         this.scanner = scanner;
         this.workspace = workspace;
         this.listener = listener;
+        this.logger = new LoggerWrapper(listener);
     }
 
     public int runScanner(Map<String, Object> scanParameters, ScanStrategyFactory scanStrategyFactory) throws ScannerJenkinsException {
@@ -46,7 +49,7 @@ public class ScanPipelineCommands {
             if (isBridgeDownloadRequired) {
                 bridgeDownloadManager.initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
             } else {
-                listener.getLogger().println("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
+                logger.info("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
             }
             FilePath bridgeInstallationPath = new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
 
