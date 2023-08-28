@@ -4,7 +4,6 @@ import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketApi;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
-import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
@@ -13,7 +12,6 @@ import com.synopsys.integration.jenkins.scan.input.bitbucket.Pull;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Repository;
 import hudson.model.TaskListener;
 import java.util.Map;
-import jenkins.model.GlobalConfiguration;
 
 public class BitbucketRepositoryService {
     private final TaskListener listener;
@@ -24,20 +22,13 @@ public class BitbucketRepositoryService {
 
     public Bitbucket fetchBitbucketRepositoryDetails(Map<String, Object> scanParameters, 
                                                      BitbucketSCMSource bitbucketSCMSource, 
-                                                     Integer projectRepositoryPullNumber) throws ScannerJenkinsException {
+                                                     Integer projectRepositoryPullNumber,
+                                                     boolean isFixPrOrPrComment) throws ScannerJenkinsException {
         listener.getLogger().println("Getting bitbucket repository details");
 
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
-
-        if (Utility.isStringNullOrBlank(bitbucketToken)) {
-            if (!Utility.isStringNullOrBlank(getBitbucketTokenFromGlobalConfig())) {
-                bitbucketToken = getBitbucketTokenFromGlobalConfig();
-            } else {
-                Boolean prComment = (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY);
-                if (prComment) {
-                    throw new ScannerJenkinsException(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
-                }
-            }
+        if (Utility.isStringNullOrBlank(bitbucketToken) && isFixPrOrPrComment) {
+            throw new ScannerJenkinsException(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
         }
 
         BitbucketApi bitbucketApiFromSCMSource = bitbucketSCMSource.buildBitbucketClient(bitbucketSCMSource.getRepoOwner(), bitbucketSCMSource.getRepository());
@@ -79,14 +70,6 @@ public class BitbucketRepositoryService {
         bitbucket.getProject().setRepository(repository);
 
         return bitbucket;
-    }
-
-    private String getBitbucketTokenFromGlobalConfig() {
-        ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
-        if (config != null && !Utility.isStringNullOrBlank(config.getBitbucketToken())) {
-            return config.getBitbucketToken().trim();
-        }
-        return null;
     }
 
 }

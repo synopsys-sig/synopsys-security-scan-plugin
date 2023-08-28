@@ -1,14 +1,11 @@
-package com.synopsys.integration.jenkins.scan.service;
+package com.synopsys.integration.jenkins.scan.service.bridge;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
-import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
-import com.synopsys.integration.jenkins.scan.global.OsNameTask;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
-import jenkins.model.GlobalConfiguration;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
@@ -94,14 +91,6 @@ public class BridgeDownloadParametersService {
         }
     }
 
-    public String getBridgeDownloadUrlFromGlobalConfig() {
-        ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
-        if (config != null && !Utility.isStringNullOrBlank(config.getSynopsysBridgeDownloadUrl())) {
-            return config.getSynopsysBridgeDownloadUrl().trim();
-        }
-        return null;
-    }
-
     public BridgeDownloadParameters getBridgeDownloadParams(Map<String, Object> scanParameters, BridgeDownloadParameters bridgeDownloadParameters) {
         if (scanParameters.containsKey(ApplicationConstants.BRIDGE_INSTALLATION_PATH)) {
             bridgeDownloadParameters.setBridgeInstallationPath(
@@ -111,9 +100,6 @@ public class BridgeDownloadParametersService {
         if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_URL)) {
             bridgeDownloadParameters.setBridgeDownloadUrl(
                     scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_URL).toString().trim());
-        }
-        else if (getBridgeDownloadUrlFromGlobalConfig() != null) {
-            bridgeDownloadParameters.setBridgeDownloadUrl(getBridgeDownloadUrlFromGlobalConfig());
         }
         else if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION)) {
             String desiredVersion = scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION).toString().trim();
@@ -132,18 +118,7 @@ public class BridgeDownloadParametersService {
     }
 
     public String getPlatform() {
-        String os = null;
-
-        if (workspace.isRemote()) {
-            try {
-                os = workspace.act(new OsNameTask());
-            } catch (IOException | InterruptedException e) {
-                listener.getLogger().println("An exception occurred while fetching the OS information for the agent node: " + e.getMessage());
-            }
-        } else {
-            os = System.getProperty("os.name").toLowerCase();
-        }
-
+        String os = Utility.getAgentOs(workspace, listener);
         if (os.contains("win")) {
             return ApplicationConstants.PLATFORM_WINDOWS;
         } else if (os.contains("mac")) {

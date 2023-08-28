@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.input;
+package com.synopsys.integration.jenkins.scan.input.blackduck;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -7,8 +7,8 @@ public class BlackDuck {
     private String url;
     @JsonProperty("token")
     private String token;
-    @JsonProperty("install.directory")
-    private String installDirectory;
+    @JsonProperty("install")
+    private Install install;
     @JsonProperty("scan")
     private Scan scan;
     @JsonProperty("automation")
@@ -17,6 +17,7 @@ public class BlackDuck {
     public BlackDuck() {
         scan = new Scan();
         automation = new Automation();
+        install = new Install();
     }
 
     public String getUrl() {
@@ -35,16 +36,16 @@ public class BlackDuck {
         this.token = token;
     }
 
-    public String getInstallDirectory() {
-        return installDirectory;
-    }
-
-    public void setInstallDirectory(String installDirectory) {
-        this.installDirectory = installDirectory;
+    public void setInstall(Install install) {
+        this.install = install;
     }
 
     public Scan getScan() {
         return scan;
+    }
+
+    public Install getInstall() {
+        return install;
     }
 
     public void setScan(Scan scan) {
