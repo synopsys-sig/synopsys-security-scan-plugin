@@ -1,10 +1,17 @@
+/*
+ * synopsys-security-scan-plugin
+ *
+ * Copyright (c) 2023 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.jenkins.scan.service.scan.coverity;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
-import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategy;
+import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
 import hudson.model.TaskListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,7 +100,6 @@ public class CoverityParametersService implements ScanStrategy {
                     break;
             }
         }
-
         return coverity;
     }
 }

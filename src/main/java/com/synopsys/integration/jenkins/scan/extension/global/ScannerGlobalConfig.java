@@ -1,3 +1,10 @@
+/*
+ * synopsys-security-scan-plugin
+ *
+ * Copyright (c) 2023 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.jenkins.scan.extension.global;
 
 import com.synopsys.integration.jenkins.annotations.HelpMarkdown;
@@ -14,7 +21,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
 
-    @HelpMarkdown("Select the Scan type that you to perform.")
+    @HelpMarkdown("Select the Scan type that you want to perform.")
     private String scanType;
 
     @HelpMarkdown("Provide the URL that lets you access your Black Duck server.")
@@ -38,6 +45,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     @HelpMarkdown("Provide the bitbucket api access token through which PrComment and FixPr will be done.")
     private String bitbucketToken;
+
+    @HelpMarkdown("Provide the URL that lets you access Polaris server.")
+    private String polarisServerUrl;
+
+    @HelpMarkdown("Provide the Polaris access token through which Polaris server can be accessed with proper authorization.")
+    private String polarisAccessToken;
 
     @DataBoundConstructor
     public ScannerGlobalConfig() {
@@ -92,6 +105,18 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         save();
     }
 
+    @DataBoundSetter
+    public void setPolarisServerUrl(String polarisServerUrl) {
+        this.polarisServerUrl = polarisServerUrl;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setPolarisAccessToken(String polarisAccessToken) {
+        this.polarisAccessToken = polarisAccessToken;
+        save();
+    }
+
     public String getScanType() {
         return scanType;
     }
@@ -122,6 +147,14 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getBitbucketToken() {
         return bitbucketToken;
+    }
+
+    public String getPolarisServerUrl() {
+        return polarisServerUrl;
+    }
+
+    public String getPolarisAccessToken() {
+        return polarisAccessToken;
     }
     
     public ListBoxModel doFillScanTypeItems() {

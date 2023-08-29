@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service.scan.strategy;
+package com.synopsys.integration.jenkins.scan.strategy;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,8 +28,9 @@ public class ScanStrategyFactoryTest {
     void getParametersServiceTest() {
         Map<String, Object> parameters = new HashMap<>();
 
-        assertTrue(scanStrategyFactory.getParametersService(Collections.EMPTY_MAP) instanceof BlackDuckParametersService);
-        
+        assertTrue(scanStrategyFactory.getParametersService(Collections.emptyMap()) instanceof BlackDuckParametersService);
+
+        parameters.put(ApplicationConstants.SCAN_TYPE_KEY, ScanType.BLACKDUCK.name());
         parameters.put(ApplicationConstants.SCAN_TYPE_KEY, ScanType.BLACKDUCK);
         assertTrue(scanStrategyFactory.getParametersService(parameters) instanceof BlackDuckParametersService);
 

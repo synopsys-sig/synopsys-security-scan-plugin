@@ -1,4 +1,11 @@
-package com.synopsys.integration.jenkins.scan.service.scan.strategy;
+/*
+ * synopsys-security-scan-plugin
+ *
+ * Copyright (c) 2023 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
+package com.synopsys.integration.jenkins.scan.strategy;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
@@ -17,10 +24,10 @@ public class ScanStrategyFactory {
 
     public ScanStrategy getParametersService(Map<String, Object> parametersMap) {
         ScanType scanType = ScanType.BLACKDUCK;
+
         if (parametersMap.containsKey(ApplicationConstants.SCAN_TYPE_KEY)) {
             scanType = (ScanType) parametersMap.get(ApplicationConstants.SCAN_TYPE_KEY);
         }
-
         if (scanType.equals(ScanType.COVERITY)) {
             return new CoverityParametersService(listener);
         } else if (scanType.equals(ScanType.POLARIS)) {

@@ -1,3 +1,10 @@
+/*
+ * synopsys-security-scan-plugin
+ *
+ * Copyright (c) 2023 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.jenkins.scan.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,7 +19,7 @@ import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
 import com.synopsys.integration.jenkins.scan.input.polaris.Polaris;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
-import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategy;
+import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
 import com.synopsys.integration.jenkins.scan.service.scm.SCMRepositoryService;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -115,7 +122,6 @@ public class ScannerArgumentService {
         } else if (scanObject instanceof Coverity) {
             Coverity coverity = (Coverity) scanObject;
             setCoverityProjectNameAndStreamName(coverity, scmObject);
-
             bridgeInput.setCoverity(coverity);
         } else if (scanObject instanceof Polaris) {
             bridgeInput.setPolaris((Polaris) scanObject);
@@ -183,5 +189,4 @@ public class ScannerArgumentService {
         }
         return false;
     }
-
 }

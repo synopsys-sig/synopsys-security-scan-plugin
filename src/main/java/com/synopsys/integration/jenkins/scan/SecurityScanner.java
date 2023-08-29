@@ -1,3 +1,10 @@
+/*
+ * synopsys-security-scan-plugin
+ *
+ * Copyright (c) 2023 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.jenkins.scan;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
@@ -6,7 +13,7 @@ import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 import com.synopsys.integration.jenkins.scan.service.diagnostics.DiagnosticsService;
-import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategy;
+import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;

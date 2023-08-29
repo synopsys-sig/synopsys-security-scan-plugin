@@ -5,19 +5,19 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.jenkins.scan.input.blackduck;
+package com.synopsys.integration.jenkins.scan.input.polaris;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Install {
-    @JsonProperty("directory")
-    private String directory;
+public class ProjectName {
+    @JsonProperty("name")
+    private String name;
 
-    public String getDirectory() {
-        return directory;
+    public String getName() {
+        return name;
     }
 
-    public void setDirectory(String directory) {
-        this.directory = directory;
+    public void setName(String name) {
+        this.name = name;
     }
 }

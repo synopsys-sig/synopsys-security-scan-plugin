@@ -5,20 +5,20 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.jenkins.scan.input.blackduck;
+package com.synopsys.integration.jenkins.scan.input.polaris;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
-public class Failure {
-    @JsonProperty("severities")
-    private List<String> severities;
+public class AssessmentTypes {
+    @JsonProperty("types")
+    private List<String> types;
 
-    public List<String> getSeverities() {
-        return severities;
+    public List<String> getTypes() {
+        return types;
     }
 
-    public void setSeverities(List<String> severities) {
-        this.severities = severities;
+    public void setTypes(List<String> types) {
+        this.types = types;
     }
 }

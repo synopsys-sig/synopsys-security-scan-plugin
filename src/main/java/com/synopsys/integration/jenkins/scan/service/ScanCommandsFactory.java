@@ -1,3 +1,10 @@
+/*
+ * synopsys-security-scan-plugin
+ *
+ * Copyright (c) 2023 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.jenkins.scan.service;
 
 import com.synopsys.integration.jenkins.scan.ScanPipelineCommands;
@@ -51,7 +58,7 @@ public class ScanCommandsFactory {
         if (scanType.equals(ScanType.COVERITY)) {
             parametersMap.putAll(prepareCoverityParametersMap(scanStep));
         } else if (scanType.equals(ScanType.POLARIS)) {
-            // preparePolarisParametersMap
+            parametersMap.putAll(preparePolarisParametersMap(scanStep));
         } else {
             parametersMap.putAll(prepareBlackDuckParametersMap(scanStep));
         }
@@ -67,8 +74,8 @@ public class ScanCommandsFactory {
 
     private static Map<String, Object> getGlobalConfigurationValues() {
         Map<String, Object> globalParameters = new HashMap<>();
-
         ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
+
         if (config != null) {
             if (!Utility.isStringNullOrBlank(config.getScanType())) {
                 globalParameters.put(ApplicationConstants.SCAN_TYPE_KEY, config.getScanType());
@@ -97,6 +104,14 @@ public class ScanCommandsFactory {
 
             if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeDownloadUrl())) {
                 globalParameters.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, config.getSynopsysBridgeDownloadUrl());
+            }
+
+            if (!Utility.isStringNullOrBlank(config.getPolarisServerUrl())) {
+                globalParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, config.getPolarisServerUrl());
+            }
+
+            if (!Utility.isStringNullOrBlank(config.getPolarisAccessToken())) {
+                globalParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, config.getPolarisAccessToken());
             }
         }
 
@@ -180,6 +195,29 @@ public class ScanCommandsFactory {
         bridgeParameters.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, scanStep.getInclude_diagnostics());
 
         return bridgeParameters;
+    }
+
+    private static Map<String, Object> preparePolarisParametersMap(SecurityScanStep scanStep) {
+        Map<String, Object> polarisParametersMap = new HashMap<>();
+
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_serverurl())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, scanStep.getBridge_polaris_serverurl());
+        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_accesstoken())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, scanStep.getBridge_polaris_accesstoken());
+        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_application_name())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, scanStep.getBridge_polaris_application_name());
+        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_project_name())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, scanStep.getBridge_polaris_project_name());
+        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_assessment_types())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, scanStep.getBridge_polaris_assessment_types());
+        }
+        polarisParametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, scanStep.getInclude_diagnostics());
+
+        return polarisParametersMap;
     }
 
 }

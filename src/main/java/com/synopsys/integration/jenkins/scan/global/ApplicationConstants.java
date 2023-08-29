@@ -1,3 +1,10 @@
+/*
+ * synopsys-security-scan-plugin
+ *
+ * Copyright (c) 2023 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.jenkins.scan.global;
 
 public class ApplicationConstants {
@@ -44,6 +51,12 @@ public class ApplicationConstants {
     public static final String COVERITY_CONNECT_POLICY_VIEW_KEY = "coverity_connect_policy_view";
     public static final String COVERITY_INSTALL_DIRECTORY_KEY = "coverity_install_directory";
     public static final String COVERITY_AUTOMATION_PRCOMMENT_KEY = "coverity_automation_prcomment";
+
+    public static final String POLARIS_SERVER_URL_KEY = "bridge_polaris_serverurl";
+    public static final String POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accesstoken";
+    public static final String POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";
+    public static final String POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
+    public static final String POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
 

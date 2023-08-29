@@ -1,3 +1,10 @@
+/*
+ * synopsys-security-scan-plugin
+ *
+ * Copyright (c) 2023 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.jenkins.scan;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadManager;
@@ -5,8 +12,8 @@ import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
-import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategyFactory;
-import com.synopsys.integration.jenkins.scan.service.scan.strategy.ScanStrategy;
+import com.synopsys.integration.jenkins.scan.strategy.ScanStrategyFactory;
+import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.util.Map;
