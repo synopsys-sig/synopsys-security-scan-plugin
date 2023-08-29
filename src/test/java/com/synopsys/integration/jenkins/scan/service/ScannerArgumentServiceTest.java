@@ -140,13 +140,9 @@ public class ScannerArgumentServiceTest {
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(coverityParameters, scanStrategy, workspace);
 
         if(getOSNameForTest().contains("win")) {
-            System.out.println("IN windows: 1 = " + commandLineArgs.get(0) + " 2: " + new FilePath(new File(getHomeDirectoryForTest()))
-                    .child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
             assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest()))
                     .child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
         } else {
-            System.out.println("IN LINUX: 1 = " + commandLineArgs.get(0) + " 2: " + new FilePath(new File(getHomeDirectoryForTest()))
-                    .child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
             assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest()))
                     .child(ApplicationConstants.BRIDGE_BINARY).getRemote());
         }
