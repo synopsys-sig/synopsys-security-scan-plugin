@@ -83,10 +83,6 @@ public class ScannerArgumentServiceTest {
         Utility.removeFile(jsonPath, workspace, listenerMock);
     }
 
-    public String getHomeDirectoryForTest() {
-        return System.getProperty("user.home");
-    }
-
     @Test
     void createCoverityInputJsonTest() {
         Coverity coverity = new Coverity();
@@ -113,7 +109,8 @@ public class ScannerArgumentServiceTest {
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(blackDuckParametersMap, scanStrategy, workspace);
 
-        assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest())).child(ApplicationConstants.DEFAULT_DIRECTORY_NAME).getRemote());
+        assertEquals(normalizePath(commandLineArgs.get(0)), normalizePath(new FilePath(new File(getHomeDirectoryForTest()))
+                .child(ApplicationConstants.DEFAULT_DIRECTORY_NAME).getRemote()));
         assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
         assertEquals(commandLineArgs.get(2), BridgeParams.BLACKDUCK_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.COVERITY_STAGE);
@@ -137,7 +134,8 @@ public class ScannerArgumentServiceTest {
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(coverityParameters, scanStrategy, workspace);
 
-        assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest())).child(ApplicationConstants.DEFAULT_DIRECTORY_NAME).getRemote());
+        assertEquals(normalizePath(commandLineArgs.get(0)), normalizePath(new FilePath(new File(getHomeDirectoryForTest()))
+                .child(ApplicationConstants.DEFAULT_DIRECTORY_NAME).getRemote()));
         assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
         assertEquals(commandLineArgs.get(2), BridgeParams.COVERITY_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.POLARIS_STAGE);
@@ -147,6 +145,14 @@ public class ScannerArgumentServiceTest {
         assertEquals(commandLineArgs.get(5), BridgeParams.DIAGNOSTICS_OPTION);
 
         Utility.removeFile(commandLineArgs.get(4), workspace, listenerMock);
+    }
+
+    public String getHomeDirectoryForTest() {
+        return System.getProperty("user.home");
+    }
+
+    private String normalizePath(String path) {
+        return path.replace("\\", "/");
     }
 
 }
