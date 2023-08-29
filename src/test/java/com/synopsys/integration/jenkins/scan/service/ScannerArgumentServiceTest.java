@@ -166,6 +166,6 @@ public class ScannerArgumentServiceTest {
     }
 
     public String getOSNameForTest() {
-        return System.getProperty("os.name");
+        return System.getProperty("os.name").toLowerCase();
     }
 }
