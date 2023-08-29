@@ -83,10 +83,6 @@ public class ScannerArgumentServiceTest {
         Utility.removeFile(jsonPath, workspace, listenerMock);
     }
 
-    public String getHomeDirectoryForTest() {
-        return System.getProperty("user.home");
-    }
-
     @Test
     void createCoverityInputJsonTest() {
         Coverity coverity = new Coverity();
@@ -113,7 +109,13 @@ public class ScannerArgumentServiceTest {
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(blackDuckParametersMap, scanStrategy, workspace);
 
-        assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest())).child(ApplicationConstants.DEFAULT_DIRECTORY_NAME).getRemote());
+        if(getOSNameForTest().contains("win")) {
+            assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest()))
+                    .child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
+        } else {
+            assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest()))
+                    .child(ApplicationConstants.BRIDGE_BINARY).getRemote());
+        }
         assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
         assertEquals(commandLineArgs.get(2), BridgeParams.BLACKDUCK_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.COVERITY_STAGE);
@@ -137,7 +139,13 @@ public class ScannerArgumentServiceTest {
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(coverityParameters, scanStrategy, workspace);
 
-        assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest())).child(ApplicationConstants.DEFAULT_DIRECTORY_NAME).getRemote());
+        if(getOSNameForTest().contains("win")) {
+            assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest()))
+                    .child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
+        } else {
+            assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest()))
+                    .child(ApplicationConstants.BRIDGE_BINARY).getRemote());
+        }
         assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
         assertEquals(commandLineArgs.get(2), BridgeParams.COVERITY_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.POLARIS_STAGE);
@@ -149,4 +157,11 @@ public class ScannerArgumentServiceTest {
         Utility.removeFile(commandLineArgs.get(4), workspace, listenerMock);
     }
 
+    public String getHomeDirectoryForTest() {
+        return System.getProperty("user.home");
+    }
+
+    public String getOSNameForTest() {
+        return System.getProperty("os.name").toLowerCase();
+    }
 }
