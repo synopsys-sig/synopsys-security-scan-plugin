@@ -16,23 +16,23 @@ public class LoggerWrapper {
         this.listener = listener;
     }
 
-    private void printMessageWithTimestamp(String message) {
+    private void printMessage(String message) {
         listener.getLogger().println("[Security Scan] " + message);
     }
 
     public void info(String format, Object... args) {
         String message = String.format(format, args);
-        printMessageWithTimestamp("INFO: " + message);
+        printMessage("INFO: " + message);
     }
 
     public void warn(String format, Object... args) {
         String message = String.format(format, args);
-        printMessageWithTimestamp("WARN: " + message);
+        printMessage("WARN: " + message);
     }
 
     public void error(String format, Object... args) {
         String message = String.format(format, args);
-        printMessageWithTimestamp("ERROR: " + message);
+        printMessage("ERROR: " + message);
     }
 
     public void println(String message) {
