@@ -17,7 +17,7 @@ public class LoggerWrapper {
     }
 
     private void printMessageWithTimestamp(String message) {
-        listener.getLogger().println(Utility.currentTimestamp() + " [Security Scan] " + message);
+        listener.getLogger().println("[Security Scan] " + message);
     }
 
     public void info(String format, Object... args) {

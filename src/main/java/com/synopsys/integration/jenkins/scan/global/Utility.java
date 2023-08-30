@@ -58,7 +58,7 @@ public class Utility {
     }
 
     public static String currentTimestamp() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS' 'X");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return sdf.format(timestamp);
     }
