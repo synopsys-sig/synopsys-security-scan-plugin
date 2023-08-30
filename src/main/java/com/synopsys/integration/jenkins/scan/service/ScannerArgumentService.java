@@ -113,7 +113,6 @@ public class ScannerArgumentService {
             setInputJsonFilePath(jsonPath);
         } catch (Exception e) {
             logger.error("An exception occurred while creating input.json file: " + e.getMessage());
-            e.printStackTrace(listener.getLogger());
         }
 
         return jsonPath;
@@ -166,7 +165,6 @@ public class ScannerArgumentService {
             inputJsonPath = tempFile.getRemote();
         } catch (Exception e) {
             logger.error("An exception occurred while writing into input.json file: " + e.getMessage());
-            e.printStackTrace(listener.getLogger());
         }
 
         return inputJsonPath;

@@ -56,7 +56,6 @@ public class ScanPipelineCommands {
             try {
                 exitCode = scanner.runScanner(scanParameters, scanStrategy, bridgeInstallationPath);
             } catch (Exception e) {
-                e.printStackTrace(listener.getLogger());
                 throw new ScannerJenkinsException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
             }
         }
