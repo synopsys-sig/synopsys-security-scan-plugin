@@ -34,8 +34,8 @@ public class BlackDuckParametersService implements ScanStrategy {
         
         List<String> invalidParams = new ArrayList<>();
 
-        Arrays.asList(ApplicationConstants.BLACKDUCK_URL_KEY,
-                ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
+        Arrays.asList(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY,
+                ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY)
             .forEach(key -> {
                 boolean isKeyValid = blackDuckParameters.containsKey(key)
                     && blackDuckParameters.get(key) != null
@@ -65,21 +65,21 @@ public class BlackDuckParametersService implements ScanStrategy {
             String value = entry.getValue().toString().trim();
 
             switch (key) {
-                case ApplicationConstants.BLACKDUCK_URL_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY:
                     blackDuck.setUrl(value);
                     break;
-                case ApplicationConstants.BLACKDUCK_API_TOKEN_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY:
                     blackDuck.setToken(value);
                     break;
-                case ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY:
                     blackDuck.getInstall().setDirectory(value);
                     break;
-                case ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY:
                     if (value.equals("true") || value.equals("false")) {
                         blackDuck.getScan().setFull(Boolean.parseBoolean(value));
                     }
                     break;
-                case ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY:
                     if (!value.isEmpty()) {
                         List<String> failureSeverities = new ArrayList<>();
                         String[] failureSeveritiesInput = value.toUpperCase().split(",");
@@ -90,12 +90,12 @@ public class BlackDuckParametersService implements ScanStrategy {
                         blackDuck.getScan().getFailure().setSeverities(failureSeverities);
                     }
                     break;
-                case ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY:
                     if (value.equals("true") || value.equals("false")) {
                         blackDuck.getAutomation().setFixpr(Boolean.parseBoolean(value));
                     }
                     break;
-                case ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY:
                     if (value.equals("true") || value.equals("false")) {
                         blackDuck.getAutomation().setPrComment(Boolean.parseBoolean(value));
                     }
