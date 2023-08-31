@@ -5,33 +5,25 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.jenkins.scan.service.scan.coverity;
+package com.synopsys.integration.jenkins.scan.service.parameters.coverity;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
-import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
-import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
 import hudson.model.TaskListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class CoverityParametersService implements ScanStrategy {
+public class CoverityParametersService {
     private final TaskListener listener;
 
     public CoverityParametersService(TaskListener listener) {
         this.listener = listener;
     }
-
-    @Override
-    public ScanType getScanType() {
-        return ScanType.COVERITY;
-    }
-
-    @Override
-    public boolean isValidScanParameters(Map<String, Object> coverityParameters) {
+    
+    public boolean isValidCoverityParameters(Map<String, Object> coverityParameters) {
         if (coverityParameters == null || coverityParameters.isEmpty()) {
             return false;
         }
@@ -60,9 +52,8 @@ public class CoverityParametersService implements ScanStrategy {
             return false;
         }
     }
-
-    @Override
-    public Coverity prepareScanInputForBridge(Map<String, Object> coverityParameters) {
+    
+    public Coverity prepareCoverityObjectForBridge(Map<String, Object> coverityParameters) {
         Coverity coverity = new Coverity();
 
         for (Map.Entry<String, Object> entry : coverityParameters.entrySet()) {

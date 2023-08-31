@@ -16,6 +16,4 @@ public class BridgeParams {
     public static final String POLARIS_STAGE = "polaris";
     public static final String COVERITY_STAGE = "connect";
 
-    public static final String INPUT_JSON_FILE_NAME = "input.json";
-
 }

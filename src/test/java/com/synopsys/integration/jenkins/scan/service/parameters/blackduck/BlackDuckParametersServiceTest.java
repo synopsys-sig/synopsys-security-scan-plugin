@@ -1,9 +1,8 @@
-package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
+package com.synopsys.integration.jenkins.scan.service.parameters.blackduck;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import hudson.model.TaskListener;
 import java.io.PrintStream;
@@ -26,13 +25,6 @@ public class BlackDuckParametersServiceTest {
         blackDuckParametersService = new BlackDuckParametersService(listenerMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
-    
-    @Test
-    void getScanTypeTest() {
-        assertEquals(ScanType.BLACKDUCK, blackDuckParametersService.getScanType());
-        assertNotEquals(ScanType.POLARIS, blackDuckParametersService.getScanType());
-        assertNotEquals(ScanType.COVERITY, blackDuckParametersService.getScanType());
-    }
 
     @Test
     void createBlackDuckObjectTest() {
@@ -47,7 +39,7 @@ public class BlackDuckParametersServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY, true);
         blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, "BLOCKER, CRITICAL, MAJOR, MINOR");
 
-        BlackDuck blackDuck = blackDuckParametersService.prepareScanInputForBridge(blackDuckParametersMap);
+        BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(blackDuckParametersMap);
 
         assertEquals(TEST_BLACKDUCK_URL, blackDuck.getUrl());
         assertEquals(TEST_BLACKDUCK_TOKEN, blackDuck.getToken());
@@ -65,7 +57,7 @@ public class BlackDuckParametersServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
         blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
         
-        assertTrue(blackDuckParametersService.isValidScanParameters(blackDuckParametersMap));
+        assertTrue(blackDuckParametersService.isValidBlackDuckParameters(blackDuckParametersMap));
     }
 
     @Test
@@ -73,18 +65,18 @@ public class BlackDuckParametersServiceTest {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
         
-        assertFalse(blackDuckParametersService.isValidScanParameters(blackDuckParametersMap));
+        assertFalse(blackDuckParametersService.isValidBlackDuckParameters(blackDuckParametersMap));
     }
 
     @Test
     void validateBlackDuckParametersForNullAndEmptyTest() {
-        assertFalse(blackDuckParametersService.isValidScanParameters(null));
+        assertFalse(blackDuckParametersService.isValidBlackDuckParameters(null));
 
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "");
         blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
         
-        assertFalse(blackDuckParametersService.isValidScanParameters(blackDuckParametersMap));
+        assertFalse(blackDuckParametersService.isValidBlackDuckParameters(blackDuckParametersMap));
     }
 
 }

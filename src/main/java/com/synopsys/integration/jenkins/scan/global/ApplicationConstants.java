@@ -65,4 +65,8 @@ public class ApplicationConstants {
     public static final String BRIDGE_INSTALLATION_PATH = "synopsys_bridge_path";
     public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 
+    public static final String BLACKDUCK_INPUT_PREFIX = "blackduck_input";
+    public static final String COVERITY_INPUT_PREFIX = "coverity_input";
+    public static final String POLARIS_INPUT_PREFIX = "polaris_input";
+
 }

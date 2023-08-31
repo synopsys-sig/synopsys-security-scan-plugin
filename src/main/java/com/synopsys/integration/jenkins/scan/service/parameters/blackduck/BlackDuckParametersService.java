@@ -5,29 +5,21 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
+package com.synopsys.integration.jenkins.scan.service.parameters.blackduck;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
-import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
-import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
 import hudson.model.TaskListener;
 import java.util.*;
 
-public class BlackDuckParametersService implements ScanStrategy {
+public class BlackDuckParametersService {
     private final TaskListener listener;
     public BlackDuckParametersService(TaskListener listener) {
         this.listener = listener;
     }
-
-    @Override
-    public ScanType getScanType() {
-        return ScanType.BLACKDUCK;
-    }
-
-    @Override
-    public boolean isValidScanParameters(Map<String, Object> blackDuckParameters) {
+    
+    public boolean isValidBlackDuckParameters(Map<String, Object> blackDuckParameters) {
         if (blackDuckParameters == null || blackDuckParameters.isEmpty()) {
             return false;
         }
@@ -55,9 +47,8 @@ public class BlackDuckParametersService implements ScanStrategy {
             return false;
         }
     }
-
-    @Override
-    public BlackDuck prepareScanInputForBridge(Map<String, Object> blackDuckParameters) {
+    
+    public BlackDuck prepareBlackDuckObjectForBridge(Map<String, Object> blackDuckParameters) {
         BlackDuck blackDuck = new BlackDuck();
 
         for (Map.Entry<String, Object> entry : blackDuckParameters.entrySet()) {

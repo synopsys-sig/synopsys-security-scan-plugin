@@ -11,7 +11,6 @@ import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
-import com.synopsys.integration.jenkins.scan.strategy.ScanStrategyFactory;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -370,7 +369,7 @@ public class SecurityScanStep extends Step implements Serializable {
         @Override
         protected Integer run() throws ScannerJenkinsException {
             return ScanCommandsFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
-                .runScanner(getParametersMap(), new ScanStrategyFactory(listener));
+                .runScanner(getParametersMap());
         }
 
     }
