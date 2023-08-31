@@ -3,27 +3,27 @@
     <f:entry field="scan_type" title="Scan Type">
         <f:select/>
     </f:entry>
-    <f:entry field="blackduck_url" title="Black Duck URL">
+    <f:entry field="bridge_blackduck_url" title="Bridge Black Duck URL">
         <f:textbox/>
     </f:entry>
-    <f:entry field="blackduck_api_token" title="Black Duck Api Token">
+    <f:entry field="bridge_blackduck_api_token" title="Bridge Black Duck Api Token">
         <f:password/>
     </f:entry>
     <f:advanced>
-        <f:section title="Additional Black Duck Parameters">
-            <f:entry field="blackduck_install_directory" title="Black Duck Installation Path">
+        <f:section title="Additional Bridge Black Duck Parameters">
+            <f:entry field="bridge_blackduck_install_directory" title="Bridge Black Duck Installation Path">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="blackduck_scan_full" title="Black Duck Full Scan">
+            <f:entry field="bridge_blackduck_scan_full" title="Bridge Black Duck Full Scan">
                 <f:checkbox default="true"/>
             </f:entry>
-            <f:entry field="blackduck_scan_failure_severities" title="Black Duck Scan Failure Severities">
+            <f:entry field="bridge_blackduck_scan_failure_severities" title="Bridge Black Duck Scan Failure Severities">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="blackduck_automation_prcomment" title="Black Duck Automatic Pull Request Comment">
+            <f:entry field="bridge_blackduck_automation_prcomment" title="Bridge Black Duck Automatic Pull Request Comment">
                 <f:checkbox/>
             </f:entry>
-            <f:entry field="blackduck_automation_fixpr" title="Black Duck Automatic Fix Pull Request">
+            <f:entry field="bridge_blackduck_automation_fixpr" title="Bridge Black Duck Automatic Fix Pull Request">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="bitbucket_token" title="Bitbucket Token">

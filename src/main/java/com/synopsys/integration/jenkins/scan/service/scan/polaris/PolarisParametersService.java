@@ -39,10 +39,10 @@ public class PolarisParametersService implements ScanStrategy {
 
         List<String> invalidParams = new ArrayList<>();
 
-        Arrays.asList(ApplicationConstants.POLARIS_SERVER_URL_KEY,
-                        ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY,
-                        ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
-                        ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY)
+        Arrays.asList(ApplicationConstants.BRIDGE_POLARIS_SERVER_URL_KEY,
+                        ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY,
+                        ApplicationConstants.BRIDGE_POLARIS_APPLICATION_NAME_KEY,
+                        ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY)
                 .forEach(key -> {
                     boolean isKeyValid = polarisParameters.containsKey(key)
                             && polarisParameters.get(key) != null
@@ -72,19 +72,19 @@ public class PolarisParametersService implements ScanStrategy {
             String value = entry.getValue().toString().trim();
 
             switch (key) {
-                case ApplicationConstants.POLARIS_SERVER_URL_KEY:
+                case ApplicationConstants.BRIDGE_POLARIS_SERVER_URL_KEY:
                     polaris.setServerUrl(value);
                     break;
-                case ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY:
+                case ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY:
                     polaris.setAccessToken(value);
                     break;
-                case ApplicationConstants.POLARIS_APPLICATION_NAME_KEY:
+                case ApplicationConstants.BRIDGE_POLARIS_APPLICATION_NAME_KEY:
                     polaris.getApplicationName().setName(value);
                     break;
-                case ApplicationConstants.POLARIS_PROJECT_NAME_KEY:
+                case ApplicationConstants.BRIDGE_POLARIS_PROJECT_NAME_KEY:
                     polaris.getProjectName().setName(value);
                     break;
-                case ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY:
+                case ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY:
                     if (!value.isEmpty()) {
                         List<String> assessmentTypes = new ArrayList<>();
                         String[] assessmentTypesInput = value.toUpperCase().split(",");

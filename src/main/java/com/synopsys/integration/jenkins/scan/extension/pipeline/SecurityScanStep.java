@@ -40,22 +40,28 @@ public class SecurityScanStep extends Step implements Serializable {
 
     private String scan_type;
 
-    private String blackduck_url;
-    private String blackduck_api_token;
-    private String blackduck_install_directory;
-    private boolean blackduck_scan_full = true;
-    private String blackduck_scan_failure_severities;
-    private boolean blackduck_automation_fixpr = false;
-    private boolean blackduck_automation_prcomment = false;
+    private String bridge_blackduck_url;
+    private String bridge_blackduck_api_token;
+    private String bridge_blackduck_install_directory;
+    private boolean bridge_blackduck_scan_full = true;
+    private String bridge_blackduck_scan_failure_severities;
+    private boolean bridge_blackduck_automation_fixpr = false;
+    private boolean bridge_blackduck_automation_prcomment = false;
 
-    private String coverity_connect_url;
-    private String coverity_connect_user_name;
-    private String coverity_connect_user_password;
-    private String coverity_connect_project_name;
-    private String coverity_connect_stream_name;
-    private String coverity_connect_policy_view;
-    private String coverity_install_directory;
-    private boolean coverity_automation_prcomment = false;
+    private String bridge_coverity_connect_url;
+    private String bridge_coverity_connect_user_name;
+    private String bridge_coverity_connect_user_password;
+    private String bridge_coverity_connect_project_name;
+    private String bridge_coverity_connect_stream_name;
+    private String bridge_coverity_connect_policy_view;
+    private String bridge_coverity_install_directory;
+    private boolean bridge_coverity_automation_prcomment = false;
+
+    private String bridge_polaris_serverurl;
+    private String bridge_polaris_accesstoken;
+    private String bridge_polaris_application_name;
+    private String bridge_polaris_project_name;
+    private String bridge_polaris_assessment_types;
 
     private String bitbucket_token;
 
@@ -63,11 +69,6 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_download_version;
     private String synopsys_bridge_path;
     private boolean include_diagnostics = false;
-    private String bridge_polaris_serverurl;
-    private String bridge_polaris_accesstoken;
-    private String bridge_polaris_application_name;
-    private String bridge_polaris_project_name;
-    private String bridge_polaris_assessment_types;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -80,78 +81,108 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBlackduck_url(String blackduck_url) {
-        this.blackduck_url = blackduck_url;
+    public void setBridge_blackduck_url(String bridge_blackduck_url) {
+        this.bridge_blackduck_url = bridge_blackduck_url;
     }
 
     @DataBoundSetter
-    public void setBlackduck_api_token(String blackduck_api_token) {
-        this.blackduck_api_token = blackduck_api_token;
+    public void setBridge_blackduck_api_token(String bridge_blackduck_api_token) {
+        this.bridge_blackduck_api_token = bridge_blackduck_api_token;
     }
 
     @DataBoundSetter
-    public void setBlackduck_install_directory(String blackduck_install_directory) {
-        this.blackduck_install_directory = blackduck_install_directory;
+    public void setBridge_blackduck_install_directory(String bridge_blackduck_install_directory) {
+        this.bridge_blackduck_install_directory = bridge_blackduck_install_directory;
     }
 
     @DataBoundSetter
-    public void setBlackduck_scan_full(boolean blackduck_scan_full) {
-        this.blackduck_scan_full = blackduck_scan_full;
+    public void setBridge_blackduck_scan_full(boolean bridge_blackduck_scan_full) {
+        this.bridge_blackduck_scan_full = bridge_blackduck_scan_full;
     }
 
     @DataBoundSetter
-    public void setBlackduck_scan_failure_severities(String blackduck_scan_failure_severities) {
-        this.blackduck_scan_failure_severities = blackduck_scan_failure_severities;
+    public void setBridge_blackduck_scan_failure_severities(
+        String bridge_blackduck_scan_failure_severities) {
+        this.bridge_blackduck_scan_failure_severities = bridge_blackduck_scan_failure_severities;
     }
 
     @DataBoundSetter
-    public void setBlackduck_automation_fixpr(boolean blackduck_automation_fixpr) {
-        this.blackduck_automation_fixpr = blackduck_automation_fixpr;
+    public void setBridge_blackduck_automation_fixpr(boolean bridge_blackduck_automation_fixpr) {
+        this.bridge_blackduck_automation_fixpr = bridge_blackduck_automation_fixpr;
     }
 
     @DataBoundSetter
-    public void setBlackduck_automation_prcomment(boolean blackduck_automation_prcomment) {
-        this.blackduck_automation_prcomment = blackduck_automation_prcomment;
+    public void setBridge_blackduck_automation_prcomment(
+        boolean bridge_blackduck_automation_prcomment) {
+        this.bridge_blackduck_automation_prcomment = bridge_blackduck_automation_prcomment;
     }
 
     @DataBoundSetter
-    public void setCoverity_connect_url(String coverity_connect_url) {
-        this.coverity_connect_url = coverity_connect_url;
+    public void setBridge_coverity_connect_url(String bridge_coverity_connect_url) {
+        this.bridge_coverity_connect_url = bridge_coverity_connect_url;
     }
 
     @DataBoundSetter
-    public void setCoverity_connect_user_name(String coverity_connect_user_name) {
-        this.coverity_connect_user_name = coverity_connect_user_name;
+    public void setBridge_coverity_connect_user_name(String bridge_coverity_connect_user_name) {
+        this.bridge_coverity_connect_user_name = bridge_coverity_connect_user_name;
     }
 
     @DataBoundSetter
-    public void setCoverity_connect_user_password(String coverity_connect_user_password) {
-        this.coverity_connect_user_password = coverity_connect_user_password;
+    public void setBridge_coverity_connect_user_password(
+        String bridge_coverity_connect_user_password) {
+        this.bridge_coverity_connect_user_password = bridge_coverity_connect_user_password;
     }
 
     @DataBoundSetter
-    public void setCoverity_connect_project_name(String coverity_connect_project_name) {
-        this.coverity_connect_project_name = coverity_connect_project_name;
+    public void setBridge_coverity_connect_project_name(
+        String bridge_coverity_connect_project_name) {
+        this.bridge_coverity_connect_project_name = bridge_coverity_connect_project_name;
     }
 
     @DataBoundSetter
-    public void setCoverity_connect_stream_name(String coverity_connect_stream_name) {
-        this.coverity_connect_stream_name = coverity_connect_stream_name;
+    public void setBridge_coverity_connect_stream_name(String bridge_coverity_connect_stream_name) {
+        this.bridge_coverity_connect_stream_name = bridge_coverity_connect_stream_name;
     }
 
     @DataBoundSetter
-    public void setCoverity_connect_policy_view(String coverity_connect_policy_view) {
-        this.coverity_connect_policy_view = coverity_connect_policy_view;
+    public void setBridge_coverity_connect_policy_view(String bridge_coverity_connect_policy_view) {
+        this.bridge_coverity_connect_policy_view = bridge_coverity_connect_policy_view;
     }
 
     @DataBoundSetter
-    public void setCoverity_install_directory(String coverity_install_directory) {
-        this.coverity_install_directory = coverity_install_directory;
+    public void setBridge_coverity_install_directory(String bridge_coverity_install_directory) {
+        this.bridge_coverity_install_directory = bridge_coverity_install_directory;
     }
 
     @DataBoundSetter
-    public void setCoverity_automation_prcomment(boolean coverity_automation_prcomment) {
-        this.coverity_automation_prcomment = coverity_automation_prcomment;
+    public void setBridge_coverity_automation_prcomment(
+        boolean bridge_coverity_automation_prcomment) {
+        this.bridge_coverity_automation_prcomment = bridge_coverity_automation_prcomment;
+    }
+
+    @DataBoundSetter
+    public void setBridge_polaris_serverurl(String bridge_polaris_serverurl) {
+        this.bridge_polaris_serverurl = bridge_polaris_serverurl;
+    }
+
+    @DataBoundSetter
+    public void setBridge_polaris_accesstoken(String bridge_polaris_accesstoken) {
+        this.bridge_polaris_accesstoken = bridge_polaris_accesstoken;
+    }
+
+    @DataBoundSetter
+    public void setBridge_polaris_application_name(String bridge_polaris_application_name) {
+        this.bridge_polaris_application_name = bridge_polaris_application_name;
+    }
+
+    @DataBoundSetter
+    public void setBridge_polaris_project_name(String bridge_polaris_project_name) {
+        this.bridge_polaris_project_name = bridge_polaris_project_name;
+    }
+
+    @DataBoundSetter
+    public void setBridge_polaris_assessment_types(String bridge_polaris_assessment_types) {
+        this.bridge_polaris_assessment_types = bridge_polaris_assessment_types;
     }
 
     @DataBoundSetter
@@ -179,27 +210,6 @@ public class SecurityScanStep extends Step implements Serializable {
         this.include_diagnostics = include_diagnostics;
     }
 
-    @DataBoundSetter
-    public void setBridge_polaris_serverurl(String bridge_polaris_serverurl) {
-        this.bridge_polaris_serverurl = bridge_polaris_serverurl;
-    }
-    @DataBoundSetter
-    public void setBridge_polaris_accesstoken(String bridge_polaris_accesstoken) {
-        this.bridge_polaris_accesstoken = bridge_polaris_accesstoken;
-    }
-    @DataBoundSetter
-    public void setBridge_polaris_application_name(String bridge_polaris_application_name) {
-        this.bridge_polaris_application_name = bridge_polaris_application_name;
-    }
-    @DataBoundSetter
-    public void setBridge_polaris_project_name(String bridge_polaris_project_name) {
-        this.bridge_polaris_project_name = bridge_polaris_project_name;
-    }
-    @DataBoundSetter
-    public void setBridge_polaris_assessment_types(String bridge_polaris_assessment_types) {
-        this.bridge_polaris_assessment_types = bridge_polaris_assessment_types;
-    }
-
     public String getBridge_polaris_serverurl() {
         return bridge_polaris_serverurl;
     }
@@ -224,64 +234,64 @@ public class SecurityScanStep extends Step implements Serializable {
         return scan_type;
     }
 
-    public String getBlackduck_url() {
-        return blackduck_url;
+    public String getBridge_blackduck_url() {
+        return bridge_blackduck_url;
     }
 
-    public String getBlackduck_api_token() {
-        return blackduck_api_token;
+    public String getBridge_blackduck_api_token() {
+        return bridge_blackduck_api_token;
     }
 
-    public String getBlackduck_install_directory() {
-        return blackduck_install_directory;
+    public String getBridge_blackduck_install_directory() {
+        return bridge_blackduck_install_directory;
     }
 
-    public boolean getBlackduck_scan_full() {
-        return blackduck_scan_full;
+    public boolean isBridge_blackduck_scan_full() {
+        return bridge_blackduck_scan_full;
     }
 
-    public String getBlackduck_scan_failure_severities() {
-        return blackduck_scan_failure_severities;
+    public String getBridge_blackduck_scan_failure_severities() {
+        return bridge_blackduck_scan_failure_severities;
     }
 
-    public boolean getBlackduck_automation_fixpr() {
-        return blackduck_automation_fixpr;
+    public boolean isBridge_blackduck_automation_fixpr() {
+        return bridge_blackduck_automation_fixpr;
     }
 
-    public boolean getBlackduck_automation_prcomment() {
-        return blackduck_automation_prcomment;
+    public boolean isBridge_blackduck_automation_prcomment() {
+        return bridge_blackduck_automation_prcomment;
     }
 
-    public String getCoverity_connect_url() {
-        return coverity_connect_url;
+    public String getBridge_coverity_connect_url() {
+        return bridge_coverity_connect_url;
     }
 
-    public String getCoverity_connect_user_name() {
-        return coverity_connect_user_name;
+    public String getBridge_coverity_connect_user_name() {
+        return bridge_coverity_connect_user_name;
     }
 
-    public String getCoverity_connect_user_password() {
-        return coverity_connect_user_password;
+    public String getBridge_coverity_connect_user_password() {
+        return bridge_coverity_connect_user_password;
     }
 
-    public String getCoverity_connect_project_name() {
-        return coverity_connect_project_name;
+    public String getBridge_coverity_connect_project_name() {
+        return bridge_coverity_connect_project_name;
     }
 
-    public String getCoverity_connect_stream_name() {
-        return coverity_connect_stream_name;
+    public String getBridge_coverity_connect_stream_name() {
+        return bridge_coverity_connect_stream_name;
     }
 
-    public String getCoverity_connect_policy_view() {
-        return coverity_connect_policy_view;
+    public String getBridge_coverity_connect_policy_view() {
+        return bridge_coverity_connect_policy_view;
     }
 
-    public String getCoverity_install_directory() {
-        return coverity_install_directory;
+    public String getBridge_coverity_install_directory() {
+        return bridge_coverity_install_directory;
     }
 
-    public boolean getCoverity_automation_prcomment() {
-        return coverity_automation_prcomment;
+    public boolean isBridge_coverity_automation_prcomment() {
+        return bridge_coverity_automation_prcomment;
     }
 
     public String getBitbucket_token() {
@@ -300,7 +310,7 @@ public class SecurityScanStep extends Step implements Serializable {
         return synopsys_bridge_path;
     }
 
-    public boolean getInclude_diagnostics() {
+    public boolean isInclude_diagnostics() {
         return include_diagnostics;
     }
 

@@ -100,9 +100,9 @@ public class ScannerArgumentServiceTest {
     @Test
     void getCommandLineArgsForBlackDuckTest() throws ScannerJenkinsException {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, false);
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, false);
         blackDuckParametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, true);
 
         ScanStrategy scanStrategy = new BlackDuckParametersService(listenerMock);
@@ -130,9 +130,9 @@ public class ScannerArgumentServiceTest {
     @Test
     void getCommandLineArgsForCoverityTest() throws ScannerJenkinsException {
         Map<String, Object> coverityParameters = new HashMap<>();
-        coverityParameters.put(ApplicationConstants.COVERITY_CONNECT_URL_KEY, "https://fake.coverity.url");
-        coverityParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_NAME_KEY, "fake-user");
-        coverityParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY, "fakeUserPassword");
+        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_URL_KEY, "https://fake.coverity.url");
+        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_NAME_KEY, "fake-user");
+        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY, "fakeUserPassword");
         coverityParameters.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, true);
 
         ScanStrategy scanStrategy = new CoverityParametersService(listenerMock);
