@@ -9,6 +9,7 @@ package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.IOException;
@@ -16,12 +17,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class BridgeDownload {
-    private final TaskListener listener;
+    private final LoggerWrapper logger;
+
     private final FilePath workspace;
 
     public BridgeDownload(FilePath workspace, TaskListener listener) {
         this.workspace = workspace;
-        this.listener = listener;
+        this.logger = new LoggerWrapper(listener);
     }
 
     public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath) {
@@ -35,35 +37,34 @@ public class BridgeDownload {
 
                 while (!downloadSuccess && retryCount <= ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES) {
                     try {
-                        listener.getLogger().println("Downloading Synopsys Bridge from: " + bridgeDownloadUrl);
+                        logger.info("Downloading Synopsys Bridge from: " + bridgeDownloadUrl);
 
                         bridgeZipFilePath = bridgeInstallationFilePath.child(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT);
                         bridgeZipFilePath.copyFrom(new URL(bridgeDownloadUrl));
                         downloadSuccess = true;
 
-                        listener.getLogger().println("Synopsys Bridge successfully downloaded in: " + bridgeZipFilePath);
+                        logger.info("Synopsys Bridge successfully downloaded in: " + bridgeZipFilePath);
 
                     } catch (Exception e) {
                         int statusCode = getHttpStatusCode(bridgeDownloadUrl);
                         if (terminateRetry(statusCode)) {
-                            listener.getLogger().printf("Synopsys Bridge download failed with status code: %s and plugin won't retry to download. %n", statusCode);
+                            logger.error("Synopsys Bridge download failed with status code: %s and plugin won't retry to download.", statusCode);
                             break;
                         }
                         Thread.sleep(ApplicationConstants.INTERVAL_BETWEEN_CONSECUTIVE_RETRY_ATTEMPTS);
-                        listener.getLogger().printf("Synopsys Bridge download failed and attempt#%s to download again %n", retryCount);
+                        logger.warn("Synopsys Bridge download failed and attempt#%s to download again.", retryCount);
                         retryCount++;
                     }
                 }
 
                 if (!downloadSuccess) {
-                    listener.getLogger().printf("Synopsys Bridge download failed after %s attempts %n", ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES);
+                    logger.error("Synopsys Bridge download failed after %s attempts", ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES);
                 }
             } catch (InterruptedException e) {
-                listener.getLogger().println("Interrupted while waiting to retry Synopsys Bridge download");
-                e.printStackTrace(listener.getLogger());
+                logger.error("Interrupted while waiting to retry Synopsys Bridge download");
             }
         } else {
-            listener.getLogger().printf(LogMessages.INVALID_SYNOPSYS_BRIDGE_DOWNLOAD_URL, bridgeDownloadUrl);
+            logger.error(LogMessages.INVALID_SYNOPSYS_BRIDGE_DOWNLOAD_URL, bridgeDownloadUrl);
         }
         return bridgeZipFilePath;
     }
@@ -98,7 +99,7 @@ public class BridgeDownload {
             connection.setRequestMethod("HEAD");
             return (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
         } catch (Exception e) {
-            listener.getLogger().println("An exception occurred while checking bridge url exists or not: " + e.getMessage());
+            logger.error("An exception occurred while checking bridge url exists or not: " + e.getMessage());
             return false;
         }
     }

@@ -13,6 +13,7 @@ import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Pull;
@@ -21,17 +22,16 @@ import hudson.model.TaskListener;
 import java.util.Map;
 
 public class BitbucketRepositoryService {
-    private final TaskListener listener;
+    private final LoggerWrapper logger;
 
     public BitbucketRepositoryService(TaskListener listener) {
-        this.listener = listener;
+        this.logger = new LoggerWrapper(listener);
     }
 
     public Bitbucket fetchBitbucketRepositoryDetails(Map<String, Object> scanParameters, 
                                                      BitbucketSCMSource bitbucketSCMSource, 
                                                      Integer projectRepositoryPullNumber,
                                                      boolean isFixPrOrPrComment) throws ScannerJenkinsException {
-        listener.getLogger().println("Getting bitbucket repository details");
 
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
         if (Utility.isStringNullOrBlank(bitbucketToken) && isFixPrOrPrComment) {
@@ -44,7 +44,7 @@ public class BitbucketRepositoryService {
         try {
             bitbucketRepository = bitbucketApiFromSCMSource.getRepository();
         } catch (Exception e) {
-            listener.getLogger().println("An exception occurred while getting the BitbucketRepository from BitbucketApi: " + e.getMessage());
+            logger.error("An exception occurred while getting the BitbucketRepository from BitbucketApi: " + e.getMessage());
         }
 
         String serverUrl = bitbucketSCMSource.getServerUrl();
@@ -52,8 +52,6 @@ public class BitbucketRepositoryService {
         String projectKey = null;
 
         if (bitbucketRepository != null) {
-            listener.getLogger().println("Bitbucket repository name: " + bitbucketRepository.getRepositoryName());
-
             repositoryName = bitbucketRepository.getRepositoryName();
             projectKey = bitbucketRepository.getProject().getKey();
         }

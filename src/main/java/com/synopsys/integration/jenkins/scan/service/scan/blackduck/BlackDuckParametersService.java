@@ -9,16 +9,18 @@ package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import hudson.model.TaskListener;
 import java.util.*;
 
 public class BlackDuckParametersService {
-    private final TaskListener listener;
+    private final LoggerWrapper logger;
+
     public BlackDuckParametersService(TaskListener listener) {
-        this.listener = listener;
+        this.logger = new LoggerWrapper(listener);
     }
-    
+
     public boolean isValidBlackDuckParameters(Map<String, Object> blackDuckParameters) {
         if (blackDuckParameters == null || blackDuckParameters.isEmpty()) {
             return false;
@@ -39,15 +41,15 @@ public class BlackDuckParametersService {
             });
 
         if (invalidParams.isEmpty()) {
-            listener.getLogger().println("BlackDuck parameters are validated successfully");
+            logger.info("BlackDuck parameters are validated successfully");
             return true;
         } else {
-            listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
-            listener.getLogger().println("Invalid BlackDuck parameters: " + invalidParams);
+            logger.error(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
+            logger.error("Invalid BlackDuck parameters: " + invalidParams);
             return false;
         }
     }
-    
+
     public BlackDuck prepareBlackDuckObjectForBridge(Map<String, Object> blackDuckParameters) {
         BlackDuck blackDuck = new BlackDuck();
 

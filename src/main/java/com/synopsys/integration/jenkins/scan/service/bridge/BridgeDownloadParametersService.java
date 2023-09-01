@@ -10,6 +10,7 @@ package com.synopsys.integration.jenkins.scan.service.bridge;
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -21,11 +22,13 @@ import java.util.regex.Pattern;
 
 public class BridgeDownloadParametersService {
     private final TaskListener listener;
+    private final LoggerWrapper logger;
     private final FilePath workspace;
 
     public BridgeDownloadParametersService(FilePath workspace, TaskListener listener) {
         this.workspace = workspace;
         this.listener = listener;
+        this.logger = new LoggerWrapper(listener);
     }
 
     public boolean performBridgeDownloadParameterValidation(BridgeDownloadParameters bridgeDownloadParameters) {
@@ -34,17 +37,17 @@ public class BridgeDownloadParametersService {
         boolean validInstallationPath = isValidInstallationPath(bridgeDownloadParameters.getBridgeInstallationPath());
 
         if(validUrl && validVersion && validInstallationPath) {
-            listener.getLogger().println("Bridge download parameters are validated successfully");
+            logger.info("Bridge download parameters are validated successfully");
             return true;
         } else {
-            listener.getLogger().println(LogMessages.INVALID_BRIDGE_DOWNLOAD_PARAMETERS);
+            logger.error(LogMessages.INVALID_BRIDGE_DOWNLOAD_PARAMETERS);
             return false;
         }
     }
 
     public boolean isValidUrl(String url) {
         if (url.isEmpty()) {
-            listener.getLogger().println(LogMessages.EMPTY_BRIDGE_DOWNLOAD_URL_PROVIDED);
+            logger.warn(LogMessages.EMPTY_BRIDGE_DOWNLOAD_URL_PROVIDED);
             return false;
         }
 
@@ -52,7 +55,7 @@ public class BridgeDownloadParametersService {
             new URL(url);
             return true;
         } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.INVALID_BRIDGE_DOWNLOAD_URL_PROVIDED, e.getMessage());
+            logger.warn(LogMessages.INVALID_BRIDGE_DOWNLOAD_URL_PROVIDED, e.getMessage());
             return false;
         }
     }
@@ -63,7 +66,7 @@ public class BridgeDownloadParametersService {
         if( matcher.matches() || version.equals(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION)) {
             return true;
         } else {
-            listener.getLogger().println(LogMessages.INVALID_BRIDGE_DOWNLOAD_VERSION_PROVIDED);
+            logger.warn(LogMessages.INVALID_BRIDGE_DOWNLOAD_VERSION_PROVIDED, version);
             return false;
         }
     }
@@ -80,20 +83,19 @@ public class BridgeDownloadParametersService {
                 if (isWritable) {
                     return true;
                 } else {
-                    listener.getLogger().printf("The bridge installation parent path: %s is not writable %n", parentPath.toURI());
+                    logger.warn("The bridge installation parent path: %s is not writable", parentPath.toURI());
                     return false;
                 }
             } else {
                 if (parentPath == null || !parentPath.exists()) {
-                    listener.getLogger().printf("The bridge installation parent path: %s doesn't exist %n", path.toURI());
+                    logger.warn("The bridge installation parent path: %s doesn't exist", path.toURI());
                 } else if (!parentPath.isDirectory()) {
-                    listener.getLogger().printf("The bridge installation parent path: %s is not a directory %n", parentPath.toURI());
+                    logger.warn("The bridge installation parent path: %s is not a directory", parentPath.toURI());
                 }
                 return false;
             }
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("An exception occurred while validating the installation path: " + e.getMessage());
-            e.printStackTrace(listener.getLogger());
+            logger.error("An exception occurred while validating the installation path: " + e.getMessage());
             return false;
         }
     }

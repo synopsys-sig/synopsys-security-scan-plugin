@@ -9,6 +9,7 @@ package com.synopsys.integration.jenkins.scan.service.scan.coverity;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
 import hudson.model.TaskListener;
 import java.util.ArrayList;
@@ -17,12 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 public class CoverityParametersService {
-    private final TaskListener listener;
+    private final LoggerWrapper logger;
 
     public CoverityParametersService(TaskListener listener) {
-        this.listener = listener;
+        this.logger = new LoggerWrapper(listener);
     }
-    
+
     public boolean isValidCoverityParameters(Map<String, Object> coverityParameters) {
         if (coverityParameters == null || coverityParameters.isEmpty()) {
             return false;
@@ -44,15 +45,15 @@ public class CoverityParametersService {
             });
 
         if (invalidParams.isEmpty()) {
-            listener.getLogger().println("Coverity parameters are validated successfully");
+            logger.info("Coverity parameters are validated successfully");
             return true;
         } else {
-            listener.getLogger().println(LogMessages.COVERITY_PARAMETER_VALIDATION_FAILED);
-            listener.getLogger().println("Invalid Coverity parameters: " + invalidParams);
+            logger.error(LogMessages.COVERITY_PARAMETER_VALIDATION_FAILED);
+            logger.error("Invalid Coverity parameters: " + invalidParams);
             return false;
         }
     }
-    
+
     public Coverity prepareCoverityObjectForBridge(Map<String, Object> coverityParameters) {
         Coverity coverity = new Coverity();
 
