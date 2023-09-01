@@ -11,7 +11,7 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ParametersServiceTest {
+public class ScanParametersServiceTest {
     private ScanParametersService scanParametersService;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
 
