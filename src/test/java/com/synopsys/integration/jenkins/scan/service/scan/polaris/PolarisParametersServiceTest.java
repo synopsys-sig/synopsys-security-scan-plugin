@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service.parameters.polaris;
+package com.synopsys.integration.jenkins.scan.service.scan.polaris;
 
 import static org.junit.jupiter.api.Assertions.*;
 

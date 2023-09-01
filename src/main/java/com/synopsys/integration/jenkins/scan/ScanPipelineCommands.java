@@ -14,7 +14,7 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
-import com.synopsys.integration.jenkins.scan.service.parameters.ParametersService;
+import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class ScanPipelineCommands {
             throw new ScannerJenkinsException(LogMessages.NO_SCAN_TYPE_SELECTED);
         }
 
-        ParametersService parametersService = new ParametersService(listener);
+        ScanParametersService scanParametersService = new ScanParametersService(listener);
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);
         BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService(workspace, listener);
@@ -43,7 +43,7 @@ public class ScanPipelineCommands {
 
         int exitCode = -1;
 
-        if (parametersService.isValidScanParameters(scanParameters) &&
+        if (scanParametersService.isValidScanParameters(scanParameters) &&
             bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);

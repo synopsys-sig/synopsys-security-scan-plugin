@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service.parameters.coverity;
+package com.synopsys.integration.jenkins.scan.service.scan.coverity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

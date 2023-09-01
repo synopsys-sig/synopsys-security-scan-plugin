@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service.parameters.blackduck;
+package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -5,13 +5,13 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.jenkins.scan.service.parameters;
+package com.synopsys.integration.jenkins.scan.service.scan;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
-import com.synopsys.integration.jenkins.scan.service.parameters.blackduck.BlackDuckParametersService;
-import com.synopsys.integration.jenkins.scan.service.parameters.coverity.CoverityParametersService;
-import com.synopsys.integration.jenkins.scan.service.parameters.polaris.PolarisParametersService;
+import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
+import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParametersService;
+import com.synopsys.integration.jenkins.scan.service.scan.polaris.PolarisParametersService;
 import hudson.model.TaskListener;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ParametersService {
+public class ScanParametersService {
     private final TaskListener listener;
 
-    public ParametersService(TaskListener listener) {
+    public ScanParametersService(TaskListener listener) {
         this.listener = listener;
     }
 

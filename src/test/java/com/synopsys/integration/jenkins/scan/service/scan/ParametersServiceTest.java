@@ -1,4 +1,4 @@
-package com.synopsys.integration.jenkins.scan.service.parameters;
+package com.synopsys.integration.jenkins.scan.service.scan;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import hudson.model.TaskListener;
@@ -12,12 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParametersServiceTest {
-    private ParametersService parametersService;
+    private ScanParametersService scanParametersService;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
 
     @BeforeEach
     void setUp() {
-        parametersService = new ParametersService(listenerMock);
+        scanParametersService = new ScanParametersService(listenerMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
     
@@ -28,7 +28,7 @@ public class ParametersServiceTest {
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
-        assertTrue(parametersService.isValidScanParameters(parameters));
+        assertTrue(scanParametersService.isValidScanParameters(parameters));
     }
 
     @Test
@@ -38,7 +38,7 @@ public class ParametersServiceTest {
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
-        assertFalse(parametersService.isValidScanParameters(parameters));
+        assertFalse(scanParametersService.isValidScanParameters(parameters));
     }
 
     @Test
@@ -55,6 +55,6 @@ public class ParametersServiceTest {
         parameters.put(ApplicationConstants.BRIDGE_POLARIS_PROJECT_NAME_KEY, "test-project");
         parameters.put(ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, "SCA, SAST");
 
-        assertTrue(parametersService.isValidScanParameters(parameters));
+        assertTrue(scanParametersService.isValidScanParameters(parameters));
     }
 }
