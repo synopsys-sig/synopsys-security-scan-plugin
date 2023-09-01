@@ -33,8 +33,6 @@ public class BitbucketRepositoryService {
                                                      Integer projectRepositoryPullNumber,
                                                      boolean isFixPrOrPrComment) throws ScannerJenkinsException {
 
-        logger.info("Getting bitbucket repository details");
-
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
         if (Utility.isStringNullOrBlank(bitbucketToken) && isFixPrOrPrComment) {
             throw new ScannerJenkinsException(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
@@ -54,8 +52,6 @@ public class BitbucketRepositoryService {
         String projectKey = null;
 
         if (bitbucketRepository != null) {
-            logger.info("Bitbucket repository name: " + bitbucketRepository.getRepositoryName());
-
             repositoryName = bitbucketRepository.getRepositoryName();
             projectKey = bitbucketRepository.getProject().getKey();
         }

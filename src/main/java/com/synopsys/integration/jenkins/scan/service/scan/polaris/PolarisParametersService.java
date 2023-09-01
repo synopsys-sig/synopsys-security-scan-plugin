@@ -38,6 +38,18 @@ public class PolarisParametersService implements ScanStrategy {
             return false;
         }
 
+        logger.info("parameters for polaris:");
+
+        for (Map.Entry<String, Object> entry : polarisParameters.entrySet()) {
+            String key = entry.getKey();
+            if(key.startsWith("bridge_blackduck") || key.startsWith("bridge_coverity")) continue;
+            if(key.equals(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY)) {
+                entry.setValue(LogMessages.ASTERISKS);
+            }
+            Object value = entry.getValue();
+            logger.info(" --- " + key + " = " + value);
+        }
+
         List<String> invalidParams = new ArrayList<>();
 
         Arrays.asList(ApplicationConstants.POLARIS_SERVER_URL_KEY,

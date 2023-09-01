@@ -39,6 +39,9 @@ public class BridgeInstall {
     }
 
     public String defaultBridgeInstallationPath(FilePath workspace, TaskListener listener) {
+
+        logger.println("-------------------------------- Connection to node --------------------------------");
+
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         String separator = Utility.getDirectorySeparator(workspace, listener);
         String defaultInstallationPath = null;

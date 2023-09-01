@@ -11,6 +11,7 @@ import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadManager;
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
+import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.strategy.ScanStrategyFactory;
@@ -33,6 +34,9 @@ public class ScanPipelineCommands {
     }
 
     public int runScanner(Map<String, Object> scanParameters, ScanStrategyFactory scanStrategyFactory) throws ScannerJenkinsException {
+
+        logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
         ScanStrategy scanStrategy = scanStrategyFactory.getParametersService(scanParameters);
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);
@@ -40,6 +44,9 @@ public class ScanPipelineCommands {
         BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParameters, bridgeDownloadParameters);
 
         int exitCode = -1;
+
+
+        logger.println("-------------------------- Parameter Validation Initiated --------------------------");
 
         if (scanStrategy.isValidScanParameters(scanParameters) &&
             bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
@@ -50,6 +57,7 @@ public class ScanPipelineCommands {
                 bridgeDownloadManager.initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
             } else {
                 logger.info("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());
+                logger.println(LogMessages.DASHES);
             }
             FilePath bridgeInstallationPath = new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
 

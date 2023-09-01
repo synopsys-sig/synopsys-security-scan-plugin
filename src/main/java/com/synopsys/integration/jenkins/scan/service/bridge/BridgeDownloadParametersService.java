@@ -35,6 +35,12 @@ public class BridgeDownloadParametersService {
         boolean validUrl = isValidUrl(bridgeDownloadParameters.getBridgeDownloadUrl());
         boolean validVersion = isValidVersion(bridgeDownloadParameters.getBridgeDownloadVersion());
         boolean validInstallationPath = isValidInstallationPath(bridgeDownloadParameters.getBridgeInstallationPath());
+        logger.println(LogMessages.DASHES);
+        logger.info("parameters for bridge:");
+
+        logger.info(" --- " + "bridgeDownloadUrl" + " = " + bridgeDownloadParameters.getBridgeDownloadUrl());
+        logger.info(" --- " + "bridgeDownloadVersion" + " = " + bridgeDownloadParameters.getBridgeDownloadVersion());
+        logger.info(" --- " + "bridgeInstallationPath" + " = " + bridgeDownloadParameters.getBridgeInstallationPath());
 
         if(validUrl && validVersion && validInstallationPath) {
             logger.info("Bridge download parameters are validated successfully");

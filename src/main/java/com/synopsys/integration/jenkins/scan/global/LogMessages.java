@@ -9,6 +9,7 @@ package com.synopsys.integration.jenkins.scan.global;
 
 public class LogMessages {
     public static final String ASTERISKS = "******************************************************************************";
+    public static final String DASHES = "------------------------------------------------------------------------------------";
     public static final String INVALID_SYNOPSYS_BRIDGE_DOWNLOAD_URL = "Invalid Synopsys Bridge download URL: %s";
     public static final String FAILED_TO_FETCH_PLUGINS_DEFAULT_INSTALLATION_PATH = "Failed to fetch plugin's default installation path: %s";
     public static final String BLACKDUCK_PARAMETER_VALIDATION_FAILED = "BlackDuck parameters are not valid";

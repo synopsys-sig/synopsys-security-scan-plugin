@@ -10,8 +10,6 @@ package com.synopsys.integration.jenkins.scan.global;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 public class Utility {
 
@@ -55,12 +53,6 @@ public class Utility {
         } catch (IOException | InterruptedException e) {
             logger.error("An exception occurred while deleting file: " + e.getMessage());
         }
-    }
-
-    public static String currentTimestamp() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS");
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        return sdf.format(timestamp);
     }
 
     public static boolean isStringNullOrBlank(String str) {

@@ -32,6 +32,18 @@ public class BlackDuckParametersService implements ScanStrategy {
         if (blackDuckParameters == null || blackDuckParameters.isEmpty()) {
             return false;
         }
+
+        logger.info("parameters for blackduck:");
+
+        for (Map.Entry<String, Object> entry : blackDuckParameters.entrySet()) {
+            String key = entry.getKey();
+            if(key.startsWith("bridge_polaris") || key.startsWith("bridge_coverity")) continue;
+            if(key.equals(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)) {
+                entry.setValue(LogMessages.ASTERISKS);
+            }
+            Object value = entry.getValue();
+            logger.info(" --- " + key + " = " + value);
+        }
         
         List<String> invalidParams = new ArrayList<>();
 
