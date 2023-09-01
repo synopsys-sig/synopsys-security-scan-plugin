@@ -43,7 +43,7 @@ public class PolarisParametersService implements ScanStrategy {
         for (Map.Entry<String, Object> entry : polarisParameters.entrySet()) {
             String key = entry.getKey();
             if(key.startsWith("bridge_blackduck") || key.startsWith("bridge_coverity")) continue;
-            if(key.equals(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY)) {
+            if(key.equals(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY)) {
                 entry.setValue(LogMessages.ASTERISKS);
             }
             Object value = entry.getValue();

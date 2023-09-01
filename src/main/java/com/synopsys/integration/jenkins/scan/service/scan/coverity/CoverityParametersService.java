@@ -42,7 +42,7 @@ public class CoverityParametersService implements ScanStrategy {
         for (Map.Entry<String, Object> entry : coverityParameters.entrySet()) {
             String key = entry.getKey();
             if(key.startsWith("bridge_blackduck") || key.startsWith("bridge_polaris")) continue;
-            if(key.equals(ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY)) {
+            if(key.equals(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY)) {
                 entry.setValue(LogMessages.ASTERISKS);
             }
             Object value = entry.getValue();

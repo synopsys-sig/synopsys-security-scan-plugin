@@ -38,7 +38,7 @@ public class BlackDuckParametersService implements ScanStrategy {
         for (Map.Entry<String, Object> entry : blackDuckParameters.entrySet()) {
             String key = entry.getKey();
             if(key.startsWith("bridge_polaris") || key.startsWith("bridge_coverity")) continue;
-            if(key.equals(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)) {
+            if(key.equals(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY)) {
                 entry.setValue(LogMessages.ASTERISKS);
             }
             Object value = entry.getValue();
