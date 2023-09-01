@@ -51,9 +51,9 @@ public class CoverityParametersService implements ScanStrategy {
         
         List<String> invalidParams = new ArrayList<>();
 
-        Arrays.asList(ApplicationConstants.COVERITY_CONNECT_URL_KEY,
-            ApplicationConstants.COVERITY_CONNECT_USER_NAME_KEY,
-            ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY)
+        Arrays.asList(ApplicationConstants.BRIDGE_COVERITY_CONNECT_URL_KEY,
+            ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_NAME_KEY,
+            ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY)
             .forEach(key -> {
                 boolean isKeyValid = coverityParameters.containsKey(key)
                     && coverityParameters.get(key) != null
@@ -83,28 +83,28 @@ public class CoverityParametersService implements ScanStrategy {
             String value = entry.getValue().toString().trim();
 
             switch (key) {
-                case ApplicationConstants.COVERITY_CONNECT_URL_KEY:
+                case ApplicationConstants.BRIDGE_COVERITY_CONNECT_URL_KEY:
                     coverity.getConnect().setUrl(value);
                     break;
-                case ApplicationConstants.COVERITY_CONNECT_USER_NAME_KEY:
+                case ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_NAME_KEY:
                     coverity.getConnect().getUser().setName(value);
                     break;
-                case ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY:
+                case ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY:
                     coverity.getConnect().getUser().setPassword(value);
                     break;
-                case ApplicationConstants.COVERITY_CONNECT_PROJECT_NAME_KEY:
+                case ApplicationConstants.BRIDGE_COVERITY_CONNECT_PROJECT_NAME_KEY:
                     coverity.getConnect().getProject().setName(value);
                     break;
-                case ApplicationConstants.COVERITY_CONNECT_STREAM_NAME_KEY:
+                case ApplicationConstants.BRIDGE_COVERITY_CONNECT_STREAM_NAME_KEY:
                     coverity.getConnect().getStream().setName(value);
                     break;
-                case ApplicationConstants.COVERITY_CONNECT_POLICY_VIEW_KEY:
+                case ApplicationConstants.BRIDGE_COVERITY_CONNECT_POLICY_VIEW_KEY:
                     coverity.getConnect().getPolicy().setView(value);
                     break;
-                case ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY:
+                case ApplicationConstants.BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY:
                     coverity.getInstall().setDirectory(value);
                     break;
-                case ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY:
+                case ApplicationConstants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY:
                     if (value.equals("true") || value.equals("false")) {
                         coverity.getAutomation().setPrComment(Boolean.parseBoolean(value));
                     }

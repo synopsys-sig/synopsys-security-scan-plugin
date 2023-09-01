@@ -38,14 +38,14 @@ public class BlackDuckParametersServiceTest {
     void createBlackDuckObjectTest() {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
 
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, TEST_BLACKDUCK_INSTALL_DIRECTORY_PATH);
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY, TEST_BLACKDUCK_INSTALL_DIRECTORY_PATH);
 
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, true);
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, false);
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, true);
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, "BLOCKER, CRITICAL, MAJOR, MINOR");
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY, true);
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, false);
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY, true);
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, "BLOCKER, CRITICAL, MAJOR, MINOR");
 
         BlackDuck blackDuck = blackDuckParametersService.prepareScanInputForBridge(blackDuckParametersMap);
 
@@ -62,8 +62,8 @@ public class BlackDuckParametersServiceTest {
     @Test
     void validateBlackDuckParametersForValidParametersTest() {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
         
         assertTrue(blackDuckParametersService.isValidScanParameters(blackDuckParametersMap));
     }
@@ -71,7 +71,7 @@ public class BlackDuckParametersServiceTest {
     @Test
     void validateBlackDuckParametersForMissingParametersTest() {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
         
         assertFalse(blackDuckParametersService.isValidScanParameters(blackDuckParametersMap));
     }
@@ -81,8 +81,8 @@ public class BlackDuckParametersServiceTest {
         assertFalse(blackDuckParametersService.isValidScanParameters(null));
 
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, "");
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "");
+        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
         
         assertFalse(blackDuckParametersService.isValidScanParameters(blackDuckParametersMap));
     }
