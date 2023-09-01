@@ -87,6 +87,9 @@ public class ScanCommandsFactory {
             if (!Utility.isStringNullOrBlank(config.getBlackDuckApiToken())) {
                 globalParameters.put(ApplicationConstants.BLACKDUCK_API_TOKEN_KEY, config.getBlackDuckApiToken());
             }
+            if (!Utility.isStringNullOrBlank(config.getBlackDuckInstallationPath())) {
+                globalParameters.put(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, config.getBlackDuckInstallationPath());
+            }
 
             if (!Utility.isStringNullOrBlank(config.getCoverityConnectUrl())) {
                 globalParameters.put(ApplicationConstants.COVERITY_CONNECT_URL_KEY, config.getCoverityConnectUrl());
@@ -104,6 +107,14 @@ public class ScanCommandsFactory {
 
             if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeDownloadUrl())) {
                 globalParameters.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, config.getSynopsysBridgeDownloadUrl());
+            }
+
+            if (!Utility.isStringNullOrBlank(config.getSynopsysInstallationPath())) {
+                globalParameters.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, config.getSynopsysInstallationPath());
+            }
+
+            if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeVersion())) {
+                globalParameters.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, config.getSynopsysBridgeVersion());
             }
 
             if (!Utility.isStringNullOrBlank(config.getPolarisServerUrl())) {
@@ -140,6 +151,9 @@ public class ScanCommandsFactory {
         }
         if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_install_directory())) {
             blackDuckParameters.put(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, scanStep.getBlackduck_install_directory());
+        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_scan_failure_severities())) {
+            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, scanStep.getBlackduck_scan_failure_severities().toUpperCase());
         }
         if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_scan_failure_severities())) {
             blackDuckParameters.put(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, scanStep.getBlackduck_scan_failure_severities().toUpperCase());

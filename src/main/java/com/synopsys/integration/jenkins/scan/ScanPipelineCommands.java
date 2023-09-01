@@ -30,6 +30,12 @@ public class ScanPipelineCommands {
     }
 
     public int runScanner(Map<String, Object> scanParameters, ScanStrategyFactory scanStrategyFactory) throws ScannerJenkinsException {
+        for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            listener.getLogger().println("SADLog : ========= " + key + ": " + value);
+        }
+
         ScanStrategy scanStrategy = scanStrategyFactory.getParametersService(scanParameters);
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);

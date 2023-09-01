@@ -30,6 +30,9 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @HelpMarkdown("Provide the Black Duck api token through which black duck server can be accessed with proper authorization.")
     private String blackDuckApiToken;
 
+    @HelpMarkdown("Provide the Black Duck installation path where it will be installed.")
+    private String blackDuckInstallationPath;
+
     @HelpMarkdown("Provide the URL that lets you access your Coverity server.")
     private String coverityConnectUrl;
 
@@ -42,6 +45,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @HelpMarkdown("Provide the Synopsys Bridge artifactory URL from where synopsys-bridge zip file can be downloaded. " +
         "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrl;
+
+    @HelpMarkdown("Provide the specific Synopsys bridge version you want to download from artifactory.")
+    private String synopsysBridgeVersion;
+
+    @HelpMarkdown("Provide the Synopsys bridge installation path where it will be installed.")
+    private String synopsysInstallationPath;
 
     @HelpMarkdown("Provide the bitbucket api access token through which PrComment and FixPr will be done.")
     private String bitbucketToken;
@@ -76,6 +85,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     }
 
     @DataBoundSetter
+    public void setBlackDuckInstallationPath(String blackDuckInstallationPath) {
+        this.blackDuckInstallationPath = blackDuckInstallationPath;
+        save();
+    }
+
+    @DataBoundSetter
     public void setCoverityConnectUrl(String coverityConnectUrl) {
         this.coverityConnectUrl = coverityConnectUrl;
         save();
@@ -106,6 +121,18 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     }
 
     @DataBoundSetter
+    public void setSynopsysBridgeVersion(String synopsysBridgeVersion) {
+        this.synopsysBridgeVersion = synopsysBridgeVersion;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setSynopsysInstallationPath(String synopsysInstallationPath) {
+        this.synopsysInstallationPath = synopsysInstallationPath;
+        save();
+    }
+
+    @DataBoundSetter
     public void setPolarisServerUrl(String polarisServerUrl) {
         this.polarisServerUrl = polarisServerUrl;
         save();
@@ -128,6 +155,9 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     public String getBlackDuckApiToken() {
         return blackDuckApiToken;
     }
+    public String getBlackDuckInstallationPath() {
+        return blackDuckInstallationPath;
+    }
 
     public String getCoverityConnectUrl() {
         return coverityConnectUrl;
@@ -143,6 +173,14 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getSynopsysBridgeDownloadUrl() {
         return synopsysBridgeDownloadUrl;
+    }
+
+    public String getSynopsysBridgeVersion() {
+        return synopsysBridgeVersion;
+    }
+
+    public String getSynopsysInstallationPath() {
+        return synopsysInstallationPath;
     }
 
     public String getBitbucketToken() {

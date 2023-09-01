@@ -10,6 +10,9 @@
         <f:entry field="blackDuckApiToken" title="Black Duck Api Token">
             <f:password/>
         </f:entry>
+        <f:entry field="blackDuckInstallationPath" title="Black Duck Installation Path">
+            <f:textbox/>
+        </f:entry>
         <f:entry field="coverityConnectUrl" title="Coverity Connect URL">
             <f:textbox/>
         </f:entry>
@@ -29,6 +32,12 @@
             <f:password/>
         </f:entry>
         <f:entry field="synopsysBridgeDownloadUrl" title="Synopsys Bridge Download URL (Optional)">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="synopsysBridgeVersion" title="Synopsys Bridge Version (Optional)">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="synopsysInstallationPath" title="Synopsys Bridge Installation Path (Optional)">
             <f:textbox/>
         </f:entry>
     </f:section>
