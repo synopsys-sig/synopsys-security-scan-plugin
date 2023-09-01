@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
@@ -37,11 +38,13 @@ public class ScannerArgumentService {
     private final FilePath workspace;
     private static final String DATA_KEY = "data";
     private String inputJsonFilePath;
+    private final LoggerWrapper logger;
 
     public ScannerArgumentService(TaskListener listener, EnvVars envVars, FilePath workspace) {
         this.listener = listener;
         this.envVars = envVars;
         this.workspace = workspace;
+        this.logger = new LoggerWrapper(listener);
     }
 
     public String getInputJsonFilePath() {
@@ -109,8 +112,7 @@ public class ScannerArgumentService {
             jsonPath = writeInputJsonToFile(inputJson);
             setInputJsonFilePath(jsonPath);
         } catch (Exception e) {
-            listener.getLogger().println("An exception occurred while creating input.json file: " + e.getMessage());
-            e.printStackTrace(listener.getLogger());
+            logger.error("An exception occurred while creating input.json file: " + e.getMessage());
         }
 
         return jsonPath;
@@ -162,8 +164,7 @@ public class ScannerArgumentService {
             tempFile.write(inputJson, StandardCharsets.UTF_8.name());
             inputJsonPath = tempFile.getRemote();
         } catch (Exception e) {
-            listener.getLogger().println("An exception occurred while writing into input.json file: " + e.getMessage());
-            e.printStackTrace(listener.getLogger());
+            logger.error("An exception occurred while writing into input.json file: " + e.getMessage());
         }
 
         return inputJsonPath;

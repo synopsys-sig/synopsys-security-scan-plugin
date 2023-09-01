@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.jenkins.scan.service.diagnostics;
 
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -17,6 +18,7 @@ import hudson.tasks.ArtifactArchiver;
 public class DiagnosticsService {
     private final Run<?, ?> run;
     private final TaskListener listener;
+    private final LoggerWrapper logger;
     private final Launcher launcher;
     private final EnvVars envVars;
     private final ArtifactArchiver artifactArchiver;
@@ -25,6 +27,7 @@ public class DiagnosticsService {
                               ArtifactArchiver artifactArchiver) {
         this.run = run;
         this.listener = listener;
+        this.logger = new LoggerWrapper(listener);
         this.launcher = launcher;
         this.envVars = envVars;
         this.artifactArchiver = artifactArchiver;
@@ -33,19 +36,19 @@ public class DiagnosticsService {
     public void archiveDiagnostics(FilePath diagnosticsPath) {
         try {
             if (diagnosticsPath.exists()) {
-                listener.getLogger().println("Archiving diagnostics jenkins artifact from: " + diagnosticsPath.getRemote());
+                logger.info("Archiving diagnostics jenkins artifact from: " + diagnosticsPath.getRemote());
 
                 artifactArchiver.perform(run, diagnosticsPath, envVars, launcher, listener);
             } else {
-                listener.getLogger().println("Archiving diagnostics failed as diagnostics path not found at: " + diagnosticsPath.getRemote());
+                logger.error("Archiving diagnostics failed as diagnostics path not found at: " + diagnosticsPath.getRemote());
                 return;
             }
         } catch (Exception e) {
-            listener.getLogger().println("An exception occurred while archiving diagnostics in jenkins artifact: " + e.getMessage());
+            logger.error("An exception occurred while archiving diagnostics in jenkins artifact: " + e.getMessage());
             return;
         }
 
-        listener.getLogger().println("Diagnostics archived successfully in jenkins artifact");
+        logger.info("Diagnostics archived successfully in jenkins artifact");
     }
 
 }

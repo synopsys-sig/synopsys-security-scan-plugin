@@ -9,6 +9,7 @@ package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
@@ -16,9 +17,9 @@ import hudson.model.TaskListener;
 import java.util.*;
 
 public class BlackDuckParametersService implements ScanStrategy {
-    private final TaskListener listener;
+    private final LoggerWrapper logger;
     public BlackDuckParametersService(TaskListener listener) {
-        this.listener = listener;
+        this.logger = new LoggerWrapper(listener);
     }
 
     @Override
@@ -47,11 +48,11 @@ public class BlackDuckParametersService implements ScanStrategy {
             });
 
         if (invalidParams.isEmpty()) {
-            listener.getLogger().println("BlackDuck parameters are validated successfully");
+            logger.info("BlackDuck parameters are validated successfully");
             return true;
         } else {
-            listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
-            listener.getLogger().println("Invalid BlackDuck parameters: " + invalidParams);
+            logger.error(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
+            logger.error("Invalid BlackDuck parameters: " + invalidParams);
             return false;
         }
     }
