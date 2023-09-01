@@ -33,17 +33,17 @@ public class ParametersService {
         boolean isValidCoverityParameters = true;
         boolean isValidPolarisParameters = true;
 
-        for (String type : scanTypes) {
-            if (type.equals(ScanType.BLACKDUCK.name())) {
-                BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
-                isValidBlackDuckParameters = blackDuckParametersService.isValidBlackDuckParameters(scanParameters);
-            } else if (type.equals(ScanType.COVERITY.name())) {
-                CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
-                isValidCoverityParameters = coverityParametersService.isValidCoverityParameters(scanParameters);
-            } else if (type.equals(ScanType.POLARIS.name())) {
-                PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
-                isValidPolarisParameters = polarisParametersService.isValidPolarisParameters(scanParameters);
-            }
+        if (scanTypes.contains(ScanType.BLACKDUCK.name())) {
+            BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
+            isValidBlackDuckParameters = blackDuckParametersService.isValidBlackDuckParameters(scanParameters);
+        }
+        if (scanTypes.contains(ScanType.COVERITY.name())) {
+            CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
+            isValidCoverityParameters = coverityParametersService.isValidCoverityParameters(scanParameters);
+        }
+        if (scanTypes.contains(ScanType.POLARIS.name())) {
+            PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
+            isValidPolarisParameters = polarisParametersService.isValidPolarisParameters(scanParameters);
         }
         
         return isValidBlackDuckParameters && isValidCoverityParameters && isValidPolarisParameters;
