@@ -40,20 +40,11 @@ public class ScannerArgumentService {
     private final EnvVars envVars;
     private final FilePath workspace;
     private static final String DATA_KEY = "data";
-    private String inputJsonFilePath;
 
     public ScannerArgumentService(TaskListener listener, EnvVars envVars, FilePath workspace) {
         this.listener = listener;
         this.envVars = envVars;
         this.workspace = workspace;
-    }
-
-    public String getInputJsonFilePath() {
-        return inputJsonFilePath;
-    }
-
-    public void setInputJsonFilePath(String inputJsonFilePath) {
-        this.inputJsonFilePath = inputJsonFilePath;
     }
 
     public List<String> getCommandLineArgs(Map<String, Object> scanParameters, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
@@ -132,7 +123,6 @@ public class ScannerArgumentService {
         try {
             String inputJson = mapper.writeValueAsString(inputJsonMap);
             jsonPath = writeInputJsonToFile(inputJson, jsonPrefix);
-            setInputJsonFilePath(jsonPath);
         } catch (Exception e) {
             listener.getLogger().println("An exception occurred while creating json file: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
@@ -206,5 +196,13 @@ public class ScannerArgumentService {
             return true;
         }
         return false;
+    }
+
+    public void removeTemporaryInputJson(List<String> commandLineArgs) {
+        for (String arg : commandLineArgs) {
+            if (arg.endsWith(".json")) {
+                Utility.removeFile(arg, workspace, listener);
+            }
+        }
     }
 }

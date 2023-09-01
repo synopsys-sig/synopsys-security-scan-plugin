@@ -10,7 +10,6 @@ package com.synopsys.integration.jenkins.scan;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
-import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 import com.synopsys.integration.jenkins.scan.service.diagnostics.DiagnosticsService;
 import hudson.EnvVars;
@@ -65,7 +64,7 @@ public class SecurityScanner {
         } finally {
             printBridgeExecutionLogs("END EXECUTION OF SYNOPSYS BRIDGE");
 
-            Utility.removeFile(scannerArgumentService.getInputJsonFilePath(), workspace, listener);
+            scannerArgumentService.removeTemporaryInputJson(commandLineArgs);
 
             if (Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
                 DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,
