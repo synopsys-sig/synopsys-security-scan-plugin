@@ -43,7 +43,7 @@ public class ScanPipelineCommands {
 
         int exitCode = -1;
 
-        if (parametersService.isValidParameters(scanParameters) &&
+        if (parametersService.isValidScanParameters(scanParameters) &&
             bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);

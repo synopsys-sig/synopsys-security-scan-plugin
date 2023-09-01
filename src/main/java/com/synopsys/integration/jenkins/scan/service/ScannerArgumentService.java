@@ -67,33 +67,33 @@ public class ScannerArgumentService {
 
         SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
         Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters, fixPrOrPrComment);
+        
+        if (scanTypes.contains(ScanType.BLACKDUCK.name())) {
+            BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
+            BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(scanParameters);
 
-        for (String type : scanTypes) {
-            if (type.equals(ScanType.BLACKDUCK.name())) {
-                BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
-                BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(scanParameters);
+            commandLineArgs.add(BridgeParams.STAGE_OPTION);
+            commandLineArgs.add(BridgeParams.BLACKDUCK_STAGE);
+            commandLineArgs.add(BridgeParams.INPUT_OPTION);
+            commandLineArgs.add(createBridgeInputJson(blackDuck, scmObject, fixPrOrPrComment, ApplicationConstants.BLACKDUCK_INPUT_PREFIX));
+        }
+        if (scanTypes.contains(ScanType.COVERITY.name())) {
+            CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
+            Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(scanParameters);
 
-                commandLineArgs.add(BridgeParams.STAGE_OPTION);
-                commandLineArgs.add(BridgeParams.BLACKDUCK_STAGE);
-                commandLineArgs.add(BridgeParams.INPUT_OPTION);
-                commandLineArgs.add(createBridgeInputJson(blackDuck, scmObject, fixPrOrPrComment, ApplicationConstants.BLACKDUCK_INPUT_PREFIX));
-            } else if (type.equals(ScanType.COVERITY.name())) {
-                CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
-                Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(scanParameters);
+            commandLineArgs.add(BridgeParams.STAGE_OPTION);
+            commandLineArgs.add(BridgeParams.COVERITY_STAGE);
+            commandLineArgs.add(BridgeParams.INPUT_OPTION);
+            commandLineArgs.add(createBridgeInputJson(coverity, scmObject, fixPrOrPrComment, ApplicationConstants.COVERITY_INPUT_PREFIX));
+        }
+        if (scanTypes.contains(ScanType.POLARIS.name())) {
+            PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
+            Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(scanParameters);
 
-                commandLineArgs.add(BridgeParams.STAGE_OPTION);
-                commandLineArgs.add(BridgeParams.COVERITY_STAGE);
-                commandLineArgs.add(BridgeParams.INPUT_OPTION);
-                commandLineArgs.add(createBridgeInputJson(coverity, scmObject, fixPrOrPrComment, ApplicationConstants.COVERITY_INPUT_PREFIX));
-            } else if (type.equals(ScanType.POLARIS.name())) {
-                PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
-                Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(scanParameters);
-
-                commandLineArgs.add(BridgeParams.STAGE_OPTION);
-                commandLineArgs.add(BridgeParams.POLARIS_STAGE);
-                commandLineArgs.add(BridgeParams.INPUT_OPTION);
-                commandLineArgs.add(createBridgeInputJson(polaris, scmObject, fixPrOrPrComment, ApplicationConstants.POLARIS_INPUT_PREFIX));
-            }
+            commandLineArgs.add(BridgeParams.STAGE_OPTION);
+            commandLineArgs.add(BridgeParams.POLARIS_STAGE);
+            commandLineArgs.add(BridgeParams.INPUT_OPTION);
+            commandLineArgs.add(createBridgeInputJson(polaris, scmObject, fixPrOrPrComment, ApplicationConstants.POLARIS_INPUT_PREFIX));
         }
 
         if (Objects.equals(scanParameters.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
@@ -134,7 +134,7 @@ public class ScannerArgumentService {
             jsonPath = writeInputJsonToFile(inputJson, jsonPrefix);
             setInputJsonFilePath(jsonPath);
         } catch (Exception e) {
-            listener.getLogger().println("An exception occurred while creating input.json file: " + e.getMessage());
+            listener.getLogger().println("An exception occurred while creating json file: " + e.getMessage());
             e.printStackTrace(listener.getLogger());
         }
 

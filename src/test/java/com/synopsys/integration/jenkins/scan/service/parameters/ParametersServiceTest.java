@@ -28,7 +28,7 @@ public class ParametersServiceTest {
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
-        assertTrue(parametersService.isValidParameters(parameters));
+        assertTrue(parametersService.isValidScanParameters(parameters));
     }
 
     @Test
@@ -38,7 +38,7 @@ public class ParametersServiceTest {
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
-        assertFalse(parametersService.isValidParameters(parameters));
+        assertFalse(parametersService.isValidScanParameters(parameters));
     }
 
     @Test
@@ -55,6 +55,6 @@ public class ParametersServiceTest {
         parameters.put(ApplicationConstants.BRIDGE_POLARIS_PROJECT_NAME_KEY, "test-project");
         parameters.put(ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, "SCA, SAST");
 
-        assertTrue(parametersService.isValidParameters(parameters));
+        assertTrue(parametersService.isValidScanParameters(parameters));
     }
 }

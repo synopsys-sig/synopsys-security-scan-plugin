@@ -1,3 +1,10 @@
+/*
+ * synopsys-security-scan-plugin
+ *
+ * Copyright (c) 2023 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.jenkins.scan.service.parameters;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
@@ -19,7 +26,7 @@ public class ParametersService {
         this.listener = listener;
     }
 
-    public boolean isValidParameters(Map<String, Object> scanParameters) {
+    public boolean isValidScanParameters(Map<String, Object> scanParameters) {
         Set<String> scanTypes = getScanTypes(scanParameters);
         
         boolean isValidBlackDuckParameters = true;
