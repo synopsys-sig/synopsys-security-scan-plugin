@@ -35,8 +35,13 @@ public class LoggerWrapper {
         printMessage("ERROR: " + message);
     }
 
-    public void println(String message) {
+    public void println(String format, Object... args) {
+        String message = String.format(format, args);
         listener.getLogger().println(message);
+    }
+
+    public void println() {
+        listener.getLogger().println();
     }
 
 }

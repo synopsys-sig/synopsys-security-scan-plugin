@@ -37,18 +37,6 @@ public class CoverityParametersService implements ScanStrategy {
             return false;
         }
 
-        logger.info("parameters for coverity:");
-
-        for (Map.Entry<String, Object> entry : coverityParameters.entrySet()) {
-            String key = entry.getKey();
-            if(key.startsWith("bridge_blackduck") || key.startsWith("bridge_polaris")) continue;
-            if(key.equals(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY)) {
-                entry.setValue(LogMessages.ASTERISKS);
-            }
-            Object value = entry.getValue();
-            logger.info(" --- " + key + " = " + value);
-        }
-        
         List<String> invalidParams = new ArrayList<>();
 
         Arrays.asList(ApplicationConstants.BRIDGE_COVERITY_CONNECT_URL_KEY,

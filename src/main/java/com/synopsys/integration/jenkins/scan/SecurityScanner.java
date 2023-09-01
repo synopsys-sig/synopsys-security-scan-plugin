@@ -55,6 +55,8 @@ public class SecurityScanner {
                 commandLineArgs.stream().map(arg -> arg.concat(" ")).collect(Collectors.joining()).trim());
 
         try {
+
+            logger.println();
             printBridgeExecutionLogs("START EXECUTION OF SYNOPSYS BRIDGE");
 
             scanner = launcher.launch()
@@ -82,9 +84,7 @@ public class SecurityScanner {
     }
 
     public void printBridgeExecutionLogs(String message) {
-        logger.println(LogMessages.ASTERISKS);
-        logger.println(message);
-        logger.println(LogMessages.ASTERISKS);
+        logger.println("******************************* %s *******************************", message);
     }
 
 }
