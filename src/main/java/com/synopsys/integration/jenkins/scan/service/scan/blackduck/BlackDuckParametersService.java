@@ -9,33 +9,27 @@ package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
-import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
-import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
 import hudson.model.TaskListener;
 import java.util.*;
 
-public class BlackDuckParametersService implements ScanStrategy {
-    private final TaskListener listener;
+public class BlackDuckParametersService {
+    private final LoggerWrapper logger;
+
     public BlackDuckParametersService(TaskListener listener) {
-        this.listener = listener;
+        this.logger = new LoggerWrapper(listener);
     }
 
-    @Override
-    public ScanType getScanType() {
-        return ScanType.BLACKDUCK;
-    }
-
-    @Override
-    public boolean isValidScanParameters(Map<String, Object> blackDuckParameters) {
+    public boolean isValidBlackDuckParameters(Map<String, Object> blackDuckParameters) {
         if (blackDuckParameters == null || blackDuckParameters.isEmpty()) {
             return false;
         }
         
         List<String> invalidParams = new ArrayList<>();
 
-        Arrays.asList(ApplicationConstants.BLACKDUCK_URL_KEY,
-                ApplicationConstants.BLACKDUCK_API_TOKEN_KEY)
+        Arrays.asList(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY,
+                ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY)
             .forEach(key -> {
                 boolean isKeyValid = blackDuckParameters.containsKey(key)
                     && blackDuckParameters.get(key) != null
@@ -47,17 +41,16 @@ public class BlackDuckParametersService implements ScanStrategy {
             });
 
         if (invalidParams.isEmpty()) {
-            listener.getLogger().println("BlackDuck parameters are validated successfully");
+            logger.info("BlackDuck parameters are validated successfully");
             return true;
         } else {
-            listener.getLogger().println(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
-            listener.getLogger().println("Invalid BlackDuck parameters: " + invalidParams);
+            logger.error(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
+            logger.error("Invalid BlackDuck parameters: " + invalidParams);
             return false;
         }
     }
 
-    @Override
-    public BlackDuck prepareScanInputForBridge(Map<String, Object> blackDuckParameters) {
+    public BlackDuck prepareBlackDuckObjectForBridge(Map<String, Object> blackDuckParameters) {
         BlackDuck blackDuck = new BlackDuck();
 
         for (Map.Entry<String, Object> entry : blackDuckParameters.entrySet()) {
@@ -65,21 +58,21 @@ public class BlackDuckParametersService implements ScanStrategy {
             String value = entry.getValue().toString().trim();
 
             switch (key) {
-                case ApplicationConstants.BLACKDUCK_URL_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY:
                     blackDuck.setUrl(value);
                     break;
-                case ApplicationConstants.BLACKDUCK_API_TOKEN_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY:
                     blackDuck.setToken(value);
                     break;
-                case ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY:
                     blackDuck.getInstall().setDirectory(value);
                     break;
-                case ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY:
                     if (value.equals("true") || value.equals("false")) {
                         blackDuck.getScan().setFull(Boolean.parseBoolean(value));
                     }
                     break;
-                case ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY:
                     if (!value.isEmpty()) {
                         List<String> failureSeverities = new ArrayList<>();
                         String[] failureSeveritiesInput = value.toUpperCase().split(",");
@@ -90,12 +83,12 @@ public class BlackDuckParametersService implements ScanStrategy {
                         blackDuck.getScan().getFailure().setSeverities(failureSeverities);
                     }
                     break;
-                case ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY:
                     if (value.equals("true") || value.equals("false")) {
                         blackDuck.getAutomation().setFixpr(Boolean.parseBoolean(value));
                     }
                     break;
-                case ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY:
+                case ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY:
                     if (value.equals("true") || value.equals("false")) {
                         blackDuck.getAutomation().setPrComment(Boolean.parseBoolean(value));
                     }

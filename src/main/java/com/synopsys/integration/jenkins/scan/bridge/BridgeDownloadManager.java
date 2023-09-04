@@ -9,6 +9,7 @@ package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -20,10 +21,12 @@ import java.util.regex.Pattern;
 public class BridgeDownloadManager {
     private final TaskListener listener;
     private final FilePath workspace;
+    private final LoggerWrapper logger;
 
     public BridgeDownloadManager(FilePath workspace, TaskListener listener) {
         this.workspace = workspace;
         this.listener = listener;
+        this.logger = new LoggerWrapper(listener);
     }
 
     public void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
@@ -39,7 +42,7 @@ public class BridgeDownloadManager {
             FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl, bridgeInstallationPath);
             bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(workspace.getChannel(), bridgeInstallationPath));
         } catch (Exception e) {
-            listener.getLogger().printf(LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
+            logger.error(LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
         }
     }
 
@@ -78,7 +81,7 @@ public class BridgeDownloadManager {
                 return extensionsDir.isDirectory() && (bridgeBinaryFile.exists() || bridgeBinaryFileWindows.exists()) && versionFile.exists();
             }
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("An exception occurred while checking if the bridge is installed: " + e.getMessage());
+            logger.error("An exception occurred while checking if the bridge is installed: " + e.getMessage());
         }
         return false;
     }
@@ -96,7 +99,7 @@ public class BridgeDownloadManager {
                 }
             }
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("An exception occurred while extracting bridge-version from the 'versions.txt': " + e.getMessage());
+            logger.error("An exception occurred while extracting bridge-version from the 'versions.txt': " + e.getMessage());
         }
         return null;
     }
@@ -133,7 +136,7 @@ public class BridgeDownloadManager {
             tempFilePath.copyFrom(url);
             tempVersionFilePath = tempFilePath.getRemote();
         } catch (IOException | InterruptedException e) {
-            listener.getLogger().println("An exception occurred while downloading 'versions.txt': " + e.getMessage());
+            logger.error("An exception occurred while downloading 'versions.txt': " + e.getMessage());
         }
         return tempVersionFilePath;
     }
@@ -145,7 +148,7 @@ public class BridgeDownloadManager {
             connection.setRequestMethod("HEAD");
             return (connection.getResponseCode() >= 200 && connection.getResponseCode() < 300);
         } catch (IOException e) {
-            listener.getLogger().println("An exception occurred while checking if 'versions.txt' is available or not in the URL: " + e.getMessage());
+            logger.error("An exception occurred while checking if 'versions.txt' is available or not in the URL: " + e.getMessage());
             return false;
         }
     }
@@ -163,7 +166,7 @@ public class BridgeDownloadManager {
             String directoryPath = path.substring(0, path.lastIndexOf('/'));
             directoryUrl = uri.getScheme().concat("://").concat(uri.getHost()).concat(directoryPath);
         } catch (URISyntaxException e) {
-            listener.getLogger().println("An exception occurred while getting directoryUrl from downloadUrl: " + e.getMessage());
+            logger.error("An exception occurred while getting directoryUrl from downloadUrl: " + e.getMessage());
         }
         return directoryUrl;
     }

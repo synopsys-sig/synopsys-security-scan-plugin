@@ -35,28 +35,28 @@ public class ApplicationConstants {
     public static final String ENV_BRANCH_NAME_KEY = "BRANCH_NAME";
 
     public static final String SCAN_TYPE_KEY = "scan_type";
-    public static final String BLACKDUCK_URL_KEY = "blackduck_url";
-    public static final String BLACKDUCK_API_TOKEN_KEY = "blackduck_api_token";
-    public static final String BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck_install_directory";
-    public static final String BLACKDUCK_SCAN_FULL_KEY = "blackduck_scan_full";
-    public static final String BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck_scan_failure_severities";
-    public static final String BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck_automation_fixpr";
-    public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck_automation_prcomment";
+    public static final String BRIDGE_BLACKDUCK_URL_KEY = "bridge_blackduck_url";
+    public static final String BRIDGE_BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_api_token";
+    public static final String BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY = "bridge_blackduck_install_directory";
+    public static final String BRIDGE_BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
+    public static final String BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "bridge_blackduck_scan_failure_severities";
+    public static final String BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY = "bridge_blackduck_automation_fixpr";
+    public static final String BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "bridge_blackduck_automation_prcomment";
 
-    public static final String COVERITY_CONNECT_URL_KEY = "coverity_connect_url";
-    public static final String COVERITY_CONNECT_USER_NAME_KEY = "coverity_connect_user_name";
-    public static final String COVERITY_CONNECT_USER_PASSWORD_KEY = "coverity_connect_user_password";
-    public static final String COVERITY_CONNECT_PROJECT_NAME_KEY = "coverity_connect_project_name";
-    public static final String COVERITY_CONNECT_STREAM_NAME_KEY = "coverity_connect_stream_name";
-    public static final String COVERITY_CONNECT_POLICY_VIEW_KEY = "coverity_connect_policy_view";
-    public static final String COVERITY_INSTALL_DIRECTORY_KEY = "coverity_install_directory";
-    public static final String COVERITY_AUTOMATION_PRCOMMENT_KEY = "coverity_automation_prcomment";
+    public static final String BRIDGE_COVERITY_CONNECT_URL_KEY = "bridge_coverity_connect_url";
+    public static final String BRIDGE_COVERITY_CONNECT_USER_NAME_KEY = "bridge_coverity_connect_user_name";
+    public static final String BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY = "bridge_coverity_connect_user_password";
+    public static final String BRIDGE_COVERITY_CONNECT_PROJECT_NAME_KEY = "bridge_coverity_connect_project_name";
+    public static final String BRIDGE_COVERITY_CONNECT_STREAM_NAME_KEY = "bridge_coverity_connect_stream_name";
+    public static final String BRIDGE_COVERITY_CONNECT_POLICY_VIEW_KEY = "bridge_coverity_connect_policy_view";
+    public static final String BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY = "bridge_coverity_install_directory";
+    public static final String BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY = "bridge_coverity_automation_prcomment";
 
-    public static final String POLARIS_SERVER_URL_KEY = "bridge_polaris_serverurl";
-    public static final String POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accesstoken";
-    public static final String POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";
-    public static final String POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
-    public static final String POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
+    public static final String BRIDGE_POLARIS_SERVER_URL_KEY = "bridge_polaris_serverurl";
+    public static final String BRIDGE_POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accesstoken";
+    public static final String BRIDGE_POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";
+    public static final String BRIDGE_POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
+    public static final String BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
 
@@ -64,5 +64,9 @@ public class ApplicationConstants {
     public static final String BRIDGE_DOWNLOAD_VERSION = "bridge_download_version";
     public static final String BRIDGE_INSTALLATION_PATH = "synopsys_bridge_path";
     public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
+
+    public static final String BLACKDUCK_INPUT_JSON_PREFIX = "blackduck_input";
+    public static final String COVERITY_INPUT_JSON_PREFIX = "coverity_input";
+    public static final String POLARIS_INPUT_JSON_PREFIX = "polaris_input";
 
 }
