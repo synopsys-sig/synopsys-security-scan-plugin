@@ -24,6 +24,8 @@ public class Polaris {
 
     @JsonProperty("serverUrl")
     private String serverUrl;
+    @JsonProperty("triage")
+    private String triage;
 
     public Polaris() {
         applicationName = new ApplicationName();
@@ -69,5 +71,13 @@ public class Polaris {
 
     public void setServerUrl(String serverUrl) {
         this.serverUrl = serverUrl;
+    }
+
+    public String getTriage() {
+        return triage;
+    }
+
+    public void setTriage(String triage) {
+        this.triage = triage;
     }
 }

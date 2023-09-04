@@ -85,6 +85,9 @@ public class PolarisParametersService implements ScanStrategy {
                 case ApplicationConstants.BRIDGE_POLARIS_PROJECT_NAME_KEY:
                     polaris.getProjectName().setName(value);
                     break;
+                case ApplicationConstants.BRIDGE_POLARIS_TRIAGE_KEY:
+                    polaris.setTriage(value);
+                    break;
                 case ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY:
                     if (!value.isEmpty()) {
                         List<String> assessmentTypes = new ArrayList<>();

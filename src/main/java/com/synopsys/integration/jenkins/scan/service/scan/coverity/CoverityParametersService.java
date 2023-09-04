@@ -97,6 +97,14 @@ public class CoverityParametersService implements ScanStrategy {
                         coverity.getAutomation().setPrComment(Boolean.parseBoolean(value));
                     }
                     break;
+                case ApplicationConstants.BRIDGE_COVERITY_VERSION_KEY:
+                    coverity.setVersion(value);
+                    break;
+                case ApplicationConstants.BRIDGE_COVERITY_LOCAL_KEY:
+                    if (value.equals("true") || value.equals("false")) {
+                        coverity.setLocal(Boolean.parseBoolean(value));
+                    }
+                    break;
                 default:
                     break;
             }
