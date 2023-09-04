@@ -37,7 +37,7 @@ public class ScannerArgumentServiceTest {
     @BeforeEach
     void setUp() {
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
-        workspace = new FilePath(new File(getHomeDirectoryForTest()));
+        workspace = new FilePath(new File(getHomeDirectoryForTest())).child("mock-workspace");
 
         bitBucket = new Bitbucket();
         bitBucket.getProject().getRepository().setName("fake-repo");
@@ -106,11 +106,9 @@ public class ScannerArgumentServiceTest {
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(blackDuckParametersMap, workspace);
 
         if(getOSNameForTest().contains("win")) {
-            assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest()))
-                    .child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
+            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
         } else {
-            assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest()))
-                    .child(ApplicationConstants.BRIDGE_BINARY).getRemote());
+            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY).getRemote());
         }
         assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
         assertEquals(commandLineArgs.get(2), BridgeParams.BLACKDUCK_STAGE);
@@ -135,11 +133,9 @@ public class ScannerArgumentServiceTest {
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(coverityParameters, workspace);
 
         if(getOSNameForTest().contains("win")) {
-            assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest()))
-                    .child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
+            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
         } else {
-            assertEquals(commandLineArgs.get(0), new FilePath(new File(getHomeDirectoryForTest()))
-                    .child(ApplicationConstants.BRIDGE_BINARY).getRemote());
+            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY).getRemote());
         }
         assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
         assertEquals(commandLineArgs.get(2), BridgeParams.COVERITY_STAGE);
