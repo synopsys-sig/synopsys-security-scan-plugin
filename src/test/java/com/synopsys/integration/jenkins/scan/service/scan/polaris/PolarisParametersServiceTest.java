@@ -1,17 +1,17 @@
 package com.synopsys.integration.jenkins.scan.service.scan.polaris;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.polaris.Polaris;
 import hudson.model.TaskListener;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class PolarisParametersServiceTest {
     private PolarisParametersService polarisParametersService;
@@ -28,23 +28,16 @@ public class PolarisParametersServiceTest {
     }
 
     @Test
-    void getScanTypeTest() {
-        assertNotEquals(ScanType.BLACKDUCK, polarisParametersService.getScanType());
-        assertEquals(ScanType.POLARIS, polarisParametersService.getScanType());
-        assertNotEquals(ScanType.COVERITY, polarisParametersService.getScanType());
-    }
-
-    @Test
     void invalidScanParametersTest() {
         Map<String, Object> polarisParameters = new HashMap<>();
         
-        assertFalse(polarisParametersService.isValidScanParameters(polarisParameters));
+        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters));
 
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
 
-        assertFalse(polarisParametersService.isValidScanParameters(polarisParameters));
+        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters));
     }
 
     @Test
@@ -56,7 +49,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, TEST_POLARIS_ASSESSMENT_TYPES);
 
-        assertTrue(polarisParametersService.isValidScanParameters(polarisParameters));
+        assertTrue(polarisParametersService.isValidPolarisParameters(polarisParameters));
     }
 
     @Test
@@ -69,7 +62,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_PROJECT_NAME_KEY, "fake-project-name");
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, "SAST");
 
-        Polaris polaris = polarisParametersService.prepareScanInputForBridge(polarisParameters);
+        Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(polarisParameters);
         
         assertEquals(polaris.getServerUrl(), TEST_POLARIS_SERVER_URL);
         assertEquals(polaris.getAccessToken(), TEST_POLARIS_ACCESS_TOKEN);

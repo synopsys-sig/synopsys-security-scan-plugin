@@ -10,25 +10,18 @@ package com.synopsys.integration.jenkins.scan.service.scan.blackduck;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
-import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
-import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
 import hudson.model.TaskListener;
 import java.util.*;
 
-public class BlackDuckParametersService implements ScanStrategy {
+public class BlackDuckParametersService {
     private final LoggerWrapper logger;
+
     public BlackDuckParametersService(TaskListener listener) {
         this.logger = new LoggerWrapper(listener);
     }
 
-    @Override
-    public ScanType getScanType() {
-        return ScanType.BLACKDUCK;
-    }
-
-    @Override
-    public boolean isValidScanParameters(Map<String, Object> blackDuckParameters) {
+    public boolean isValidBlackDuckParameters(Map<String, Object> blackDuckParameters) {
         if (blackDuckParameters == null || blackDuckParameters.isEmpty()) {
             return false;
         }
@@ -57,8 +50,7 @@ public class BlackDuckParametersService implements ScanStrategy {
         }
     }
 
-    @Override
-    public BlackDuck prepareScanInputForBridge(Map<String, Object> blackDuckParameters) {
+    public BlackDuck prepareBlackDuckObjectForBridge(Map<String, Object> blackDuckParameters) {
         BlackDuck blackDuck = new BlackDuck();
 
         for (Map.Entry<String, Object> entry : blackDuckParameters.entrySet()) {

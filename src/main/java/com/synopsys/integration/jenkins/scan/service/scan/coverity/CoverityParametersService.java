@@ -10,33 +10,25 @@ package com.synopsys.integration.jenkins.scan.service.scan.coverity;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
-import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
-import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
 import hudson.model.TaskListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class CoverityParametersService implements ScanStrategy {
+public class CoverityParametersService {
     private final LoggerWrapper logger;
 
     public CoverityParametersService(TaskListener listener) {
         this.logger = new LoggerWrapper(listener);
     }
 
-    @Override
-    public ScanType getScanType() {
-        return ScanType.COVERITY;
-    }
-
-    @Override
-    public boolean isValidScanParameters(Map<String, Object> coverityParameters) {
+    public boolean isValidCoverityParameters(Map<String, Object> coverityParameters) {
         if (coverityParameters == null || coverityParameters.isEmpty()) {
             return false;
         }
-
+        
         List<String> invalidParams = new ArrayList<>();
 
         Arrays.asList(ApplicationConstants.BRIDGE_COVERITY_CONNECT_URL_KEY,
@@ -62,8 +54,7 @@ public class CoverityParametersService implements ScanStrategy {
         }
     }
 
-    @Override
-    public Coverity prepareScanInputForBridge(Map<String, Object> coverityParameters) {
+    public Coverity prepareCoverityObjectForBridge(Map<String, Object> coverityParameters) {
         Coverity coverity = new Coverity();
 
         for (Map.Entry<String, Object> entry : coverityParameters.entrySet()) {

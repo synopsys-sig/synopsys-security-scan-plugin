@@ -14,13 +14,12 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
-import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
 import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
-import com.synopsys.integration.jenkins.scan.strategy.ScanStrategyFactory;
-import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
+import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.util.Map;
+import java.util.Set;
 
 public class ScanPipelineCommands {
     private final SecurityScanner scanner;
@@ -35,21 +34,24 @@ public class ScanPipelineCommands {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public int runScanner(Map<String, Object> scanParameters, ScanStrategyFactory scanStrategyFactory) throws ScannerJenkinsException {
+    public int runScanner(Map<String, Object> scanParameters) throws ScannerJenkinsException {
+        if (!scanParameters.containsKey(ApplicationConstants.SCAN_TYPE_KEY)) {
+            throw new ScannerJenkinsException(LogMessages.NO_SCAN_TYPE_SELECTED);
+        }
 
         logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
-        ScanStrategy scanStrategy = scanStrategyFactory.getParametersService(scanParameters);
+        ScanParametersService scanParametersService = new ScanParametersService(listener);
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);
         BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService(workspace, listener);
         BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParameters, bridgeDownloadParameters);
 
-        logMessagesForParameters(scanParameters);
+        logMessagesForParameters(scanParameters, scanParametersService.getScanTypes(scanParameters));
 
         int exitCode = -1;
 
-        if (scanStrategy.isValidScanParameters(scanParameters) &&
+        if (scanParametersService.isValidScanParameters(scanParameters) &&
             bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
@@ -63,7 +65,7 @@ public class ScanPipelineCommands {
             FilePath bridgeInstallationPath = new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
 
             try {
-                exitCode = scanner.runScanner(scanParameters, scanStrategy, bridgeInstallationPath);
+                exitCode = scanner.runScanner(scanParameters, bridgeInstallationPath);
             } catch (Exception e) {
                 throw new ScannerJenkinsException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
             }
@@ -81,29 +83,30 @@ public class ScanPipelineCommands {
         return exitCode;
     }
 
-    public void logMessagesForParameters(Map<String, Object> scanParameters) {
+    public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> scanTypes) {
         logger.println("-------------------------- Parameter Validation Initiated --------------------------");
 
-        String scanType = ((ScanType) scanParameters.get(ApplicationConstants.SCAN_TYPE_KEY)).toString().toLowerCase();
+        logger.info(" --- " + ApplicationConstants.SCAN_TYPE_KEY + " = " + scanTypes.toString());
 
-        logger.info(" --- " + ApplicationConstants.SCAN_TYPE_KEY + " = " + scanType);
-        logger.info("parameters for %s:", scanType);
+        for (String type : scanTypes) {
+            String scanType = type.toLowerCase();
+            logger.info("Parameters for %s:", scanType);
 
-        for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
-            String key = entry.getKey();
-            if(key.contains(scanType)) {
-                if(key.equals(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY)) {
-                    entry.setValue(LogMessages.ASTERISKS);
+            for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
+                String key = entry.getKey();
+                if(key.contains(scanType)) {
+                    if(key.equals(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY)) {
+                        entry.setValue(LogMessages.ASTERISKS);
+                    }
+                    Object value = entry.getValue();
+                    logger.info(" --- " + key + " = " + value.toString());
                 }
-                Object value = entry.getValue();
-                logger.info(" --- " + key + " = " + value.toString());
             }
 
+            logger.println(LogMessages.DASHES);
         }
 
-        logger.println(LogMessages.DASHES);
-
-        logger.info("parameters for bridge:");
+        logger.info("Parameters for bridge:");
 
         for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
             String key = entry.getKey();

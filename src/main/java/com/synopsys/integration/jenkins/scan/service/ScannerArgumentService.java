@@ -15,12 +15,15 @@ import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
-import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
+import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
+import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
 import com.synopsys.integration.jenkins.scan.input.polaris.Polaris;
-import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
-import com.synopsys.integration.jenkins.scan.strategy.ScanStrategy;
+import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
+import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
+import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParametersService;
+import com.synopsys.integration.jenkins.scan.service.scan.polaris.PolarisParametersService;
 import com.synopsys.integration.jenkins.scan.service.scm.SCMRepositoryService;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -31,13 +34,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class ScannerArgumentService {
     private final TaskListener listener;
     private final EnvVars envVars;
     private final FilePath workspace;
     private static final String DATA_KEY = "data";
-    private String inputJsonFilePath;
     private final LoggerWrapper logger;
 
     public ScannerArgumentService(TaskListener listener, EnvVars envVars, FilePath workspace) {
@@ -47,25 +50,12 @@ public class ScannerArgumentService {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public String getInputJsonFilePath() {
-        return inputJsonFilePath;
-    }
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
+        List<String> commandLineArgs = new ArrayList<>();
 
-    public void setInputJsonFilePath(String inputJsonFilePath) {
-        this.inputJsonFilePath = inputJsonFilePath;
-    }
+        commandLineArgs.add(getBridgeRunCommand(bridgeInstallationPath));
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, ScanStrategy scanStrategy, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
-        ScanType scanType = scanStrategy.getScanType();
-        Object scanObject = scanStrategy.prepareScanInputForBridge(scanParameters);
-
-        boolean fixPrOrPrComment = isFixPrOrPrCommentValueSet(scanObject);
-
-        SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
-        Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters, fixPrOrPrComment);
-
-        List<String> commandLineArgs = new ArrayList<>(getInitialBridgeArgs(scanType, bridgeInstallationPath));
-        commandLineArgs.add(createBridgeInputJson(scanObject, scmObject, fixPrOrPrComment));
+        commandLineArgs.addAll(getScanTypeSpecificCommands(scanParameters));
 
         if (Objects.equals(scanParameters.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
             commandLineArgs.add(BridgeParams.DIAGNOSTICS_OPTION);
@@ -74,24 +64,59 @@ public class ScannerArgumentService {
         return commandLineArgs;
     }
 
-    private List<String> getInitialBridgeArgs(ScanType scanType, FilePath bridgeInstallationPath) {
-        List<String> initBridgeArgs = new ArrayList<>();
+    private String getBridgeRunCommand(FilePath bridgeInstallationPath) {
         String os = Utility.getAgentOs(workspace, listener);
 
         if(os.contains("win")) {
-            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS).getRemote());
+            return bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS).getRemote();
         } else {
-            initBridgeArgs.add(bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND).getRemote());
+            return bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND).getRemote();
         }
-
-        initBridgeArgs.add(BridgeParams.STAGE_OPTION);
-        initBridgeArgs.add(getScanStage(scanType));
-        initBridgeArgs.add(BridgeParams.INPUT_OPTION);
-
-        return initBridgeArgs;
     }
 
-    public String createBridgeInputJson(Object scanObject, Object scmObject, boolean fixPrOrPrComment) {
+    private List<String> getScanTypeSpecificCommands(Map<String, Object> scanParameters) throws ScannerJenkinsException {
+        ScanParametersService scanParametersService = new ScanParametersService(listener);
+        Set<String> scanTypes = scanParametersService.getScanTypes(scanParameters);
+
+        boolean fixPrOrPrComment = isFixPrOrPrCommentValueSet(scanParameters);
+
+        SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
+        Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters, fixPrOrPrComment);
+
+        List<String> scanCommands = new ArrayList<>();
+
+        if (scanTypes.contains(ScanType.BLACKDUCK.name())) {
+            BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
+            BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(scanParameters);
+
+            scanCommands.add(BridgeParams.STAGE_OPTION);
+            scanCommands.add(BridgeParams.BLACKDUCK_STAGE);
+            scanCommands.add(BridgeParams.INPUT_OPTION);
+            scanCommands.add(createBridgeInputJson(blackDuck, scmObject, fixPrOrPrComment, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX));
+        }
+        if (scanTypes.contains(ScanType.COVERITY.name())) {
+            CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
+            Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(scanParameters);
+
+            scanCommands.add(BridgeParams.STAGE_OPTION);
+            scanCommands.add(BridgeParams.COVERITY_STAGE);
+            scanCommands.add(BridgeParams.INPUT_OPTION);
+            scanCommands.add(createBridgeInputJson(coverity, scmObject, fixPrOrPrComment, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX));
+        }
+        if (scanTypes.contains(ScanType.POLARIS.name())) {
+            PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
+            Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(scanParameters);
+
+            scanCommands.add(BridgeParams.STAGE_OPTION);
+            scanCommands.add(BridgeParams.POLARIS_STAGE);
+            scanCommands.add(BridgeParams.INPUT_OPTION);
+            scanCommands.add(createBridgeInputJson(polaris, scmObject, fixPrOrPrComment, ApplicationConstants.POLARIS_INPUT_JSON_PREFIX));
+        }
+
+        return scanCommands;
+    }
+
+    public String createBridgeInputJson(Object scanObject, Object scmObject, boolean fixPrOrPrComment, String jsonPrefix) {
         BridgeInput bridgeInput = new BridgeInput();
 
         setScanObject(bridgeInput, scanObject, scmObject);
@@ -109,8 +134,7 @@ public class ScannerArgumentService {
         String jsonPath = null;
         try {
             String inputJson = mapper.writeValueAsString(inputJsonMap);
-            jsonPath = writeInputJsonToFile(inputJson);
-            setInputJsonFilePath(jsonPath);
+            jsonPath = writeInputJsonToFile(inputJson, jsonPrefix);
         } catch (Exception e) {
             logger.error("An exception occurred while creating input.json file: " + e.getMessage());
         }
@@ -132,7 +156,7 @@ public class ScannerArgumentService {
 
     private void setCoverityProjectNameAndStreamName(Coverity coverity, Object scmObject) {
         String repositoryName = getRepositoryName(scmObject);
-        String branchName = envVars.get("BRANCH_NAME");
+        String branchName = envVars.get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
 
         if (Utility.isStringNullOrBlank(coverity.getConnect().getProject().getName())) {
             coverity.getConnect().getProject().setName(repositoryName);
@@ -156,11 +180,11 @@ public class ScannerArgumentService {
         }
     }
 
-    public String writeInputJsonToFile(String inputJson) {
+    public String writeInputJsonToFile(String inputJson, String jsonPrefix) {
         String inputJsonPath = null;
 
         try {
-            FilePath tempFile = workspace.createTempFile("input", ".json");
+            FilePath tempFile = workspace.createTempFile(jsonPrefix, ".json");
             tempFile.write(inputJson, StandardCharsets.UTF_8.name());
             inputJsonPath = tempFile.getRemote();
         } catch (Exception e) {
@@ -170,24 +194,25 @@ public class ScannerArgumentService {
         return inputJsonPath;
     }
 
-    private String getScanStage(ScanType scanType) {
-        if (scanType.equals(ScanType.COVERITY)) {
-            return BridgeParams.COVERITY_STAGE;
-        } else if (scanType.equals(ScanType.POLARIS)) {
-            return BridgeParams.POLARIS_STAGE;
-        } else {
-            return BridgeParams.BLACKDUCK_STAGE;
-        }
-    }
-
-    private boolean isFixPrOrPrCommentValueSet(Object scanObject) {
-        if (scanObject instanceof BlackDuck) {
-            BlackDuck blackDuck = (BlackDuck) scanObject;
-            return blackDuck.getAutomation().getFixpr() || blackDuck.getAutomation().getPrComment();
-        } else if (scanObject instanceof Coverity) {
-            Coverity coverity = (Coverity) scanObject;
-            return coverity.getAutomation().getPrComment();
+    private boolean isFixPrOrPrCommentValueSet(Map<String, Object> scanParameters) {
+        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY) &&
+            Objects.equals(scanParameters.get(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY), true)) {
+            return true;
+        } else if (scanParameters.containsKey(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) &&
+            Objects.equals(scanParameters.get(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY), true)) {
+            return true;
+        } else if (scanParameters.containsKey(ApplicationConstants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY) &&
+            Objects.equals(scanParameters.get(ApplicationConstants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY), true)) {
+            return true;
         }
         return false;
+    }
+
+    public void removeTemporaryInputJson(List<String> commandLineArgs) {
+        for (String arg : commandLineArgs) {
+            if (arg.endsWith(".json")) {
+                Utility.removeFile(arg, workspace, listener);
+            }
+        }
     }
 }
