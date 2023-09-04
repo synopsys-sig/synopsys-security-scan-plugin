@@ -100,6 +100,9 @@ public class ScanCommandsFactory {
             if (!Utility.isStringNullOrBlank(config.getCoverityConnectUserPassword())) {
                 globalParameters.put(ApplicationConstants.COVERITY_CONNECT_USER_PASSWORD_KEY, config.getCoverityConnectUserPassword());
             }
+            if (!Utility.isStringNullOrBlank(config.getCoverityInstallationPath())) {
+                globalParameters.put(ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY, config.getCoverityInstallationPath());
+            }
 
             if (!Utility.isStringNullOrBlank(config.getBitbucketToken())) {
                 globalParameters.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, config.getBitbucketToken());
@@ -151,9 +154,6 @@ public class ScanCommandsFactory {
         }
         if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_install_directory())) {
             blackDuckParameters.put(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, scanStep.getBlackduck_install_directory());
-        }
-        if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_scan_failure_severities())) {
-            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, scanStep.getBlackduck_scan_failure_severities().toUpperCase());
         }
         if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_scan_failure_severities())) {
             blackDuckParameters.put(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, scanStep.getBlackduck_scan_failure_severities().toUpperCase());

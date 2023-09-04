@@ -42,6 +42,9 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @HelpMarkdown("Provide the Coverity password through which coverity server can be accessed with proper authorization.")
     private String coverityConnectUserPassword;
 
+    @HelpMarkdown("Provide the Coverity installation path where it will be installed.")
+    private String coverityInstallationPath;
+
     @HelpMarkdown("Provide the Synopsys Bridge artifactory URL from where synopsys-bridge zip file can be downloaded. " +
         "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrl;
@@ -109,6 +112,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     }
 
     @DataBoundSetter
+    public void setCoverityInstallationPath(String coverityInstallationPath) {
+        this.coverityInstallationPath = coverityInstallationPath;
+        save();
+    }
+
+    @DataBoundSetter
     public void setBitbucketToken(String bitbucketToken) {
         this.bitbucketToken = bitbucketToken;
         save();
@@ -169,6 +178,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getCoverityConnectUserPassword() {
         return coverityConnectUserPassword;
+    }
+
+    public String getCoverityInstallationPath() {
+        return coverityInstallationPath;
     }
 
     public String getSynopsysBridgeDownloadUrl() {
