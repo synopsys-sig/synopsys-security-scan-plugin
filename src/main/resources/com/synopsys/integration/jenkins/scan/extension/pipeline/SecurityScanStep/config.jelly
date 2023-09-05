@@ -15,12 +15,6 @@
         </f:entry>
     </f:section>
 
-    <f:section title="Additional Synopsys Bridge Parameters">
-        <f:entry field="include_diagnostics" title="Include Diagnostics">
-            <f:checkbox/>
-        </f:entry>
-    </f:section>
-
     <f:section title="Additional Coverity Parameters">
         <f:entry field="bridge_coverity_connect_project_name" title="Project name in Coverity">
             <f:textbox/>
@@ -45,6 +39,12 @@
         </f:entry>
         <f:entry field="bridge_polaris_assessment_types" title="Polaris assessment types">
             <f:textbox/>
+        </f:entry>
+    </f:section>
+
+    <f:section title="Additional Synopsys Bridge Parameters">
+        <f:entry field="include_diagnostics" title="Include Diagnostics">
+            <f:checkbox/>
         </f:entry>
     </f:section>
 </j:jelly>
