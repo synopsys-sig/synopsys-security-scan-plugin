@@ -173,6 +173,12 @@ public class ScanCommandsFactory {
         if (!Utility.isStringNullOrBlank(scanStep.getBridge_coverity_install_directory())) {
             coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY, scanStep.getBridge_coverity_install_directory());
         }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_coverity_version())) {
+            coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_VERSION_KEY, scanStep.getBridge_coverity_version());
+        }
+        if ((scanStep.isBridge_coverity_local())) {
+            coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_LOCAL_KEY, scanStep.isBridge_coverity_local());
+        }
         coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY, scanStep.isBridge_coverity_automation_prcomment());
 
         return coverityParameters;
@@ -212,6 +218,9 @@ public class ScanCommandsFactory {
         }
         if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_assessment_types())) {
             polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, scanStep.getBridge_polaris_assessment_types());
+        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_triage())) {
+            polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_TRIAGE_KEY, scanStep.getBridge_polaris_triage());
         }
 
         return polarisParametersMap;

@@ -51,12 +51,14 @@ public class ApplicationConstants {
     public static final String BRIDGE_COVERITY_CONNECT_POLICY_VIEW_KEY = "bridge_coverity_connect_policy_view";
     public static final String BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY = "bridge_coverity_install_directory";
     public static final String BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY = "bridge_coverity_automation_prcomment";
-
+    public static final String BRIDGE_COVERITY_VERSION_KEY = "bridge_coverity_version";
+    public static final String BRIDGE_COVERITY_LOCAL_KEY = "bridge_coverity_local";
     public static final String BRIDGE_POLARIS_SERVER_URL_KEY = "bridge_polaris_serverurl";
     public static final String BRIDGE_POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accesstoken";
     public static final String BRIDGE_POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";
     public static final String BRIDGE_POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
     public static final String BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
+    public static final String BRIDGE_POLARIS_TRIAGE_KEY = "bridge_polaris_triage";
 
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
 

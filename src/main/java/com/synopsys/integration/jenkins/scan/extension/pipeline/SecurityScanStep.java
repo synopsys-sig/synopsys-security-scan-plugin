@@ -55,12 +55,15 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_coverity_connect_policy_view;
     private String bridge_coverity_install_directory;
     private boolean bridge_coverity_automation_prcomment = false;
+    private String bridge_coverity_version;
+    private boolean bridge_coverity_local = false;
 
     private String bridge_polaris_serverurl;
     private String bridge_polaris_accesstoken;
     private String bridge_polaris_application_name;
     private String bridge_polaris_project_name;
     private String bridge_polaris_assessment_types;
+    private String bridge_polaris_triage;
 
     private String bitbucket_token;
 
@@ -160,6 +163,16 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
+    public void setBridge_coverity_version(String bridge_coverity_version) {
+        this.bridge_coverity_version = bridge_coverity_version;
+    }
+
+    @DataBoundSetter
+    public void setBridge_coverity_local(boolean bridge_coverity_local) {
+        this.bridge_coverity_local = bridge_coverity_local;
+    }
+
+    @DataBoundSetter
     public void setBridge_polaris_serverurl(String bridge_polaris_serverurl) {
         this.bridge_polaris_serverurl = bridge_polaris_serverurl;
     }
@@ -182,6 +195,11 @@ public class SecurityScanStep extends Step implements Serializable {
     @DataBoundSetter
     public void setBridge_polaris_assessment_types(String bridge_polaris_assessment_types) {
         this.bridge_polaris_assessment_types = bridge_polaris_assessment_types;
+    }
+
+    @DataBoundSetter
+    public void setBridge_polaris_triage(String bridge_polaris_triage) {
+        this.bridge_polaris_triage = bridge_polaris_triage;
     }
 
     @DataBoundSetter
@@ -227,6 +245,10 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public String getBridge_polaris_assessment_types() {
         return bridge_polaris_assessment_types;
+    }
+
+    public String getBridge_polaris_triage() {
+        return bridge_polaris_triage;
     }
 
     public String getScan_type() {
@@ -291,6 +313,13 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public boolean isBridge_coverity_automation_prcomment() {
         return bridge_coverity_automation_prcomment;
+    }
+    public String getBridge_coverity_version() {
+        return bridge_coverity_version;
+    }
+
+    public boolean isBridge_coverity_local() {
+        return bridge_coverity_local;
     }
 
     public String getBitbucket_token() {

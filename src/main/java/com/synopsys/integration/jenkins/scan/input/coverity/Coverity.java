@@ -17,6 +17,10 @@ public class Coverity {
     private Install install;
     @JsonProperty("automation")
     private Automation automation;
+    @JsonProperty("version")
+    private String version;
+    @JsonProperty("local")
+    private boolean local;
 
     public Coverity() {
         connect = new Connect();
@@ -46,5 +50,21 @@ public class Coverity {
 
     public void setAutomation(Automation automation) {
         this.automation = automation;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
     }
 }
