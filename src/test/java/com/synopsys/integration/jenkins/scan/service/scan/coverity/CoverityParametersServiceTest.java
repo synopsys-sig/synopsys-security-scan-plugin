@@ -67,6 +67,8 @@ public class CoverityParametersServiceTest {
         coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY, TEST_COVERITY_USER_PASSWORD);
         coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_PROJECT_NAME_KEY, "fake-repo");
         coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_STREAM_NAME_KEY, "fake-repo-branch");
+        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_VERSION_KEY, "2023.6.0");
+        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_LOCAL_KEY, true);
 
         Coverity coverity = coverityParametersService.prepareScanInputForBridge(coverityParameters);
         
@@ -75,5 +77,7 @@ public class CoverityParametersServiceTest {
         assertEquals(coverity.getConnect().getUser().getPassword(), TEST_COVERITY_USER_PASSWORD);
         assertEquals(coverity.getConnect().getProject().getName(), "fake-repo");
         assertEquals(coverity.getConnect().getStream().getName(), "fake-repo-branch");
+        assertEquals(coverity.getVersion(), "2023.6.0");
+        assertTrue(coverity.isLocal());
     }
 }

@@ -68,6 +68,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_PROJECT_NAME_KEY, "fake-project-name");
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, "SAST");
+        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_TRIAGE_KEY, "REQUIRED");
 
         Polaris polaris = polarisParametersService.prepareScanInputForBridge(polarisParameters);
         
@@ -76,5 +77,6 @@ public class PolarisParametersServiceTest {
         assertEquals(polaris.getApplicationName().getName(), TEST_APPLICATION_NAME);
         assertEquals(polaris.getProjectName().getName(), "fake-project-name");
         assertEquals(polaris.getAssessmentTypes().getTypes(), Arrays.asList("SAST"));
+        assertEquals(polaris.getTriage(), "REQUIRED");
     }
 }
