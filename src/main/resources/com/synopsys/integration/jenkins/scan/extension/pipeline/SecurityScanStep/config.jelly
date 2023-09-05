@@ -1,7 +1,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
     <f:section title="Additional Black Duck Parameters">
-        <f:entry field="bridge_blackduck_scan_full" title="Bridge Black Duck Full Scan">
+        <f:entry field="bridge_blackduck_scan_full" title="Bridge BlackDuck Full Scan">
             <f:checkbox default="true"/>
         </f:entry>
         <f:entry field="bridge_blackduck_scan_failure_severities" title="Bridge Black Duck Scan Failure Severities">
@@ -16,28 +16,28 @@
     </f:section>
 
     <f:section title="Additional Coverity Parameters">
-        <f:entry field="bridge_coverity_connect_project_name" title="Project name in Coverity">
+        <f:entry field="bridge_coverity_connect_project_name" title="Bridge Coverity project name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_connect_stream_name" title="Stream name in Coverity">
+        <f:entry field="bridge_coverity_connect_stream_name" title="Bridge Coverity stream name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_connect_policy_view" title="ID number/Name of a policy">
+        <f:entry field="bridge_coverity_connect_policy_view" title="Bridge Coverity ID number/Name of a policy">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_automation_prcomment" title="Enable Coverity PR comment">
+        <f:entry field="bridge_coverity_automation_prcomment" title="Bridge Coverity enable PR comment">
             <f:checkbox default="false"/>
         </f:entry>
     </f:section>
 
     <f:section title="Additional Polaris Parameters">
-        <f:entry field="bridge_polaris_application_name" title="Application name created in Polaris">
+        <f:entry field="bridge_polaris_application_name" title="Bridge Polaris application name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_polaris_project_name" title="Project name created in Polaris">
+        <f:entry field="bridge_polaris_project_name" title="Bridge Polaris project name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_polaris_assessment_types" title="Polaris assessment types">
+        <f:entry field="bridge_polaris_assessment_types" title="Bridge Polaris assessment types">
             <f:textbox/>
         </f:entry>
     </f:section>
