@@ -85,6 +85,9 @@ public class ScanCommandsFactory {
             if (!Utility.isStringNullOrBlank(config.getBlackDuckApiToken())) {
                 globalParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, config.getBlackDuckApiToken());
             }
+            if (!Utility.isStringNullOrBlank(config.getBlackDuckInstallationPath())) {
+                globalParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY, config.getBlackDuckInstallationPath());
+            }
 
             if (!Utility.isStringNullOrBlank(config.getCoverityConnectUrl())) {
                 globalParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_URL_KEY, config.getCoverityConnectUrl());
@@ -95,6 +98,9 @@ public class ScanCommandsFactory {
             if (!Utility.isStringNullOrBlank(config.getCoverityConnectUserPassword())) {
                 globalParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY, config.getCoverityConnectUserPassword());
             }
+            if (!Utility.isStringNullOrBlank(config.getCoverityInstallationPath())) {
+                globalParameters.put(ApplicationConstants.BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY, config.getCoverityInstallationPath());
+            }
 
             if (!Utility.isStringNullOrBlank(config.getBitbucketToken())) {
                 globalParameters.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, config.getBitbucketToken());
@@ -102,6 +108,14 @@ public class ScanCommandsFactory {
 
             if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeDownloadUrl())) {
                 globalParameters.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, config.getSynopsysBridgeDownloadUrl());
+            }
+
+            if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeInstallationPath())) {
+                globalParameters.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, config.getSynopsysBridgeInstallationPath());
+            }
+
+            if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeVersion())) {
+                globalParameters.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, config.getSynopsysBridgeVersion());
             }
 
             if (!Utility.isStringNullOrBlank(config.getPolarisServerUrl())) {
