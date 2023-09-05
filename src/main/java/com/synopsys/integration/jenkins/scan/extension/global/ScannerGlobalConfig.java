@@ -30,7 +30,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @HelpMarkdown("Provide the Black Duck api token through which black duck server can be accessed with proper authorization.")
     private String blackDuckApiToken;
 
-    @HelpMarkdown("Provide the Black Duck installation path where it will be installed.")
+    @HelpMarkdown("Provide the BlackDuck installation path on the agent where it will be installed during the Jenkins build.")
     private String blackDuckInstallationPath;
 
     @HelpMarkdown("Provide the URL that lets you access your Coverity server.")
@@ -42,7 +42,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @HelpMarkdown("Provide the Coverity password through which coverity server can be accessed with proper authorization.")
     private String coverityConnectUserPassword;
 
-    @HelpMarkdown("Provide the Coverity installation path where it will be installed.")
+    @HelpMarkdown("Provide the Coverity installation path on the agent where it will be installed during the Jenkins build.")
     private String coverityInstallationPath;
 
     @HelpMarkdown("Provide the Synopsys Bridge artifactory URL from where synopsys-bridge zip file can be downloaded. " +
@@ -52,8 +52,8 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @HelpMarkdown("Provide the specific Synopsys bridge version you want to download from artifactory.")
     private String synopsysBridgeVersion;
 
-    @HelpMarkdown("Provide the Synopsys bridge installation path where it will be installed.")
-    private String synopsysInstallationPath;
+    @HelpMarkdown("Provide the Synopsys bridge installation path on the agent where it will be installed during the Jenkins build.")
+    private String synopsysBridgeInstallationPath;
 
     @HelpMarkdown("Provide the bitbucket api access token through which PrComment and FixPr will be done.")
     private String bitbucketToken;
@@ -136,8 +136,8 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     }
 
     @DataBoundSetter
-    public void setSynopsysInstallationPath(String synopsysInstallationPath) {
-        this.synopsysInstallationPath = synopsysInstallationPath;
+    public void setSynopsysBridgeInstallationPath(String synopsysBridgeInstallationPath) {
+        this.synopsysBridgeInstallationPath = synopsysBridgeInstallationPath;
         save();
     }
 
@@ -192,8 +192,8 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         return synopsysBridgeVersion;
     }
 
-    public String getSynopsysInstallationPath() {
-        return synopsysInstallationPath;
+    public String getSynopsysBridgeInstallationPath() {
+        return synopsysBridgeInstallationPath;
     }
 
     public String getBitbucketToken() {

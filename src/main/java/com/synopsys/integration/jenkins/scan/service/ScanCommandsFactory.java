@@ -110,8 +110,8 @@ public class ScanCommandsFactory {
                 globalParameters.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, config.getSynopsysBridgeDownloadUrl());
             }
 
-            if (!Utility.isStringNullOrBlank(config.getSynopsysInstallationPath())) {
-                globalParameters.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, config.getSynopsysInstallationPath());
+            if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeInstallationPath())) {
+                globalParameters.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, config.getSynopsysBridgeInstallationPath());
             }
 
             if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeVersion())) {

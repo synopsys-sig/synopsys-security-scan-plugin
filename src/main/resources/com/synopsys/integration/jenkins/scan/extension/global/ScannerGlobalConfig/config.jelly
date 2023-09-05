@@ -40,7 +40,7 @@
         <f:entry field="synopsysBridgeVersion" title="Synopsys Bridge Version (Optional)">
             <f:textbox/>
         </f:entry>
-        <f:entry field="synopsysInstallationPath" title="Synopsys Bridge Installation Path (Optional)">
+        <f:entry field="synopsysBridgeInstallationPath" title="Synopsys Bridge Installation Path (Optional)">
             <f:textbox/>
         </f:entry>
     </f:section>
