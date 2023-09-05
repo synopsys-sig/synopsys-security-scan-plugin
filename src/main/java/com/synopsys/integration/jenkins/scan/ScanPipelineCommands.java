@@ -95,10 +95,10 @@ public class ScanPipelineCommands {
             for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
                 String key = entry.getKey();
                 if(key.contains(scanType)) {
-                    if(key.equals(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY)) {
-                        entry.setValue(LogMessages.ASTERISKS);
-                    }
                     Object value = entry.getValue();
+                    if(key.equals(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY)) {
+                        value = LogMessages.ASTERISKS;
+                    }
                     logger.info(" --- " + key + " = " + value.toString());
                 }
             }
