@@ -184,11 +184,16 @@ public class ScannerArgumentService {
         String inputJsonPath = null;
 
         try {
-            FilePath tempFile = workspace.createTempFile(jsonPrefix, ".json");
-            tempFile.write(inputJson, StandardCharsets.UTF_8.name());
-            inputJsonPath = tempFile.getRemote();
+            FilePath parentWorkspacePath = workspace.getParent();
+            if (parentWorkspacePath != null) {
+                FilePath tempFile = parentWorkspacePath.createTempFile(jsonPrefix, ".json");
+                tempFile.write(inputJson, StandardCharsets.UTF_8.name());
+                inputJsonPath = tempFile.getRemote();
+            } else {
+                logger.error("Failed to create json file in workspace parent path");
+            }
         } catch (Exception e) {
-            logger.error("An exception occurred while writing into input.json file: " + e.getMessage());
+            logger.error("An exception occurred while writing into json file: " + e.getMessage());
         }
 
         return inputJsonPath;
