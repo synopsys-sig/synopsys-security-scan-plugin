@@ -78,6 +78,12 @@ public class PolarisParametersService {
                 case ApplicationConstants.BRIDGE_POLARIS_TRIAGE_KEY:
                     polaris.setTriage(value);
                     break;
+                case ApplicationConstants.BRIDGE_POLARIS_BRANCH_NAME_KEY:
+                    polaris.getBranch().setName(value);
+                    break;
+                case ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY:
+                    polaris.getBranch().getParent().setName(value);
+                    break;
                 case ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY:
                     if (!value.isEmpty()) {
                         List<String> assessmentTypes = new ArrayList<>();

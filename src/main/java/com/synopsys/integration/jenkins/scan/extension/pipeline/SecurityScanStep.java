@@ -64,6 +64,9 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_polaris_project_name;
     private String bridge_polaris_assessment_types;
     private String bridge_polaris_triage;
+    private String bridge_polaris_branch_name;
+    private String bridge_polaris_branch_parent_name;
+
 
     private String bitbucket_token;
 
@@ -203,6 +206,16 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
+    public void setBridge_polaris_branch_name(String bridge_polaris_branch_name) {
+        this.bridge_polaris_branch_name = bridge_polaris_branch_name;
+    }
+
+    @DataBoundSetter
+    public void setBridge_polaris_branch_parent_name(String bridge_polaris_branch_parent_name) {
+        this.bridge_polaris_branch_parent_name = bridge_polaris_branch_parent_name;
+    }
+
+    @DataBoundSetter
     public void setBitbucket_token(String bitbucket_token) {
         this.bitbucket_token = bitbucket_token;
     }
@@ -249,6 +262,14 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public String getBridge_polaris_triage() {
         return bridge_polaris_triage;
+    }
+
+    public String getBridge_polaris_branch_name() {
+        return bridge_polaris_branch_name;
+    }
+
+    public String getBridge_polaris_branch_parent_name() {
+        return bridge_polaris_branch_parent_name;
     }
 
     public String getScan_type() {
