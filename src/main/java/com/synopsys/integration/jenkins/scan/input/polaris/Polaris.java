@@ -24,13 +24,18 @@ public class Polaris {
 
     @JsonProperty("serverUrl")
     private String serverUrl;
+
     @JsonProperty("triage")
     private String triage;
+
+    @JsonProperty("branch")
+    private Branch branch;
 
     public Polaris() {
         applicationName = new ApplicationName();
         projectName = new ProjectName();
         assessmentTypes = new AssessmentTypes();
+        branch = new Branch();
     }
 
     public String getAccessToken() {
@@ -79,5 +84,13 @@ public class Polaris {
 
     public void setTriage(String triage) {
         this.triage = triage;
+    }
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 }
