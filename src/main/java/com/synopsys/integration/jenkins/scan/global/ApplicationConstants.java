@@ -59,6 +59,8 @@ public class ApplicationConstants {
     public static final String BRIDGE_POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
     public static final String BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
     public static final String BRIDGE_POLARIS_TRIAGE_KEY = "bridge_polaris_triage";
+    public static final String BRIDGE_POLARIS_BRANCH_NAME_KEY = "bridge_polaris_branch_name";
+    public static final String BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY = "bridge_polaris_branch_parent_name";
 
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
 
