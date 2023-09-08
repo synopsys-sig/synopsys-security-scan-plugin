@@ -1,5 +1,9 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:entry field="synopsys_security_platform" title="Select security platform">
+        <f:select/>
+    </f:entry>
+
     <f:section title="Additional Black Duck Parameters">
         <f:entry field="bridge_blackduck_scan_full" title="Bridge BlackDuck Full Scan">
             <f:checkbox default="true"/>
@@ -42,8 +46,8 @@
         </f:entry>
     </f:section>
 
-    <f:section title="Additional Synopsys Bridge Parameters">
-        <f:entry field="include_diagnostics" title="Include Diagnostics">
+    <f:section title="Additional Parameters">
+        <f:entry field="bridge_include_diagnostics" title="Include Diagnostics">
             <f:checkbox/>
         </f:entry>
     </f:section>
