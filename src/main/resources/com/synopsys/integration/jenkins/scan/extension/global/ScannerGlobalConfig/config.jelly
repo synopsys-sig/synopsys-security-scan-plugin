@@ -1,7 +1,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
     <f:section title="Synopsys Security Scan">
-        <f:entry field="scanType" title="Scan Type">
+        <f:entry field="securityPlatform" title="Scan Type">
             <f:select/>
         </f:entry>
         <f:entry field="blackDuckUrl" title="Black Duck URL">

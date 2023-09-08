@@ -9,7 +9,7 @@ package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
+import com.synopsys.integration.jenkins.scan.global.enums.SecurityPlatform;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -37,7 +37,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class SecurityScanStep extends Step implements Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
-    private String scan_type;
+    private String synopsys_security_platform;
 
     private String bridge_blackduck_url;
     private String bridge_blackduck_api_token;
@@ -76,13 +76,8 @@ public class SecurityScanStep extends Step implements Serializable {
     private boolean include_diagnostics = false;
 
     @DataBoundConstructor
-    public SecurityScanStep() {
-        /* Intentionally left empty */
-    }
-
-    @DataBoundSetter
-    public void setScan_type(String scan_type) {
-        this.scan_type = scan_type;
+    public SecurityScanStep(String synopsys_security_platform) {
+        this.synopsys_security_platform = synopsys_security_platform;
     }
 
     @DataBoundSetter
@@ -272,8 +267,8 @@ public class SecurityScanStep extends Step implements Serializable {
         return bridge_polaris_branch_parent_name;
     }
 
-    public String getScan_type() {
-        return scan_type;
+    public String getSynopsys_security_platform() {
+        return synopsys_security_platform;
     }
 
     public String getBridge_blackduck_url() {
@@ -390,9 +385,10 @@ public class SecurityScanStep extends Step implements Serializable {
             return ApplicationConstants.DISPLAY_NAME;
         }
 
-        public ListBoxModel doFillScan_typeItems() {
+        public ListBoxModel doFillSynopsys_security_platformItems() {
             ListBoxModel items = new ListBoxModel();
-            Arrays.stream(ScanType.values()).forEach(scanType -> items.add(String.valueOf(scanType)));
+            Arrays.stream(SecurityPlatform.values()).forEach(
+                securityPlatform -> items.add(String.valueOf(securityPlatform)));
             return items;
         }
     }

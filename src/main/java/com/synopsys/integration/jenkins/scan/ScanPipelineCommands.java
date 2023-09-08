@@ -35,10 +35,6 @@ public class ScanPipelineCommands {
     }
 
     public int runScanner(Map<String, Object> scanParameters) throws ScannerJenkinsException {
-        if (!scanParameters.containsKey(ApplicationConstants.SCAN_TYPE_KEY)) {
-            throw new ScannerJenkinsException(LogMessages.NO_SCAN_TYPE_SELECTED);
-        }
-
         logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
         ScanParametersService scanParametersService = new ScanParametersService(listener);
@@ -47,7 +43,7 @@ public class ScanPipelineCommands {
         BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService(workspace, listener);
         BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParameters, bridgeDownloadParameters);
 
-        logMessagesForParameters(scanParameters, scanParametersService.getScanTypes(scanParameters));
+        logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityPlatforms(scanParameters));
 
         int exitCode = -1;
 
@@ -83,18 +79,18 @@ public class ScanPipelineCommands {
         return exitCode;
     }
 
-    public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> scanTypes) {
+    public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> securityPlatforms) {
         logger.println("-------------------------- Parameter Validation Initiated --------------------------");
 
-        logger.info(" --- " + ApplicationConstants.SCAN_TYPE_KEY + " = " + scanTypes.toString());
+        logger.info(" --- " + ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY + " = " + securityPlatforms.toString());
 
-        for (String type : scanTypes) {
-            String scanType = type.toLowerCase();
-            logger.info("Parameters for %s:", scanType);
+        for (String platform : securityPlatforms) {
+            String securityPlatform = platform.toLowerCase();
+            logger.info("Parameters for %s:", securityPlatform);
 
             for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
                 String key = entry.getKey();
-                if(key.contains(scanType)) {
+                if(key.contains(securityPlatform)) {
                     Object value = entry.getValue();
                     if(key.equals(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY)) {
                         value = LogMessages.ASTERISKS;

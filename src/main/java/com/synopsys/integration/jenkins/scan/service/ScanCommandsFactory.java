@@ -51,10 +51,10 @@ public class ScanCommandsFactory {
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep) {
         Map<String, Object> parametersMap = new HashMap<>(getGlobalConfigurationValues());
 
-        String scanType = getScanType(scanStep, parametersMap);
+        String securityPlatform = getSynopsysSecurityPlatform(scanStep, parametersMap);
 
-        if (scanType != null) {
-            parametersMap.put(ApplicationConstants.SCAN_TYPE_KEY, scanType);
+        if (securityPlatform != null) {
+            parametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, securityPlatform);
 
             parametersMap.putAll(prepareCoverityParametersMap(scanStep));
             parametersMap.putAll(preparePolarisParametersMap(scanStep));
@@ -76,7 +76,7 @@ public class ScanCommandsFactory {
 
         if (config != null) {
             if (!Utility.isStringNullOrBlank(config.getScanType())) {
-                globalParameters.put(ApplicationConstants.SCAN_TYPE_KEY, config.getScanType());
+                globalParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, config.getScanType());
             }
 
             if (!Utility.isStringNullOrBlank(config.getBlackDuckUrl())) {
@@ -130,15 +130,15 @@ public class ScanCommandsFactory {
         return globalParameters;
     }
 
-    private static String getScanType(SecurityScanStep scanStep, Map<String, Object> parametersMap) {
-        String scanType = null;
-        if (parametersMap.containsKey(ApplicationConstants.SCAN_TYPE_KEY)) {
-            scanType = parametersMap.get(ApplicationConstants.SCAN_TYPE_KEY).toString();
+    private static String getSynopsysSecurityPlatform(SecurityScanStep scanStep, Map<String, Object> parametersMap) {
+        String securityPlatform = null;
+        if (parametersMap.containsKey(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY)) {
+            securityPlatform = parametersMap.get(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY).toString();
         }
-        if (!Utility.isStringNullOrBlank(scanStep.getScan_type())) {
-            scanType = scanStep.getScan_type().trim().toUpperCase();
+        if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_security_platform())) {
+            securityPlatform = scanStep.getSynopsys_security_platform().trim().toUpperCase();
         }
-        return scanType;
+        return securityPlatform;
     }
 
     private static Map<String, Object> prepareBlackDuckParametersMap(SecurityScanStep scanStep) {
