@@ -14,10 +14,12 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
+import com.synopsys.integration.jenkins.scan.global.enums.SecurityPlatform;
 import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,6 +46,8 @@ public class ScanPipelineCommands {
         BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParameters, bridgeDownloadParameters);
 
         logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityPlatforms(scanParameters));
+
+        validateSecurityPlatform(scanParameters);
 
         int exitCode = -1;
 
@@ -77,6 +81,18 @@ public class ScanPipelineCommands {
         }
 
         return exitCode;
+    }
+
+    private void validateSecurityPlatform(Map<String, Object> scanParameters) throws ScannerJenkinsException {
+        String securityPlatform = scanParameters.get(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY).toString();
+        if (securityPlatform.isBlank() ||
+            !(securityPlatform.contains(SecurityPlatform.BLACKDUCK.name()) ||
+            securityPlatform.contains(SecurityPlatform.POLARIS.name()) ||
+            securityPlatform.contains(SecurityPlatform.COVERITY.name()))) {
+            logger.error(LogMessages.INVALID_SYNOPSYS_SECURITY_PLATFORM);
+            logger.info("Supported Synopsys Security Platforms: " + Arrays.toString(SecurityPlatform.values()));
+            throw new ScannerJenkinsException(LogMessages.INVALID_SYNOPSYS_SECURITY_PLATFORM);
+        }
     }
 
     public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> securityPlatforms) {

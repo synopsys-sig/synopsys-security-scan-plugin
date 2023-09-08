@@ -51,21 +51,17 @@ public class ScanCommandsFactory {
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep) {
         Map<String, Object> parametersMap = new HashMap<>(getGlobalConfigurationValues());
 
-        String securityPlatform = getSynopsysSecurityPlatform(scanStep, parametersMap);
+        parametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, scanStep.getSynopsys_security_platform().trim().toUpperCase());
 
-        if (securityPlatform != null) {
-            parametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, securityPlatform);
+        parametersMap.putAll(prepareCoverityParametersMap(scanStep));
+        parametersMap.putAll(preparePolarisParametersMap(scanStep));
+        parametersMap.putAll(prepareBlackDuckParametersMap(scanStep));
 
-            parametersMap.putAll(prepareCoverityParametersMap(scanStep));
-            parametersMap.putAll(preparePolarisParametersMap(scanStep));
-            parametersMap.putAll(prepareBlackDuckParametersMap(scanStep));
-
-            if (!Utility.isStringNullOrBlank(scanStep.getBitbucket_token())) {
-                parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, scanStep.getBitbucket_token());
-            }
-
-            parametersMap.putAll(prepareBridgeParametersMap(scanStep));
+        if (!Utility.isStringNullOrBlank(scanStep.getBitbucket_token())) {
+            parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, scanStep.getBitbucket_token());
         }
+
+        parametersMap.putAll(prepareBridgeParametersMap(scanStep));
 
         return parametersMap;
     }
@@ -75,10 +71,6 @@ public class ScanCommandsFactory {
         ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
 
         if (config != null) {
-            if (!Utility.isStringNullOrBlank(config.getScanType())) {
-                globalParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, config.getScanType());
-            }
-
             if (!Utility.isStringNullOrBlank(config.getBlackDuckUrl())) {
                 globalParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, config.getBlackDuckUrl());
             }
@@ -128,17 +120,6 @@ public class ScanCommandsFactory {
         }
 
         return globalParameters;
-    }
-
-    private static String getSynopsysSecurityPlatform(SecurityScanStep scanStep, Map<String, Object> parametersMap) {
-        String securityPlatform = null;
-        if (parametersMap.containsKey(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY)) {
-            securityPlatform = parametersMap.get(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY).toString();
-        }
-        if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_security_platform())) {
-            securityPlatform = scanStep.getSynopsys_security_platform().trim().toUpperCase();
-        }
-        return securityPlatform;
     }
 
     private static Map<String, Object> prepareBlackDuckParametersMap(SecurityScanStep scanStep) {

@@ -22,4 +22,5 @@ public class LogMessages {
     public static final String INVALID_BRIDGE_DOWNLOAD_VERSION_PROVIDED = "The provided Bridge download version is not valid: %s";
     public static final String EXCEPTION_OCCURRED_WHILE_INVOKING_SYNOPSYS_BRIDGE = "An exception occurred while invoking synopsys-bridge from the plugin: %s";
     public static final String EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE = "An exception occurred while installing/downloading synopsys-bridge: %s";
+    public static final String INVALID_SYNOPSYS_SECURITY_PLATFORM = "Invalid Synopsys Security Platform!";
 }
