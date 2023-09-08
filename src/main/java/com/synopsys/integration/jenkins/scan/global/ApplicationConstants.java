@@ -67,7 +67,7 @@ public class ApplicationConstants {
     public static final String BRIDGE_DOWNLOAD_URL = "bridge_download_url";
     public static final String BRIDGE_DOWNLOAD_VERSION = "bridge_download_version";
     public static final String BRIDGE_INSTALLATION_PATH = "synopsys_bridge_path";
-    public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
+    public static final String BRIDGE_INCLUDE_DIAGNOSTICS_KEY = "bridge_include_diagnostics";
 
     public static final String BLACKDUCK_INPUT_JSON_PREFIX = "blackduck_input";
     public static final String COVERITY_INPUT_JSON_PREFIX = "coverity_input";
