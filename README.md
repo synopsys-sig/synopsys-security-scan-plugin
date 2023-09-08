@@ -86,7 +86,7 @@ stage("Security Scan") {
                 blackDuckPrComment = true
             }
 
-            synopsys_scan scan_type: "BLACKDUCK", bridge_blackduck_url: "https://example.com", bridge_blackduck_api_token: "YOUR_BLACKDUCK_TOKEN", 
+            synopsys_scan synopsys_security_platform: "BLACKDUCK", bridge_blackduck_url: "https://example.com", bridge_blackduck_api_token: "YOUR_BLACKDUCK_TOKEN", 
                     bridge_blackduck_scan_full: "${blackDuckScanFull}", bridge_blackduck_automation_prcomment: "${blackDuckPrComment}"
         }
     }
@@ -96,11 +96,11 @@ Make sure to provide the required parameters such as `bridge_blackduck_url` and 
 
 Or if the values are configured in **Jenkins Global Configuration**, you can use the following example -
 ```groovy
-synopsys_scan bridge_blackduck_scan_full: "${blackDuckScanFull}", bridge_blackduck_automation_prcomment: "${blackDuckPrComment}"
+synopsys_scan synopsys_security_platform: "BLACKDUCK", bridge_blackduck_scan_full: "${blackDuckScanFull}", bridge_blackduck_automation_prcomment: "${blackDuckPrComment}"
 ```
 Or a very basic template - 
 ```groovy
-synopsys_scan()
+synopsys_scan synopsys_security_platform: "COVERITY"
 ```
 
 2. Create a Multibranch Pipeline Job in your Jenkins instance
@@ -112,12 +112,12 @@ synopsys_scan()
 If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
 Hence, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
 
-### Scan Type
+### Synopsys Security Platform
 
 
-| Input Parameter                     | Description                                                                                                                                                                                                                            | Mandatory / Optional |
-|-------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|
-| `scan_type`                         | Provide the scan type that you want to execute. The scan type can also be configured in Jenkins **Global Configuration**. <br> Supported values: **BLACKDUCK**, **COVERITY**, **POLARIS** <br> Example: `scan_type: "BLACKDUCK"` </br> | Mandatory if not configured in Jenkins Global Configuration           |
+| Input Parameter                     | Description                                                                                                                                                                         | Mandatory / Optional |
+|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| `synopsys_security_platform`        | Provide the security platform that you want to execute. <br> Supported values: **POLARIS**, **BLACKDUCK**, **COVERITY** <br> Example: `synopsys_security_platform: "POLARIS"` </br> | Mandatory      |
 
 ### Black Duck Parameters
 
@@ -130,7 +130,6 @@ Hence, if these values are set both from Jenkins Global Configuration and pipeli
 | `bridge_blackduck_scan_failure_severities` | Scan failure severities of Black Duck. <br> Supported values: `ALL`, `NONE`, `BLOCKER`, `CRITICAL`, `MAJOR`, `MINOR`, `OK`, `TRIVIAL`, `UNSPECIFIED`. <br> Example: `bridge_blackduck_scan_failure_severities: "BLOCKER, TRIVIAL"` </br>             | Optional                                                      |
 | `bridge_blackduck_automation_prcomment`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: `true` or `false`. <br> Example: `bridge_blackduck_automation_prcomment: true` </br>                                             | Optional (Default: **false**)                                 |
 | `bridge_blackduck_automation_fixpr`        | Flag to enable automatic creation for fix pull request when Black Duck vulnerabilities reported. <br> By default fix pull request creation will be disabled <br> Supported values: `true` or `false` </br>                              | Optional (Default: **false**)                                 |
-| `bitbucket_token`                   | The token can be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. This is required if fixpr or prcomment is set true. <br> Example: `bitbucket_token: "${env.BITBUCKET_TOKEN}"` </br>       | Optional                                                      |
 
 
 ### Coverity Parameters
@@ -156,13 +155,19 @@ Hence, if these values are set both from Jenkins Global Configuration and pipeli
 | `bridge_polaris_project_name`       | The project name you have created in Polaris.                                                                                                                                                                                           | Mandatory |
 | `bridge_polaris_assessment_types`               | Specifies the type of scan you want to run. <br> Supported values: `SCA` or `SAST` or both SCA and SAST. <br> Example:  `bridge_polaris_assessment_types: "SCA, SAST"` </br>                                                              | Mandatory |
 
-### Additional Parameters
-| Input Parameter           | Description                                                                                                                                                                                                                                                                                                                  |
-|---------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `synopsys_bridge_path`    | Provide a path, where you want to configure or already configured Synopsys Bridge. <br> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge]. If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded |
-| `bridge_download_url`     | Provide URL to bridge zip file. If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path. <br> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]   |
-| `bridge_download_version` | Provide bridge version. If provided, the specified version of Synopsys Bridge will be downloaded and configured.                                                                                                                                                                                                             |
-| `include_diagnostics`     | It this is set **true** then the bridge diagnostics will be uploaded in Jenkins Archive Artifact.                                                                                                                                                                                                                            |
+### Bitbucket Parameters
+
+| Input Parameter                     | Description                                                                                                                                                                         | Mandatory / Optional |
+|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| `bitbucket_token`                   | The token can be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. This is required if fixpr or prcomment is set true. <br> Example: `bitbucket_token: "${env.BITBUCKET_TOKEN}"` </br>       | Optional                                                      |
+
+### Synopsys Bridge Parameters
+| Input Parameter              | Description                                                                                                                                                                                                                                                                                                                  |
+|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `synopsys_bridge_path`       | Provide a path, where you want to configure or already configured Synopsys Bridge. <br> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge]. If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded |
+| `bridge_download_url`        | Provide URL to bridge zip file. If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path. <br> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]   |
+| `bridge_download_version`    | Provide bridge version. If provided, the specified version of Synopsys Bridge will be downloaded and configured.                                                                                                                                                                                                             |
+| `bridge_include_diagnostics` | If this is set **true** then the detailed bridge logs will be shown in console and bridge diagnostics will be uploaded in Jenkins Archive Artifact.                                                                                                                                                                          |
 
 Note - If **bridge_download_version** or **bridge_download_url** is not provided, the plugin will download and configure the latest version of Bridge
 
