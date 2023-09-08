@@ -156,9 +156,15 @@ public class ScanCommandsFactory {
         if (!Utility.isStringNullOrBlank(scanStep.getBridge_blackduck_scan_failure_severities())) {
             blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, scanStep.getBridge_blackduck_scan_failure_severities().toUpperCase());
         }
-        blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY, scanStep.isBridge_blackduck_scan_full());
-        blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY, scanStep.isBridge_blackduck_automation_fixpr());
-        blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, scanStep.isBridge_blackduck_automation_prcomment());
+        if (scanStep.isBridge_blackduck_scan_full() != null) {
+            blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY, scanStep.isBridge_blackduck_scan_full());
+        }
+        if (scanStep.isBridge_blackduck_automation_fixpr() != null) {
+            blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY, scanStep.isBridge_blackduck_automation_fixpr());
+        }
+        if (scanStep.isBridge_blackduck_automation_prcomment() != null) {
+            blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, scanStep.isBridge_blackduck_automation_prcomment());
+        }
 
         return blackDuckParameters;
     }
@@ -190,10 +196,12 @@ public class ScanCommandsFactory {
         if (!Utility.isStringNullOrBlank(scanStep.getBridge_coverity_version())) {
             coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_VERSION_KEY, scanStep.getBridge_coverity_version());
         }
-        if ((scanStep.isBridge_coverity_local())) {
+        if (scanStep.isBridge_coverity_local() != null) {
             coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_LOCAL_KEY, scanStep.isBridge_coverity_local());
         }
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY, scanStep.isBridge_coverity_automation_prcomment());
+        if (scanStep.isBridge_coverity_automation_prcomment() != null) {
+            coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY, scanStep.isBridge_coverity_automation_prcomment());
+        }
 
         return coverityParameters;
     }
@@ -210,7 +218,9 @@ public class ScanCommandsFactory {
         if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_path())) {
           bridgeParameters.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, scanStep.getSynopsys_bridge_path());
         }
-        bridgeParameters.put(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY, scanStep.isBridge_include_diagnostics());
+        if(scanStep.isBridge_include_diagnostics() != null) {
+            bridgeParameters.put(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY, scanStep.isBridge_include_diagnostics());
+        }
 
         return bridgeParameters;
     }

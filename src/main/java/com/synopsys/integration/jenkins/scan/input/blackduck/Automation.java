@@ -11,23 +11,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Automation {
     @JsonProperty("fixpr")
-    private boolean fixpr;
+    private Boolean fixpr;
     @JsonProperty("prComment")
-    private boolean prComment;
+    private Boolean prComment;
 
-    public boolean getFixpr() {
+    public Boolean getFixpr() {
         return fixpr;
     }
 
-    public void setFixpr(boolean fixpr) {
+    public void setFixpr(Boolean fixpr) {
         this.fixpr = fixpr;
     }
 
-    public boolean getPrComment() {
+    public Boolean getPrComment() {
         return prComment;
     }
 
-    public void setPrComment(boolean prComment) {
+    public void setPrComment(Boolean prComment) {
         this.prComment = prComment;
     }
 }

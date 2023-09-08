@@ -42,10 +42,10 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_blackduck_url;
     private String bridge_blackduck_api_token;
     private String bridge_blackduck_install_directory;
-    private boolean bridge_blackduck_scan_full = true;
+    private Boolean bridge_blackduck_scan_full;
     private String bridge_blackduck_scan_failure_severities;
-    private boolean bridge_blackduck_automation_fixpr = false;
-    private boolean bridge_blackduck_automation_prcomment = false;
+    private Boolean bridge_blackduck_automation_fixpr;
+    private Boolean bridge_blackduck_automation_prcomment;
 
     private String bridge_coverity_connect_url;
     private String bridge_coverity_connect_user_name;
@@ -54,9 +54,9 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_coverity_connect_stream_name;
     private String bridge_coverity_connect_policy_view;
     private String bridge_coverity_install_directory;
-    private boolean bridge_coverity_automation_prcomment = false;
+    private Boolean bridge_coverity_automation_prcomment;
     private String bridge_coverity_version;
-    private boolean bridge_coverity_local = false;
+    private Boolean bridge_coverity_local;
 
     private String bridge_polaris_serverurl;
     private String bridge_polaris_accesstoken;
@@ -73,7 +73,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_download_url;
     private String bridge_download_version;
     private String synopsys_bridge_path;
-    private boolean bridge_include_diagnostics = false;
+    private Boolean bridge_include_diagnostics;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -101,7 +101,7 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBridge_blackduck_scan_full(boolean bridge_blackduck_scan_full) {
+    public void setBridge_blackduck_scan_full(Boolean bridge_blackduck_scan_full) {
         this.bridge_blackduck_scan_full = bridge_blackduck_scan_full;
     }
 
@@ -112,13 +112,13 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBridge_blackduck_automation_fixpr(boolean bridge_blackduck_automation_fixpr) {
+    public void setBridge_blackduck_automation_fixpr(Boolean bridge_blackduck_automation_fixpr) {
         this.bridge_blackduck_automation_fixpr = bridge_blackduck_automation_fixpr;
     }
 
     @DataBoundSetter
     public void setBridge_blackduck_automation_prcomment(
-        boolean bridge_blackduck_automation_prcomment) {
+            Boolean bridge_blackduck_automation_prcomment) {
         this.bridge_blackduck_automation_prcomment = bridge_blackduck_automation_prcomment;
     }
 
@@ -160,8 +160,7 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBridge_coverity_automation_prcomment(
-        boolean bridge_coverity_automation_prcomment) {
+    public void setBridge_coverity_automation_prcomment(Boolean bridge_coverity_automation_prcomment) {
         this.bridge_coverity_automation_prcomment = bridge_coverity_automation_prcomment;
     }
 
@@ -171,7 +170,7 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBridge_coverity_local(boolean bridge_coverity_local) {
+    public void setBridge_coverity_local(Boolean bridge_coverity_local) {
         this.bridge_coverity_local = bridge_coverity_local;
     }
 
@@ -236,7 +235,7 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBridge_include_diagnostics(boolean bridge_include_diagnostics) {
+    public void setBridge_include_diagnostics(Boolean bridge_include_diagnostics) {
         this.bridge_include_diagnostics = bridge_include_diagnostics;
     }
 
@@ -288,7 +287,7 @@ public class SecurityScanStep extends Step implements Serializable {
         return bridge_blackduck_install_directory;
     }
 
-    public boolean isBridge_blackduck_scan_full() {
+    public Boolean isBridge_blackduck_scan_full() {
         return bridge_blackduck_scan_full;
     }
 
@@ -296,11 +295,11 @@ public class SecurityScanStep extends Step implements Serializable {
         return bridge_blackduck_scan_failure_severities;
     }
 
-    public boolean isBridge_blackduck_automation_fixpr() {
+    public Boolean isBridge_blackduck_automation_fixpr() {
         return bridge_blackduck_automation_fixpr;
     }
 
-    public boolean isBridge_blackduck_automation_prcomment() {
+    public Boolean isBridge_blackduck_automation_prcomment() {
         return bridge_blackduck_automation_prcomment;
     }
 
@@ -332,14 +331,14 @@ public class SecurityScanStep extends Step implements Serializable {
         return bridge_coverity_install_directory;
     }
 
-    public boolean isBridge_coverity_automation_prcomment() {
+    public Boolean isBridge_coverity_automation_prcomment() {
         return bridge_coverity_automation_prcomment;
     }
     public String getBridge_coverity_version() {
         return bridge_coverity_version;
     }
 
-    public boolean isBridge_coverity_local() {
+    public Boolean isBridge_coverity_local() {
         return bridge_coverity_local;
     }
 
@@ -359,7 +358,7 @@ public class SecurityScanStep extends Step implements Serializable {
         return synopsys_bridge_path;
     }
 
-    public boolean isBridge_include_diagnostics() {
+    public Boolean isBridge_include_diagnostics() {
         return bridge_include_diagnostics;
     }
 
