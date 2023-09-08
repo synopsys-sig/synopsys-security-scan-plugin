@@ -106,7 +106,7 @@ public class ScanPipelineCommands {
 
         for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
             String key = entry.getKey();
-            if(key.equals(ApplicationConstants.BRIDGE_DOWNLOAD_URL) || key.equals(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION) || key.equals(ApplicationConstants.BRIDGE_INSTALLATION_PATH) || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)) {
+            if(key.equals(ApplicationConstants.BRIDGE_DOWNLOAD_URL) || key.equals(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION) || key.equals(ApplicationConstants.BRIDGE_INSTALLATION_PATH) || key.equals(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY)) {
                 Object value = entry.getValue();
                 logger.info(" --- " + key + " = " + value.toString());
             }

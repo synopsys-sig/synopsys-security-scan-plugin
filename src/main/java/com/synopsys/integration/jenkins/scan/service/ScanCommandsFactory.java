@@ -210,7 +210,7 @@ public class ScanCommandsFactory {
         if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_path())) {
           bridgeParameters.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, scanStep.getSynopsys_bridge_path());
         }
-        bridgeParameters.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, scanStep.isInclude_diagnostics());
+        bridgeParameters.put(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY, scanStep.isBridge_include_diagnostics());
 
         return bridgeParameters;
     }

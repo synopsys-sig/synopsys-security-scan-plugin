@@ -73,7 +73,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_download_url;
     private String bridge_download_version;
     private String synopsys_bridge_path;
-    private boolean include_diagnostics = false;
+    private boolean bridge_include_diagnostics = false;
 
     @DataBoundConstructor
     public SecurityScanStep(String synopsys_security_platform) {
@@ -231,8 +231,8 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setInclude_diagnostics(boolean include_diagnostics) {
-        this.include_diagnostics = include_diagnostics;
+    public void setBridge_include_diagnostics(boolean bridge_include_diagnostics) {
+        this.bridge_include_diagnostics = bridge_include_diagnostics;
     }
 
     public String getBridge_polaris_serverurl() {
@@ -354,8 +354,8 @@ public class SecurityScanStep extends Step implements Serializable {
         return synopsys_bridge_path;
     }
 
-    public boolean isInclude_diagnostics() {
-        return include_diagnostics;
+    public boolean isBridge_include_diagnostics() {
+        return bridge_include_diagnostics;
     }
 
     private Map<String, Object> getParametersMap() {

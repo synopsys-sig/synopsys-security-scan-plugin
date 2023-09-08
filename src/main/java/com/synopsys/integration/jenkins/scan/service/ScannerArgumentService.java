@@ -57,7 +57,7 @@ public class ScannerArgumentService {
 
         commandLineArgs.addAll(getSecurityPlatformSpecificCommands(scanParameters));
 
-        if (Objects.equals(scanParameters.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
+        if (Objects.equals(scanParameters.get(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY), true)) {
             commandLineArgs.add(BridgeParams.DIAGNOSTICS_OPTION);
         }
 
