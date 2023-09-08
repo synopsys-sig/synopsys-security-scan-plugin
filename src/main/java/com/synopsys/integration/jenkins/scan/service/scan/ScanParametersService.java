@@ -8,7 +8,7 @@
 package com.synopsys.integration.jenkins.scan.service.scan;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
+import com.synopsys.integration.jenkins.scan.global.enums.SecurityPlatform;
 import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.polaris.PolarisParametersService;
@@ -27,21 +27,21 @@ public class ScanParametersService {
     }
 
     public boolean isValidScanParameters(Map<String, Object> scanParameters) {
-        Set<String> scanTypes = getScanTypes(scanParameters);
+        Set<String> securityPlatforms = getSynopsysSecurityPlatforms(scanParameters);
         
         boolean isValidBlackDuckParameters = true;
         boolean isValidCoverityParameters = true;
         boolean isValidPolarisParameters = true;
 
-        if (scanTypes.contains(ScanType.BLACKDUCK.name())) {
+        if (securityPlatforms.contains(SecurityPlatform.BLACKDUCK.name())) {
             BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
             isValidBlackDuckParameters = blackDuckParametersService.isValidBlackDuckParameters(scanParameters);
         }
-        if (scanTypes.contains(ScanType.COVERITY.name())) {
+        if (securityPlatforms.contains(SecurityPlatform.COVERITY.name())) {
             CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
             isValidCoverityParameters = coverityParametersService.isValidCoverityParameters(scanParameters);
         }
-        if (scanTypes.contains(ScanType.POLARIS.name())) {
+        if (securityPlatforms.contains(SecurityPlatform.POLARIS.name())) {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
             isValidPolarisParameters = polarisParametersService.isValidPolarisParameters(scanParameters);
         }
@@ -49,19 +49,19 @@ public class ScanParametersService {
         return isValidBlackDuckParameters && isValidCoverityParameters && isValidPolarisParameters;
     }
     
-    public Set<String> getScanTypes(Map<String, Object> scanParameters) {
-        String scanType = (String) scanParameters.get(ApplicationConstants.SCAN_TYPE_KEY);
-        Set<String> scanTypes = new HashSet<>();
+    public Set<String> getSynopsysSecurityPlatforms(Map<String, Object> scanParameters) {
+        String securityPlatform = (String) scanParameters.get(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY);
+        Set<String> securityPlatforms = new HashSet<>();
 
-        if (scanType.contains(",")) {
-            scanTypes = Arrays.stream(scanType.split(","))
+        if (securityPlatform.contains(",")) {
+            securityPlatforms = Arrays.stream(securityPlatform.split(","))
                 .map(String::trim)
                 .map(String::toUpperCase)
                 .collect(Collectors.toSet());
         } else {
-            scanTypes.add(scanType.trim().toUpperCase());
+            securityPlatforms.add(securityPlatform.trim().toUpperCase());
         }
         
-        return scanTypes;
+        return securityPlatforms;
     }
 }

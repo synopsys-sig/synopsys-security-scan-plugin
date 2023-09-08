@@ -8,7 +8,7 @@
 package com.synopsys.integration.jenkins.scan.extension.global;
 
 import com.synopsys.integration.jenkins.annotations.HelpMarkdown;
-import com.synopsys.integration.jenkins.scan.global.enums.ScanType;
+import com.synopsys.integration.jenkins.scan.global.enums.SecurityPlatform;
 import hudson.Extension;
 import hudson.util.ListBoxModel;
 import java.io.Serializable;
@@ -210,7 +210,8 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     
     public ListBoxModel doFillScanTypeItems() {
         ListBoxModel items = new ListBoxModel();
-        Arrays.stream(ScanType.values()).forEach(scanType -> items.add(String.valueOf(scanType)));
+        Arrays.stream(SecurityPlatform.values()).forEach(
+            securityPlatform -> items.add(String.valueOf(securityPlatform)));
         return items;
     }
 
