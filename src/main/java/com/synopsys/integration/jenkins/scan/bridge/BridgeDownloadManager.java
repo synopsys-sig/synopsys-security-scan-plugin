@@ -133,8 +133,11 @@ public class BridgeDownloadManager {
             FilePath tempFilePath = workspace.createTempFile("versions", ".txt");
             URL url = new URL(versionFileUrl);
 
-            tempFilePath.copyFrom(url);
-            tempVersionFilePath = tempFilePath.getRemote();
+            HttpURLConnection connection = Utility.getHttpURLConnection(url, logger);
+            if (connection != null) {
+                tempFilePath.copyFrom(connection.getURL());
+                tempVersionFilePath = tempFilePath.getRemote();
+            }
         } catch (IOException | InterruptedException e) {
             logger.error("An exception occurred while downloading 'versions.txt': " + e.getMessage());
         }
@@ -144,13 +147,16 @@ public class BridgeDownloadManager {
     public boolean isVersionFileAvailableInArtifactory(String directoryUrl) {
         try {
             URL url = new URL(String.join("/",directoryUrl,ApplicationConstants.VERSION_FILE));
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("HEAD");
-            return (connection.getResponseCode() >= 200 && connection.getResponseCode() < 300);
+
+            HttpURLConnection connection = Utility.getHttpURLConnection(url, logger);
+            if (connection != null) {
+                connection.setRequestMethod("HEAD");
+                return (connection.getResponseCode() >= 200 && connection.getResponseCode() < 300);
+            }
         } catch (IOException e) {
             logger.error("An exception occurred while checking if 'versions.txt' is available or not in the URL: " + e.getMessage());
-            return false;
         }
+        return false;
     }
 
     public String getDirectoryUrl(String downloadUrl) {
