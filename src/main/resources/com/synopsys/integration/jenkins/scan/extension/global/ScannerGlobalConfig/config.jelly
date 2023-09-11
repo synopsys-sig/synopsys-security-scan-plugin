@@ -3,16 +3,16 @@
     <f:section title="Synopsys Security Scan">
 
         <!-- Place a single info line above the tabs -->
-        <div class="tab-info">INFO : These configuration will be used for specific scan type parameter </div>
+        <div class="tab-info">Synopsys Security Product Configuration </div>
 
         <!-- Tab Container -->
         <div class="tab-container">
             <!-- Black Duck Tab -->
-            <div class="scan-tab" onclick="showScanType('BLACKDUCKSection')">Configure Black Duck</div>
+            <div class="scan-tab" onclick="showScanType('BLACKDUCKSection')">Black Duck</div>
             <!-- Coverity Tab -->
-            <div class="scan-tab" onclick="showScanType('COVERITYSection')">Configure Coverity</div>
+            <div class="scan-tab" onclick="showScanType('COVERITYSection')">Coverity</div>
             <!-- Polaris Tab -->
-            <div class="scan-tab" onclick="showScanType('POLARISSection')">Configure Polaris</div>
+            <div class="scan-tab" onclick="showScanType('POLARISSection')">Polaris</div>
         </div>
 
         <!-- Black Duck Configuration -->
@@ -20,10 +20,10 @@
             <f:entry field="blackDuckUrl" title="Black Duck URL">
                 <f:textbox name="blackDuckUrl" />
             </f:entry>
-            <f:entry field="blackDuckApiToken" title="Black Duck Api Token">
+            <f:entry field="blackDuckApiToken" title="Black Duck API Token">
                 <f:password name="blackDuckApiToken" />
             </f:entry>
-            <f:entry field="blackDuckInstallationPath" title="Black Duck Installation Path">
+            <f:entry field="blackDuckInstallationPath" title="Black Duck Installation Path (Optional)">
                 <f:textbox name="blackDuckInstallationPath" />
             </f:entry>
             <button type="button" class="clear-button" onclick="clearTabFields('BLACKDUCKSection')">Clear</button>
@@ -40,7 +40,7 @@
             <f:entry field="coverityConnectUserPassword" title="Coverity Connect User Password">
                 <f:password name="coverityConnectUserPassword" />
             </f:entry>
-            <f:entry field="coverityInstallationPath" title="Coverity Installation Path">
+            <f:entry field="coverityInstallationPath" title="Coverity Installation Path (Optional)">
                 <f:textbox name="coverityInstallationPath" />
             </f:entry>
             <button type="button" class="clear-button" onclick="clearTabFields('COVERITYSection')">Clear</button>
@@ -63,16 +63,16 @@
             </f:entry>
 
             <!-- Place a single info line above the tabs -->
-            <div class="tab-info-os">Configure Synopsys Bridge Download URLs for different platform </div>
+            <div class="tab-info-os">Configure Synopsys Bridge download URLs for different platform (Optional)</div>
 
             <!-- Tab Container for Synopsys Bridge Download URLs -->
             <div class="tab-container">
                 <!-- Mac Tab -->
-                <div class="os-tab" onclick="showOsType('MACSection')">Mac Download URL</div>
-                <!-- Windows Tab -->
-                <div class="os-tab" onclick="showOsType('WINDOWSSection')">Windows Download URL</div>
+                <div class="os-tab" onclick="showOsType('MACSection')">Mac</div>
                 <!-- Linux Tab -->
-                <div class="os-tab" onclick="showOsType('LINUXSection')">Linux Download URL</div>
+                <div class="os-tab" onclick="showOsType('LINUXSection')">Linux </div>
+                <!-- Windows Tab -->
+                <div class="os-tab" onclick="showOsType('WINDOWSSection')">Windows</div>
             </div>
 
             <!-- Mac Download URL Configuration -->
@@ -141,7 +141,7 @@
         .tab-info {
         font-size: 14px;
         font-weight: bold;
-        color: red; /* Text color */
+<!--        color: red; /* Text color */-->
         margin-bottom: 10px; /* Adjust the margin as needed */
         }
 
