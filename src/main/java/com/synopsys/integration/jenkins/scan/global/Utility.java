@@ -10,6 +10,12 @@ package com.synopsys.integration.jenkins.scan.global;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.List;
 
 public class Utility {
 
@@ -57,5 +63,25 @@ public class Utility {
 
     public static boolean isStringNullOrBlank(String str) {
         return str == null || str.isBlank() || str.equals("null");
+    }
+
+    public static HttpURLConnection getHttpURLConnection(URL url, LoggerWrapper logger) {
+        HttpURLConnection connection = null;
+        try {
+            List<Proxy> proxyList = ProxySelector.getDefault().select(url.toURI());
+            if (proxyList.isEmpty()) {
+                connection = (HttpURLConnection) url.openConnection();
+            } else {
+                Proxy proxy = proxyList.get(0);
+                if (proxy.type().equals(Proxy.Type.DIRECT)) {
+                    connection = (HttpURLConnection) url.openConnection();
+                } else {
+                    connection = (HttpURLConnection) url.openConnection(proxy);
+                }
+            }
+        } catch (URISyntaxException | IOException e) {
+            logger.error("An exception occurred while getting HttpURLConnection: " + e.getMessage());
+        }
+        return connection;
     }
 }
