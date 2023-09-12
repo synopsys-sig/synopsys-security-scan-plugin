@@ -289,22 +289,35 @@
             var coverityConnectUrl = document.querySelector("input[name='coverityConnectUrl']").value;
             var polarisServerUrl = document.querySelector("input[name='polarisServerUrl']").value;
 
+            var synopsysBridgeDownloadUrlForWindows = document.querySelector("input[name='synopsysBridgeDownloadUrlForWindows']").value;
+            var synopsysBridgeDownloadUrlForLinux = document.querySelector("input[name='synopsysBridgeDownloadUrlForLinux']").value;
+            var synopsysBridgeDownloadUrlForMac = document.querySelector("input[name='synopsysBridgeDownloadUrlForMac']").value;
+
+            // Check the values of blackDuckUrl, coverityConnectUrl, and polarisServerUrl
+            // and select the appropriate scan type based on their values
             if (blackDuckUrl) {
                 selectScanType("BLACKDUCK"); // Show Black Duck box if there is a value
+            } else if (coverityConnectUrl) {
+                selectScanType("COVERITY"); // Show Coverity box if there is a value
+            } else if (polarisServerUrl) {
+                selectScanType("POLARIS"); // Show Polaris box if there is a value
             } else {
-                // If no value for Black Duck, select it by default
+                // If none of the URLs have a value, default to Black Duck
                 selectScanType("BLACKDUCK");
             }
 
-            if (coverityConnectUrl) {
-                selectScanType("COVERITY"); // Show Coverity box if there is a value
+            // Check the values of synopsysBridgeDownloadUrlForMac, synopsysBridgeDownloadUrlForLinux, and synopsysBridgeDownloadUrlForWindows
+            // and select the appropriate OS type based on their values
+            if (synopsysBridgeDownloadUrlForMac) {
+                selectOSType("MAC");
+            } else if (synopsysBridgeDownloadUrlForLinux) {
+                selectOSType("LINUX");
+            } else if (synopsysBridgeDownloadUrlForWindows) {
+                selectOSType("WINDOWS");
+            } else {
+                // If none of the URLs have a value, default to MAC
+                selectOSType("MAC");
             }
-
-            if (polarisServerUrl) {
-                selectScanType("POLARIS"); // Show Polaris box if there is a value
-            }
-
-            selectOSType("MAC")
         }
 
         // Add an event listener to call the checkExistingValues function on page load
