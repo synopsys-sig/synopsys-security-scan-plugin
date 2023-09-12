@@ -21,9 +21,6 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
 
-    @HelpMarkdown("Select the Scan type that you want to perform.")
-    private String scanType;
-
     @HelpMarkdown("Provide the URL that lets you access your Black Duck server.")
     private String blackDuckUrl;
 
@@ -74,12 +71,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundConstructor
     public ScannerGlobalConfig() {
         load();
-    }
-
-    @DataBoundSetter
-    public void setScanType(String scanType) {
-        this.scanType = scanType;
-        save();
     }
 
     @DataBoundSetter
@@ -178,10 +169,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         save();
     }
 
-    public String getScanType() {
-        return scanType;
-    }
-
     public String getBlackDuckUrl() {
         return blackDuckUrl;
     }
@@ -251,5 +238,4 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
             securityPlatform -> items.add(String.valueOf(securityPlatform)));
         return items;
     }
-
 }
