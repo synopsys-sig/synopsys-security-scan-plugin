@@ -48,8 +48,8 @@ public class ScanCommandsFactory {
                 new ScannerArgumentService(listener, envVars, workspace)), workspace, listener);
     }
 
-    public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep) {
-        Map<String, Object> parametersMap = new HashMap<>(getGlobalConfigurationValues());
+    public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep, FilePath workspace, TaskListener listener) {
+        Map<String, Object> parametersMap = new HashMap<>(getGlobalConfigurationValues(workspace, listener));
 
         parametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, scanStep.getSynopsys_security_platform().trim().toUpperCase());
 
@@ -66,11 +66,16 @@ public class ScanCommandsFactory {
         return parametersMap;
     }
 
-    private static Map<String, Object> getGlobalConfigurationValues() {
+    private static Map<String, Object> getGlobalConfigurationValues(FilePath workspace, TaskListener listener) {
         Map<String, Object> globalParameters = new HashMap<>();
         ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
 
         if (config != null) {
+
+            String synopsysBridgeDownloadUrl = getSynopsysBridgeDownloadUrlBasedOnAgentOS(workspace, listener,
+                    config.getSynopsysBridgeDownloadUrlForMac(), config.getSynopsysBridgeDownloadUrlForLinux(),
+                    config.getSynopsysBridgeDownloadUrlForWindows());
+
             if (!Utility.isStringNullOrBlank(config.getBlackDuckUrl())) {
                 globalParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, config.getBlackDuckUrl());
             }
@@ -98,8 +103,8 @@ public class ScanCommandsFactory {
                 globalParameters.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, config.getBitbucketToken());
             }
 
-            if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeDownloadUrl())) {
-                globalParameters.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, config.getSynopsysBridgeDownloadUrl());
+            if(!Utility.isStringNullOrBlank(synopsysBridgeDownloadUrl)) {
+                globalParameters.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, synopsysBridgeDownloadUrl);
             }
 
             if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeInstallationPath())) {
@@ -235,6 +240,16 @@ public class ScanCommandsFactory {
         }
 
         return polarisParametersMap;
+    }
+
+    private static String getSynopsysBridgeDownloadUrlBasedOnAgentOS(FilePath workspace, TaskListener listener,
+                                                                     String synopsysBridgeDownloadUrlForMac,
+                                                                     String synopsysBridgeDownloadUrlForLinux,
+                                                                     String synopsysBridgeDownloadUrlForWindows) {
+        String agentOs = Utility.getAgentOs(workspace, listener);
+        if(agentOs.contains("mac")) return synopsysBridgeDownloadUrlForMac;
+        else if(agentOs.contains("linux")) return synopsysBridgeDownloadUrlForLinux;
+        else return synopsysBridgeDownloadUrlForWindows;
     }
 
 }

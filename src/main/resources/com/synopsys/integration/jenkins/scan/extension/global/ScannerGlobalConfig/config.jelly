@@ -77,22 +77,22 @@
 
             <!-- Mac Download URL Configuration -->
             <div class="os-type-section" id="MACSection" style="display: none;">
-                <f:entry field="synopsysBridgeDownloadUrl" title="Mac Download URL">
-                    <f:textbox name="synopsysBridgeDownloadUrl" />
+                <f:entry field="synopsysBridgeDownloadUrlForMac" title="Mac Download URL">
+                    <f:textbox name="synopsysBridgeDownloadUrlForMac" />
                 </f:entry>
             </div>
 
             <!-- Windows Download URL Configuration -->
             <div class="os-type-section" id="WINDOWSSection" style="display: none;">
-                <f:entry field="synopsysBridgeDownloadUrl" title="Windows Download URL">
-                    <f:textbox name="synopsysBridgeDownloadUrl" />
+                <f:entry field="synopsysBridgeDownloadUrlForWindows" title="Windows Download URL">
+                    <f:textbox name="synopsysBridgeDownloadUrlForWindows" />
                 </f:entry>
             </div>
 
             <!-- Linux Download URL Configuration -->
             <div class="os-type-section" id="LINUXSection" style="display: none;">
-                <f:entry field="synopsysBridgeDownloadUrl" title="Linux Download URL">
-                    <f:textbox name="synopsysBridgeDownloadUrl" />
+                <f:entry field="synopsysBridgeDownloadUrlForLinux" title="Linux Download URL">
+                    <f:textbox name="synopsysBridgeDownloadUrlForLinux" />
                 </f:entry>
             </div>
 

@@ -49,6 +49,13 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrl;
 
+
+    private String synopsysBridgeDownloadUrlForMac;
+
+    private String synopsysBridgeDownloadUrlForWindows;
+
+    private String synopsysBridgeDownloadUrlForLinux;
+
     @HelpMarkdown("Provide the specific Synopsys bridge version you want to download from Synopsys artifactory.")
     private String synopsysBridgeVersion;
 
@@ -130,6 +137,24 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     }
 
     @DataBoundSetter
+    public void setSynopsysBridgeDownloadUrlForMac(String synopsysBridgeDownloadUrlForMac) {
+        this.synopsysBridgeDownloadUrlForMac = synopsysBridgeDownloadUrlForMac;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setSynopsysBridgeDownloadUrlForWindows(String synopsysBridgeDownloadUrlForWindows) {
+        this.synopsysBridgeDownloadUrlForWindows = synopsysBridgeDownloadUrlForWindows;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setSynopsysBridgeDownloadUrlForLinux(String synopsysBridgeDownloadUrlForLinux) {
+        this.synopsysBridgeDownloadUrlForLinux = synopsysBridgeDownloadUrlForLinux;
+        save();
+    }
+
+    @DataBoundSetter
     public void setSynopsysBridgeVersion(String synopsysBridgeVersion) {
         this.synopsysBridgeVersion = synopsysBridgeVersion;
         save();
@@ -186,6 +211,18 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getSynopsysBridgeDownloadUrl() {
         return synopsysBridgeDownloadUrl;
+    }
+
+    public String getSynopsysBridgeDownloadUrlForMac() {
+        return synopsysBridgeDownloadUrlForMac;
+    }
+
+    public String getSynopsysBridgeDownloadUrlForWindows() {
+        return synopsysBridgeDownloadUrlForWindows;
+    }
+
+    public String getSynopsysBridgeDownloadUrlForLinux() {
+        return synopsysBridgeDownloadUrlForLinux;
     }
 
     public String getSynopsysBridgeVersion() {
