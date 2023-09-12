@@ -10,12 +10,12 @@ package com.synopsys.integration.jenkins.scan.global;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.IOException;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
 import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
 
 public class Utility {
 
@@ -67,21 +67,44 @@ public class Utility {
 
     public static HttpURLConnection getHttpURLConnection(URL url, LoggerWrapper logger) {
         HttpURLConnection connection = null;
+
         try {
-            List<Proxy> proxyList = ProxySelector.getDefault().select(url.toURI());
-            if (proxyList.isEmpty()) {
-                connection = (HttpURLConnection) url.openConnection();
+            String envHttpsProxy = System.getenv(ApplicationConstants.HTTPS_PROXY);
+            String envHttpProxy = System.getenv(ApplicationConstants.HTTP_PROXY);
+
+            if (envHttpsProxy != null) {
+                URL httpsProxyURL = new URL(envHttpsProxy);
+                setDefaultProxyAuthenticator(httpsProxyURL.getUserInfo());
+
+                Proxy httpsProxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpsProxyURL.getHost(), httpsProxyURL.getPort()));
+                connection = (HttpURLConnection) url.openConnection(httpsProxy);
+            } else if (envHttpProxy != null) {
+                URL httpProxyURL = new URL(envHttpProxy);
+                setDefaultProxyAuthenticator(httpProxyURL.getUserInfo());
+
+                Proxy httpsProxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpProxyURL.getHost(), httpProxyURL.getPort()));
+                connection = (HttpURLConnection) url.openConnection(httpsProxy);
             } else {
-                Proxy proxy = proxyList.get(0);
-                if (proxy.type().equals(Proxy.Type.DIRECT)) {
-                    connection = (HttpURLConnection) url.openConnection();
-                } else {
-                    connection = (HttpURLConnection) url.openConnection(proxy);
-                }
+                connection = (HttpURLConnection) url.openConnection(Proxy.NO_PROXY);
             }
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             logger.error("An exception occurred while getting HttpURLConnection: " + e.getMessage());
         }
+
         return connection;
+    }
+
+    public static void setDefaultProxyAuthenticator(String userInfo) {
+        if (!isStringNullOrBlank(userInfo)) {
+            String[] userInfoArray = userInfo.split(":");
+            if (userInfoArray.length == 2) {
+                Authenticator.setDefault(new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(userInfoArray[0], userInfoArray[1].toCharArray());
+                    }
+                });
+            }
+        }
     }
 }
