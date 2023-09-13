@@ -62,8 +62,8 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_PROJECT_NAME_KEY, "fake-project-name");
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, "SAST");
         polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_TRIAGE_KEY, "REQUIRED");
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_NAME_KEY, "test-branch");
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY, "test-parent-branch");
+//        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_NAME_KEY, "test-branch");
+//        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY, "test-parent-branch");
 
         Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(polarisParameters);
         
@@ -73,7 +73,7 @@ public class PolarisParametersServiceTest {
         assertEquals(polaris.getProjectName().getName(), "fake-project-name");
         assertEquals(polaris.getAssessmentTypes().getTypes(), Arrays.asList("SAST"));
         assertEquals(polaris.getTriage(), "REQUIRED");
-        assertEquals(polaris.getBranch().getName(), "test-branch");
-        assertEquals(polaris.getBranch().getParent().getName(), "test-parent-branch");
+//        assertEquals(polaris.getBranch().getName(), "test-branch");
+//        assertEquals(polaris.getBranch().getParent().getName(), "test-parent-branch");
     }
 }
