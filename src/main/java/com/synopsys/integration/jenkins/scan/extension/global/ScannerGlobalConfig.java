@@ -21,13 +21,10 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
 
-    @HelpMarkdown("Select the Scan type that you want to perform.")
-    private String scanType;
-
     @HelpMarkdown("Provide the URL that lets you access your Black Duck server.")
     private String blackDuckUrl;
 
-    @HelpMarkdown("Provide the Black Duck api token through which black duck server can be accessed with proper authorization.")
+    @HelpMarkdown("Provide the Black Duck API token through which black duck server can be accessed with proper authorization.")
     private String blackDuckApiToken;
 
     @HelpMarkdown("Provide the BlackDuck installation path on the agent where it will be installed during the Jenkins build.")
@@ -45,17 +42,25 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @HelpMarkdown("Provide the Coverity installation path on the agent where it will be installed during the Jenkins build.")
     private String coverityInstallationPath;
 
-    @HelpMarkdown("Provide the Synopsys Bridge artifactory URL from where synopsys-bridge zip file can be downloaded. " +
-        "Note: You must need to provide the full download url which includes the zip file path.")
-    private String synopsysBridgeDownloadUrl;
+    @HelpMarkdown("Provide the URL from where synopsys-bridge zip file can be downloaded. " +
+            "Note: You must need to provide the full download url which includes the zip file path.")
+    private String synopsysBridgeDownloadUrlForMac;
 
-    @HelpMarkdown("Provide the specific Synopsys bridge version you want to download from artifactory.")
+    @HelpMarkdown("Provide the URL from where synopsys-bridge zip file can be downloaded. " +
+            "Note: You must need to provide the full download url which includes the zip file path.")
+    private String synopsysBridgeDownloadUrlForWindows;
+
+    @HelpMarkdown("Provide the URL from where synopsys-bridge zip file can be downloaded. " +
+            "Note: You must need to provide the full download url which includes the zip file path.")
+    private String synopsysBridgeDownloadUrlForLinux;
+
+    @HelpMarkdown("Provide the specific Synopsys bridge version you want to download from Synopsys artifactory.")
     private String synopsysBridgeVersion;
 
     @HelpMarkdown("Provide the Synopsys bridge installation path on the agent where it will be installed during the Jenkins build.")
     private String synopsysBridgeInstallationPath;
 
-    @HelpMarkdown("Provide the bitbucket api access token through which PrComment and FixPr will be done.")
+    @HelpMarkdown("Provide the bitbucket API access token through which PR Comment will be done.")
     private String bitbucketToken;
 
     @HelpMarkdown("Provide the URL that lets you access Polaris server.")
@@ -67,12 +72,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundConstructor
     public ScannerGlobalConfig() {
         load();
-    }
-
-    @DataBoundSetter
-    public void setScanType(String scanType) {
-        this.scanType = scanType;
-        save();
     }
 
     @DataBoundSetter
@@ -124,8 +123,20 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     }
 
     @DataBoundSetter
-    public void setSynopsysBridgeDownloadUrl(String synopsysBridgeDownloadUrl) {
-        this.synopsysBridgeDownloadUrl = synopsysBridgeDownloadUrl;
+    public void setSynopsysBridgeDownloadUrlForMac(String synopsysBridgeDownloadUrlForMac) {
+        this.synopsysBridgeDownloadUrlForMac = synopsysBridgeDownloadUrlForMac;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setSynopsysBridgeDownloadUrlForWindows(String synopsysBridgeDownloadUrlForWindows) {
+        this.synopsysBridgeDownloadUrlForWindows = synopsysBridgeDownloadUrlForWindows;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setSynopsysBridgeDownloadUrlForLinux(String synopsysBridgeDownloadUrlForLinux) {
+        this.synopsysBridgeDownloadUrlForLinux = synopsysBridgeDownloadUrlForLinux;
         save();
     }
 
@@ -151,10 +162,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     public void setPolarisAccessToken(String polarisAccessToken) {
         this.polarisAccessToken = polarisAccessToken;
         save();
-    }
-
-    public String getScanType() {
-        return scanType;
     }
 
     public String getBlackDuckUrl() {
@@ -184,8 +191,16 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         return coverityInstallationPath;
     }
 
-    public String getSynopsysBridgeDownloadUrl() {
-        return synopsysBridgeDownloadUrl;
+    public String getSynopsysBridgeDownloadUrlForMac() {
+        return synopsysBridgeDownloadUrlForMac;
+    }
+
+    public String getSynopsysBridgeDownloadUrlForWindows() {
+        return synopsysBridgeDownloadUrlForWindows;
+    }
+
+    public String getSynopsysBridgeDownloadUrlForLinux() {
+        return synopsysBridgeDownloadUrlForLinux;
     }
 
     public String getSynopsysBridgeVersion() {
@@ -214,5 +229,4 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
             securityPlatform -> items.add(String.valueOf(securityPlatform)));
         return items;
     }
-
 }

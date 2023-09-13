@@ -357,8 +357,8 @@ public class SecurityScanStep extends Step implements Serializable {
         return bridge_include_diagnostics;
     }
 
-    private Map<String, Object> getParametersMap() {
-        return ScanCommandsFactory.preparePipelineParametersMap(this);
+    private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener) {
+        return ScanCommandsFactory.preparePipelineParametersMap(this, workspace, listener);
     }
 
     @Override
@@ -414,7 +414,7 @@ public class SecurityScanStep extends Step implements Serializable {
         @Override
         protected Integer run() throws ScannerJenkinsException {
             return ScanCommandsFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
-                .runScanner(getParametersMap());
+                .runScanner(getParametersMap(workspace, listener));
         }
 
     }

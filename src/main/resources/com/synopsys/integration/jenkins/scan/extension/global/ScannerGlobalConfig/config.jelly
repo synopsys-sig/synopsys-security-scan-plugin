@@ -1,47 +1,327 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
     <f:section title="Synopsys Security Scan">
-        <f:entry field="securityPlatform" title="Scan Type">
-            <f:select/>
-        </f:entry>
-        <f:entry field="blackDuckUrl" title="Black Duck URL">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="blackDuckApiToken" title="Black Duck Api Token">
-            <f:password/>
-        </f:entry>
-        <f:entry field="blackDuckInstallationPath" title="Black Duck Installation Path">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="coverityConnectUrl" title="Coverity Connect URL">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="coverityConnectUserName" title="Coverity Connect Username">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="coverityConnectUserPassword" title="Coverity Connect User Password">
-            <f:password/>
-        </f:entry>
-        <f:entry field="coverityInstallationPath" title="Coverity Installation Path">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="polarisServerUrl" title="Polaris Server URL">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="polarisAccessToken" title="Polaris Access Token">
-            <f:password/>
-        </f:entry>
-        <f:entry field="bitbucketToken" title="Bitbucket Token (Optional)">
-            <f:password/>
-        </f:entry>
-        <f:entry field="synopsysBridgeDownloadUrl" title="Synopsys Bridge Download URL (Optional)">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="synopsysBridgeVersion" title="Synopsys Bridge Version (Optional)">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="synopsysBridgeInstallationPath" title="Synopsys Bridge Installation Path (Optional)">
-            <f:textbox/>
-        </f:entry>
+
+        <!-- Place a single info line above the tabs -->
+        <div class="tab-info">Synopsys Security Product Configuration </div>
+
+        <!-- Tab Container -->
+        <div class="tab-container">
+            <!-- Black Duck Tab -->
+            <div class="scan-tab" onclick="showScanType('BLACKDUCKSection')">Black Duck</div>
+            <!-- Coverity Tab -->
+            <div class="scan-tab" onclick="showScanType('COVERITYSection')">Coverity</div>
+            <!-- Polaris Tab -->
+            <div class="scan-tab" onclick="showScanType('POLARISSection')">Polaris</div>
+        </div>
+
+        <!-- Black Duck Configuration -->
+        <div class="scan-type-section" id="BLACKDUCKSection" style="display: block;"> <!-- Set display to block -->
+            <f:entry field="blackDuckUrl" title="Black Duck URL">
+                <f:textbox name="blackDuckUrl" />
+            </f:entry>
+            <f:entry field="blackDuckApiToken" title="Black Duck API Token">
+                <f:password name="blackDuckApiToken" />
+            </f:entry>
+            <f:entry field="blackDuckInstallationPath" title="Black Duck Installation Path (Optional)">
+                <f:textbox name="blackDuckInstallationPath" />
+            </f:entry>
+            <button type="button" class="clear-button" onclick="clearTabFields('BLACKDUCKSection')">Clear</button>
+        </div>
+
+        <!-- Coverity Configuration -->
+        <div class="scan-type-section" id="COVERITYSection" style="display: none;">
+            <f:entry field="coverityConnectUrl" title="Coverity Connect URL">
+                <f:textbox name="coverityConnectUrl" />
+            </f:entry>
+            <f:entry field="coverityConnectUserName" title="Coverity Connect Username">
+                <f:textbox name="coverityConnectUserName" />
+            </f:entry>
+            <f:entry field="coverityConnectUserPassword" title="Coverity Connect User Password">
+                <f:password name="coverityConnectUserPassword" />
+            </f:entry>
+            <f:entry field="coverityInstallationPath" title="Coverity Installation Path (Optional)">
+                <f:textbox name="coverityInstallationPath" />
+            </f:entry>
+            <button type="button" class="clear-button" onclick="clearTabFields('COVERITYSection')">Clear</button>
+        </div>
+
+        <!-- Polaris Configuration -->
+        <div class="scan-type-section" id="POLARISSection" style="display: none;">
+            <f:entry field="polarisServerUrl" title="Polaris Server URL">
+                <f:textbox name="polarisServerUrl" />
+            </f:entry>
+            <f:entry field="polarisAccessToken" title="Polaris Access Token">
+                <f:password name="polarisAccessToken" />
+            </f:entry>
+            <button type="button" class="clear-button" onclick="clearTabFields('POLARISSection')">Clear</button>
+        </div>
+
+        <div>
+            <f:entry field="bitbucketToken" title="Bitbucket Token (Optional)">
+                <f:password/>
+            </f:entry>
+
+            <!-- Place a single info line above the tabs -->
+            <div class="tab-info-os">Configure Synopsys Bridge download URL for different platforms (Optional)</div>
+
+            <!-- Tab Container for Synopsys Bridge Download URLs -->
+            <div class="tab-container">
+                <!-- Mac Tab -->
+                <div class="os-tab" onclick="showOsType('MACSection')">Mac</div>
+                <!-- Linux Tab -->
+                <div class="os-tab" onclick="showOsType('LINUXSection')">Linux </div>
+                <!-- Windows Tab -->
+                <div class="os-tab" onclick="showOsType('WINDOWSSection')">Windows</div>
+            </div>
+
+            <!-- Mac Download URL Configuration -->
+            <div class="os-type-section" id="MACSection" style="display: none;">
+                <f:entry field="synopsysBridgeDownloadUrlForMac" title="Synopsys Bridge Download URL">
+                    <f:textbox name="synopsysBridgeDownloadUrlForMac" />
+                </f:entry>
+            </div>
+
+            <!-- Windows Download URL Configuration -->
+            <div class="os-type-section" id="WINDOWSSection" style="display: none;">
+                <f:entry field="synopsysBridgeDownloadUrlForWindows" title="Synopsys Bridge Download URL">
+                    <f:textbox name="synopsysBridgeDownloadUrlForWindows" />
+                </f:entry>
+            </div>
+
+            <!-- Linux Download URL Configuration -->
+            <div class="os-type-section" id="LINUXSection" style="display: none;">
+                <f:entry field="synopsysBridgeDownloadUrlForLinux" title="Synopsys Bridge Download URL">
+                    <f:textbox name="synopsysBridgeDownloadUrlForLinux" />
+                </f:entry>
+            </div>
+
+            <!-- Other Configuration -->
+            <f:entry field="synopsysBridgeVersion" title="Synopsys Bridge Version (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="synopsysBridgeInstallationPath" title="Synopsys Bridge Installation Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </div>
     </f:section>
+
+    <style>
+        .tab-container {
+        display: flex;
+        margin-bottom: 10px;
+        }
+
+        .scan-tab, .os-tab {
+        cursor: pointer;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+        }
+
+        .tab:hover {
+        background-color: #f1f1f1;
+        }
+
+        .scan-type-section, .os-type-section {
+        border: 2px dashed var(--input-border);
+        border-radius: 10px;
+        padding: 10px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        }
+
+        .box-header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        }
+
+        .tab-info {
+        font-size: 14px;
+        font-weight: bold;
+<!--        color: red; /* Text color */-->
+        margin-bottom: 10px; /* Adjust the margin as needed */
+        }
+
+        .tab-info-os {
+        font-size: 14px;
+        font-weight: bold;
+        color: black; /* Text color */
+        margin-top: 10px; /* Adjust the margin as needed */
+        margin-bottom: 20px; /* Adjust the margin as needed */
+        }
+
+        /* Style the Clear button */
+        .clear-button {
+        background-color: #fff; /* Button background color */
+        border: 1px solid #ccc; /* Button border */
+        border-radius: 5px; /* Rounded corners */
+        padding: 5px 10px; /* Padding around the button text */
+        cursor: pointer; /* Cursor on hover */
+        transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+        }
+
+        /* Style the Clear button on hover */
+        .clear-button:hover {
+        background-color: red; /* Background color on hover */
+        color: #fff; /* Text color on hover (white) */
+        }
+    </style>
+
+    <script type="text/javascript">
+        function showScanType(sectionId) {
+            // Hide all sections
+            var sections = document.querySelectorAll('.scan-type-section');
+            sections.forEach(function (section) {
+                section.style.display = 'none';
+            });
+
+            // Show the selected section
+            var scanTypeSection = document.getElementById(sectionId);
+            if (scanTypeSection) {
+                scanTypeSection.style.display = "block";
+            }
+
+            // Highlight the selected tab
+            var tabs = document.querySelectorAll('.scan-tab');
+            tabs.forEach(function (tab) {
+                tab.style.backgroundColor = '';
+            });
+
+            var selectedTab = document.querySelector('.tab-container [onclick*="' + sectionId + '"]');
+            if (selectedTab) {
+                selectedTab.style.backgroundColor = '#f1f1f1';
+            }
+        }
+
+        function showOsType(sectionId) {
+            // Hide all sections
+            var sections = document.querySelectorAll('.os-type-section');
+            sections.forEach(function (section) {
+                section.style.display = 'none';
+            });
+
+            // Show the selected section
+            var scanTypeSection = document.getElementById(sectionId);
+            if (scanTypeSection) {
+                scanTypeSection.style.display = "block";
+            }
+
+            // Highlight the selected tab
+            var tabs = document.querySelectorAll('.os-tab');
+            tabs.forEach(function (tab) {
+                tab.style.backgroundColor = '';
+            });
+
+            var selectedTab = document.querySelector('.tab-container [onclick*="' + sectionId + '"]');
+            if (selectedTab) {
+                selectedTab.style.backgroundColor = '#f1f1f1';
+            }
+        }
+
+        // Function to show the specified tab and box
+        function selectScanType(sectionId) {
+            // Hide all sections
+            var sections = document.querySelectorAll('.scan-type-section');
+            sections.forEach(function (section) {
+                section.style.display = 'none';
+            });
+
+            // Show the selected section
+            var scanTypeSection = document.getElementById(sectionId + 'Section');
+            if (scanTypeSection) {
+                scanTypeSection.style.display = "block";
+            }
+
+            // Highlight the selected tab
+            var tabs = document.querySelectorAll('.tab');
+            tabs.forEach(function (tab) {
+                tab.style.backgroundColor = '';
+            });
+
+            var selectedTab = document.querySelector('.tab-container [onclick*="' + sectionId + '"]');
+            if (selectedTab) {
+                selectedTab.style.backgroundColor = '#f1f1f1';
+            }
+        }
+
+        function selectOSType(sectionId) {
+            // Hide all sections
+            var sections = document.querySelectorAll('.os-type-section');
+            sections.forEach(function (section) {
+                section.style.display = 'none';
+            });
+
+            // Show the selected section
+            var scanTypeSection = document.getElementById(sectionId + 'Section');
+            if (scanTypeSection) {
+                scanTypeSection.style.display = "block";
+            }
+
+            // Highlight the selected tab
+            var tabs = document.querySelectorAll('.tab');
+            tabs.forEach(function (tab) {
+                tab.style.backgroundColor = '';
+            });
+
+            var selectedTab = document.querySelector('.tab-container [onclick*="' + sectionId + '"]');
+            if (selectedTab) {
+                selectedTab.style.backgroundColor = '#f1f1f1';
+            }
+        }
+
+        // Function to clear all input fields except those with a specific class
+        function clearTabFields(sectionId) {
+            var tabSection = document.getElementById(sectionId);
+            if (tabSection) {
+                var inputFields = tabSection.querySelectorAll("input:not(.hidden-password-update-btn)");
+                inputFields.forEach(function (inputField) {
+                    inputField.value = "";
+                });
+            }
+        }
+
+        // Function to check for existing values and display related boxes on page load
+        function checkExistingValues() {
+            var blackDuckUrl = document.querySelector("input[name='blackDuckUrl']").value;
+            var coverityConnectUrl = document.querySelector("input[name='coverityConnectUrl']").value;
+            var polarisServerUrl = document.querySelector("input[name='polarisServerUrl']").value;
+
+            var synopsysBridgeDownloadUrlForWindows = document.querySelector("input[name='synopsysBridgeDownloadUrlForWindows']").value;
+            var synopsysBridgeDownloadUrlForLinux = document.querySelector("input[name='synopsysBridgeDownloadUrlForLinux']").value;
+            var synopsysBridgeDownloadUrlForMac = document.querySelector("input[name='synopsysBridgeDownloadUrlForMac']").value;
+
+            // Check the values of blackDuckUrl, coverityConnectUrl, and polarisServerUrl
+            // and select the appropriate scan type based on their values
+            if (blackDuckUrl) {
+                selectScanType("BLACKDUCK"); // Show Black Duck box if there is a value
+            } else if (coverityConnectUrl) {
+                selectScanType("COVERITY"); // Show Coverity box if there is a value
+            } else if (polarisServerUrl) {
+                selectScanType("POLARIS"); // Show Polaris box if there is a value
+            } else {
+                // If none of the URLs have a value, default to Black Duck
+                selectScanType("BLACKDUCK");
+            }
+
+            // Check the values of synopsysBridgeDownloadUrlForMac, synopsysBridgeDownloadUrlForLinux, and synopsysBridgeDownloadUrlForWindows
+            // and select the appropriate OS type based on their values
+            if (synopsysBridgeDownloadUrlForMac) {
+                selectOSType("MAC");
+            } else if (synopsysBridgeDownloadUrlForLinux) {
+                selectOSType("LINUX");
+            } else if (synopsysBridgeDownloadUrlForWindows) {
+                selectOSType("WINDOWS");
+            } else {
+                // If none of the URLs have a value, default to MAC
+                selectOSType("MAC");
+            }
+        }
+
+        // Add an event listener to call the checkExistingValues function on page load
+        window.addEventListener("load", checkExistingValues);
+
+    </script>
 </j:jelly>
