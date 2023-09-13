@@ -66,32 +66,31 @@ public class Utility {
     }
 
     public static HttpURLConnection getHttpURLConnection(URL url, LoggerWrapper logger) {
-        HttpURLConnection connection = null;
-
         try {
             String envHttpsProxy = System.getenv(ApplicationConstants.HTTPS_PROXY);
-            String envHttpProxy = System.getenv(ApplicationConstants.HTTP_PROXY);
-
             if (envHttpsProxy != null) {
                 URL httpsProxyURL = new URL(envHttpsProxy);
                 setDefaultProxyAuthenticator(httpsProxyURL.getUserInfo());
 
                 Proxy httpsProxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpsProxyURL.getHost(), httpsProxyURL.getPort()));
-                connection = (HttpURLConnection) url.openConnection(httpsProxy);
-            } else if (envHttpProxy != null) {
+                return (HttpURLConnection) url.openConnection(httpsProxy);
+            }
+
+            String envHttpProxy = System.getenv(ApplicationConstants.HTTP_PROXY);
+            if (envHttpProxy != null) {
                 URL httpProxyURL = new URL(envHttpProxy);
                 setDefaultProxyAuthenticator(httpProxyURL.getUserInfo());
 
                 Proxy httpsProxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpProxyURL.getHost(), httpProxyURL.getPort()));
-                connection = (HttpURLConnection) url.openConnection(httpsProxy);
-            } else {
-                connection = (HttpURLConnection) url.openConnection(Proxy.NO_PROXY);
+                return (HttpURLConnection) url.openConnection(httpsProxy);
             }
+
+            return (HttpURLConnection) url.openConnection(Proxy.NO_PROXY);
         } catch (IOException e) {
             logger.error("An exception occurred while getting HttpURLConnection: " + e.getMessage());
         }
 
-        return connection;
+        return null;
     }
 
     public static void setDefaultProxyAuthenticator(String userInfo) {
