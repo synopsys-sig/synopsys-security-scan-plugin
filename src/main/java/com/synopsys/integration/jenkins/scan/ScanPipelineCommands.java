@@ -9,6 +9,7 @@ package com.synopsys.integration.jenkins.scan;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadManager;
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
+import com.synopsys.integration.jenkins.scan.exception.NoStackTraceException;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
@@ -20,6 +21,7 @@ import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +38,7 @@ public class ScanPipelineCommands {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public int runScanner(Map<String, Object> scanParameters) throws ScannerJenkinsException {
+    public int initializeScanner(Map<String, Object> scanParameters) throws ScannerJenkinsException, NoStackTraceException {
         logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
         ScanParametersService scanParametersService = new ScanParametersService(listener);
@@ -50,9 +52,10 @@ public class ScanPipelineCommands {
         validateSecurityPlatform(scanParameters);
 
         int exitCode = -1;
+        Map<Integer, String> exitCodeToMessage = ExceptionMessages.bridgeErrorMessages();
 
         if (scanParametersService.isValidScanParameters(scanParameters) &&
-            bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
+                bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
 
@@ -72,7 +75,9 @@ public class ScanPipelineCommands {
         }
 
         try {
-            if (exitCode != 0) {
+            if (exitCodeToMessage.containsKey(exitCode)) {
+                throw new NoStackTraceException(exitCodeToMessage.get(exitCode));
+            } else if(!exitCodeToMessage.containsKey(exitCode) && exitCode != 0){
                 throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
             }
         }
