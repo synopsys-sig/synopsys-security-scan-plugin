@@ -109,13 +109,13 @@ public class Utility {
 
     public static String getEnvOrSystemProxyDetails(String proxyType, EnvVars envVars) {
         String proxyDetails = envVars.get(proxyType);
-        if (!isStringNullOrBlank(proxyDetails)) {
+        if (isStringNullOrBlank(proxyDetails)) {
             proxyDetails = envVars.get(proxyType.toLowerCase());
         }
-        if (!isStringNullOrBlank(proxyDetails)) {
+        if (isStringNullOrBlank(proxyDetails)) {
             proxyDetails = System.getenv(proxyType);
         }
-        if (!isStringNullOrBlank(proxyDetails)) {
+        if (isStringNullOrBlank(proxyDetails)) {
             proxyDetails = System.getenv(proxyType.toLowerCase());
         }
 
