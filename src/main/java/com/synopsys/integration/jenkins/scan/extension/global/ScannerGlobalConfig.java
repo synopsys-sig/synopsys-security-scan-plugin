@@ -43,14 +43,15 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String coverityInstallationPath;
 
     @HelpMarkdown("Provide the URL from where synopsys-bridge zip file can be downloaded. " +
-        "Note: You must need to provide the full download url which includes the zip file path.")
-    private String synopsysBridgeDownloadUrl;
-
-
+            "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrlForMac;
 
+    @HelpMarkdown("Provide the URL from where synopsys-bridge zip file can be downloaded. " +
+            "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrlForWindows;
 
+    @HelpMarkdown("Provide the URL from where synopsys-bridge zip file can be downloaded. " +
+            "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrlForLinux;
 
     @HelpMarkdown("Provide the specific Synopsys bridge version you want to download from Synopsys artifactory.")
@@ -122,12 +123,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     }
 
     @DataBoundSetter
-    public void setSynopsysBridgeDownloadUrl(String synopsysBridgeDownloadUrl) {
-        this.synopsysBridgeDownloadUrl = synopsysBridgeDownloadUrl;
-        save();
-    }
-
-    @DataBoundSetter
     public void setSynopsysBridgeDownloadUrlForMac(String synopsysBridgeDownloadUrlForMac) {
         this.synopsysBridgeDownloadUrlForMac = synopsysBridgeDownloadUrlForMac;
         save();
@@ -194,10 +189,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getCoverityInstallationPath() {
         return coverityInstallationPath;
-    }
-
-    public String getSynopsysBridgeDownloadUrl() {
-        return synopsysBridgeDownloadUrl;
     }
 
     public String getSynopsysBridgeDownloadUrlForMac() {

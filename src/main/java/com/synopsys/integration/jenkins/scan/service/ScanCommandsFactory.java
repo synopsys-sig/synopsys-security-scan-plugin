@@ -247,9 +247,14 @@ public class ScanCommandsFactory {
                                                                      String synopsysBridgeDownloadUrlForLinux,
                                                                      String synopsysBridgeDownloadUrlForWindows) {
         String agentOs = Utility.getAgentOs(workspace, listener);
-        if(agentOs.contains("mac")) return synopsysBridgeDownloadUrlForMac;
-        else if(agentOs.contains("linux")) return synopsysBridgeDownloadUrlForLinux;
-        else return synopsysBridgeDownloadUrlForWindows;
+        if (agentOs.contains("mac")) {
+            return synopsysBridgeDownloadUrlForMac;
+        } else if (agentOs.contains("linux")) {
+            return synopsysBridgeDownloadUrlForLinux;
+        }
+        else {
+            return synopsysBridgeDownloadUrlForWindows;
+        }
     }
 
 }
