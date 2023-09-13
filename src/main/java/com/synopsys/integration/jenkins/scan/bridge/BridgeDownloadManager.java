@@ -11,6 +11,7 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.Utility;
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.IOException;
@@ -22,15 +23,17 @@ public class BridgeDownloadManager {
     private final TaskListener listener;
     private final FilePath workspace;
     private final LoggerWrapper logger;
+    private final EnvVars envVars;
 
-    public BridgeDownloadManager(FilePath workspace, TaskListener listener) {
+    public BridgeDownloadManager(FilePath workspace, TaskListener listener, EnvVars envVars) {
         this.workspace = workspace;
         this.listener = listener;
         this.logger = new LoggerWrapper(listener);
+        this.envVars = envVars;
     }
 
     public void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
-        BridgeDownload bridgeDownload = new BridgeDownload(workspace, listener);
+        BridgeDownload bridgeDownload = new BridgeDownload(workspace, listener, envVars);
         BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
 
         String bridgeDownloadUrl = bridgeDownloadParams.getBridgeDownloadUrl();
@@ -133,7 +136,7 @@ public class BridgeDownloadManager {
             FilePath tempFilePath = workspace.createTempFile("versions", ".txt");
             URL url = new URL(versionFileUrl);
 
-            HttpURLConnection connection = Utility.getHttpURLConnection(url, logger);
+            HttpURLConnection connection = Utility.getHttpURLConnection(url, envVars, logger);
             if (connection != null) {
                 tempFilePath.copyFrom(connection.getURL());
                 tempVersionFilePath = tempFilePath.getRemote();
@@ -148,7 +151,7 @@ public class BridgeDownloadManager {
         try {
             URL url = new URL(String.join("/",directoryUrl,ApplicationConstants.VERSION_FILE));
 
-            HttpURLConnection connection = Utility.getHttpURLConnection(url, logger);
+            HttpURLConnection connection = Utility.getHttpURLConnection(url, envVars, logger);
             if (connection != null) {
                 connection.setRequestMethod("HEAD");
                 return (connection.getResponseCode() >= 200 && connection.getResponseCode() < 300);

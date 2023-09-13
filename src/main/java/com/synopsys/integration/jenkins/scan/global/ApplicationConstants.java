@@ -73,7 +73,8 @@ public class ApplicationConstants {
     public static final String COVERITY_INPUT_JSON_PREFIX = "coverity_input";
     public static final String POLARIS_INPUT_JSON_PREFIX = "polaris_input";
 
-    public static final String HTTPS_PROXY = "https_proxy";
-    public static final String HTTP_PROXY = "http_proxy";
+    public static final String HTTPS_PROXY = "HTTPS_PROXY";
+    public static final String HTTP_PROXY = "HTTP_PROXY";
+    public static final String NO_PROXY = "NO_PROXY";
 
 }

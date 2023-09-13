@@ -11,6 +11,7 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.Utility;
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.IOException;
@@ -19,12 +20,13 @@ import java.net.URL;
 
 public class BridgeDownload {
     private final LoggerWrapper logger;
-
     private final FilePath workspace;
+    private final EnvVars envVars;
 
-    public BridgeDownload(FilePath workspace, TaskListener listener) {
+    public BridgeDownload(FilePath workspace, TaskListener listener, EnvVars envVars) {
         this.workspace = workspace;
         this.logger = new LoggerWrapper(listener);
+        this.envVars = envVars;
     }
 
     public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath) {
@@ -42,7 +44,7 @@ public class BridgeDownload {
 
                         bridgeZipFilePath = bridgeInstallationFilePath.child(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT);
 
-                        HttpURLConnection connection = Utility.getHttpURLConnection(new URL(bridgeDownloadUrl), logger);
+                        HttpURLConnection connection = Utility.getHttpURLConnection(new URL(bridgeDownloadUrl), envVars, logger);
                         if (connection != null) {
                             bridgeZipFilePath.copyFrom(connection.getURL());
                             downloadSuccess = true;
@@ -77,7 +79,7 @@ public class BridgeDownload {
         int statusCode = -1;
 
         try {
-            HttpURLConnection connection = Utility.getHttpURLConnection(new URL(url), logger);
+            HttpURLConnection connection = Utility.getHttpURLConnection(new URL(url), envVars, logger);
             if (connection != null) {
                 connection.setRequestMethod("HEAD");
                 statusCode = connection.getResponseCode();
@@ -102,7 +104,7 @@ public class BridgeDownload {
         try {
             URL url = new URL(bridgeDownloadUrl);
 
-            HttpURLConnection connection = Utility.getHttpURLConnection(url, logger);
+            HttpURLConnection connection = Utility.getHttpURLConnection(url, envVars, logger);
             if (connection != null) {
                 connection.setRequestMethod("HEAD");
                 return (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
