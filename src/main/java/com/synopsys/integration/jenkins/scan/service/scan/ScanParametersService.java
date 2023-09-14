@@ -48,20 +48,13 @@ public class ScanParametersService {
         
         return isValidBlackDuckParameters && isValidCoverityParameters && isValidPolarisParameters;
     }
-    
+
     public Set<String> getSynopsysSecurityPlatforms(Map<String, Object> scanParameters) {
         String securityPlatform = (String) scanParameters.get(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY);
-        Set<String> securityPlatforms = new HashSet<>();
 
-        if (securityPlatform.contains(",")) {
-            securityPlatforms = Arrays.stream(securityPlatform.split(","))
+        return Arrays.stream(securityPlatform.split(","))
                 .map(String::trim)
                 .map(String::toUpperCase)
                 .collect(Collectors.toSet());
-        } else {
-            securityPlatforms.add(securityPlatform.trim().toUpperCase());
-        }
-        
-        return securityPlatforms;
     }
 }
