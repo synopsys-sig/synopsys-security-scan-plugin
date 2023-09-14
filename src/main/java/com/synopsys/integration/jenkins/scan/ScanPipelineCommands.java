@@ -9,7 +9,6 @@ package com.synopsys.integration.jenkins.scan;
 
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadManager;
 import com.synopsys.integration.jenkins.scan.bridge.BridgeDownloadParameters;
-import com.synopsys.integration.jenkins.scan.exception.NoStackTraceException;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
@@ -19,6 +18,8 @@ import com.synopsys.integration.jenkins.scan.global.enums.SecurityPlatform;
 import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.FilePath;
+import hudson.model.Result;
+import hudson.model.Run;
 import hudson.model.TaskListener;
 import java.util.Arrays;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class ScanPipelineCommands {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public int initializeScanner(Map<String, Object> scanParameters) throws ScannerJenkinsException, NoStackTraceException {
+    public int initializeScanner(Map<String, Object> scanParameters, Run<?, ?> run) throws ScannerJenkinsException {
         logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
         ScanParametersService scanParametersService = new ScanParametersService(listener);
@@ -75,7 +76,8 @@ public class ScanPipelineCommands {
 
         try {
             if (exitCodeToMessage.containsKey(exitCode)) {
-                throw new NoStackTraceException(exitCodeToMessage.get(exitCode));
+                logger.error(exitCodeToMessage.get(exitCode));
+                run.setResult(Result.FAILURE);
             } else if(!exitCodeToMessage.containsKey(exitCode) && exitCode != 0){
                 throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
             }
