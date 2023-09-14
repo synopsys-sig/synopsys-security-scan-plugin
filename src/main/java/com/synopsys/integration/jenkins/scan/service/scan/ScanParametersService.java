@@ -14,7 +14,6 @@ import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParam
 import com.synopsys.integration.jenkins.scan.service.scan.polaris.PolarisParametersService;
 import hudson.model.TaskListener;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
