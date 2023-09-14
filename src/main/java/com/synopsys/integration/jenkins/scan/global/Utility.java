@@ -11,9 +11,11 @@ import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.IOException;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.List;
@@ -82,12 +84,16 @@ public class Utility {
             String httpsProxy = getEnvOrSystemProxyDetails(ApplicationConstants.HTTPS_PROXY, envVars);
             if (!isStringNullOrBlank(httpsProxy)) {
                 URL httpsProxyURL = new URL(httpsProxy);
+                setDefaultProxyAuthenticator(httpsProxyURL.getUserInfo());
+
                 return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpsProxyURL.getHost(), httpsProxyURL.getPort()));
             }
 
             String httpProxy = getEnvOrSystemProxyDetails(ApplicationConstants.HTTP_PROXY, envVars);
             if (!isStringNullOrBlank(httpProxy)) {
                 URL httpProxyURL = new URL(httpProxy);
+                setDefaultProxyAuthenticator(httpProxyURL.getUserInfo());
+
                 return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpProxyURL.getHost(), httpProxyURL.getPort()));
             }
             
@@ -101,7 +107,7 @@ public class Utility {
                 }
             }
         } catch (MalformedURLException e) {
-            logger.error("An exception occurred while getting HttpURLConnection: " + e.getMessage());
+            logger.error("An exception occurred while getting proxy: " + e.getMessage());
         }
 
         return Proxy.NO_PROXY;
@@ -120,6 +126,20 @@ public class Utility {
         }
 
         return proxyDetails;
+    }
+
+    public static void setDefaultProxyAuthenticator(String userInfo) {
+        if (!isStringNullOrBlank(userInfo)) {
+            String[] userInfoArray = userInfo.split(":");
+            if (userInfoArray.length == 2) {
+                Authenticator.setDefault(new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(userInfoArray[0], userInfoArray[1].toCharArray());
+                    }
+                });
+            }
+        }
     }
 
 }
