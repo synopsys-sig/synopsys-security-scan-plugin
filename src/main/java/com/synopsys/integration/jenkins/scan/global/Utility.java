@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.URL;
@@ -70,8 +69,18 @@ public class Utility {
 
     public static HttpURLConnection getHttpURLConnection(URL url, EnvVars envVars, LoggerWrapper logger) {
         try {
-            Proxy proxy = getProxy(url, envVars, logger);
-            return (HttpURLConnection) url.openConnection(proxy);
+            String proxy = getProxy(url, envVars);
+            if (proxy.equals(ApplicationConstants.NO_PROXY)) {
+                return (HttpURLConnection) url.openConnection(Proxy.NO_PROXY);
+            } else {
+                URL proxyURL = new URL(proxy);
+
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection(
+                    new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyURL.getHost(), proxyURL.getPort())));
+                setDefaultProxyAuthenticator(proxyURL.getUserInfo());
+
+                return connection;
+            }
         } catch (IOException e) {
             logger.error("An exception occurred while getting HttpURLConnection: " + e.getMessage());
         }
@@ -79,38 +88,26 @@ public class Utility {
         return null;
     }
 
-    public static Proxy getProxy(URL url, EnvVars envVars, LoggerWrapper logger) {
-        try {
-            String httpsProxy = getEnvOrSystemProxyDetails(ApplicationConstants.HTTPS_PROXY, envVars);
-            if (!isStringNullOrBlank(httpsProxy)) {
-                URL httpsProxyURL = new URL(httpsProxy);
-                setDefaultProxyAuthenticator(httpsProxyURL.getUserInfo());
-
-                return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpsProxyURL.getHost(), httpsProxyURL.getPort()));
+    public static String getProxy(URL url, EnvVars envVars) {
+        String noProxy = getEnvOrSystemProxyDetails(ApplicationConstants.NO_PROXY, envVars);
+        if (!isStringNullOrBlank(noProxy)) {
+            List<String> noProxyList = List.of(noProxy.split(","));
+            if (noProxyList.contains(url.toString())) {
+                return ApplicationConstants.NO_PROXY;
             }
-
-            String httpProxy = getEnvOrSystemProxyDetails(ApplicationConstants.HTTP_PROXY, envVars);
-            if (!isStringNullOrBlank(httpProxy)) {
-                URL httpProxyURL = new URL(httpProxy);
-                setDefaultProxyAuthenticator(httpProxyURL.getUserInfo());
-
-                return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpProxyURL.getHost(), httpProxyURL.getPort()));
-            }
-            
-            if (!isStringNullOrBlank(httpsProxy) || !isStringNullOrBlank(httpProxy)) {
-                String noProxy = getEnvOrSystemProxyDetails(ApplicationConstants.NO_PROXY, envVars);
-                if (!isStringNullOrBlank(noProxy)) {
-                    List<String> noProxyList = List.of(noProxy.split(","));
-                    if (noProxyList.contains(url.toString())) {
-                        return Proxy.NO_PROXY;
-                    }
-                }
-            }
-        } catch (MalformedURLException e) {
-            logger.error("An exception occurred while getting proxy: " + e.getMessage());
         }
 
-        return Proxy.NO_PROXY;
+        String httpsProxy = getEnvOrSystemProxyDetails(ApplicationConstants.HTTPS_PROXY, envVars);
+        if (!isStringNullOrBlank(httpsProxy)) {
+            return httpsProxy;
+        }
+
+        String httpProxy = getEnvOrSystemProxyDetails(ApplicationConstants.HTTP_PROXY, envVars);
+        if (!isStringNullOrBlank(httpProxy)) {
+            return httpProxy;
+        }
+
+        return ApplicationConstants.NO_PROXY;
     }
 
     public static String getEnvOrSystemProxyDetails(String proxyType, EnvVars envVars) {
