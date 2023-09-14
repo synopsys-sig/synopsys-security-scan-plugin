@@ -44,7 +44,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_blackduck_install_directory;
     private Boolean bridge_blackduck_scan_full;
     private String bridge_blackduck_scan_failure_severities;
-    private Boolean bridge_blackduck_automation_fixpr;
+//    private Boolean bridge_blackduck_automation_fixpr;
     private Boolean bridge_blackduck_automation_prcomment;
 
     private String bridge_coverity_connect_url;
@@ -106,10 +106,10 @@ public class SecurityScanStep extends Step implements Serializable {
         this.bridge_blackduck_scan_failure_severities = bridge_blackduck_scan_failure_severities;
     }
 
-    @DataBoundSetter
-    public void setBridge_blackduck_automation_fixpr(Boolean bridge_blackduck_automation_fixpr) {
-        this.bridge_blackduck_automation_fixpr = bridge_blackduck_automation_fixpr;
-    }
+//    @DataBoundSetter
+//    public void setBridge_blackduck_automation_fixpr(Boolean bridge_blackduck_automation_fixpr) {
+//        this.bridge_blackduck_automation_fixpr = bridge_blackduck_automation_fixpr;
+//    }
 
     @DataBoundSetter
     public void setBridge_blackduck_automation_prcomment(
@@ -290,9 +290,9 @@ public class SecurityScanStep extends Step implements Serializable {
         return bridge_blackduck_scan_failure_severities;
     }
 
-    public Boolean isBridge_blackduck_automation_fixpr() {
-        return bridge_blackduck_automation_fixpr;
-    }
+//    public Boolean isBridge_blackduck_automation_fixpr() {
+//        return bridge_blackduck_automation_fixpr;
+//    }
 
     public Boolean isBridge_blackduck_automation_prcomment() {
         return bridge_blackduck_automation_prcomment;
