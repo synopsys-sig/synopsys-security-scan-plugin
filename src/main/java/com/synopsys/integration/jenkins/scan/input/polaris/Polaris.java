@@ -28,14 +28,14 @@ public class Polaris {
     @JsonProperty("triage")
     private String triage;
 
-    @JsonProperty("branch")
-    private Branch branch;
+//    @JsonProperty("branch")
+//    private Branch branch;
 
     public Polaris() {
         applicationName = new ApplicationName();
         projectName = new ProjectName();
         assessmentTypes = new AssessmentTypes();
-        branch = new Branch();
+//        branch = new Branch();
     }
 
     public String getAccessToken() {
@@ -86,11 +86,11 @@ public class Polaris {
         this.triage = triage;
     }
 
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
-    }
+//    public Branch getBranch() {
+//        return branch;
+//    }
+//
+//    public void setBranch(Branch branch) {
+//        this.branch = branch;
+//    }
 }
