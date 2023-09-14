@@ -145,9 +145,9 @@ public class ScanCommandsFactory {
         if (scanStep.isBridge_blackduck_scan_full() != null) {
             blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY, scanStep.isBridge_blackduck_scan_full());
         }
-        if (scanStep.isBridge_blackduck_automation_fixpr() != null) {
-            blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY, scanStep.isBridge_blackduck_automation_fixpr());
-        }
+//        if (scanStep.isBridge_blackduck_automation_fixpr() != null) {
+//            blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY, scanStep.isBridge_blackduck_automation_fixpr());
+//        }
         if (scanStep.isBridge_blackduck_automation_prcomment() != null) {
             blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, scanStep.isBridge_blackduck_automation_prcomment());
         }
