@@ -1,12 +1,12 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-    <f:entry field="synopsys_security_platform" title="Select security platform">
+    <f:entry field="synopsys_security_product" title="Select Security Product">
         <f:select/>
     </f:entry>
 
     <f:section title="Additional BlackDuck Parameters">
         <f:entry field="bridge_blackduck_scan_full" title="Bridge BlackDuck Full Scan">
-            <f:checkbox default="true"/>
+            <f:checkbox/>
         </f:entry>
         <f:entry field="bridge_blackduck_scan_failure_severities" title="Bridge Black Duck Scan Failure Severities">
             <f:textbox/>
@@ -14,43 +14,43 @@
         <f:entry field="bridge_blackduck_automation_prcomment" title="Bridge Black Duck Automatic Pull Request Comment">
             <f:checkbox/>
         </f:entry>
-        <f:entry field="bridge_blackduck_automation_fixpr" title="Bridge Black Duck Automatic Fix Pull Request">
-            <f:checkbox/>
-        </f:entry>
+<!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Bridge Black Duck Automatic Fix Pull Request">-->
+<!--            <f:checkbox/>-->
+<!--        </f:entry>-->
     </f:section>
 
     <f:section title="Additional Coverity Parameters">
-        <f:entry field="bridge_coverity_connect_project_name" title="Bridge Coverity project name">
+        <f:entry field="bridge_coverity_connect_project_name" title="Bridge Coverity Project Name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_connect_stream_name" title="Bridge Coverity stream name">
+        <f:entry field="bridge_coverity_connect_stream_name" title="Bridge Coverity Stream Name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_connect_policy_view" title="Bridge Coverity ID number/Name of a policy">
+        <f:entry field="bridge_coverity_connect_policy_view" title="Bridge Coverity Policy View">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_automation_prcomment" title="Bridge Coverity enable PR comment">
+        <f:entry field="bridge_coverity_automation_prcomment" title="Bridge Coverity Enable PR comment">
             <f:checkbox default="false"/>
         </f:entry>
-        <f:entry field="bridge_coverity_version" title="Bridge Coverity version number">
+        <f:entry field="bridge_coverity_version" title="Bridge Coverity Version Number">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_local" title="Bridge Coverity enable local analysis">
+        <f:entry field="bridge_coverity_local" title="Bridge Coverity Enable Local Analysis">
             <f:checkbox/>
         </f:entry>
     </f:section>
 
     <f:section title="Additional Polaris Parameters">
-        <f:entry field="bridge_polaris_application_name" title="Bridge Polaris application name">
+        <f:entry field="bridge_polaris_application_name" title="Bridge Polaris Application Name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_polaris_project_name" title="Bridge Polaris project name">
+        <f:entry field="bridge_polaris_project_name" title="Bridge Polaris Project Name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_polaris_assessment_types" title="Bridge Polaris assessment types">
+        <f:entry field="bridge_polaris_assessment_types" title="Bridge Polaris Assessment Types">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_polaris_triage" title="Bridge Polaris triage">
+        <f:entry field="bridge_polaris_triage" title="Bridge Polaris Triage">
             <f:textbox/>
         </f:entry>
     </f:section>

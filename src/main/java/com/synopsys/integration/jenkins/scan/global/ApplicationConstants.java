@@ -34,7 +34,7 @@ public class ApplicationConstants {
     public static final String ENV_CHANGE_ID_KEY = "CHANGE_ID";
     public static final String ENV_BRANCH_NAME_KEY = "BRANCH_NAME";
 
-    public static final String SYNOPSYS_SECURITY_PLATFORM_KEY = "synopsys_security_platform";
+    public static final String SYNOPSYS_SECURITY_PRODUCT_KEY = "synopsys_security_product";
     public static final String BRIDGE_BLACKDUCK_URL_KEY = "bridge_blackduck_url";
     public static final String BRIDGE_BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_api_token";
     public static final String BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY = "bridge_blackduck_install_directory";
