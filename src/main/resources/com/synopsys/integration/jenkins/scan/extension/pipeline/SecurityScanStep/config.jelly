@@ -5,11 +5,11 @@
     </f:entry>
 
     <f:section title="Additional BlackDuck Parameters">
-        <f:entry field="bridge_blackduck_scan_full" title="Bridge BlackDuck Full Scan">
-            <f:checkbox/>
-        </f:entry>
         <f:entry field="bridge_blackduck_scan_failure_severities" title="Bridge Black Duck Scan Failure Severities">
             <f:textbox/>
+        </f:entry>
+        <f:entry field="bridge_blackduck_scan_full" title="Bridge BlackDuck Full Scan">
+            <f:checkbox/>
         </f:entry>
         <f:entry field="bridge_blackduck_automation_prcomment" title="Bridge Black Duck Automatic Pull Request Comment">
             <f:checkbox/>
@@ -29,11 +29,11 @@
         <f:entry field="bridge_coverity_connect_policy_view" title="Bridge Coverity Policy View">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_automation_prcomment" title="Bridge Coverity Enable PR comment">
-            <f:checkbox default="false"/>
-        </f:entry>
         <f:entry field="bridge_coverity_version" title="Bridge Coverity Version Number">
             <f:textbox/>
+        </f:entry>
+        <f:entry field="bridge_coverity_automation_prcomment" title="Bridge Coverity Enable PR comment">
+            <f:checkbox/>
         </f:entry>
         <f:entry field="bridge_coverity_local" title="Bridge Coverity Enable Local Analysis">
             <f:checkbox/>
