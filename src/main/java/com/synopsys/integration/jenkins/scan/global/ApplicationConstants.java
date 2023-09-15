@@ -42,6 +42,7 @@ public class ApplicationConstants {
     public static final String BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "bridge_blackduck_scan_failure_severities";
     public static final String BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY = "bridge_blackduck_automation_fixpr";
     public static final String BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "bridge_blackduck_automation_prcomment";
+    public static final String BRIDGE_BLACKDUCK_DOWNLOAD_URL_KEY = "BRIDGE_BLACKDUCK_DOWNLOAD_URL";
 
     public static final String BRIDGE_COVERITY_CONNECT_URL_KEY = "bridge_coverity_connect_url";
     public static final String BRIDGE_COVERITY_CONNECT_USER_NAME_KEY = "bridge_coverity_connect_user_name";
@@ -72,5 +73,7 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_INPUT_JSON_PREFIX = "blackduck_input";
     public static final String COVERITY_INPUT_JSON_PREFIX = "coverity_input";
     public static final String POLARIS_INPUT_JSON_PREFIX = "polaris_input";
+
+    public static final String BRIDGE_NETWORK_AIRGAP_KEY = "BRIDGE_NETWORK_AIRGAP";
 
 }

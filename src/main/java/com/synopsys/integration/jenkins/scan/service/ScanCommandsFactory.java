@@ -152,6 +152,10 @@ public class ScanCommandsFactory {
             blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, scanStep.isBridge_blackduck_automation_prcomment());
         }
 
+        if (scanStep.getBRIDGE_BLACKDUCK_DOWNLOAD_URL() != null) {
+            blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_DOWNLOAD_URL_KEY, scanStep.getBRIDGE_BLACKDUCK_DOWNLOAD_URL());
+        }
+
         return blackDuckParameters;
     }
 
@@ -206,6 +210,10 @@ public class ScanCommandsFactory {
         }
         if(scanStep.isBridge_include_diagnostics() != null) {
             bridgeParameters.put(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY, scanStep.isBridge_include_diagnostics());
+        }
+
+        if (scanStep.isBRIDGE_NETWORK_AIRGAP() != null) {
+            bridgeParameters.put(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY, scanStep.isBRIDGE_NETWORK_AIRGAP());
         }
 
         return bridgeParameters;
