@@ -17,7 +17,6 @@ import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.URL;
-import java.util.List;
 
 public class Utility {
 
@@ -91,8 +90,7 @@ public class Utility {
     public static String getProxy(URL url, EnvVars envVars) {
         String noProxy = getEnvOrSystemProxyDetails(ApplicationConstants.NO_PROXY, envVars);
         if (!isStringNullOrBlank(noProxy)) {
-            List<String> noProxyList = List.of(noProxy.split(","));
-            if (noProxyList.contains(url.toString())) {
+            if (noProxy.contains(url.toString())) {
                 return ApplicationConstants.NO_PROXY;
             }
         }
