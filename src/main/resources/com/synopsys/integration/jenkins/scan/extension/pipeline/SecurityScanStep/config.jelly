@@ -32,6 +32,12 @@
         <f:entry field="bridge_coverity_automation_prcomment" title="Bridge Coverity enable PR comment">
             <f:checkbox default="false"/>
         </f:entry>
+        <f:entry field="bridge_coverity_version" title="Bridge Coverity version number">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="bridge_coverity_local" title="Bridge Coverity enable local analysis">
+            <f:checkbox/>
+        </f:entry>
     </f:section>
 
     <f:section title="Additional Polaris Parameters">
@@ -42,6 +48,9 @@
             <f:textbox/>
         </f:entry>
         <f:entry field="bridge_polaris_assessment_types" title="Bridge Polaris assessment types">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="bridge_polaris_triage" title="Bridge Polaris triage">
             <f:textbox/>
         </f:entry>
     </f:section>
