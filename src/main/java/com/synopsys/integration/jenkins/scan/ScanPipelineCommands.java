@@ -30,15 +30,17 @@ public class ScanPipelineCommands {
     private final FilePath workspace;
     private final TaskListener listener;
     private final LoggerWrapper logger;
+    private final Run<?, ?> run;
 
-    public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, TaskListener listener) {
+    public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, TaskListener listener, Run<?, ?> run) {
         this.scanner = scanner;
         this.workspace = workspace;
         this.listener = listener;
         this.logger = new LoggerWrapper(listener);
+        this.run = run;
     }
 
-    public int initializeScanner(Map<String, Object> scanParameters, Run<?, ?> run) throws ScannerJenkinsException {
+    public int initializeScanner(Map<String, Object> scanParameters) throws ScannerJenkinsException {
         logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
         ScanParametersService scanParametersService = new ScanParametersService(listener);
