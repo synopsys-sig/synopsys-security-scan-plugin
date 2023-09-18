@@ -14,7 +14,7 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.Utility;
-import com.synopsys.integration.jenkins.scan.global.enums.SecurityPlatform;
+import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
@@ -55,7 +55,7 @@ public class ScannerArgumentService {
 
         commandLineArgs.add(getBridgeRunCommand(bridgeInstallationPath));
 
-        commandLineArgs.addAll(getSecurityPlatformSpecificCommands(scanParameters));
+        commandLineArgs.addAll(getSecurityProductSpecificCommands(scanParameters));
 
         if (Objects.equals(scanParameters.get(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY), true)) {
             commandLineArgs.add(BridgeParams.DIAGNOSTICS_OPTION);
@@ -74,9 +74,9 @@ public class ScannerArgumentService {
         }
     }
 
-    private List<String> getSecurityPlatformSpecificCommands(Map<String, Object> scanParameters) throws ScannerJenkinsException {
+    private List<String> getSecurityProductSpecificCommands(Map<String, Object> scanParameters) throws ScannerJenkinsException {
         ScanParametersService scanParametersService = new ScanParametersService(listener);
-        Set<String> securityPlatforms = scanParametersService.getSynopsysSecurityPlatforms(scanParameters);
+        Set<String> securityProducts = scanParametersService.getSynopsysSecurityProducts(scanParameters);
 
         boolean fixPrOrPrComment = isFixPrOrPrCommentValueSet(scanParameters);
 
@@ -85,7 +85,7 @@ public class ScannerArgumentService {
 
         List<String> scanCommands = new ArrayList<>();
 
-        if (securityPlatforms.contains(SecurityPlatform.BLACKDUCK.name())) {
+        if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
             BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
             BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(scanParameters);
 
@@ -94,7 +94,7 @@ public class ScannerArgumentService {
             scanCommands.add(BridgeParams.INPUT_OPTION);
             scanCommands.add(createBridgeInputJson(blackDuck, scmObject, fixPrOrPrComment, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX));
         }
-        if (securityPlatforms.contains(SecurityPlatform.COVERITY.name())) {
+        if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
             CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
             Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(scanParameters);
 
@@ -103,7 +103,7 @@ public class ScannerArgumentService {
             scanCommands.add(BridgeParams.INPUT_OPTION);
             scanCommands.add(createBridgeInputJson(coverity, scmObject, fixPrOrPrComment, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX));
         }
-        if (securityPlatforms.contains(SecurityPlatform.POLARIS.name())) {
+        if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
             Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(scanParameters);
 

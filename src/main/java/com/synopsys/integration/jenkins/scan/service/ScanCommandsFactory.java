@@ -51,7 +51,7 @@ public class ScanCommandsFactory {
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep, FilePath workspace, TaskListener listener) {
         Map<String, Object> parametersMap = new HashMap<>(getGlobalConfigurationValues(workspace, listener));
 
-        parametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, scanStep.getSynopsys_security_platform().trim().toUpperCase());
+        parametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, scanStep.getSynopsys_security_product().trim().toUpperCase());
 
         parametersMap.putAll(prepareCoverityParametersMap(scanStep));
         parametersMap.putAll(preparePolarisParametersMap(scanStep));
@@ -145,9 +145,9 @@ public class ScanCommandsFactory {
         if (scanStep.isBridge_blackduck_scan_full() != null) {
             blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY, scanStep.isBridge_blackduck_scan_full());
         }
-        if (scanStep.isBridge_blackduck_automation_fixpr() != null) {
-            blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY, scanStep.isBridge_blackduck_automation_fixpr());
-        }
+//        if (scanStep.isBridge_blackduck_automation_fixpr() != null) {
+//            blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY, scanStep.isBridge_blackduck_automation_fixpr());
+//        }
         if (scanStep.isBridge_blackduck_automation_prcomment() != null) {
             blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, scanStep.isBridge_blackduck_automation_prcomment());
         }
@@ -232,12 +232,12 @@ public class ScanCommandsFactory {
         if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_triage())) {
             polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_TRIAGE_KEY, scanStep.getBridge_polaris_triage());
         }
-        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_branch_name())) {
-            polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_NAME_KEY, scanStep.getBridge_polaris_branch_name());
-        }
-        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_branch_parent_name())) {
-            polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY, scanStep.getBridge_polaris_branch_parent_name());
-        }
+//        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_branch_name())) {
+//            polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_NAME_KEY, scanStep.getBridge_polaris_branch_name());
+//        }
+//        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_branch_parent_name())) {
+//            polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY, scanStep.getBridge_polaris_branch_parent_name());
+//        }
 
         return polarisParametersMap;
     }

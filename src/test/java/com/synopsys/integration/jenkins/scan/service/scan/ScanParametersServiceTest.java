@@ -25,7 +25,7 @@ public class ScanParametersServiceTest {
     @Test
     void validParametersForBlackDuckTest() {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, "blackduck");
+        parameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck");
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
@@ -35,7 +35,7 @@ public class ScanParametersServiceTest {
     @Test
     void invalidParametersForBlackDuckAndPolarisTest() {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, "blackduck, polaris");
+        parameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck, polaris");
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
@@ -45,7 +45,7 @@ public class ScanParametersServiceTest {
     @Test
     void validParametersForBlackDuckAndPolarisTest() {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, "blackduck, polaris");
+        parameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck, polaris");
 
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");

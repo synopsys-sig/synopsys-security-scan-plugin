@@ -63,7 +63,7 @@
             </f:entry>
 
             <!-- Place a single info line above the tabs -->
-            <div class="tab-info-os">Configure Synopsys Bridge download URL for different platforms (Optional)</div>
+            <div class="tab-info-os">Configure Synopsys Bridge download URL for different platforms</div>
 
             <!-- Tab Container for Synopsys Bridge Download URLs -->
             <div class="tab-container">
@@ -77,21 +77,21 @@
 
             <!-- Mac Download URL Configuration -->
             <div class="os-type-section" id="MACSection" style="display: none;">
-                <f:entry field="synopsysBridgeDownloadUrlForMac" title="Synopsys Bridge Download URL">
+                <f:entry field="synopsysBridgeDownloadUrlForMac" title="Synopsys Bridge Download URL (Optional)">
                     <f:textbox name="synopsysBridgeDownloadUrlForMac" />
                 </f:entry>
             </div>
 
             <!-- Windows Download URL Configuration -->
             <div class="os-type-section" id="WINDOWSSection" style="display: none;">
-                <f:entry field="synopsysBridgeDownloadUrlForWindows" title="Synopsys Bridge Download URL">
+                <f:entry field="synopsysBridgeDownloadUrlForWindows" title="Synopsys Bridge Download URL (Optional)">
                     <f:textbox name="synopsysBridgeDownloadUrlForWindows" />
                 </f:entry>
             </div>
 
             <!-- Linux Download URL Configuration -->
             <div class="os-type-section" id="LINUXSection" style="display: none;">
-                <f:entry field="synopsysBridgeDownloadUrlForLinux" title="Synopsys Bridge Download URL">
+                <f:entry field="synopsysBridgeDownloadUrlForLinux" title="Synopsys Bridge Download URL (Optional)">
                     <f:textbox name="synopsysBridgeDownloadUrlForLinux" />
                 </f:entry>
             </div>
