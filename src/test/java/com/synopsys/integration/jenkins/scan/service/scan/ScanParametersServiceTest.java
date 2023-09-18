@@ -63,11 +63,11 @@ public class ScanParametersServiceTest {
     public void getSynopsysSecurityPlatformsTest() {
         Map<String, Object> scanParametersWithMultiplePlatforms = new HashMap<>();
         Map<String, Object> scanParametersWithSinglePlatform = new HashMap<>();
-        scanParametersWithMultiplePlatforms.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, "blackduck, polaris");
-        scanParametersWithSinglePlatform.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, "");
+        scanParametersWithMultiplePlatforms.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck, polaris");
+        scanParametersWithSinglePlatform.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "");
 
-        Set<String> multiplePlatforms = scanParametersService.getSynopsysSecurityPlatforms(scanParametersWithMultiplePlatforms);
-        Set<String> singlePlatform = scanParametersService.getSynopsysSecurityPlatforms(scanParametersWithSinglePlatform);
+        Set<String> multiplePlatforms = scanParametersService.getSynopsysSecurityProducts(scanParametersWithMultiplePlatforms);
+        Set<String> singlePlatform = scanParametersService.getSynopsysSecurityProducts(scanParametersWithSinglePlatform);
 
         assertEquals(2, multiplePlatforms.size());
         assertEquals(1, singlePlatform.size());
