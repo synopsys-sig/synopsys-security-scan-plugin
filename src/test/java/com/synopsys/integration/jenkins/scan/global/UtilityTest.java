@@ -57,12 +57,12 @@ public class UtilityTest {
         String str = null;
         String emptyString = "";
         String emptyStringContainingSpace = "   ";
-        String validString = " This is valid string  ";
+        String validString = " This is a valid string  ";
 
-        assertTrue( Utility.isStringNullOrBlank(str));
-        assertTrue( Utility.isStringNullOrBlank(emptyString));
-        assertTrue( Utility.isStringNullOrBlank(emptyStringContainingSpace));
-        assertFalse( Utility.isStringNullOrBlank(validString));
+        assertTrue(Utility.isStringNullOrBlank(str));
+        assertTrue(Utility.isStringNullOrBlank(emptyString));
+        assertTrue(Utility.isStringNullOrBlank(emptyStringContainingSpace));
+        assertFalse(Utility.isStringNullOrBlank(validString));
     }
 
     public String getHomeDirectory() {
