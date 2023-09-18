@@ -5,11 +5,12 @@ import hudson.model.TaskListener;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ScanParametersServiceTest {
     private ScanParametersService scanParametersService;
@@ -56,5 +57,19 @@ public class ScanParametersServiceTest {
         parameters.put(ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, "SCA, SAST");
 
         assertTrue(scanParametersService.isValidScanParameters(parameters));
+    }
+
+    @Test
+    public void getSynopsysSecurityPlatformsTest() {
+        Map<String, Object> scanParametersWithMultiplePlatforms = new HashMap<>();
+        Map<String, Object> scanParametersWithSinglePlatform = new HashMap<>();
+        scanParametersWithMultiplePlatforms.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck, polaris");
+        scanParametersWithSinglePlatform.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "");
+
+        Set<String> multiplePlatforms = scanParametersService.getSynopsysSecurityProducts(scanParametersWithMultiplePlatforms);
+        Set<String> singlePlatform = scanParametersService.getSynopsysSecurityProducts(scanParametersWithSinglePlatform);
+
+        assertEquals(2, multiplePlatforms.size());
+        assertEquals(1, singlePlatform.size());
     }
 }

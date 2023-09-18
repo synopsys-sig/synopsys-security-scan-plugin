@@ -112,7 +112,7 @@ synopsys_scan synopsys_security_product: "COVERITY"
 If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
 Hence, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
 
-### Synopsys Security Platform
+### Synopsys Security product
 
 
 | Input Parameter                     | Description                                                                                                                                                                         | Mandatory / Optional |

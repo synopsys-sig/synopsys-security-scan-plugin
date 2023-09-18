@@ -14,7 +14,6 @@ import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParam
 import com.synopsys.integration.jenkins.scan.service.scan.polaris.PolarisParametersService;
 import hudson.model.TaskListener;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,20 +47,13 @@ public class ScanParametersService {
         
         return isValidBlackDuckParameters && isValidCoverityParameters && isValidPolarisParameters;
     }
-    
-    public Set<String> getSynopsysSecurityProducts(Map<String, Object> scanParameters) {
-        String securityProduct = (String) scanParameters.get(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY);
-        Set<String> securityProducts = new HashSet<>();
 
-        if (securityProduct.contains(",")) {
-            securityProducts = Arrays.stream(securityProduct.split(","))
+    public Set<String> getSynopsysSecurityProducts(Map<String, Object> scanParameters) {
+        String securityPlatform = (String) scanParameters.get(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY);
+
+        return Arrays.stream(securityPlatform.split(","))
                 .map(String::trim)
                 .map(String::toUpperCase)
                 .collect(Collectors.toSet());
-        } else {
-            securityProducts.add(securityProduct.trim().toUpperCase());
-        }
-        
-        return securityProducts;
     }
 }

@@ -18,6 +18,8 @@ import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.FilePath;
+import hudson.model.Result;
+import hudson.model.Run;
 import hudson.model.TaskListener;
 import java.util.Arrays;
 import java.util.Map;
@@ -28,15 +30,17 @@ public class ScanPipelineCommands {
     private final FilePath workspace;
     private final TaskListener listener;
     private final LoggerWrapper logger;
+    private final Run<?, ?> run;
 
-    public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, TaskListener listener) {
+    public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, TaskListener listener, Run<?, ?> run) {
         this.scanner = scanner;
         this.workspace = workspace;
         this.listener = listener;
         this.logger = new LoggerWrapper(listener);
+        this.run = run;
     }
 
-    public int runScanner(Map<String, Object> scanParameters) throws ScannerJenkinsException {
+    public int initializeScanner(Map<String, Object> scanParameters) throws ScannerJenkinsException {
         logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
         ScanParametersService scanParametersService = new ScanParametersService(listener);
@@ -50,9 +54,10 @@ public class ScanPipelineCommands {
         validateSecurityProduct(scanParameters);
 
         int exitCode = -1;
+        Map<Integer, String> exitCodeToMessage = ExceptionMessages.bridgeErrorMessages();
 
         if (scanParametersService.isValidScanParameters(scanParameters) &&
-            bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
+                bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
             boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
 
@@ -72,7 +77,10 @@ public class ScanPipelineCommands {
         }
 
         try {
-            if (exitCode != 0) {
+            if (exitCodeToMessage.containsKey(exitCode)) {
+                logger.error(exitCodeToMessage.get(exitCode));
+                run.setResult(Result.FAILURE);
+            } else if(!exitCodeToMessage.containsKey(exitCode) && exitCode != 0){
                 throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
             }
         }
