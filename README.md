@@ -60,47 +60,111 @@ xcode-select --install
 
 ## Users Guide
 
-To use the plugin and invoke it as a pipeline step, follow these instructions:
+### Bitbucket Prerequisites:
 
-### Synopsys Security Scan - Black Duck
+#### Configure Bitbucket Token
+bitbucket_token is required as input when running Black Duck/Coverity PR Comment.
+
+To Generate HTTP Access Token for Bitbucket, <br>
+Select Profile Photo → Manage Account → HTTP Access Tokens → Create token <br>
+Then follow the below instructions. 
+
+- Enter Token name
+- Keep everything as default or you can change the Project/Repository Permissions as your need.
+- Click the Create Button.
+   Then a token will be generated.
+
+### Project Setup
+#### Installing Helper Plugins for Jenkins:
+- Bitbucket Branch Source
+- Pipeline
+
+To install plugins, first navigate to:  
+Dashboard → Manage Jenkins → Plugins <br>
+After that Go to the section "Available plugins". <br>
+Then Search And Install those two plugins that we mentioned above. <br>
+Once the installation is completed then restart the jenkins instance.
+
+#### Configure Bitbucket Server:
+Navigate to Dashboard → Manage Jenkins → System <br>
+Go to the Bitbucket Endpoints section. Click to the Add button.   
+Select the Bitbucket Server from the dropdown. Now follow these instructions.  
+- Enter the Name
+- Enter valid Server URL
+- Enter Server Version
+- Click checkmark to the Manage hooks. And keep everything as default.
+- Select your credentials that you configured before.
+- Select the Plugin from the "Webhook implementation to use" dropdown.
+- Click Apply and Save.
+
+#### Create a Multibranch Pipeline Job in your Jenkins instance
+
+To create the Multibranch Pipeline, follow these instructions,
+- First click to the New Item
+- Enter an item name
+- Select Multibranch Pipeline
+- click OK <br>
+Then you will be navigated to your Job's configuration page.
+
+#### Configure The Job
+
+First, Go to the Branch Sources section. Then follow these instructions.
+- Select your Bitbucket Server from the Bitbucket Server dropdown.
+- Select your credentials that you configured before. In case you didn't configure credentials you can configure it from the Jenkins Credentials Provider which you can find by clicking the "Add" dropdown.
+- Enter the Owner Name.
+- Enter the Repository Name. And keep everything as default.
+- Click Apply and Save.
+
+#### Configure Global UI :
+Navigate to Dashboard → Manage Jenkins → System  
+Then go to the Synopsys Security Scan section.  
+And from there you can populate the inputs for configuration.
+
+#### Generate Pipeline Syntax:
+- Go to the Dashboard → JOB NAME → Branches / Pull Requests
+- Then click on the BRANCH NAME or PULL REQUEST
+- Then click on the Pipeline Syntax from the Sidebar.
+- Go to the Steps Section.
+- Select synopsys_scan: Synopsys Security Scan from the Sample Step dropdown.
+- Populate the property field.
+- Then click on the Generate Pipeline Script.
+- Finally, copy the Generated Pipeline Script to Jenkinsfile.
+
+### Using Synopsys Security Scan for Black Duck
+
+ To use the plugin and invoke it as a pipeline step, follow these instructions:
 
 1. Add the following code snippet to your `Jenkinsfile` in your project root directory that you want to scan:
 
 ```groovy
 stage("Security Scan") {
-    when {
-        anyOf {
-            environment name: 'BRANCH_IS_PRIMARY', value: 'true'
-            changeRequest()
-        }
-    }
     steps {
         script {
             def blackDuckScanFull
             def blackDuckPrComment
 
-            if (env.BRANCH_IS_PRIMARY) {
+            if (env.CHANGE_ID == null) {
                 blackDuckScanFull = true
             } else if (env.CHANGE_ID != null && env.CHANGE_TARGET != null) {
                 blackDuckScanFull = false
                 blackDuckPrComment = true
             }
 
-            synopsys_scan synopsys_security_platform: "BLACKDUCK", bridge_blackduck_url: "https://example.com", bridge_blackduck_api_token: "YOUR_BLACKDUCK_TOKEN", 
-                    bridge_blackduck_scan_full: "${blackDuckScanFull}", bridge_blackduck_automation_prcomment: "${blackDuckPrComment}"
+            synopsys_scan synopsys_security_product: "BLACKDUCK", blackduck_url: "https://example.com", blackduck_api_token: "YOUR_BLACKDUCK_TOKEN", 
+                    blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckPrComment}"
         }
     }
 }
 ```
-Make sure to provide the required parameters such as `bridge_blackduck_url` and `bridge_blackduck_api_token` with the appropriate values.
+Make sure to provide the required parameters such as `blackduck_url` and `blackduck_api_token` with the appropriate values.
 
 Or if the values are configured in **Jenkins Global Configuration**, you can use the following example -
 ```groovy
-synopsys_scan synopsys_security_platform: "BLACKDUCK", bridge_blackduck_scan_full: "${blackDuckScanFull}", bridge_blackduck_automation_prcomment: "${blackDuckPrComment}"
+synopsys_scan synopsys_security_product: "BLACKDUCK", blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckPrComment}"
 ```
 Or a very basic template - 
 ```groovy
-synopsys_scan synopsys_security_platform: "COVERITY"
+synopsys_scan synopsys_security_product: "COVERITY"
 ```
 
 2. Create a Multibranch Pipeline Job in your Jenkins instance
@@ -112,51 +176,51 @@ synopsys_scan synopsys_security_platform: "COVERITY"
 If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
 Hence, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
 
-### Synopsys Security Platform
+### Synopsys Security Product
 
 
-| Input Parameter                     | Description                                                                                                                                                                         | Mandatory / Optional |
-|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
-| `synopsys_security_platform`        | Provide the security platform that you want to execute. <br> Supported values: **POLARIS**, **BLACKDUCK**, **COVERITY** <br> Example: `synopsys_security_platform: "POLARIS"` </br> | Mandatory      |
+| Input Parameter             | Description                                                                                                                                                                       | Mandatory / Optional |
+|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| `synopsys_security_product` | Provide the security product that you want to execute. <br> Supported values: **POLARIS**, **BLACKDUCK**, **COVERITY** <br> Example: `synopsys_security_product: "POLARIS"` </br> | Mandatory      |
 
 ### Black Duck Parameters
 
-| Input Parameter                     | Description                                                                                                                                                                                                                             | Mandatory / Optional                                          |
-|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
-| `bridge_blackduck_url`                     | URL for Black Duck server. The URL can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `bridge_blackduck_url: "${env.BLACKDUCK_URL}"` </br>                     | Mandatory if not configured in Jenkins Global Configuration   |
-| `bridge_blackduck_api_token`               | API token for Black Duck. The token can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `bridge_blackduck_token: "${env.BLACKDUCK_TOKEN}"` </br>                | Mandatory if not configured in Jenkins Global Configuration   |
-| `bridge_blackduck_install_directory`       | Directory path to install Black Duck                                                                                                                                                                                               | Optional                                                      |
-| `bridge_blackduck_scan_full`               | Specifies whether full scan is required or not. By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan. <br> Supported values: `true` or `false` </br>                                | Optional (Default: **false**)                                 |
-| `bridge_blackduck_scan_failure_severities` | Scan failure severities of Black Duck. <br> Supported values: `ALL`, `NONE`, `BLOCKER`, `CRITICAL`, `MAJOR`, `MINOR`, `OK`, `TRIVIAL`, `UNSPECIFIED`. <br> Example: `bridge_blackduck_scan_failure_severities: "BLOCKER, TRIVIAL"` </br>             | Optional                                                      |
-| `bridge_blackduck_automation_prcomment`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: `true` or `false`. <br> Example: `bridge_blackduck_automation_prcomment: true` </br>                                             | Optional (Default: **false**)                                 |
-| `bridge_blackduck_automation_fixpr`        | Flag to enable automatic creation for fix pull request when Black Duck vulnerabilities reported. <br> By default fix pull request creation will be disabled <br> Supported values: `true` or `false` </br>                              | Optional (Default: **false**)                                 |
+| Input Parameter       | Description                                                                                                                                                                                                                             | Mandatory / Optional                                          |
+|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
+| `blackduck_url`       | URL for Black Duck server. The URL can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `bridge_blackduck_url: "${env.BLACKDUCK_URL}"` </br>                     | Mandatory if not configured in Jenkins Global Configuration   |
+| `blackduck_api_token` | API token for Black Duck. The token can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `bridge_blackduck_token: "${env.BLACKDUCK_TOKEN}"` </br>                | Mandatory if not configured in Jenkins Global Configuration   |
+| `blackduck_install_directory` | Directory path to install Black Duck                                                                                                                                                                                               | Optional                                                      |
+| `blackduck_scan_full` | Specifies whether full scan is required or not. By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan. <br> Supported values: `true` or `false` </br>                                | Optional (Default: **false**)                                 |
+| `blackduck_scan_failure_severities` | Scan failure severities of Black Duck. <br> Supported values: `ALL`, `NONE`, `BLOCKER`, `CRITICAL`, `MAJOR`, `MINOR`, `OK`, `TRIVIAL`, `UNSPECIFIED`. <br> Example: `bridge_blackduck_scan_failure_severities: "BLOCKER, TRIVIAL"` </br>             | Optional                                                      |
+| `blackduck_automation_prcomment` | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: `true` or `false`. <br> Example: `bridge_blackduck_automation_prcomment: true` </br>                                             | Optional (Default: **false**)                                 |
+| `blackduck_automation_fixpr` | Flag to enable automatic creation for fix pull request when Black Duck vulnerabilities reported. <br> By default fix pull request creation will be disabled <br> Supported values: `true` or `false` </br>                              | Optional (Default: **false**)                                 |
 
 
 ### Coverity Parameters
 
-| Input Parameter                        | Description                                                                                                                                                                                                                                                                                                                   |Mandatory / Optional |
-|----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
-| `bridge_coverity_connect_url`                  | URL for Coverity server                                                                                                                                                                                                                                                                                                       | Mandatory if not configured in Jenkins Global Configuration |
-| `bridge_coverity_connect_user_name`            | Username for Coverity                                                                                                                                                                                                                                                                                                         | Mandatory if not configured in Jenkins Global Configuration |
-| `bridge_coverity_connect_user_password`        | Password for Coverity                                                                                                                                                                                                                                                                                                         | Mandatory if not configured in Jenkins Global Configuration |
-| `bridge_coverity_connect_project_name`         | Project name in Coverity. <br> Many customers prefer to set their Coverity project and stream names to match the SCM repository name  </br>                                                                                                                                                                                   | Optional    |
-| `bridge_coverity_connect_stream_name`          | Stream name in Coverity                                                                                                                                                                                                                                                                                                       | Optional    |
-| `bridge_coverity_install_directory`    | Directory path to install Coverity                                                                                                                                                                                                                                                                                            | Optional   |
-| `bridge_coverity_connect_policy_view`          | ID number/Name of a saved view to apply as a "break the build" policy. If any defects are found within this view when applied to the project, the build will be failed with an exit code. <br> Example: `bridge_coverity_connect_policy_view: '100001'` or `bridge_coverity_connect_policy_view: 'Outstanding Issues'`  </br> | Optional   |
-| `bridge_coverity_automation_prcomment` | To enable feedback from Coverity security testing as pull request comment. Merge Request must be created first from feature branch to main branch to run Coverity PR Comment. <br> Supported values: `true` or `false` </br>                                                                                                  | Optional (Default: **false**)  |
-| `bridge_coverity_version` | To download the specified Coverity version rather than downloading the default latest version                                                                                                                                                                                                                                 | Optional   |
-| `bridge_coverity_local` | To support local analysis. <br> Supported values: `true` or `false` </br>                                                                                                                                                                                                                                                     | Optional   |
+| Input Parameter  | Description                                                                                                                                                                                                                                                                                                                   |Mandatory / Optional |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `coverity_connect_url` | URL for Coverity server                                                                                                                                                                                                                                                                                                       | Mandatory if not configured in Jenkins Global Configuration |
+| `coverity_connect_user_name` | Username for Coverity                                                                                                                                                                                                                                                                                                         | Mandatory if not configured in Jenkins Global Configuration |
+| `coverity_connect_user_password` | Password for Coverity                                                                                                                                                                                                                                                                                                         | Mandatory if not configured in Jenkins Global Configuration |
+| `coverity_connect_project_name` | Project name in Coverity. <br> Many customers prefer to set their Coverity project and stream names to match the SCM repository name  </br>                                                                                                                                                                                   | Optional    |
+| `coverity_connect_stream_name` | Stream name in Coverity                                                                                                                                                                                                                                                                                                       | Optional    |
+| `coverity_install_directory` | Directory path to install Coverity                                                                                                                                                                                                                                                                                            | Optional   |
+| `coverity_connect_policy_view` | ID number/Name of a saved view to apply as a "break the build" policy. If any defects are found within this view when applied to the project, the build will be failed with an exit code. <br> Example: `bridge_coverity_connect_policy_view: '100001'` or `bridge_coverity_connect_policy_view: 'Outstanding Issues'`  </br> | Optional   |
+| `coverity_automation_prcomment` | To enable feedback from Coverity security testing as pull request comment. Merge Request must be created first from feature branch to main branch to run Coverity PR Comment. <br> Supported values: `true` or `false` </br>                                                                                                  | Optional (Default: **false**)  |
+| `coverity_version` | To download the specified Coverity version rather than downloading the default latest version                                                                                                                                                                                                                                 | Optional   |
+| `coverity_local` | To support local analysis. <br> Supported values: `true` or `false` </br>                                                                                                                                                                                                                                                     | Optional   |
 
 ### Polaris Parameters
 
-| Input Parameter                     | Description                                                                                                                                                                                                                             | Mandatory / Optional                                        |
-|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
-| `bridge_polaris_serverurl`                         | URL for Polaris server. The URL can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `bridge_polaris_serverurl: "${env.BRIDGE_POLARIS_SERVERURL}"` </br>              | Mandatory if not configured in Jenkins Global Configuration |
-| `bridge_polaris_accesstoken`                     | Access token for Polaris server. The URL can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `bridge_polaris_accesstoken: "${env.BRIDGE_POLARIS_ACCESSTOKEN}"` </br> | Mandatory if not configured in Jenkins Global Configuration |
-| `bridge_polaris_application_name`               | The application name created in the Polaris server.                                                                                                                                                                                     | Mandatory                                                   |
-| `bridge_polaris_project_name`       | The project name you have created in Polaris.                                                                                                                                                                                           | Mandatory                                                   |
-| `bridge_polaris_assessment_types`               | Specifies the type of scan you want to run. <br> Supported values: `SCA` or `SAST` or both SCA and SAST. <br> Example:  `bridge_polaris_assessment_types: "SCA, SAST"` </br>                                                            | Mandatory                                                   |
-| `bridge_polaris_triage`               | Accepts only one value. <br> Supported values: `REQUIRED` or `NOT_REQUIRED` or `NOT_ENTITLED`.</br>                                                                                                                                     | Optional                                                    |
+| Input Parameter  | Description                                                                                                                                                                                                                             | Mandatory / Optional                                        |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| `polaris_serverurl` | URL for Polaris server. The URL can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `bridge_polaris_serverurl: "${env.BRIDGE_POLARIS_SERVERURL}"` </br>              | Mandatory if not configured in Jenkins Global Configuration |
+| `polaris_accesstoken` | Access token for Polaris server. The URL can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `bridge_polaris_accesstoken: "${env.BRIDGE_POLARIS_ACCESSTOKEN}"` </br> | Mandatory if not configured in Jenkins Global Configuration |
+| `polaris_application_name` | The application name created in the Polaris server.                                                                                                                                                                                     | Mandatory                                                   |
+| `polaris_project_name` | The project name you have created in Polaris.                                                                                                                                                                                           | Mandatory                                                   |
+| `polaris_assessment_types` | Specifies the type of scan you want to run. <br> Supported values: `SCA` or `SAST` or both SCA and SAST. <br> Example:  `bridge_polaris_assessment_types: "SCA, SAST"` </br>                                                            | Mandatory                                                   |
+| `polaris_triage` | Accepts only one value. <br> Supported values: `REQUIRED` or `NOT_REQUIRED` or `NOT_ENTITLED`.</br>                                                                                                                                     | Optional                                                    |
 
 ### Bitbucket Parameters
 
