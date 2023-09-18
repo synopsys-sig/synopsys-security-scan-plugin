@@ -51,7 +51,7 @@ public class ScanCommandsFactory {
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep, FilePath workspace, TaskListener listener) {
         Map<String, Object> parametersMap = new HashMap<>(getGlobalConfigurationValues(workspace, listener));
 
-        parametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, scanStep.getSynopsys_security_platform().trim().toUpperCase());
+        parametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, scanStep.getSynopsys_security_product().trim().toUpperCase());
 
         parametersMap.putAll(prepareCoverityParametersMap(scanStep));
         parametersMap.putAll(preparePolarisParametersMap(scanStep));

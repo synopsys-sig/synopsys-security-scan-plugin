@@ -86,7 +86,7 @@ stage("Security Scan") {
                 blackDuckPrComment = true
             }
 
-            synopsys_scan synopsys_security_platform: "BLACKDUCK", bridge_blackduck_url: "https://example.com", bridge_blackduck_api_token: "YOUR_BLACKDUCK_TOKEN", 
+            synopsys_scan synopsys_security_product: "BLACKDUCK", bridge_blackduck_url: "https://example.com", bridge_blackduck_api_token: "YOUR_BLACKDUCK_TOKEN", 
                     bridge_blackduck_scan_full: "${blackDuckScanFull}", bridge_blackduck_automation_prcomment: "${blackDuckPrComment}"
         }
     }
@@ -96,11 +96,11 @@ Make sure to provide the required parameters such as `bridge_blackduck_url` and 
 
 Or if the values are configured in **Jenkins Global Configuration**, you can use the following example -
 ```groovy
-synopsys_scan synopsys_security_platform: "BLACKDUCK", bridge_blackduck_scan_full: "${blackDuckScanFull}", bridge_blackduck_automation_prcomment: "${blackDuckPrComment}"
+synopsys_scan synopsys_security_product: "BLACKDUCK", bridge_blackduck_scan_full: "${blackDuckScanFull}", bridge_blackduck_automation_prcomment: "${blackDuckPrComment}"
 ```
 Or a very basic template - 
 ```groovy
-synopsys_scan synopsys_security_platform: "COVERITY"
+synopsys_scan synopsys_security_product: "COVERITY"
 ```
 
 2. Create a Multibranch Pipeline Job in your Jenkins instance
@@ -117,7 +117,7 @@ Hence, if these values are set both from Jenkins Global Configuration and pipeli
 
 | Input Parameter                     | Description                                                                                                                                                                         | Mandatory / Optional |
 |-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
-| `synopsys_security_platform`        | Provide the security platform that you want to execute. <br> Supported values: **POLARIS**, **BLACKDUCK**, **COVERITY** <br> Example: `synopsys_security_platform: "POLARIS"` </br> | Mandatory      |
+| `synopsys_security_product`        | Provide the security platform that you want to execute. <br> Supported values: **POLARIS**, **BLACKDUCK**, **COVERITY** <br> Example: `synopsys_security_product: "POLARIS"` </br> | Mandatory      |
 
 ### Black Duck Parameters
 
