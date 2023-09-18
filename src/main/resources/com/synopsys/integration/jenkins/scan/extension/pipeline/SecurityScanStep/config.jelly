@@ -12,7 +12,7 @@
         <f:entry field="bridge_blackduck_scan_failure_severities" title="Black Duck Scan Failure Severities">
             <f:textbox/>
         </f:entry>
-        <f:entry field="BRIDGE_BLACKDUCK_DOWNLOAD_URL" title="Black Duck Download URL">
+        <f:entry field="bridge_blackduck_download_url" title="Black Duck Download URL">
             <f:textbox/>
         </f:entry>
         <f:entry field="bridge_blackduck_scan_full" title="Black Duck Full Scan">
@@ -66,7 +66,7 @@
         <f:entry field="bridge_include_diagnostics" title="Include Diagnostics">
             <f:checkbox/>
         </f:entry>
-        <f:entry field="BRIDGE_NETWORK_AIRGAP" title="Network Airgap">
+        <f:entry field="bridge_network_airgap" title="Network Airgap">
             <f:checkbox/>
         </f:entry>
     </f:section>
