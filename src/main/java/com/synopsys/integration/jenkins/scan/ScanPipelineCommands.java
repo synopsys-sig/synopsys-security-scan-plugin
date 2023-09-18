@@ -14,10 +14,12 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
-import com.synopsys.integration.jenkins.scan.global.enums.SecurityPlatform;
+import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.FilePath;
+import hudson.model.Result;
+import hudson.model.Run;
 import hudson.model.TaskListener;
 import java.util.Arrays;
 import java.util.Map;
@@ -28,15 +30,17 @@ public class ScanPipelineCommands {
     private final FilePath workspace;
     private final TaskListener listener;
     private final LoggerWrapper logger;
+    private final Run<?, ?> run;
 
-    public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, TaskListener listener) {
+    public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, TaskListener listener, Run<?, ?> run) {
         this.scanner = scanner;
         this.workspace = workspace;
         this.listener = listener;
         this.logger = new LoggerWrapper(listener);
+        this.run = run;
     }
 
-    public int runScanner(Map<String, Object> scanParameters) throws ScannerJenkinsException {
+    public int initializeScanner(Map<String, Object> scanParameters) throws ScannerJenkinsException {
         logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
         ScanParametersService scanParametersService = new ScanParametersService(listener);
@@ -45,14 +49,15 @@ public class ScanPipelineCommands {
         BridgeDownloadParametersService bridgeDownloadParametersService = new BridgeDownloadParametersService(workspace, listener);
         BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParameters, bridgeDownloadParameters);
 
-        logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityPlatforms(scanParameters));
+        logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityProducts(scanParameters));
 
-        validateSecurityPlatform(scanParameters);
+        validateSecurityProduct(scanParameters);
 
         int exitCode = -1;
+        Map<Integer, String> exitCodeToMessage = ExceptionMessages.bridgeErrorMessages();
 
         if (scanParametersService.isValidScanParameters(scanParameters) &&
-            bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
+                bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
 
             boolean isNetworkAirgap = scanParameters.containsKey(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY) &&
@@ -94,7 +99,10 @@ public class ScanPipelineCommands {
         }
 
         try {
-            if (exitCode != 0) {
+            if (exitCodeToMessage.containsKey(exitCode)) {
+                logger.error(exitCodeToMessage.get(exitCode));
+                run.setResult(Result.FAILURE);
+            } else if(!exitCodeToMessage.containsKey(exitCode) && exitCode != 0){
                 throw new ScannerJenkinsException(ExceptionMessages.scannerFailedWithExitCode(exitCode));
             }
         }
@@ -105,30 +113,30 @@ public class ScanPipelineCommands {
         return exitCode;
     }
 
-    private void validateSecurityPlatform(Map<String, Object> scanParameters) throws ScannerJenkinsException {
-        String securityPlatform = scanParameters.get(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY).toString();
-        if (securityPlatform.isBlank() ||
-            !(securityPlatform.contains(SecurityPlatform.BLACKDUCK.name()) ||
-            securityPlatform.contains(SecurityPlatform.POLARIS.name()) ||
-            securityPlatform.contains(SecurityPlatform.COVERITY.name()))) {
-            logger.error(LogMessages.INVALID_SYNOPSYS_SECURITY_PLATFORM);
-            logger.info("Supported Synopsys Security Platforms: " + Arrays.toString(SecurityPlatform.values()));
-            throw new ScannerJenkinsException(LogMessages.INVALID_SYNOPSYS_SECURITY_PLATFORM);
+    private void validateSecurityProduct(Map<String, Object> scanParameters) throws ScannerJenkinsException {
+        String securityProduct = scanParameters.get(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY).toString();
+        if (securityProduct.isBlank() ||
+            !(securityProduct.contains(SecurityProduct.BLACKDUCK.name()) ||
+            securityProduct.contains(SecurityProduct.POLARIS.name()) ||
+            securityProduct.contains(SecurityProduct.COVERITY.name()))) {
+            logger.error(LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
+            logger.info("Supported Synopsys Security Products: " + Arrays.toString(SecurityProduct.values()));
+            throw new ScannerJenkinsException(LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
         }
     }
 
-    public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> securityPlatforms) {
+    public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> securityProducts) {
         logger.println("-------------------------- Parameter Validation Initiated --------------------------");
 
-        logger.info(" --- " + ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY + " = " + securityPlatforms.toString());
+        logger.info(" --- " + ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY + " = " + securityProducts.toString());
 
-        for (String platform : securityPlatforms) {
-            String securityPlatform = platform.toLowerCase();
-            logger.info("Parameters for %s:", securityPlatform);
+        for (String product : securityProducts) {
+            String securityProduct = product.toLowerCase();
+            logger.info("Parameters for %s:", securityProduct);
 
             for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
                 String key = entry.getKey();
-                if(key.contains(securityPlatform)) {
+                if(key.contains(securityProduct)) {
                     Object value = entry.getValue();
                     if(key.equals(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY)) {
                         value = LogMessages.ASTERISKS;

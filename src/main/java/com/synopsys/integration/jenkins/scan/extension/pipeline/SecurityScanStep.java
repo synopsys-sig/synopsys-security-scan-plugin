@@ -9,7 +9,6 @@ package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.enums.SecurityPlatform;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -18,7 +17,6 @@ import hudson.Launcher;
 import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
-import hudson.util.ListBoxModel;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -37,7 +35,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class SecurityScanStep extends Step implements Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
-    private String synopsys_security_platform;
+    private String synopsys_security_product;
 
     private String bridge_blackduck_url;
     private String bridge_blackduck_api_token;
@@ -79,8 +77,8 @@ public class SecurityScanStep extends Step implements Serializable {
     private Boolean bridge_network_airgap;
 
     @DataBoundConstructor
-    public SecurityScanStep(String synopsys_security_platform) {
-        this.synopsys_security_platform = synopsys_security_platform;
+    public SecurityScanStep(String synopsys_security_product) {
+        this.synopsys_security_product = synopsys_security_product;
     }
 
     @DataBoundSetter
@@ -279,8 +277,8 @@ public class SecurityScanStep extends Step implements Serializable {
 //        return bridge_polaris_branch_parent_name;
 //    }
 
-    public String getSynopsys_security_platform() {
-        return synopsys_security_platform;
+    public String getSynopsys_security_product() {
+        return synopsys_security_product;
     }
 
     public String getBridge_blackduck_url() {
@@ -405,12 +403,12 @@ public class SecurityScanStep extends Step implements Serializable {
             return ApplicationConstants.DISPLAY_NAME;
         }
 
-        public ListBoxModel doFillSynopsys_security_platformItems() {
-            ListBoxModel items = new ListBoxModel();
-            Arrays.stream(SecurityPlatform.values()).forEach(
-                securityPlatform -> items.add(String.valueOf(securityPlatform)));
-            return items;
-        }
+//        public ListBoxModel doFillSynopsys_security_productItems() {
+//            ListBoxModel items = new ListBoxModel();
+//            Arrays.stream(SecurityProduct.values()).forEach(
+//                securityProduct -> items.add(String.valueOf(securityProduct)));
+//            return items;
+//        }
     }
 
     public class Execution extends SynchronousNonBlockingStepExecution<Integer> {
@@ -435,9 +433,7 @@ public class SecurityScanStep extends Step implements Serializable {
         @Override
         protected Integer run() throws ScannerJenkinsException {
             return ScanCommandsFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
-                .runScanner(getParametersMap(workspace, listener));
+                .initializeScanner(getParametersMap(workspace, listener));
         }
-
     }
-
 }

@@ -97,7 +97,7 @@ public class ScannerArgumentServiceTest {
     @Test
     void getCommandLineArgsForBlackDuckTest() throws ScannerJenkinsException {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
-        blackDuckParametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, "blackduck");
+        blackDuckParametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck");
         blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
         blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, false);
@@ -124,7 +124,7 @@ public class ScannerArgumentServiceTest {
     @Test
     void getCommandLineArgsForCoverityTest() throws ScannerJenkinsException {
         Map<String, Object> coverityParameters = new HashMap<>();
-        coverityParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, "coverity");
+        coverityParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "coverity");
         coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_URL_KEY, "https://fake.coverity.url");
         coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_NAME_KEY, "fake-user");
         coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY, "fakeUserPassword");
