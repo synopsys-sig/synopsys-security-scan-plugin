@@ -152,7 +152,7 @@ public class ScanCommandsFactory {
             blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, scanStep.isBridge_blackduck_automation_prcomment());
         }
 
-        if (scanStep.getBridge_blackduck_download_url() != null) {
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_blackduck_download_url())) {
             blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_DOWNLOAD_URL_KEY, scanStep.getBridge_blackduck_download_url());
         }
 
