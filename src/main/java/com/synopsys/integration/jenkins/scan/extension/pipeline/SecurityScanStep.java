@@ -9,7 +9,6 @@ package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -18,7 +17,6 @@ import hudson.Launcher;
 import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
-import hudson.util.ListBoxModel;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -384,12 +382,12 @@ public class SecurityScanStep extends Step implements Serializable {
             return ApplicationConstants.DISPLAY_NAME;
         }
 
-        public ListBoxModel doFillSynopsys_security_productItems() {
-            ListBoxModel items = new ListBoxModel();
-            Arrays.stream(SecurityProduct.values()).forEach(
-                securityProduct -> items.add(String.valueOf(securityProduct)));
-            return items;
-        }
+//        public ListBoxModel doFillSynopsys_security_productItems() {
+//            ListBoxModel items = new ListBoxModel();
+//            Arrays.stream(SecurityProduct.values()).forEach(
+//                securityProduct -> items.add(String.valueOf(securityProduct)));
+//            return items;
+//        }
     }
 
     public class Execution extends SynchronousNonBlockingStepExecution<Integer> {
@@ -416,7 +414,5 @@ public class SecurityScanStep extends Step implements Serializable {
             return ScanCommandsFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
                 .runScanner(getParametersMap(workspace, listener));
         }
-
     }
-
 }

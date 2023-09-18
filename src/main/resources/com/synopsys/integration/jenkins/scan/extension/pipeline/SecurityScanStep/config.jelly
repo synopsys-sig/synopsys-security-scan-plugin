@@ -1,14 +1,21 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-    <f:entry field="synopsys_security_product" title="Select Security Product">
+    <!--<f:entry field="synopsys_security_product" title="Select Security Product">
         <f:select/>
+    </f:entry>-->
+
+    <f:entry field="synopsys_security_product" title="Select Security Product">
+        <f:textbox/>
     </f:entry>
 
-    <f:section title="Additional BlackDuck Parameters">
+    <f:section title="Additional Black Duck Parameters">
         <f:entry field="bridge_blackduck_scan_failure_severities" title="Black Duck Scan Failure Severities">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_blackduck_scan_full" title="BlackDuck Full Scan">
+        <f:entry field="BRIDGE_BLACKDUCK_DOWNLOAD_URL" title="Black Duck Download URL">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="bridge_blackduck_scan_full" title="Black Duck Full Scan">
             <f:checkbox/>
         </f:entry>
         <f:entry field="bridge_blackduck_automation_prcomment" title="Black Duck Automatic Pull Request Comment">
@@ -32,10 +39,10 @@
         <f:entry field="bridge_coverity_version" title="Coverity Version Number">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_automation_prcomment" title="Coverity Enable PR comment">
+        <f:entry field="bridge_coverity_automation_prcomment" title="Coverity Automatic Pull Request Comment">
             <f:checkbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_local" title="Coverity Enable Local Analysis">
+        <f:entry field="bridge_coverity_local" title="Coverity Local Analysis">
             <f:checkbox/>
         </f:entry>
     </f:section>
@@ -57,6 +64,9 @@
 
     <f:section title="Additional Parameter">
         <f:entry field="bridge_include_diagnostics" title="Include Diagnostics">
+            <f:checkbox/>
+        </f:entry>
+        <f:entry field="BRIDGE_NETWORK_AIRGAP" title="Network Airgap">
             <f:checkbox/>
         </f:entry>
     </f:section>
