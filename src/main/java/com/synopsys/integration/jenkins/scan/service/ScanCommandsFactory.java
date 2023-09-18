@@ -152,8 +152,8 @@ public class ScanCommandsFactory {
             blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, scanStep.isBridge_blackduck_automation_prcomment());
         }
 
-        if (scanStep.getBRIDGE_BLACKDUCK_DOWNLOAD_URL() != null) {
-            blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_DOWNLOAD_URL_KEY, scanStep.getBRIDGE_BLACKDUCK_DOWNLOAD_URL());
+        if (scanStep.getBridge_blackduck_download_url() != null) {
+            blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_DOWNLOAD_URL_KEY, scanStep.getBridge_blackduck_download_url());
         }
 
         return blackDuckParameters;
@@ -212,8 +212,8 @@ public class ScanCommandsFactory {
             bridgeParameters.put(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY, scanStep.isBridge_include_diagnostics());
         }
 
-        if (scanStep.isBRIDGE_NETWORK_AIRGAP() != null) {
-            bridgeParameters.put(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY, scanStep.isBRIDGE_NETWORK_AIRGAP());
+        if (scanStep.isBridge_network_airgap() != null) {
+            bridgeParameters.put(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY, scanStep.isBridge_network_airgap());
         }
 
         return bridgeParameters;

@@ -46,7 +46,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_blackduck_scan_failure_severities;
 //    private Boolean bridge_blackduck_automation_fixpr;
     private Boolean bridge_blackduck_automation_prcomment;
-    private String BRIDGE_BLACKDUCK_DOWNLOAD_URL;
+    private String bridge_blackduck_download_url;
 
     private String bridge_coverity_connect_url;
     private String bridge_coverity_connect_user_name;
@@ -76,7 +76,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String synopsys_bridge_path;
     private Boolean bridge_include_diagnostics;
 
-    private Boolean BRIDGE_NETWORK_AIRGAP;
+    private Boolean bridge_network_airgap;
 
     @DataBoundConstructor
     public SecurityScanStep(String synopsys_security_platform) {
@@ -121,8 +121,8 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBRIDGE_BLACKDUCK_DOWNLOAD_URL(final String BRIDGE_BLACKDUCK_DOWNLOAD_URL) {
-        this.BRIDGE_BLACKDUCK_DOWNLOAD_URL = BRIDGE_BLACKDUCK_DOWNLOAD_URL;
+    public void setBridge_blackduck_download_url(final String bridge_blackduck_download_url) {
+        this.bridge_blackduck_download_url = bridge_blackduck_download_url;
     }
 
     @DataBoundSetter
@@ -243,8 +243,8 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBRIDGE_NETWORK_AIRGAP(Boolean BRIDGE_NETWORK_AIRGAP) {
-        this.BRIDGE_NETWORK_AIRGAP = BRIDGE_NETWORK_AIRGAP;
+    public void setBridge_network_airgap(Boolean bridge_network_airgap) {
+        this.bridge_network_airgap = bridge_network_airgap;
     }
 
     public String getBridge_polaris_serverurl() {
@@ -311,8 +311,8 @@ public class SecurityScanStep extends Step implements Serializable {
         return bridge_blackduck_automation_prcomment;
     }
 
-    public String getBRIDGE_BLACKDUCK_DOWNLOAD_URL() {
-        return BRIDGE_BLACKDUCK_DOWNLOAD_URL;
+    public String getBridge_blackduck_download_url() {
+        return bridge_blackduck_download_url;
     }
 
     public String getBridge_coverity_connect_url() {
@@ -374,8 +374,8 @@ public class SecurityScanStep extends Step implements Serializable {
         return bridge_include_diagnostics;
     }
 
-    public Boolean isBRIDGE_NETWORK_AIRGAP() {
-        return this.BRIDGE_NETWORK_AIRGAP;
+    public Boolean isBridge_network_airgap() {
+        return this.bridge_network_airgap;
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener) {
