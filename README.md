@@ -65,10 +65,10 @@ xcode-select --install
 #### Bitbucket token for your Job Configuration:
 Account-Level Bitbucket HTTP Access Token is required to configure your Job. <bR>
 To Generate this token, follow these instructions:
-- Select Profile Photo → Manage Account → HTTP Access Tokens → Create token
-- Enter Token name
-- Keep everything as default or you can change the Project/Repository Permissions as your need.
-- Click the Create Button. Then a token will be generated. <br>
+>- Select Profile Photo → Manage Account → HTTP Access Tokens → Create token
+>- Enter Token name
+>- Keep everything as default or you can change the Project/Repository Permissions as your need.
+>- Click the Create Button. Then a token will be generated. <br>
 ** You need to store this token to configure the Branch Sources of your Jenkins job
 
 #### Bitbucket token for PrComment/FixPr:
@@ -76,21 +76,21 @@ bitbucket_token parameter is required as input when running Black Duck/Coverity 
 There are two different types of tokens in bitbucket which can be passed to bitbucket_token
 parameter.
 
-1. Account-Level Bitbucket HTTP Access Token:   
+**1. Account-Level Bitbucket HTTP Access Token:**   
 To use this token for PR comments, it must hold Project permissions such as "Project write" or "Project admin." This token is employed when working both on the Project level and repository level.
 We described how can we get this token on the upper section.
 
-2. Repository-Level Bitbucket HTTP Access Token:   
+**2. Repository-Level Bitbucket HTTP Access Token:**   
 To use this token for PR comments,
 it must hold Repository permissions such as "Repository write" or "Repository admin."
 This token is employed when working at the repository level. To Generate this token, follow these instructions:
-- First go to the source of your repository.
-- Click on the repostory settings icon.
-- Then click on the HTTP access tokens.
-- Next click Create token button.
-- Enter Token name.
-- Keep everything as default or you can change the Project/Repository Permissions as your need.
-- Click the Create Button. Then a token will be generated. <br>
+>- First go to the source of your repository.
+>- Click on the repostory settings icon.
+>- Then click on the HTTP access tokens.
+>- Next click Create token button.
+>- Enter Token name.
+>- Keep everything as default or you can change the Project/Repository Permissions as your need.
+>- Click the Create Button. Then a token will be generated. <br>
 ** You need to store this token to run the Black Duck/Coverity PR Comment Feature.
 
 ### Project Setup
@@ -108,31 +108,31 @@ Once the installation is completed then restart the jenkins instance.
 Navigate to Dashboard → Manage Jenkins → System  
 Go to the Bitbucket Endpoints section. Click to the Add button.   
 Select the Bitbucket Server from the dropdown. Now follow these instructions.  
-- Enter the Name
-- Enter valid Server URL
-- Enter Server Version
-- Click checkmark to the Manage hooks. And keep everything as default.
-- Select your credentials that you configured before. In case you didn't configure credentials you can configure it from the Jenkins Credentials Provider which you can find by clicking the "Add" dropdown. Select the Kind → Username with password. Then give your bitbucket username and access token on the username and password field.
-- Select the Plugin from the "Webhook implementation to use" dropdown.
-- Click Apply and Save.
+>- Enter the Name
+>- Enter valid Server URL
+>- Enter Server Version
+>- Click checkmark to the Manage hooks. And keep everything as default.
+>- Select your credentials that you configured before. In case you didn't configure credentials you can configure it from the Jenkins Credentials Provider which you can find by clicking the "Add" dropdown. Select the Kind → Username with password. Then give your bitbucket username and access token on the username and password field.
+>- Select the Plugin from the "Webhook implementation to use" dropdown.
+>- Click Apply and Save.
 
 #### Create a Multibranch Pipeline Job in your Jenkins instance
 
 To create the Multibranch Pipeline, follow these instructions,
-- First click to the New Item
-- Enter an item name
-- Select Multibranch Pipeline
-- Click OK   
+>- First click to the New Item
+>- Enter an item name
+>- Select Multibranch Pipeline
+>- Click OK   
 Then you will be navigated to your Job's configuration page.
 
 #### Configure The Job
 
 First, Go to the Branch Sources section. Then follow these instructions.
-- Select your Bitbucket Server from the Bitbucket Server dropdown.
-- Select your credentials that you configured before.
-- Enter the Owner Name.
-- Enter the Repository Name. And keep everything as default.
-- Click Apply and Save.
+>- Select your Bitbucket Server from the Bitbucket Server dropdown.
+>- Select your credentials that you configured before.
+>- Enter the Owner Name.
+>- Enter the Repository Name. And keep everything as default.
+>- Click Apply and Save.
 
 #### Configure Global UI :
 Navigate to Dashboard → Manage Jenkins → System  
@@ -140,14 +140,14 @@ Then go to the Synopsys Security Scan section.
 And from there you can populate the inputs for configuration.
 
 #### Generate Pipeline Syntax:
-- Go to the Dashboard → JOB NAME → Branches / Pull Requests
-- Then click on the BRANCH NAME or PULL REQUEST
-- Next click on the Pipeline Syntax from the Sidebar.
-- Go to the Steps Section.
-- Select synopsys_scan: Synopsys Security Scan from the Sample Step dropdown.
-- Populate the property field.
-- Then click on the Generate Pipeline Script.
-- Finally, copy the Generated Pipeline Script to Jenkinsfile.
+>- Go to the Dashboard → JOB NAME → Branches / Pull Requests
+>- Then click on the BRANCH NAME or PULL REQUEST
+>- Next click on the Pipeline Syntax from the Sidebar.
+>- Go to the Steps Section.
+>- Select synopsys_scan: Synopsys Security Scan from the Sample Step dropdown.
+>- Populate the property field.
+>- Then click on the Generate Pipeline Script.
+>- Finally, copy the Generated Pipeline Script to Jenkinsfile.
 
 ### Using Synopsys Security Scan for Black Duck
 
