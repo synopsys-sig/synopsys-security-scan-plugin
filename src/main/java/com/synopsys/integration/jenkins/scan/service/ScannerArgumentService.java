@@ -16,6 +16,7 @@ import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.Utility;
 import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import com.synopsys.integration.jenkins.scan.input.BridgeInput;
+import com.synopsys.integration.jenkins.scan.input.NetworkAirGap;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
@@ -85,6 +86,13 @@ public class ScannerArgumentService {
 
         List<String> scanCommands = new ArrayList<>();
 
+        NetworkAirGap networkAirGap = null;
+        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY)) {
+            Boolean isNetworkAirgap = (Boolean) scanParameters.get(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY);
+            networkAirGap = new NetworkAirGap();
+            networkAirGap.setAirgap(isNetworkAirgap);
+        }
+
         if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
             BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
             BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(scanParameters);
@@ -92,7 +100,7 @@ public class ScannerArgumentService {
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.BLACKDUCK_STAGE);
             scanCommands.add(BridgeParams.INPUT_OPTION);
-            scanCommands.add(createBridgeInputJson(blackDuck, scmObject, fixPrOrPrComment, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX));
+            scanCommands.add(createBridgeInputJson(blackDuck, scmObject, fixPrOrPrComment, networkAirGap, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX));
         }
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
             CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
@@ -101,7 +109,7 @@ public class ScannerArgumentService {
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.COVERITY_STAGE);
             scanCommands.add(BridgeParams.INPUT_OPTION);
-            scanCommands.add(createBridgeInputJson(coverity, scmObject, fixPrOrPrComment, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX));
+            scanCommands.add(createBridgeInputJson(coverity, scmObject, fixPrOrPrComment, networkAirGap, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX));
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
@@ -110,19 +118,23 @@ public class ScannerArgumentService {
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.POLARIS_STAGE);
             scanCommands.add(BridgeParams.INPUT_OPTION);
-            scanCommands.add(createBridgeInputJson(polaris, scmObject, fixPrOrPrComment, ApplicationConstants.POLARIS_INPUT_JSON_PREFIX));
+            scanCommands.add(createBridgeInputJson(polaris, scmObject, fixPrOrPrComment, networkAirGap, ApplicationConstants.POLARIS_INPUT_JSON_PREFIX));
         }
 
         return scanCommands;
     }
 
-    public String createBridgeInputJson(Object scanObject, Object scmObject, boolean fixPrOrPrComment, String jsonPrefix) {
+    public String createBridgeInputJson(Object scanObject, Object scmObject, boolean fixPrOrPrComment, NetworkAirGap networkAirGap, String jsonPrefix) {
         BridgeInput bridgeInput = new BridgeInput();
 
         setScanObject(bridgeInput, scanObject, scmObject);
 
         if (fixPrOrPrComment) {
             setScmObject(bridgeInput, scmObject);
+        }
+
+        if (networkAirGap != null) {
+            bridgeInput.setNetworkAirGap(networkAirGap);
         }
 
         Map<String, Object> inputJsonMap = new HashMap<>();

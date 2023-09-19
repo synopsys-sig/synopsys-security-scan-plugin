@@ -89,6 +89,53 @@ public class BridgeDownloadParameterServiceTest {
     }
 
     @Test
+    void getBridgeDownloadParamsWithAirgapEnabledAndVersionTest() {
+        Map<String, Object> scanParams = new HashMap<>();
+        scanParams.put(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION, "3.0.0");
+        scanParams.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, "/path/to/bridge");
+        scanParams.put(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY, true);
+
+        BridgeDownloadParameters
+            bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+
+        BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
+
+        assertFalse(result.getBridgeDownloadUrl().contains(".zip"));
+        assertEquals("/path/to/bridge", result.getBridgeInstallationPath());
+    }
+
+    @Test
+    void getBridgeDownloadParamsForAirgapTest() {
+        Map<String, Object> scanParams = new HashMap<>();
+        scanParams.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, "/path/to/bridge");
+        scanParams.put(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY, true);
+
+        BridgeDownloadParameters
+            bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+
+        BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
+
+        assertFalse(result.getBridgeDownloadUrl().contains(".zip"));
+        assertEquals("/path/to/bridge", result.getBridgeInstallationPath());
+    }
+
+    @Test
+    void getBridgeDownloadParamsForAirgapWithURLTest() {
+        Map<String, Object> scanParams = new HashMap<>();
+        scanParams.put(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY, true);
+        scanParams.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, "/path/to/bridge");
+        scanParams.put(ApplicationConstants.BRIDGE_DOWNLOAD_URL, "https://bridge.fake.url.com/synopsys-bridge.zip");
+
+        BridgeDownloadParameters
+            bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+
+        BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
+
+        assertTrue(result.getBridgeDownloadUrl().contains(".zip"));
+        assertEquals("/path/to/bridge", result.getBridgeInstallationPath());
+    }
+
+    @Test
     void getBridgeDownloadParamsNullTest() {
         Map<String, Object> scanParamsNull = new HashMap<>();
 

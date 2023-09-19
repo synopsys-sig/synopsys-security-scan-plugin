@@ -59,9 +59,31 @@ public class ScanPipelineCommands {
         if (scanParametersService.isValidScanParameters(scanParameters) &&
                 bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
-            boolean isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
 
-            if (isBridgeDownloadRequired) {
+            boolean isNetworkAirgap = scanParameters.containsKey(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY) &&
+                ((Boolean)scanParameters.get(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY)).equals(true);
+            boolean isBridgeInstalled = bridgeDownloadManager.checkIfBridgeInstalled(bridgeDownloadParameters.getBridgeInstallationPath());
+
+            if (isNetworkAirgap) {
+                logger.info("Network Air Gap mode is enabled");
+
+                if (!bridgeDownloadParams.getBridgeDownloadUrl().contains(".zip") &&
+                    !isBridgeInstalled) {
+                    logger.error("Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
+                    throw new ScannerJenkinsException("Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
+                }
+            }
+
+            boolean isBridgeDownloadRequired = true;
+            if (isBridgeInstalled) {
+                isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
+            }
+
+            if (isBridgeDownloadRequired && bridgeDownloadParams.getBridgeDownloadUrl().contains(".zip")) {
+                if (isNetworkAirgap) {
+                    logger.warn("Synopsys-Bridge will be downloaded from provided custom url. Make sure network is reachable");
+                }
+
                 bridgeDownloadManager.initiateBridgeDownloadAndUnzip(bridgeDownloadParams);
             } else {
                 logger.info("Bridge download is not required. Found installed in: " + bridgeDownloadParams.getBridgeInstallationPath());

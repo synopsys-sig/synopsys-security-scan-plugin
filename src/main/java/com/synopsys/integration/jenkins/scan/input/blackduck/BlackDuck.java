@@ -20,6 +20,8 @@ public class BlackDuck {
     private Scan scan;
     @JsonProperty("automation")
     private Automation automation;
+    @JsonProperty("download")
+    private Download download;
 
     public BlackDuck() {
         scan = new Scan();
@@ -67,4 +69,11 @@ public class BlackDuck {
         this.automation = automation;
     }
 
+    public Download getDownload() {
+        return download;
+    }
+
+    public void setDownload(final Download download) {
+        this.download = download;
+    }
 }
