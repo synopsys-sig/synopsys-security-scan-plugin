@@ -95,8 +95,8 @@ This token is employed when working at the repository level. To Generate this to
 
 ### Project Setup
 #### Installing Helper Plugins for Jenkins:
-**1. Bitbucket Branch Source**  
-**2. Pipeline**
+1. Bitbucket Branch Source 
+2. Pipeline 
 
 To install plugins, first navigate to:  
 >- Dashboard → Manage Jenkins → Plugins   
