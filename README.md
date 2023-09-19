@@ -337,7 +337,7 @@ Hence, if these values are set both from Jenkins Global Configuration and pipeli
 | `bridge_network_airgap`      | If this is set **true** then Synopsys Security Scan will not download Synopsys Bridge.                                                                                                                                                                                                                                       |           
 #### Note:
 - If **bridge_download_version** or **bridge_download_url** is not provided, the plugin will download and configure the latest version of Bridge
-- If **bridge_network_airgap** is enabled, **bridge_download_version** and **bridge_download_url are ignored.**
+- If **bridge_network_airgap** is enabled, **bridge_download_version** and **bridge_download_url** are ignored.
 
 # Synopsys Bridge Setup
 
