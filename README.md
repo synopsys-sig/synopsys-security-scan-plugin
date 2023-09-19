@@ -297,9 +297,9 @@ Hence, if these values are set both from Jenkins Global Configuration and pipeli
 
 ### Synopsys Security Product
 
-| Input Parameter             | Description                                                                                                                                                                       | Mandatory / Optional |
-|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
-| `synopsys_security_product` | Provide the security product that you want to execute. <br> Supported values: **POLARIS**, **BLACKDUCK**, **COVERITY** <br> Example: `synopsys_security_product: "POLARIS"` </br> | Mandatory      |
+| Input Parameter             | Description                                                                                                                                                                         | Mandatory / Optional |
+|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| `synopsys_security_product` | Provide the security product that you want to execute. <br> Supported values: **POLARIS**, **BLACKDUCK**, **COVERITY** <br> Example: `synopsys_security_product: "BLACKDUCK"` </br> | Mandatory      |
 
 
 ### Bitbucket Parameters
