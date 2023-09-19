@@ -95,14 +95,14 @@ This token is employed when working at the repository level. To Generate this to
 
 ### Project Setup
 #### Installing Helper Plugins for Jenkins:
-- Bitbucket Branch Source
-- Pipeline
+**1. Bitbucket Branch Source**  
+**2. Pipeline**
 
 To install plugins, first navigate to:  
-Dashboard → Manage Jenkins → Plugins   
-After that Go to the section "Available plugins".  
-Then Search And Install those two plugins that we mentioned above.  
-Once the installation is completed then restart the jenkins instance.
+>- Dashboard → Manage Jenkins → Plugins   
+>- After that Go to the section "Available plugins".  
+>- Then Search And Install those two plugins that we mentioned above.  
+>- Once the installation is completed then restart the jenkins instance.
 
 #### Configure Bitbucket Server:
 Navigate to Dashboard → Manage Jenkins → System  
@@ -164,12 +164,13 @@ stage("Security Scan") {
 
             if (env.CHANGE_ID == null) {
                 blackDuckScanFull = true
+                blackDuckPrComment = false
             } else if (env.CHANGE_ID != null && env.CHANGE_TARGET != null) {
                 blackDuckScanFull = false
                 blackDuckPrComment = true
             }
 
-            synopsys_scan synopsys_security_product: "BLACKDUCK", blackduck_url: "https://example.com", blackduck_api_token: "YOUR_BLACKDUCK_TOKEN", 
+            synopsys_scan synopsys_security_product: "BLACKDUCK", blackduck_url: "BLACKDUCK_URL", blackduck_api_token: "YOUR_BLACKDUCK_TOKEN", 
                     blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckPrComment}"
         }
     }
@@ -227,7 +228,7 @@ stage("Security Scan") {
                coverityAutomationPrComment = true
             }
 
-            synopsys_scan synopsys_security_product: "COVERITY", coverity_connect_url: "https://example.com", coverity_connect_user_name: "YOUR_COVERITY_USER_NAME",
+            synopsys_scan synopsys_security_product: "COVERITY", coverity_connect_url: "COVERITY_URL", coverity_connect_user_name: "COVERITY_USER_NAME",
                     coverity_connect_user_password: "COVERITY_PASSWORD", coverity_automation_prcomment: "${coverityAutomationPrComment}"
         }
     }
@@ -279,7 +280,7 @@ To use the plugin and invoke it as a pipeline step, follow these instructions:
 stage("Security Scan") {
     steps {
         script {
-            synopsys_scan synopsys_security_product: "POLARIS", polaris_serverurl: "https://example.com", polaris_accesstoken: "YOUR_POLARIS_TOKEN",
+            synopsys_scan synopsys_security_product: "POLARIS", polaris_serverurl: "POLARIS_SERVERURL", polaris_accesstoken: "POLARIS_TOKEN",
                     polaris_application_name: "YOUR_POLARIS_APPLICATION_NAME", polaris_project_name: "YOUR_POLARIS_PROJECT_NAME", polaris_assessment_types: "SCA, SAST"
         }
     }
