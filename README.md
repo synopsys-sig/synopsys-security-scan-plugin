@@ -71,8 +71,8 @@ Then follow the below instructions.
 
 - Enter Token name
 - Keep everything as default or you can change the Project/Repository Permissions as your need.
-- Click the Create Button.
-   Then a token will be generated.
+- Click the Create Button. Then a token will be generated.   
+** You need to store this token to configure the Branch Sources of your Jenkins job. Also, it is needed to run the Black Duck/Coverity PR Comment Feature.
 
 ### Project Setup
 #### Installing Helper Plugins for Jenkins:
