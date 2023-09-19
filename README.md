@@ -334,9 +334,10 @@ Hence, if these values are set both from Jenkins Global Configuration and pipeli
 | `bridge_download_url`        | Provide URL to bridge zip file. If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path. <br> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]   |
 | `bridge_download_version`    | Provide bridge version. If provided, the specified version of Synopsys Bridge will be downloaded and configured.                                                                                                                                                                                                             |
 | `bridge_include_diagnostics` | If this is set **true** then the detailed bridge logs will be shown in console and bridge diagnostics will be uploaded in Jenkins Archive Artifact.                                                                                                                                                                          |
-
-Note - If **bridge_download_version** or **bridge_download_url** is not provided, the plugin will download and configure the latest version of Bridge
-
+| `bridge_network_airgap`      | If this is set **true** then Synopsys Security Scan will not download Synopsys Bridge.                                                                                                                                                                                                                                       |           
+#### Note:
+- If **bridge_download_version** or **bridge_download_url** is not provided, the plugin will download and configure the latest version of Bridge
+- If **bridge_network_airgap** is enabled, **bridge_download_version** and **bridge_download_url are ignored.**
 
 # Synopsys Bridge Setup
 
