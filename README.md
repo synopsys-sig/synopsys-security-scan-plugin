@@ -62,17 +62,36 @@ xcode-select --install
 
 ### Bitbucket Prerequisites:
 
-#### Configure Bitbucket Token
-bitbucket_token is required as input when running Black Duck/Coverity PR Comment.
-
-To Generate HTTP Access Token for Bitbucket,  
-Select Profile Photo → Manage Account → HTTP Access Tokens → Create token  
-Then follow the below instructions. 
-
+#### Bitbucket token for your Job Configuration:
+Account-Level Bitbucket HTTP Access Token is required to configure your Job. <bR>
+To Generate this token, follow these instructions:
+- Select Profile Photo → Manage Account → HTTP Access Tokens → Create token
 - Enter Token name
 - Keep everything as default or you can change the Project/Repository Permissions as your need.
-- Click the Create Button. Then a token will be generated.   
-** You need to store this token to configure the Branch Sources of your Jenkins job. Also, it is needed to run the Black Duck/Coverity PR Comment Feature.
+- Click the Create Button. Then a token will be generated. <br>
+** You need to store this token to configure the Branch Sources of your Jenkins job
+
+#### Bitbucket token for PrComment/FixPr:
+bitbucket_token parameter is required as input when running Black Duck/Coverity PR Comment. 
+There are two different types of tokens in bitbucket which can be passed to bitbucket_token
+parameter.
+
+1. Account-Level Bitbucket HTTP Access Token:   
+To use this token for PR comments, it must hold Project permissions such as "Project write" or "Project admin." This token is employed when working both on the Project level and repository level.
+We described how can we get this token on the upper section.
+
+2. Repository-Level Bitbucket HTTP Access Token:   
+To use this token for PR comments,
+it must hold Repository permissions such as "Repository write" or "Repository admin."
+This token is employed when working at the repository level. To Generate this token, follow these instructions:
+- First go to the source of your repository.
+- Click on the repostory settings icon.
+- Then click on the HTTP access tokens.
+- Next click Create token button.
+- Enter Token name.
+- Keep everything as default or you can change the Project/Repository Permissions as your need.
+- Click the Create Button. Then a token will be generated. <br>
+** You need to store this token to run the Black Duck/Coverity PR Comment Feature.
 
 ### Project Setup
 #### Installing Helper Plugins for Jenkins:
@@ -93,7 +112,7 @@ Select the Bitbucket Server from the dropdown. Now follow these instructions.
 - Enter valid Server URL
 - Enter Server Version
 - Click checkmark to the Manage hooks. And keep everything as default.
-- Select your credentials that you configured before.
+- Select your credentials that you configured before. In case you didn't configure credentials you can configure it from the Jenkins Credentials Provider which you can find by clicking the "Add" dropdown. Select the Kind → Username with password. Then give your bitbucket username and access token on the username and password field.
 - Select the Plugin from the "Webhook implementation to use" dropdown.
 - Click Apply and Save.
 
@@ -110,7 +129,7 @@ Then you will be navigated to your Job's configuration page.
 
 First, Go to the Branch Sources section. Then follow these instructions.
 - Select your Bitbucket Server from the Bitbucket Server dropdown.
-- Select your credentials that you configured before. In case you didn't configure credentials you can configure it from the Jenkins Credentials Provider which you can find by clicking the "Add" dropdown.
+- Select your credentials that you configured before.
 - Enter the Owner Name.
 - Enter the Repository Name. And keep everything as default.
 - Click Apply and Save.
