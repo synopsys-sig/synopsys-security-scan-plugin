@@ -65,8 +65,8 @@ xcode-select --install
 #### Configure Bitbucket Token
 bitbucket_token is required as input when running Black Duck/Coverity PR Comment.
 
-To Generate HTTP Access Token for Bitbucket, <br>
-Select Profile Photo → Manage Account → HTTP Access Tokens → Create token <br>
+To Generate HTTP Access Token for Bitbucket,  
+Select Profile Photo → Manage Account → HTTP Access Tokens → Create token  
 Then follow the below instructions. 
 
 - Enter Token name
@@ -80,13 +80,13 @@ Then follow the below instructions.
 - Pipeline
 
 To install plugins, first navigate to:  
-Dashboard → Manage Jenkins → Plugins <br>
-After that Go to the section "Available plugins". <br>
-Then Search And Install those two plugins that we mentioned above. <br>
+Dashboard → Manage Jenkins → Plugins   
+After that Go to the section "Available plugins".  
+Then Search And Install those two plugins that we mentioned above.  
 Once the installation is completed then restart the jenkins instance.
 
 #### Configure Bitbucket Server:
-Navigate to Dashboard → Manage Jenkins → System <br>
+Navigate to Dashboard → Manage Jenkins → System  
 Go to the Bitbucket Endpoints section. Click to the Add button.   
 Select the Bitbucket Server from the dropdown. Now follow these instructions.  
 - Enter the Name
@@ -103,7 +103,7 @@ To create the Multibranch Pipeline, follow these instructions,
 - First click to the New Item
 - Enter an item name
 - Select Multibranch Pipeline
-- click OK <br>
+- Click OK   
 Then you will be navigated to your Job's configuration page.
 
 #### Configure The Job
@@ -123,7 +123,7 @@ And from there you can populate the inputs for configuration.
 #### Generate Pipeline Syntax:
 - Go to the Dashboard → JOB NAME → Branches / Pull Requests
 - Then click on the BRANCH NAME or PULL REQUEST
-- Then click on the Pipeline Syntax from the Sidebar.
+- Next click on the Pipeline Syntax from the Sidebar.
 - Go to the Steps Section.
 - Select synopsys_scan: Synopsys Security Scan from the Sample Step dropdown.
 - Populate the property field.
@@ -164,7 +164,7 @@ synopsys_scan synopsys_security_product: "BLACKDUCK", blackduck_scan_full: "${bl
 ```
 Or a very basic template - 
 ```groovy
-synopsys_scan synopsys_security_product: "COVERITY"
+synopsys_scan synopsys_security_product: "BLACKDUCK"
 ```
 
 2. Create a Multibranch Pipeline Job in your Jenkins instance
@@ -176,14 +176,8 @@ synopsys_scan synopsys_security_product: "COVERITY"
 If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
 Hence, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
 
-### Synopsys Security Product
 
-
-| Input Parameter             | Description                                                                                                                                                                       | Mandatory / Optional |
-|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
-| `synopsys_security_product` | Provide the security product that you want to execute. <br> Supported values: **POLARIS**, **BLACKDUCK**, **COVERITY** <br> Example: `synopsys_security_product: "POLARIS"` </br> | Mandatory      |
-
-### Black Duck Parameters
+###  List of mandatory and optional parameters for Black Duck
 
 | Input Parameter       | Description                                                                                                                                                                                                                             | Mandatory / Optional                                          |
 |-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
@@ -196,7 +190,51 @@ Hence, if these values are set both from Jenkins Global Configuration and pipeli
 | `blackduck_automation_fixpr` | Flag to enable automatic creation for fix pull request when Black Duck vulnerabilities reported. <br> By default fix pull request creation will be disabled <br> Supported values: `true` or `false` </br>                              | Optional (Default: **false**)                                 |
 
 
-### Coverity Parameters
+### Using Synopsys Security Scan for Coverity
+
+To use the plugin and invoke it as a pipeline step, follow these instructions:
+
+1. Add the following code snippet to your `Jenkinsfile` in your project root directory that you want to scan:
+
+```groovy
+stage("Security Scan") {
+    steps {
+        script {
+            def coverityAutomationPrComment
+
+            if (env.CHANGE_ID == null) {
+               coverityAutomationPrComment = false
+            } else if (env.CHANGE_ID != null && env.CHANGE_TARGET != null) {
+               coverityAutomationPrComment = true
+            }
+
+            synopsys_scan synopsys_security_product: "COVERITY", coverity_connect_url: "https://example.com", coverity_connect_user_name: "YOUR_COVERITY_USER_NAME",
+                    coverity_connect_user_password: "COVERITY_PASSWORD", coverity_automation_prcomment: "${coverityAutomationPrComment}"
+        }
+    }
+}
+```
+Make sure to provide the required parameters such as `coverity_connect_url`, `coverity_connect_user_name` and `coverity_connect_user_password` with the appropriate values.
+
+Or if the values are configured in **Jenkins Global Configuration**, you can use the following example -
+```groovy
+synopsys_scan synopsys_security_product: "COVERITY", coverity_automation_prcomment: "${coverityAutomationPrComment}"
+```
+Or a very basic template -
+```groovy
+synopsys_scan synopsys_security_product: "COVERITY"
+```
+
+2. Create a Multibranch Pipeline Job in your Jenkins instance
+3. Add Bitbucket as the branch source in the job configuration
+4. Scan Multibranch Pipeline
+
+**Note:** Make sure you have **_Bitbucket_** and **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
+
+If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
+Hence, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
+
+###  List of mandatory and optional parameters for Coverity
 
 | Input Parameter  | Description                                                                                                                                                                                                                                                                                                                   |Mandatory / Optional |
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
@@ -211,7 +249,41 @@ Hence, if these values are set both from Jenkins Global Configuration and pipeli
 | `coverity_version` | To download the specified Coverity version rather than downloading the default latest version                                                                                                                                                                                                                                 | Optional   |
 | `coverity_local` | To support local analysis. <br> Supported values: `true` or `false` </br>                                                                                                                                                                                                                                                     | Optional   |
 
-### Polaris Parameters
+
+### Using Synopsys Security Scan for Polaris
+
+To use the plugin and invoke it as a pipeline step, follow these instructions:
+
+1. Add the following code snippet to your `Jenkinsfile` in your project root directory that you want to scan:
+
+```groovy
+stage("Security Scan") {
+    steps {
+        script {
+            synopsys_scan synopsys_security_product: "POLARIS", polaris_serverurl: "https://example.com", polaris_accesstoken: "YOUR_POLARIS_TOKEN",
+                    polaris_application_name: "YOUR_POLARIS_APPLICATION_NAME", polaris_project_name: "YOUR_POLARIS_PROJECT_NAME", polaris_assessment_types: "SCA, SAST"
+        }
+    }
+}
+```
+Make sure to provide the required parameters such as `polaris_serverurl`, `polaris_accesstoken`, `polaris_application_name`, `polaris_project_name` and `polaris_assessment_types` with the appropriate values.
+
+Or if the values are configured in **Jenkins Global Configuration**, you can use the following example -
+```groovy
+synopsys_scan synopsys_security_product: "POLARIS", polaris_application_name: "YOUR_POLARIS_APPLICATION_NAME", polaris_project_name: "YOUR_POLARIS_PROJECT_NAME", polaris_assessment_types: "SCA, SAST"
+```
+
+2. Create a Multibranch Pipeline Job in your Jenkins instance
+3. Add Bitbucket as the branch source in the job configuration
+4. Scan Multibranch Pipeline
+
+**Note:** Make sure you have **_Bitbucket_** and **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
+
+If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
+Hence, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
+
+###  List of mandatory and optional parameters for Polaris
+
 
 | Input Parameter  | Description                                                                                                                                                                                                                             | Mandatory / Optional                                        |
 |------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
@@ -221,6 +293,14 @@ Hence, if these values are set both from Jenkins Global Configuration and pipeli
 | `polaris_project_name` | The project name you have created in Polaris.                                                                                                                                                                                           | Mandatory                                                   |
 | `polaris_assessment_types` | Specifies the type of scan you want to run. <br> Supported values: `SCA` or `SAST` or both SCA and SAST. <br> Example:  `bridge_polaris_assessment_types: "SCA, SAST"` </br>                                                            | Mandatory                                                   |
 | `polaris_triage` | Accepts only one value. <br> Supported values: `REQUIRED` or `NOT_REQUIRED` or `NOT_ENTITLED`.</br>                                                                                                                                     | Optional                                                    |
+
+
+### Synopsys Security Product
+
+| Input Parameter             | Description                                                                                                                                                                       | Mandatory / Optional |
+|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| `synopsys_security_product` | Provide the security product that you want to execute. <br> Supported values: **POLARIS**, **BLACKDUCK**, **COVERITY** <br> Example: `synopsys_security_product: "POLARIS"` </br> | Mandatory      |
+
 
 ### Bitbucket Parameters
 
