@@ -8,7 +8,7 @@
 package com.synopsys.integration.jenkins.scan.global;
 
 public class ApplicationConstants {
-    public static final String DISPLAY_NAME = "Synopsys Scan";
+    public static final String DISPLAY_NAME = "Synopsys Security Scan";
     public static final String PIPELINE_NAME = "synopsys_scan";
     public static final String BRIDGE_ARTIFACTORY_URL =
             "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge";
@@ -34,7 +34,7 @@ public class ApplicationConstants {
     public static final String ENV_CHANGE_ID_KEY = "CHANGE_ID";
     public static final String ENV_BRANCH_NAME_KEY = "BRANCH_NAME";
 
-    public static final String SYNOPSYS_SECURITY_PLATFORM_KEY = "synopsys_security_platform";
+    public static final String SYNOPSYS_SECURITY_PRODUCT_KEY = "synopsys_security_product";
     public static final String BRIDGE_BLACKDUCK_URL_KEY = "bridge_blackduck_url";
     public static final String BRIDGE_BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_api_token";
     public static final String BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY = "bridge_blackduck_install_directory";
@@ -42,6 +42,7 @@ public class ApplicationConstants {
     public static final String BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "bridge_blackduck_scan_failure_severities";
     public static final String BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY = "bridge_blackduck_automation_fixpr";
     public static final String BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "bridge_blackduck_automation_prcomment";
+    public static final String BRIDGE_BLACKDUCK_DOWNLOAD_URL_KEY = "bridge_blackduck_download_url";
 
     public static final String BRIDGE_COVERITY_CONNECT_URL_KEY = "bridge_coverity_connect_url";
     public static final String BRIDGE_COVERITY_CONNECT_USER_NAME_KEY = "bridge_coverity_connect_user_name";
@@ -76,5 +77,7 @@ public class ApplicationConstants {
     public static final String HTTPS_PROXY = "HTTPS_PROXY";
     public static final String HTTP_PROXY = "HTTP_PROXY";
     public static final String NO_PROXY = "NO_PROXY";
+
+    public static final String BRIDGE_NETWORK_AIRGAP_KEY = "bridge_network_airgap";
 
 }

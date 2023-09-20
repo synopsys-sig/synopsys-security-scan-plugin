@@ -1,53 +1,72 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-    <f:entry field="synopsys_security_platform" title="Select security platform">
+    <!--<f:entry field="synopsys_security_product" title="Select Security Product">
         <f:select/>
+    </f:entry>-->
+
+    <f:entry field="synopsys_security_product" title="Select Security Product">
+        <f:textbox/>
     </f:entry>
 
-    <f:section title="Additional BlackDuck Parameters">
-        <f:entry field="bridge_blackduck_scan_full" title="Bridge BlackDuck Full Scan">
-            <f:checkbox default="true"/>
-        </f:entry>
-        <f:entry field="bridge_blackduck_scan_failure_severities" title="Bridge Black Duck Scan Failure Severities">
+    <f:section title="Additional Black Duck Parameters">
+        <f:entry field="bridge_blackduck_scan_failure_severities" title="Black Duck Scan Failure Severities">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_blackduck_automation_prcomment" title="Bridge Black Duck Automatic Pull Request Comment">
+        <f:entry field="bridge_blackduck_download_url" title="Black Duck Download URL">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="bridge_blackduck_scan_full" title="Black Duck Full Scan">
             <f:checkbox/>
         </f:entry>
-        <f:entry field="bridge_blackduck_automation_fixpr" title="Bridge Black Duck Automatic Fix Pull Request">
+        <f:entry field="bridge_blackduck_automation_prcomment" title="Black Duck Automatic Pull Request Comment">
             <f:checkbox/>
         </f:entry>
+<!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Black Duck Automatic Fix Pull Request">-->
+<!--            <f:checkbox/>-->
+<!--        </f:entry>-->
     </f:section>
 
     <f:section title="Additional Coverity Parameters">
-        <f:entry field="bridge_coverity_connect_project_name" title="Bridge Coverity project name">
+        <f:entry field="bridge_coverity_connect_project_name" title="Coverity Project Name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_connect_stream_name" title="Bridge Coverity stream name">
+        <f:entry field="bridge_coverity_connect_stream_name" title="Coverity Stream Name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_connect_policy_view" title="Bridge Coverity ID number/Name of a policy">
+        <f:entry field="bridge_coverity_connect_policy_view" title="Coverity Policy View">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_coverity_automation_prcomment" title="Bridge Coverity enable PR comment">
-            <f:checkbox default="false"/>
+        <f:entry field="bridge_coverity_version" title="Coverity Version Number">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="bridge_coverity_automation_prcomment" title="Coverity Automatic Pull Request Comment">
+            <f:checkbox/>
+        </f:entry>
+        <f:entry field="bridge_coverity_local" title="Coverity Local Analysis">
+            <f:checkbox/>
         </f:entry>
     </f:section>
 
     <f:section title="Additional Polaris Parameters">
-        <f:entry field="bridge_polaris_application_name" title="Bridge Polaris application name">
+        <f:entry field="bridge_polaris_application_name" title="Polaris Application Name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_polaris_project_name" title="Bridge Polaris project name">
+        <f:entry field="bridge_polaris_project_name" title="Polaris Project Name">
             <f:textbox/>
         </f:entry>
-        <f:entry field="bridge_polaris_assessment_types" title="Bridge Polaris assessment types">
+        <f:entry field="bridge_polaris_assessment_types" title="Polaris Assessment Types">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="bridge_polaris_triage" title="Polaris Triage">
             <f:textbox/>
         </f:entry>
     </f:section>
 
     <f:section title="Additional Parameter">
         <f:entry field="bridge_include_diagnostics" title="Include Diagnostics">
+            <f:checkbox/>
+        </f:entry>
+        <f:entry field="bridge_network_airgap" title="Network Airgap">
             <f:checkbox/>
         </f:entry>
     </f:section>

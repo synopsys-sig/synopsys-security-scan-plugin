@@ -26,6 +26,9 @@ public class BridgeInput {
     @JsonProperty("bitbucket")
     private Bitbucket bitbucket;
 
+    @JsonProperty("network")
+    private NetworkAirGap networkAirGap;
+
     public BlackDuck getBlackDuck() {
         return blackDuck;
     }
@@ -58,5 +61,11 @@ public class BridgeInput {
         this.bitbucket = bitbucket;
     }
 
+    public NetworkAirGap getNetworkAirGap() {
+        return networkAirGap;
+    }
 
+    public void setNetworkAirGap(final NetworkAirGap networkAirGap) {
+        this.networkAirGap = networkAirGap;
+    }
 }

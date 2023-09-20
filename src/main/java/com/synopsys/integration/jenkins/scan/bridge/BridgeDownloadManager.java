@@ -53,9 +53,6 @@ public class BridgeDownloadManager {
         String bridgeDownloadUrl = bridgeDownloadParameters.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParameters.getBridgeInstallationPath();
 
-        if (!checkIfBridgeInstalled(bridgeInstallationPath)) {
-            return true;
-        }
 
         String installedBridgeVersionFilePath;
         String os = Utility.getAgentOs(workspace, listener);
@@ -108,6 +105,9 @@ public class BridgeDownloadManager {
     }
 
     public String getLatestBridgeVersionFromArtifactory(String bridgeDownloadUrl) {
+        if (Utility.isStringNullOrBlank(bridgeDownloadUrl))
+            return ApplicationConstants.NOT_AVAILABLE;
+
         String extractedVersionNumber = extractVersionFromUrl(bridgeDownloadUrl);
         if(extractedVersionNumber.equals(ApplicationConstants.NOT_AVAILABLE)) {
             String directoryUrl = getDirectoryUrl(bridgeDownloadUrl);

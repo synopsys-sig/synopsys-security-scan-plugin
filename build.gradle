@@ -53,7 +53,6 @@ dependencies {
     annotationProcessor 'com.synopsys.integration:jenkins-annotation-processor:0.0.7'
 
     implementation 'org.jvnet.localizer:localizer:1.31'
-    implementation 'org.jsoup:jsoup:1.16.1'
     implementation ('com.synopsys.integration:jenkins-common:0.5.5') {
         exclude group: "org.jenkins-ci.main", module: "jenkins-core"
         exclude group: "org.jenkins-ci.plugins", module: "credentials"
