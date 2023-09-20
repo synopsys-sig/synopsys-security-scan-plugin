@@ -10,6 +10,8 @@ package com.synopsys.integration.jenkins.scan.bridge;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
+import com.synopsys.integration.jenkins.scan.global.Utility;
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.IOException;
@@ -18,12 +20,13 @@ import java.net.URL;
 
 public class BridgeDownload {
     private final LoggerWrapper logger;
-
     private final FilePath workspace;
+    private final EnvVars envVars;
 
-    public BridgeDownload(FilePath workspace, TaskListener listener) {
+    public BridgeDownload(FilePath workspace, TaskListener listener, EnvVars envVars) {
         this.workspace = workspace;
         this.logger = new LoggerWrapper(listener);
+        this.envVars = envVars;
     }
 
     public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath) {
@@ -40,11 +43,14 @@ public class BridgeDownload {
                         logger.info("Downloading Synopsys Bridge from: " + bridgeDownloadUrl);
 
                         bridgeZipFilePath = bridgeInstallationFilePath.child(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT);
-                        bridgeZipFilePath.copyFrom(new URL(bridgeDownloadUrl));
-                        downloadSuccess = true;
 
-                        logger.info("Synopsys Bridge successfully downloaded in: " + bridgeZipFilePath);
+                        HttpURLConnection connection = Utility.getHttpURLConnection(new URL(bridgeDownloadUrl), envVars, logger);
+                        if (connection != null) {
+                            bridgeZipFilePath.copyFrom(connection.getURL());
+                            downloadSuccess = true;
 
+                            logger.info("Synopsys Bridge successfully downloaded in: " + bridgeZipFilePath);
+                        }
                     } catch (Exception e) {
                         int statusCode = getHttpStatusCode(bridgeDownloadUrl);
                         if (terminateRetry(statusCode)) {
@@ -73,12 +79,14 @@ public class BridgeDownload {
         int statusCode = -1;
 
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.setRequestMethod("HEAD");
-            statusCode = connection.getResponseCode();
-            connection.disconnect();
+            HttpURLConnection connection = Utility.getHttpURLConnection(new URL(url), envVars, logger);
+            if (connection != null) {
+                connection.setRequestMethod("HEAD");
+                statusCode = connection.getResponseCode();
+                connection.disconnect();
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("An exception occurred while checking the http status code: " + e.getMessage());
         }
 
         return statusCode;
@@ -95,12 +103,15 @@ public class BridgeDownload {
     public boolean checkIfBridgeUrlExists(String bridgeDownloadUrl) {
         try {
             URL url = new URL(bridgeDownloadUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("HEAD");
-            return (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
+
+            HttpURLConnection connection = Utility.getHttpURLConnection(url, envVars, logger);
+            if (connection != null) {
+                connection.setRequestMethod("HEAD");
+                return (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
+            }
         } catch (Exception e) {
             logger.error("An exception occurred while checking bridge url exists or not: " + e.getMessage());
-            return false;
         }
+        return false;
     }
 }

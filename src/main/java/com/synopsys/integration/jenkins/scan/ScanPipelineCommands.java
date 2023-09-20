@@ -17,6 +17,7 @@ import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.Result;
 import hudson.model.Run;
@@ -29,13 +30,15 @@ public class ScanPipelineCommands {
     private final SecurityScanner scanner;
     private final FilePath workspace;
     private final TaskListener listener;
+    private final EnvVars envVars;
     private final LoggerWrapper logger;
     private final Run<?, ?> run;
 
-    public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, TaskListener listener, Run<?, ?> run) {
+    public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, EnvVars envVars, TaskListener listener, Run<?, ?> run) {
         this.scanner = scanner;
         this.workspace = workspace;
         this.listener = listener;
+        this.envVars = envVars;
         this.logger = new LoggerWrapper(listener);
         this.run = run;
     }
@@ -58,7 +61,7 @@ public class ScanPipelineCommands {
 
         if (scanParametersService.isValidScanParameters(scanParameters) &&
                 bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
-            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
+            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener, envVars);
 
             boolean isNetworkAirgap = scanParameters.containsKey(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY) &&
                 ((Boolean)scanParameters.get(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY)).equals(true);
