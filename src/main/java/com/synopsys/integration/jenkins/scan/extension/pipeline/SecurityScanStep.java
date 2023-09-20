@@ -81,7 +81,7 @@ public class SecurityScanStep extends Step implements Serializable {
     public SecurityScanStep(String synopsys_security_product) {
         if(synopsys_security_product.equalsIgnoreCase("Select")){
             this.synopsys_security_product = "";
-        }else{
+        } else {
             this.synopsys_security_product = synopsys_security_product;
         }
     }
@@ -410,8 +410,9 @@ public class SecurityScanStep extends Step implements Serializable {
 
         public ListBoxModel doFillSynopsys_security_productItems() {
             ListBoxModel items = new ListBoxModel();
-            items.add(new Option("Select", "Select")); // Add the default "Select" option
             Map<SecurityProduct, String> customLabels = new HashMap<>();
+
+            items.add(new Option("Select", "Select"));
             customLabels.put(SecurityProduct.BLACKDUCK, "Black Duck");
             customLabels.put(SecurityProduct.COVERITY, "Coverity Platform");
             customLabels.put(SecurityProduct.POLARIS, "Polaris");
