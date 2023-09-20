@@ -9,6 +9,7 @@ package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -19,11 +20,11 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.annotation.Nonnull;
+
+import hudson.util.ListBoxModel;
+import hudson.util.ListBoxModel.Option;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -78,7 +79,11 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundConstructor
     public SecurityScanStep(String synopsys_security_product) {
-        this.synopsys_security_product = synopsys_security_product;
+        if(synopsys_security_product.equalsIgnoreCase("Select")){
+            this.synopsys_security_product = "";
+        } else {
+            this.synopsys_security_product = synopsys_security_product;
+        }
     }
 
     @DataBoundSetter
@@ -403,12 +408,21 @@ public class SecurityScanStep extends Step implements Serializable {
             return ApplicationConstants.DISPLAY_NAME;
         }
 
-//        public ListBoxModel doFillSynopsys_security_productItems() {
-//            ListBoxModel items = new ListBoxModel();
-//            Arrays.stream(SecurityProduct.values()).forEach(
-//                securityProduct -> items.add(String.valueOf(securityProduct)));
-//            return items;
-//        }
+        public ListBoxModel doFillSynopsys_security_productItems() {
+            ListBoxModel items = new ListBoxModel();
+            Map<SecurityProduct, String> customLabels = new HashMap<>();
+
+            items.add(new Option("Select", "Select"));
+            customLabels.put(SecurityProduct.BLACKDUCK, "Black Duck");
+            customLabels.put(SecurityProduct.COVERITY, "Coverity Platform");
+            customLabels.put(SecurityProduct.POLARIS, "Polaris");
+
+            for (SecurityProduct product : SecurityProduct.values()) {
+                String label = customLabels.getOrDefault(product, product.name());
+                items.add(new Option(label, product.name()));
+            }
+            return items;
+        }
     }
 
     public class Execution extends SynchronousNonBlockingStepExecution<Integer> {
