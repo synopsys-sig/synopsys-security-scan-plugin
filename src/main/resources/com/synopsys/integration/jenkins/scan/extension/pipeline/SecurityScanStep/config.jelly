@@ -9,19 +9,19 @@
 
     <div id="blackduck" style="display: none;">
         <f:section title="Additional Black Duck Parameters">
-            <f:entry field="bridge_blackduck_scan_failure_severities" title="Black Duck Scan Failure Severities">
+            <f:entry field="blackduck_scan_failure_severities" title="Black Duck Scan Failure Severities">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="bridge_blackduck_download_url" title="Black Duck Download URL">
+            <f:entry field="blackduck_download_url" title="Black Duck Download URL">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="bridge_blackduck_scan_full" title="Black Duck Full Scan">
+            <f:entry field="blackduck_scan_full" title="Black Duck Full Scan">
                 <f:checkbox/>
             </f:entry>
-            <f:entry field="bridge_blackduck_automation_prcomment" title="Black Duck Automatic Pull Request Comment">
+            <f:entry field="blackduck_automation_prcomment" title="Black Duck Automatic Pull Request Comment">
                 <f:checkbox/>
             </f:entry>
-            <!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Black Duck Automatic Fix Pull Request">-->
+            <!--        <f:entry field="blackduck_automation_fixpr" title="Black Duck Automatic Fix Pull Request">-->
             <!--            <f:checkbox/>-->
             <!--        </f:entry>-->
         </f:section>
@@ -29,22 +29,22 @@
 
     <div id="coverity" style="display: none;">
         <f:section title="Additional Coverity Parameters">
-            <f:entry field="bridge_coverity_connect_project_name" title="Coverity Project Name">
+            <f:entry field="coverity_project_name" title="Coverity Project Name">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="bridge_coverity_connect_stream_name" title="Coverity Stream Name">
+            <f:entry field="coverity_stream_name" title="Coverity Stream Name">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="bridge_coverity_connect_policy_view" title="Coverity Policy View">
+            <f:entry field="coverity_policy_view" title="Coverity Policy View">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="bridge_coverity_version" title="Coverity Version Number">
+            <f:entry field="coverity_version" title="Coverity Version Number">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="bridge_coverity_automation_prcomment" title="Coverity Automatic Pull Request Comment">
+            <f:entry field="coverity_automation_prcomment" title="Coverity Automatic Pull Request Comment">
                 <f:checkbox/>
             </f:entry>
-            <f:entry field="bridge_coverity_local" title="Coverity Local Analysis">
+            <f:entry field="coverity_local" title="Coverity Local Analysis">
                 <f:checkbox/>
             </f:entry>
         </f:section>
@@ -52,29 +52,29 @@
 
     <div id="polaris" style="display: none;">
         <f:section title="Additional Polaris Parameters">
-            <f:entry field="bridge_polaris_application_name" title="Polaris Application Name">
+            <f:entry field="polaris_application_name" title="Polaris Application Name">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="bridge_polaris_project_name" title="Polaris Project Name">
+            <f:entry field="polaris_project_name" title="Polaris Project Name">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="bridge_polaris_assessment_types" title="Polaris Assessment Types">
+            <f:entry field="polaris_assessment_types" title="Polaris Assessment Types">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="bridge_polaris_triage" title="Polaris Triage">
+            <f:entry field="polaris_triage" title="Polaris Triage">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="bridge_polaris_branch_name" title="Polaris Branch Name">
+            <f:entry field="polaris_branch_name" title="Polaris Branch Name">
                 <f:textbox/>
             </f:entry>
         </f:section>
     </div>
 
     <f:section title="Additional Parameter">
-        <f:entry field="bridge_include_diagnostics" title="Include Diagnostics">
+        <f:entry field="include_diagnostics" title="Include Diagnostics">
             <f:checkbox/>
         </f:entry>
-        <f:entry field="bridge_network_airgap" title="Network Airgap">
+        <f:entry field="network_airgap" title="Network Airgap">
             <f:checkbox/>
         </f:entry>
     </f:section>

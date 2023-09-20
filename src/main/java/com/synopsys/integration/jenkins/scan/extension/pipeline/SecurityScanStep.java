@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import javax.annotation.Nonnull;
-
 import hudson.util.ListBoxModel;
 import hudson.util.ListBoxModel.Option;
 import org.jenkinsci.plugins.workflow.steps.Step;
