@@ -3,7 +3,6 @@ package com.synopsys.integration.jenkins.scan.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
@@ -98,10 +97,10 @@ public class ScannerArgumentServiceTest {
     void getCommandLineArgsForBlackDuckTest() throws ScannerJenkinsException {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck");
-        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
-        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
-        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, false);
-        blackDuckParametersMap.put(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY, true);
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, false);
+        blackDuckParametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, true);
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(blackDuckParametersMap, workspace);
 
@@ -125,10 +124,10 @@ public class ScannerArgumentServiceTest {
     void getCommandLineArgsForCoverityTest() throws ScannerJenkinsException {
         Map<String, Object> coverityParameters = new HashMap<>();
         coverityParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "coverity");
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_URL_KEY, "https://fake.coverity.url");
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_NAME_KEY, "fake-user");
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY, "fakeUserPassword");
-        coverityParameters.put(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY, true);
+        coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, "https://fake.coverity.url");
+        coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, "fake-user");
+        coverityParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, "fakeUserPassword");
+        coverityParameters.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, true);
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(coverityParameters, workspace);
 

@@ -60,8 +60,8 @@ public class ScanPipelineCommands {
                 bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener);
 
-            boolean isNetworkAirgap = scanParameters.containsKey(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY) &&
-                ((Boolean)scanParameters.get(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY)).equals(true);
+            boolean isNetworkAirgap = scanParameters.containsKey(ApplicationConstants.NETWORK_AIRGAP_KEY) &&
+                ((Boolean)scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY)).equals(true);
             boolean isBridgeInstalled = bridgeDownloadManager.checkIfBridgeInstalled(bridgeDownloadParameters.getBridgeInstallationPath());
 
             if (isNetworkAirgap) {
@@ -138,7 +138,8 @@ public class ScanPipelineCommands {
                 String key = entry.getKey();
                 if(key.contains(securityProduct)) {
                     Object value = entry.getValue();
-                    if(key.equals(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY) || key.equals(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY)) {
+                    if(key.equals(ApplicationConstants.BLACKDUCK_TOKEN_KEY) || key.equals(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY)
+                            || key.equals(ApplicationConstants.COVERITY_PASSPHRASE_KEY)) {
                         value = LogMessages.ASTERISKS;
                     }
                     logger.info(" --- " + key + " = " + value.toString());
@@ -152,7 +153,8 @@ public class ScanPipelineCommands {
 
         for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
             String key = entry.getKey();
-            if(key.equals(ApplicationConstants.BRIDGE_DOWNLOAD_URL) || key.equals(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION) || key.equals(ApplicationConstants.BRIDGE_INSTALLATION_PATH) || key.equals(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY)) {
+            if(key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL) || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION)
+                    || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY) || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)) {
                 Object value = entry.getValue();
                 logger.info(" --- " + key + " = " + value.toString());
             }

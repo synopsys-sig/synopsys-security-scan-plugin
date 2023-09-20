@@ -58,7 +58,7 @@ public class ScannerArgumentService {
 
         commandLineArgs.addAll(getSecurityProductSpecificCommands(scanParameters));
 
-        if (Objects.equals(scanParameters.get(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY), true)) {
+        if (Objects.equals(scanParameters.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
             commandLineArgs.add(BridgeParams.DIAGNOSTICS_OPTION);
         }
 
@@ -87,8 +87,8 @@ public class ScannerArgumentService {
         List<String> scanCommands = new ArrayList<>();
 
         NetworkAirGap networkAirGap = null;
-        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY)) {
-            Boolean isNetworkAirgap = (Boolean) scanParameters.get(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY);
+        if (scanParameters.containsKey(ApplicationConstants.NETWORK_AIRGAP_KEY)) {
+            Boolean isNetworkAirgap = (Boolean) scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY);
             networkAirGap = new NetworkAirGap();
             networkAirGap.setAirgap(isNetworkAirgap);
         }
@@ -212,14 +212,14 @@ public class ScannerArgumentService {
     }
 
     private boolean isFixPrOrPrCommentValueSet(Map<String, Object> scanParameters) {
-        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY) &&
-            Objects.equals(scanParameters.get(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_FIXPR_KEY), true)) {
+        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY) &&
+            Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY), true)) {
             return true;
-        } else if (scanParameters.containsKey(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) &&
-            Objects.equals(scanParameters.get(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY), true)) {
+        } else if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) &&
+            Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY), true)) {
             return true;
-        } else if (scanParameters.containsKey(ApplicationConstants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY) &&
-            Objects.equals(scanParameters.get(ApplicationConstants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY), true)) {
+        } else if (scanParameters.containsKey(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY) &&
+            Objects.equals(scanParameters.get(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY), true)) {
             return true;
         }
         return false;

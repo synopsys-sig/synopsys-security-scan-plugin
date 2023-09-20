@@ -3,7 +3,6 @@ package com.synopsys.integration.jenkins.scan.service.scan.coverity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
 import hudson.model.TaskListener;
@@ -33,8 +32,8 @@ public class CoverityParametersServiceTest {
         
         assertFalse(coverityParametersService.isValidCoverityParameters(coverityParameters));
         
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_URL_KEY, TEST_COVERITY_URL);
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_NAME_KEY, TEST_COVERITY_USER_NAME);
+        coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, TEST_COVERITY_URL);
+        coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, TEST_COVERITY_USER_NAME);
         
         assertFalse(coverityParametersService.isValidCoverityParameters(coverityParameters));
     }
@@ -43,9 +42,9 @@ public class CoverityParametersServiceTest {
     void validScanParametersTest() {
         Map<String, Object> coverityParameters = new HashMap<>();
 
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_URL_KEY, TEST_COVERITY_URL);
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_NAME_KEY, TEST_COVERITY_USER_NAME);
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY, TEST_COVERITY_USER_PASSWORD);
+        coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, TEST_COVERITY_URL);
+        coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, TEST_COVERITY_USER_NAME);
+        coverityParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, TEST_COVERITY_USER_PASSWORD);
 
         assertTrue(coverityParametersService.isValidCoverityParameters(coverityParameters));
     }
@@ -54,13 +53,13 @@ public class CoverityParametersServiceTest {
     void prepareScanInputForBridgeTest() {
         Map<String, Object> coverityParameters = new HashMap<>();
 
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_URL_KEY, TEST_COVERITY_URL);
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_NAME_KEY, TEST_COVERITY_USER_NAME);
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_USER_PASSWORD_KEY, TEST_COVERITY_USER_PASSWORD);
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_PROJECT_NAME_KEY, "fake-repo");
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_CONNECT_STREAM_NAME_KEY, "fake-repo-branch");
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_VERSION_KEY, "2023.6.0");
-        coverityParameters.put(ApplicationConstants.BRIDGE_COVERITY_LOCAL_KEY, true);
+        coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, TEST_COVERITY_URL);
+        coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, TEST_COVERITY_USER_NAME);
+        coverityParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, TEST_COVERITY_USER_PASSWORD);
+        coverityParameters.put(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, "fake-repo");
+        coverityParameters.put(ApplicationConstants.COVERITY_STREAM_NAME_KEY, "fake-repo-branch");
+        coverityParameters.put(ApplicationConstants.COVERITY_VERSION_KEY, "2023.6.0");
+        coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, true);
 
         Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(coverityParameters);
         

@@ -1,9 +1,7 @@
 package com.synopsys.integration.jenkins.scan;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
@@ -40,8 +38,8 @@ public class ScanPipelineCommandsTest {
     public void initializeScannerValidParametersTest() throws ScannerJenkinsException {
         Map<String, Object> scanParameters = new HashMap<>();
         scanParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "BLACKDUCK");
-        scanParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
-        scanParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
+        scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
+        scanParameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
         int exitCode = scanPipelineCommands.initializeScanner(scanParameters);
 
@@ -64,10 +62,10 @@ public class ScanPipelineCommandsTest {
     public void initializeScannerAirGapFailureTest() {
         Map<String, Object> scanParameters = new HashMap<>();
         scanParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "BLACKDUCK");
-        scanParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
-        scanParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
-        scanParameters.put(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY, true);
-        scanParameters.put(ApplicationConstants.BRIDGE_INSTALLATION_PATH, "/path/to/bridge");
+        scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
+        scanParameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
+        scanParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, true);
+        scanParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/path/to/bridge");
 
         assertThrows(ScannerJenkinsException.class, () -> scanPipelineCommands.initializeScanner(scanParameters));
     }
@@ -76,9 +74,9 @@ public class ScanPipelineCommandsTest {
     public void initializeScannerAirGapSuccessTest() throws ScannerJenkinsException {
         Map<String, Object> scanParameters = new HashMap<>();
         scanParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "BLACKDUCK");
-        scanParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
-        scanParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_API_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
-        scanParameters.put(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY, true);
+        scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
+        scanParameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
+        scanParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, true);
 
         int exitCode = scanPipelineCommands.initializeScanner(scanParameters);
 

@@ -8,11 +8,8 @@
 package com.synopsys.integration.jenkins.scan.extension.global;
 
 import com.synopsys.integration.jenkins.annotations.HelpMarkdown;
-import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import hudson.Extension;
-import hudson.util.ListBoxModel;
 import java.io.Serializable;
-import java.util.Arrays;
 import jenkins.model.GlobalConfiguration;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -221,12 +218,5 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getPolarisAccessToken() {
         return polarisAccessToken;
-    }
-    
-    public ListBoxModel doFillScanTypeItems() {
-        ListBoxModel items = new ListBoxModel();
-        Arrays.stream(SecurityProduct.values()).forEach(
-            securityProduct -> items.add(String.valueOf(securityProduct)));
-        return items;
     }
 }
