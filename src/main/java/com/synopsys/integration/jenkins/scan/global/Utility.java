@@ -78,6 +78,8 @@ public class Utility {
                     new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyURL.getHost(), proxyURL.getPort())));
                 setDefaultProxyAuthenticator(proxyURL.getUserInfo());
 
+                logger.info("Proxy is enabled");
+
                 return connection;
             }
         } catch (IOException e) {
