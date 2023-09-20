@@ -14,7 +14,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 public class BridgeDownloadManagerTest {
     private BridgeDownloadManager bridgeDownloadManager;
-
     private FilePath workspace;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
 

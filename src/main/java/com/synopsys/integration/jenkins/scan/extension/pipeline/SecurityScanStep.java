@@ -45,6 +45,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_blackduck_scan_failure_severities;
 //    private Boolean bridge_blackduck_automation_fixpr;
     private Boolean bridge_blackduck_automation_prcomment;
+    private String bridge_blackduck_download_url;
 
     private String bridge_coverity_connect_url;
     private String bridge_coverity_connect_user_name;
@@ -63,7 +64,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_polaris_project_name;
     private String bridge_polaris_assessment_types;
     private String bridge_polaris_triage;
-//    private String bridge_polaris_branch_name;
+    private String bridge_polaris_branch_name;
 //    private String bridge_polaris_branch_parent_name;
 
 
@@ -73,6 +74,8 @@ public class SecurityScanStep extends Step implements Serializable {
     private String bridge_download_version;
     private String synopsys_bridge_path;
     private Boolean bridge_include_diagnostics;
+
+    private Boolean bridge_network_airgap;
 
     @DataBoundConstructor
     public SecurityScanStep(String synopsys_security_product) {
@@ -118,6 +121,11 @@ public class SecurityScanStep extends Step implements Serializable {
     public void setBridge_blackduck_automation_prcomment(
             Boolean bridge_blackduck_automation_prcomment) {
         this.bridge_blackduck_automation_prcomment = bridge_blackduck_automation_prcomment;
+    }
+
+    @DataBoundSetter
+    public void setBridge_blackduck_download_url(final String bridge_blackduck_download_url) {
+        this.bridge_blackduck_download_url = bridge_blackduck_download_url;
     }
 
     @DataBoundSetter
@@ -202,10 +210,10 @@ public class SecurityScanStep extends Step implements Serializable {
         this.bridge_polaris_triage = bridge_polaris_triage;
     }
 
-//    @DataBoundSetter
-//    public void setBridge_polaris_branch_name(String bridge_polaris_branch_name) {
-//        this.bridge_polaris_branch_name = bridge_polaris_branch_name;
-//    }
+    @DataBoundSetter
+    public void setBridge_polaris_branch_name(String bridge_polaris_branch_name) {
+        this.bridge_polaris_branch_name = bridge_polaris_branch_name;
+    }
 //
 //    @DataBoundSetter
 //    public void setBridge_polaris_branch_parent_name(String bridge_polaris_branch_parent_name) {
@@ -237,6 +245,11 @@ public class SecurityScanStep extends Step implements Serializable {
         this.bridge_include_diagnostics = bridge_include_diagnostics;
     }
 
+    @DataBoundSetter
+    public void setBridge_network_airgap(Boolean bridge_network_airgap) {
+        this.bridge_network_airgap = bridge_network_airgap;
+    }
+
     public String getBridge_polaris_serverurl() {
         return bridge_polaris_serverurl;
     }
@@ -261,10 +274,10 @@ public class SecurityScanStep extends Step implements Serializable {
         return bridge_polaris_triage;
     }
 
-//    public String getBridge_polaris_branch_name() {
-//        return bridge_polaris_branch_name;
-//    }
-//
+    public String getBridge_polaris_branch_name() {
+        return bridge_polaris_branch_name;
+    }
+
 //    public String getBridge_polaris_branch_parent_name() {
 //        return bridge_polaris_branch_parent_name;
 //    }
@@ -299,6 +312,10 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public Boolean isBridge_blackduck_automation_prcomment() {
         return bridge_blackduck_automation_prcomment;
+    }
+
+    public String getBridge_blackduck_download_url() {
+        return bridge_blackduck_download_url;
     }
 
     public String getBridge_coverity_connect_url() {
@@ -358,6 +375,10 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public Boolean isBridge_include_diagnostics() {
         return bridge_include_diagnostics;
+    }
+
+    public Boolean isBridge_network_airgap() {
+        return this.bridge_network_airgap;
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener) {
