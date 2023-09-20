@@ -7,7 +7,7 @@
  */
 package com.synopsys.integration.jenkins.scan.global.enums;
 
-public enum SecurityPlatform {
+public enum SecurityProduct {
     BLACKDUCK,
     COVERITY,
     POLARIS;

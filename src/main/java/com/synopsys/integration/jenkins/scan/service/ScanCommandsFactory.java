@@ -45,13 +45,13 @@ public class ScanCommandsFactory {
                                                              Node node, FilePath workspace) {
         return new ScanPipelineCommands(
             new SecurityScanner(run, listener, launcher, workspace, envVars,
-                new ScannerArgumentService(listener, envVars, workspace)), workspace, listener);
+                new ScannerArgumentService(listener, envVars, workspace)), workspace, envVars, listener, run);
     }
 
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep, FilePath workspace, TaskListener listener) {
         Map<String, Object> parametersMap = new HashMap<>(getGlobalConfigurationValues(workspace, listener));
 
-        parametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY, scanStep.getSynopsys_security_platform().trim().toUpperCase());
+        parametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, scanStep.getSynopsys_security_product().trim().toUpperCase());
 
         parametersMap.putAll(prepareCoverityParametersMap(scanStep));
         parametersMap.putAll(preparePolarisParametersMap(scanStep));
@@ -152,6 +152,10 @@ public class ScanCommandsFactory {
             blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, scanStep.isBridge_blackduck_automation_prcomment());
         }
 
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_blackduck_download_url())) {
+            blackDuckParameters.put(ApplicationConstants.BRIDGE_BLACKDUCK_DOWNLOAD_URL_KEY, scanStep.getBridge_blackduck_download_url());
+        }
+
         return blackDuckParameters;
     }
 
@@ -208,6 +212,10 @@ public class ScanCommandsFactory {
             bridgeParameters.put(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY, scanStep.isBridge_include_diagnostics());
         }
 
+        if (scanStep.isBridge_network_airgap() != null) {
+            bridgeParameters.put(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY, scanStep.isBridge_network_airgap());
+        }
+
         return bridgeParameters;
     }
 
@@ -232,9 +240,9 @@ public class ScanCommandsFactory {
         if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_triage())) {
             polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_TRIAGE_KEY, scanStep.getBridge_polaris_triage());
         }
-//        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_branch_name())) {
-//            polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_NAME_KEY, scanStep.getBridge_polaris_branch_name());
-//        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_branch_name())) {
+            polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_NAME_KEY, scanStep.getBridge_polaris_branch_name());
+        }
 //        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_branch_parent_name())) {
 //            polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY, scanStep.getBridge_polaris_branch_parent_name());
 //        }

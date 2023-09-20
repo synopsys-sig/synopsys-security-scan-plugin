@@ -8,13 +8,12 @@
 package com.synopsys.integration.jenkins.scan.service.scan;
 
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.enums.SecurityPlatform;
+import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import com.synopsys.integration.jenkins.scan.service.scan.blackduck.BlackDuckParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.coverity.CoverityParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.polaris.PolarisParametersService;
 import hudson.model.TaskListener;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,41 +26,34 @@ public class ScanParametersService {
     }
 
     public boolean isValidScanParameters(Map<String, Object> scanParameters) {
-        Set<String> securityPlatforms = getSynopsysSecurityPlatforms(scanParameters);
+        Set<String> securityProducts = getSynopsysSecurityProducts(scanParameters);
         
         boolean isValidBlackDuckParameters = true;
         boolean isValidCoverityParameters = true;
         boolean isValidPolarisParameters = true;
 
-        if (securityPlatforms.contains(SecurityPlatform.BLACKDUCK.name())) {
+        if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
             BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
             isValidBlackDuckParameters = blackDuckParametersService.isValidBlackDuckParameters(scanParameters);
         }
-        if (securityPlatforms.contains(SecurityPlatform.COVERITY.name())) {
+        if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
             CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
             isValidCoverityParameters = coverityParametersService.isValidCoverityParameters(scanParameters);
         }
-        if (securityPlatforms.contains(SecurityPlatform.POLARIS.name())) {
+        if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
             isValidPolarisParameters = polarisParametersService.isValidPolarisParameters(scanParameters);
         }
         
         return isValidBlackDuckParameters && isValidCoverityParameters && isValidPolarisParameters;
     }
-    
-    public Set<String> getSynopsysSecurityPlatforms(Map<String, Object> scanParameters) {
-        String securityPlatform = (String) scanParameters.get(ApplicationConstants.SYNOPSYS_SECURITY_PLATFORM_KEY);
-        Set<String> securityPlatforms = new HashSet<>();
 
-        if (securityPlatform.contains(",")) {
-            securityPlatforms = Arrays.stream(securityPlatform.split(","))
+    public Set<String> getSynopsysSecurityProducts(Map<String, Object> scanParameters) {
+        String securityPlatform = (String) scanParameters.get(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY);
+
+        return Arrays.stream(securityPlatform.split(","))
                 .map(String::trim)
                 .map(String::toUpperCase)
                 .collect(Collectors.toSet());
-        } else {
-            securityPlatforms.add(securityPlatform.trim().toUpperCase());
-        }
-        
-        return securityPlatforms;
     }
 }

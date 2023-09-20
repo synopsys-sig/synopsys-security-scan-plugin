@@ -11,6 +11,8 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
+import com.synopsys.integration.jenkins.scan.input.blackduck.Download;
+
 import hudson.model.TaskListener;
 import java.util.*;
 
@@ -92,6 +94,11 @@ public class BlackDuckParametersService {
                     if (value.equals("true") || value.equals("false")) {
                         blackDuck.getAutomation().setPrComment(Boolean.parseBoolean(value));
                     }
+                    break;
+                case ApplicationConstants.BRIDGE_BLACKDUCK_DOWNLOAD_URL_KEY:
+                    Download download = new Download();
+                    download.setUrl(value);
+                    blackDuck.setDownload(download);
                     break;
                 default:
                     break;
