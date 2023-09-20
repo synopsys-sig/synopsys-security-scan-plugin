@@ -240,9 +240,9 @@ public class ScanCommandsFactory {
         if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_triage())) {
             polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_TRIAGE_KEY, scanStep.getBridge_polaris_triage());
         }
-//        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_branch_name())) {
-//            polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_NAME_KEY, scanStep.getBridge_polaris_branch_name());
-//        }
+        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_branch_name())) {
+            polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_NAME_KEY, scanStep.getBridge_polaris_branch_name());
+        }
 //        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_branch_parent_name())) {
 //            polarisParametersMap.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY, scanStep.getBridge_polaris_branch_parent_name());
 //        }
