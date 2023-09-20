@@ -30,9 +30,11 @@ public class BridgeInstall {
 
     public void installSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath) {
         try {
-            bridgeZipPath.unzip(bridgeInstallationPath);
-            bridgeZipPath.delete();
-            logger.info("Synopsys Bridge zip path: %s and bridge installation path: %s", bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
+            if (bridgeZipPath != null && bridgeInstallationPath != null) {
+                bridgeZipPath.unzip(bridgeInstallationPath);
+                bridgeZipPath.delete();
+                logger.info("Synopsys Bridge zip path: %s and bridge installation path: %s", bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
+            }
         } catch (Exception e) {
             logger.error("An exception occurred while unzipping Synopsys Bridge zip file: " + e.getMessage());
         }

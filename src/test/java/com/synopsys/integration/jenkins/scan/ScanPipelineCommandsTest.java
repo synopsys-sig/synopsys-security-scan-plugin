@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -21,6 +22,7 @@ public class ScanPipelineCommandsTest {
     private TaskListener listenerMock;
     private FilePath workspace;
     private Run runMock;
+    private EnvVars envVarsMock;
     private ScanPipelineCommands scanPipelineCommands;
 
     @BeforeEach
@@ -29,7 +31,8 @@ public class ScanPipelineCommandsTest {
         workspace = new FilePath(new File(System.getProperty("user.home")));
         listenerMock = Mockito.mock(TaskListener.class);
         runMock = Mockito.mock(Run.class);
-        scanPipelineCommands = new ScanPipelineCommands(securityScannerMock, workspace, listenerMock, runMock);
+        envVarsMock = Mockito.mock(EnvVars.class);
+        scanPipelineCommands = new ScanPipelineCommands(securityScannerMock, workspace, envVarsMock, listenerMock, runMock);
         
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }

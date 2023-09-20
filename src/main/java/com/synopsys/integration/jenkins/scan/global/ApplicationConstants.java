@@ -54,6 +54,7 @@ public class ApplicationConstants {
     public static final String COVERITY_AUTOMATION_PRCOMMENT_KEY = "coverity_automation_prcomment";
     public static final String COVERITY_VERSION_KEY = "coverity_version";
     public static final String COVERITY_LOCAL_KEY = "coverity_local";
+
     public static final String POLARIS_SERVER_URL_KEY = "polaris_server_url";
     public static final String POLARIS_ACCESS_TOKEN_KEY = "polaris_access_token";
     public static final String POLARIS_APPLICATION_NAME_KEY = "polaris_application_name";
@@ -76,4 +77,8 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_INPUT_JSON_PREFIX = "blackduck_input";
     public static final String COVERITY_INPUT_JSON_PREFIX = "coverity_input";
     public static final String POLARIS_INPUT_JSON_PREFIX = "polaris_input";
+
+    public static final String HTTPS_PROXY = "HTTPS_PROXY";
+    public static final String HTTP_PROXY = "HTTP_PROXY";
+    public static final String NO_PROXY = "NO_PROXY";
 }
