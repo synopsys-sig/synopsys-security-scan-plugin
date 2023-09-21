@@ -105,28 +105,26 @@
                 var inputFields = div.querySelectorAll('input[type="text"], input[type="checkbox"]');
                 inputFields.forEach(function (field) {
                     if (field.type === 'text') {
-                        field.value = ''; // Clear text fields
+                        field.value = '';
                     } else if (field.type === 'checkbox') {
-                        field.checked = false; // Uncheck checkboxes
+                        field.checked = false;
                     }
                 });
             }
         }
 
         synopsysSecurityProduct.addEventListener('change', function () {
-            hideAllDivs(); // Hide all divs initially
-            // Determine the selected option value
+            hideAllDivs();
             var selectedOption = synopsysSecurityProduct.value;
-            // Show the corresponding div based on the selected option
-            if (selectedOption == 'BLACKDUCK') {
+            if (selectedOption == 'blackduck') {
                 clearInputFields(coverityDiv);
                 clearInputFields(polarisDiv);
                 showDiv(blackduckDiv);
-            } else if (selectedOption == 'COVERITY') {
+            } else if (selectedOption == 'coverity') {
                 clearInputFields(blackduckDiv);
                 clearInputFields(polarisDiv);
                 showDiv(coverityDiv);
-            } else if (selectedOption == 'POLARIS') {
+            } else if (selectedOption == 'polaris') {
                 clearInputFields(blackduckDiv);
                 clearInputFields(coverityDiv);
                 showDiv(polarisDiv);
