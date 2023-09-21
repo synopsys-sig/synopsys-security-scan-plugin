@@ -3,9 +3,8 @@ package com.synopsys.integration.jenkins.scan.service.scm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
-import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
 import java.util.HashMap;
@@ -25,7 +24,7 @@ public class BitbucketRepositoryServiceTest {
     private BitbucketSCMSource bitbucketSCMSourceMock;
 
     @BeforeEach
-    void setUp() throws ScannerJenkinsException {
+    void setUp() throws PluginExceptionHandler {
         Bitbucket bitbucket = BitbucketRepositoryService.createBitbucketObject(TEST_BITBUCKET_URL, TEST_BITBUCKET_TOKEN, TEST_REPOSITORY_PULL_NUMBER, TEST_REPOSITORY_NAME, TEST_PROJECT_KEY);
 
         bitbucketParametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, TEST_BITBUCKET_TOKEN);
@@ -38,7 +37,7 @@ public class BitbucketRepositoryServiceTest {
     }
 
     @Test
-    void createBitbucketObjectTest() throws ScannerJenkinsException {
+    void createBitbucketObjectTest() throws PluginExceptionHandler {
         Bitbucket bitbucket = bitbucketRepositoryServiceMock.
             fetchBitbucketRepositoryDetails(bitbucketParametersMap, bitbucketSCMSourceMock, TEST_REPOSITORY_PULL_NUMBER, false);
 

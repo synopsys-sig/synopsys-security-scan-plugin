@@ -9,7 +9,7 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
@@ -51,7 +51,7 @@ public class ScannerArgumentService {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, FilePath bridgeInstallationPath) throws PluginExceptionHandler {
         List<String> commandLineArgs = new ArrayList<>();
 
         commandLineArgs.add(getBridgeRunCommand(bridgeInstallationPath));
@@ -75,7 +75,7 @@ public class ScannerArgumentService {
         }
     }
 
-    private List<String> getSecurityProductSpecificCommands(Map<String, Object> scanParameters) throws ScannerJenkinsException {
+    private List<String> getSecurityProductSpecificCommands(Map<String, Object> scanParameters) throws PluginExceptionHandler {
         ScanParametersService scanParametersService = new ScanParametersService(listener);
         Set<String> securityProducts = scanParametersService.getSynopsysSecurityProducts(scanParameters);
 

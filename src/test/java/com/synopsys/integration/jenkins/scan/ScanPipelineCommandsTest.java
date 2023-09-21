@@ -2,7 +2,9 @@ package com.synopsys.integration.jenkins.scan;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
+import com.synopsys.integration.jenkins.scan.exception.ScannerException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.EnvVars;
@@ -38,7 +40,7 @@ public class ScanPipelineCommandsTest {
     }
 
     @Test
-    public void initializeScannerValidParametersTest() throws ScannerJenkinsException {
+    public void initializeScannerValidParametersTest() throws PluginExceptionHandler, ScannerException {
         Map<String, Object> scanParameters = new HashMap<>();
         scanParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "BLACKDUCK");
         scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
@@ -58,7 +60,7 @@ public class ScanPipelineCommandsTest {
 
         Mockito.when(mockScanParametersService.isValidScanParameters(scanParameters)).thenReturn(false);
 
-        assertThrows(ScannerJenkinsException.class, () -> scanPipelineCommands.initializeScanner(scanParameters));
+        assertThrows(PluginExceptionHandler.class, () -> scanPipelineCommands.initializeScanner(scanParameters));
     }
 
     @Test
@@ -70,11 +72,11 @@ public class ScanPipelineCommandsTest {
         scanParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, true);
         scanParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/path/to/bridge");
 
-        assertThrows(ScannerJenkinsException.class, () -> scanPipelineCommands.initializeScanner(scanParameters));
+        assertThrows(PluginExceptionHandler.class, () -> scanPipelineCommands.initializeScanner(scanParameters));
     }
 
     @Test
-    public void initializeScannerAirGapSuccessTest() throws ScannerJenkinsException {
+    public void initializeScannerAirGapSuccessTest() throws PluginExceptionHandler, ScannerException {
         Map<String, Object> scanParameters = new HashMap<>();
         scanParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "BLACKDUCK");
         scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");

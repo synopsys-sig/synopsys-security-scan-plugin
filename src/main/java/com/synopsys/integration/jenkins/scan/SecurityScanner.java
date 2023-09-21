@@ -7,7 +7,7 @@
  */
 package com.synopsys.integration.jenkins.scan;
 
-import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
@@ -44,7 +44,7 @@ public class SecurityScanner {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public int runScanner(Map<String, Object> scanParams, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
+    public int runScanner(Map<String, Object> scanParams, FilePath bridgeInstallationPath) throws PluginExceptionHandler {
         int scanner = 1;
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeInstallationPath);

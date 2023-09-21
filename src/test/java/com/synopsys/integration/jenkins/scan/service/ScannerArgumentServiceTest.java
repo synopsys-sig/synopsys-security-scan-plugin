@@ -3,7 +3,8 @@ package com.synopsys.integration.jenkins.scan.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.global.Utility;
@@ -94,7 +95,7 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    void getCommandLineArgsForBlackDuckTest() throws ScannerJenkinsException {
+    void getCommandLineArgsForBlackDuckTest() throws PluginExceptionHandler {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck");
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
@@ -121,7 +122,7 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    void getCommandLineArgsForCoverityTest() throws ScannerJenkinsException {
+    void getCommandLineArgsForCoverityTest() throws PluginExceptionHandler {
         Map<String, Object> coverityParameters = new HashMap<>();
         coverityParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "coverity");
         coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, "https://fake.coverity.url");
