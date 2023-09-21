@@ -1,7 +1,6 @@
 package com.synopsys.integration.jenkins.scan.service.scan.polaris;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.polaris.Polaris;
 import hudson.model.TaskListener;
@@ -33,9 +32,9 @@ public class PolarisParametersServiceTest {
         
         assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters));
 
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
+        polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
+        polarisParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
+        polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
 
         assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters));
     }
@@ -44,10 +43,10 @@ public class PolarisParametersServiceTest {
     void validScanParametersTest() {
         Map<String, Object> polarisParameters = new HashMap<>();
 
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, TEST_POLARIS_ASSESSMENT_TYPES);
+        polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
+        polarisParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
+        polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
+        polarisParameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, TEST_POLARIS_ASSESSMENT_TYPES);
 
         assertTrue(polarisParametersService.isValidPolarisParameters(polarisParameters));
     }
@@ -56,13 +55,13 @@ public class PolarisParametersServiceTest {
     void prepareScanInputForBridgeTest() {
         Map<String, Object> polarisParameters = new HashMap<>();
 
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_PROJECT_NAME_KEY, "fake-project-name");
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, "SAST");
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_TRIAGE_KEY, "REQUIRED");
-        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_NAME_KEY, "test-branch");
+        polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
+        polarisParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
+        polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
+        polarisParameters.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, "fake-project-name");
+        polarisParameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, "SAST");
+        polarisParameters.put(ApplicationConstants.POLARIS_TRIAGE_KEY, "REQUIRED");
+        polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, "test-branch");
 //        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY, "test-parent-branch");
 
         Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(polarisParameters);

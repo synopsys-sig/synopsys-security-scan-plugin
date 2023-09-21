@@ -10,7 +10,7 @@ package com.synopsys.integration.jenkins.scan.service.scm;
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketApi;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
-import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
@@ -31,11 +31,11 @@ public class BitbucketRepositoryService {
     public Bitbucket fetchBitbucketRepositoryDetails(Map<String, Object> scanParameters, 
                                                      BitbucketSCMSource bitbucketSCMSource, 
                                                      Integer projectRepositoryPullNumber,
-                                                     boolean isFixPrOrPrComment) throws ScannerJenkinsException {
+                                                     boolean isFixPrOrPrComment) throws PluginExceptionHandler {
 
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
         if (Utility.isStringNullOrBlank(bitbucketToken) && isFixPrOrPrComment) {
-            throw new ScannerJenkinsException(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
+            throw new PluginExceptionHandler(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
         }
 
         BitbucketApi bitbucketApiFromSCMSource = bitbucketSCMSource.buildBitbucketClient(bitbucketSCMSource.getRepoOwner(), bitbucketSCMSource.getRepository());

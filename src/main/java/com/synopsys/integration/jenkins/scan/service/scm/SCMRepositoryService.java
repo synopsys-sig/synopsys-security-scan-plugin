@@ -8,7 +8,7 @@
 package com.synopsys.integration.jenkins.scan.service.scm;
 
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
-import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import hudson.EnvVars;
 import hudson.model.TaskListener;
@@ -26,7 +26,7 @@ public class SCMRepositoryService {
         this.envVars = envVars;
     }
 
-    public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters, boolean isFixPrOrPrComment) throws ScannerJenkinsException {
+    public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters, boolean isFixPrOrPrComment) throws PluginExceptionHandler {
         Integer projectRepositoryPullNumber = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null ?
                 Integer.parseInt(envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY)) : null;
 
