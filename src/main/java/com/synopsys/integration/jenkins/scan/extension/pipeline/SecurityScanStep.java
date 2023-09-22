@@ -389,16 +389,17 @@ public class SecurityScanStep extends Step implements Serializable {
 
         public ListBoxModel doFillSynopsys_security_productItems() {
             ListBoxModel items = new ListBoxModel();
-            Map<SecurityProduct, String> customLabels = new HashMap<>();
+            Map<String, String> customLabels = new HashMap<>();
 
             items.add(new Option("Select", "Select"));
-            customLabels.put(SecurityProduct.BLACKDUCK, "Black Duck");
-            customLabels.put(SecurityProduct.COVERITY, "Coverity Platform");
-            customLabels.put(SecurityProduct.POLARIS, "Polaris");
+            customLabels.put(SecurityProduct.BLACKDUCK.name().toLowerCase(), "Black Duck");
+            customLabels.put(SecurityProduct.COVERITY.name().toLowerCase(), "Coverity");
+            customLabels.put(SecurityProduct.POLARIS.name().toLowerCase(), "Polaris");
 
             for (SecurityProduct product : SecurityProduct.values()) {
-                String label = customLabels.getOrDefault(product, product.name());
-                items.add(new Option(label, product.name()));
+                String value = product.name().toLowerCase();
+                String label = customLabels.getOrDefault(value, product.name()); // Use product.name() for label
+                items.add(new Option(label, value));
             }
             return items;
         }
