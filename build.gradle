@@ -49,7 +49,7 @@ jenkinsPlugin {
 dependencies {
     implementation 'org.springframework.security:spring-security-web:5.8.5'
     implementation ('org.jenkins-ci.plugins:cloudbees-bitbucket-branch-source:832.v43175a_425ea_6') {
-        exclude group: "org.jenkins-ci.plugins", module: "snakeyaml-api"
+            exclude group: 'org.yaml', module: 'snakeyaml'
     }
     implementation 'org.jenkins-ci.plugins:matrix-project:785.v06b_7f47b_c631'
     implementation 'org.jenkins-ci.plugins:cloudbees-folder:6.800.v71307ca_b_986b'
