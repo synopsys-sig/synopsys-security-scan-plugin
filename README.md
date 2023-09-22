@@ -1,6 +1,6 @@
 # Synopsys Security Scan Plugin
 
-This repository contains a Jenkins plugin implemented as a Gradle project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck. This README.md file serves as a guide for developers and users of the plugin.
+This repository contains a Jenkins plugin implemented as a Gradle project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for developers and users of the plugin.
 
 # Quick Start for the Security Scan Plugin
 
@@ -95,13 +95,12 @@ This token is employed when working at the repository level. To Generate this to
 
 ### Project Setup
 #### Installing Helper Plugins for Jenkins:
-1. Bitbucket Branch Source 
-2. Pipeline 
+- **Pipeline**
 
 To install plugins, first navigate to:  
 >- Dashboard → Manage Jenkins → Plugins   
 >- After that Go to the section "Available plugins".  
->- Then Search And Install those two plugins that we mentioned above.  
+>- Then Search And Install the `Pipeline` plugin that we mentioned above.  
 >- Once the installation is completed then restart the jenkins instance.
 
 #### Configure Bitbucket Server:
@@ -166,7 +165,7 @@ stage("Security Scan") {
                 // for any push event it will run blackduck full scan
                 blackDuckScanFull = true
                 blackDuckAutomationPrComment = false
-            } else if (env.CHANGE_ID != null && env.CHANGE_TARGET != null) {
+            } else {
                 // for any PR event it will run blackduck rapid scan
                 blackDuckScanFull = false
                 blackDuckAutomationPrComment = true
@@ -193,10 +192,10 @@ synopsys_scan synopsys_security_product: "BLACKDUCK"
 3. Add Bitbucket as the branch source in the job configuration
 4. Scan Multibranch Pipeline
 
-**Note:** Make sure you have **_Bitbucket_** and **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
+**Note:** Make sure you have **_Bitbucket_** and **_Pipeline_** plugin installed in your Jenkins instance to configure the multibranch pipeline job.
 
 If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
-Hence, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
+Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
 
 
 ###  List of mandatory and optional parameters for Black Duck
@@ -225,7 +224,7 @@ stage("Security Scan") {
 
             if (env.CHANGE_ID == null) {
                coverityAutomationPrComment = false
-            } else if (env.CHANGE_ID != null && env.CHANGE_TARGET != null) {
+            } else {
                coverityAutomationPrComment = true
             }
 
@@ -253,7 +252,7 @@ synopsys_scan synopsys_security_product: "COVERITY"
 **Note:** Make sure you have **_Bitbucket_** and **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
 
 If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
-Hence, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
+Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
 
 ###  List of mandatory and optional parameters for Coverity
 
@@ -301,7 +300,7 @@ synopsys_scan synopsys_security_product: "POLARIS", polaris_application_name: "Y
 **Note:** Make sure you have **_Bitbucket_** and **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
 
 If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
-Hence, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
+Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
 
 ###  List of mandatory and optional parameters for Polaris
 
@@ -331,13 +330,13 @@ Hence, if these values are set both from Jenkins Global Configuration and pipeli
 | `bitbucket_token` | The token can be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. This is required if fixpr or prcomment is set true. <br> Example: `bitbucket_token: "${env.BITBUCKET_TOKEN}"` </br> | Optional             |
 
 ### Synopsys Bridge Parameters
-| Input Parameter                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `synopsys_bridge_install_directory` | Provide a path, where you want to configure or already configured Synopsys Bridge. <br> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge]. If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `synopsys_bridge_download_url`      | Provide URL to bridge zip file. If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path. <br> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `synopsys_bridge_download_version`  | Provide bridge version. If provided, the specified version of Synopsys Bridge will be downloaded and configured.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| `include_diagnostics`               | If this is set **true** then the detailed bridge logs will be shown in console and bridge diagnostics will be uploaded in Jenkins Archive Artifact.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `network_airgap`                    | When **network_airgap** is set **true**, <br/> 1. If Bridge exists in the default `home/USER/synopsys-bridge` or Bridge exists in the specified `<synopsys_bridge_install_directory>`, it is used. Otherwise, errors out. <br/> 2. When `<synopsys_bridge_download_url>` provided by user, <br/> a. If Bridge version available in `<synopsys_bridge_download_url>` is the same version that already exists in default `home/USER/synopsys-bridge`, it is used.<br/> b. If not, Bridge version pointed to by `<synopsys_bridge_download_url>` is downloaded to the default `<home/USER/synopsys-bridge>` and used/cached.<br/> c. If `<synopsys_bridge_download_url>` doesn't have version info, plugin will look for versions.txt file at the same download URL folder level. If versions.txt file is not found, Bridge is not cached. |           
+| Input Parameter                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `synopsys_bridge_install_directory` | Provide a path, where you want to configure or already configured Synopsys Bridge. <br> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge]. If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `synopsys_bridge_download_url`      | Provide URL to bridge zip file. If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path. <br> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `synopsys_bridge_download_version`  | Provide bridge version. If provided, the specified version of Synopsys Bridge will be downloaded and configured.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `include_diagnostics`               | If this is set **true** then the detailed bridge logs will be shown in console and bridge diagnostics will be uploaded in Jenkins Archive Artifact.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `network_airgap`                    | When **network_airgap** is set **true**, <br/> 1. If Bridge exists in the default `$home/synopsys-bridge` or Bridge exists in the specified `<synopsys_bridge_install_directory>`, it is used. Otherwise, errors out. <br/> 2. When `<synopsys_bridge_download_url>` provided by user, <br/> a. If Bridge version available in `<synopsys_bridge_download_url>` is the same version that already exists in default `$home/synopsys-bridge`, it is used.<br/> b. If not, Bridge version pointed to by `<synopsys_bridge_download_url>` is downloaded to the default `$home/synopsys-bridge` and used/cached.<br/> c. If `<synopsys_bridge_download_url>` doesn't have version info, plugin will look for versions.txt file at the same download URL folder level. If versions.txt file is not found, Bridge is not cached. |           
 #### Note:
 - If **synopsys_bridge_download_version** or **synopsys_bridge_download_url** is not provided, the plugin will download and configure the latest version of Bridge.
 
@@ -345,7 +344,7 @@ Hence, if these values are set both from Jenkins Global Configuration and pipeli
 
 The latest version of the Synopsys Bridge is available at: [Synopsys Bridge](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/)
 
-The latest version of Synopsys Bridge will be downloaded by default if user doesn't provide the specific released version in the pipeline parameter.
+The latest version of Synopsys Bridge will be downloaded by default if user doesn't provide the specific released version in the `pipeline parameter/Global UI` or the installed version is not the latest version..
 
 ## Setting Up Synopsys Bridge Manually
 
