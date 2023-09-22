@@ -20,7 +20,6 @@ import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParame
 import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.EnvVars;
 import hudson.FilePath;
-import hudson.model.Run;
 import hudson.model.TaskListener;
 import java.util.Arrays;
 import java.util.Map;
@@ -32,15 +31,13 @@ public class ScanPipelineCommands {
     private final TaskListener listener;
     private final EnvVars envVars;
     private final LoggerWrapper logger;
-    private final Run<?, ?> run;
 
-    public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, EnvVars envVars, TaskListener listener, Run<?, ?> run) {
+    public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, EnvVars envVars, TaskListener listener) {
         this.scanner = scanner;
         this.workspace = workspace;
         this.listener = listener;
         this.envVars = envVars;
         this.logger = new LoggerWrapper(listener);
-        this.run = run;
     }
 
     public int initializeScanner(Map<String, Object> scanParameters) throws PluginExceptionHandler, ScannerException {
@@ -58,14 +55,13 @@ public class ScanPipelineCommands {
 
         int exitCode = -1;
         Map<Integer, String> exitCodeToMessage = ExceptionMessages.bridgeErrorMessages();
-        String exceptionMessage = "";
 
         if (scanParametersService.isValidScanParameters(scanParameters) &&
                 bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams)) {
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener, envVars);
 
             boolean isNetworkAirgap = scanParameters.containsKey(ApplicationConstants.NETWORK_AIRGAP_KEY) &&
-                ((Boolean)scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY)).equals(true);
+                ((Boolean) scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY)).equals(true);
             boolean isBridgeInstalled = bridgeDownloadManager.checkIfBridgeInstalled(bridgeDownloadParameters.getBridgeInstallationPath());
 
             if (isNetworkAirgap) {
@@ -75,8 +71,6 @@ public class ScanPipelineCommands {
                     !isBridgeInstalled) {
                     logger.error("Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
                     throw new PluginExceptionHandler("Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
-                }{
-                    logger.warn("Synopsys-Bridge will be downloaded from provided custom url. Make sure network is reachable");
                 }
             }
 
@@ -100,19 +94,18 @@ public class ScanPipelineCommands {
             try {
                 exitCode = scanner.runScanner(scanParameters, bridgeInstallationPath);
             } catch (Exception e) {
-                exceptionMessage = e.getMessage();
-                throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
+                if (e instanceof PluginExceptionHandler) {
+                    throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
+                } else {
+                    throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
+                }
             }
         }
 
         try {
             if(exitCode != 0) {
-                if (exitCodeToMessage.containsKey(exitCode)) {
-                    logger.error(exitCodeToMessage.get(exitCode));
-                } else {
-                    logger.error(exceptionMessage);
-                }
-                throw new PluginExceptionHandler("Workflow failed");
+                logger.error(exitCodeToMessage.getOrDefault(exitCode, ExceptionMessages.scannerFailedWithExitCode(exitCode)));
+                throw new PluginExceptionHandler("Workflow failed!");
             }
         }
         finally {

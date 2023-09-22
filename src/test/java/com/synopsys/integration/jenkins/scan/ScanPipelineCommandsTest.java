@@ -9,7 +9,6 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.EnvVars;
 import hudson.FilePath;
-import hudson.model.Run;
 import hudson.model.TaskListener;
 import java.io.File;
 import java.io.PrintStream;
@@ -23,7 +22,6 @@ public class ScanPipelineCommandsTest {
     private SecurityScanner securityScannerMock;
     private TaskListener listenerMock;
     private FilePath workspace;
-    private Run runMock;
     private EnvVars envVarsMock;
     private ScanPipelineCommands scanPipelineCommands;
 
@@ -32,9 +30,8 @@ public class ScanPipelineCommandsTest {
         securityScannerMock = Mockito.mock(SecurityScanner.class);
         workspace = new FilePath(new File(System.getProperty("user.home")));
         listenerMock = Mockito.mock(TaskListener.class);
-        runMock = Mockito.mock(Run.class);
         envVarsMock = Mockito.mock(EnvVars.class);
-        scanPipelineCommands = new ScanPipelineCommands(securityScannerMock, workspace, envVarsMock, listenerMock, runMock);
+        scanPipelineCommands = new ScanPipelineCommands(securityScannerMock, workspace, envVarsMock, listenerMock);
         
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }

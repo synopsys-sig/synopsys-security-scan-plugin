@@ -1,5 +1,6 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import hudson.FilePath;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ public class BridgeDownloadTest {
     private final BridgeDownload bridgeDownloadMock = Mockito.mock(BridgeDownload.class);
 
     @Test
-    void downloadSynopsysBridgeTest() {
+    void downloadSynopsysBridgeTest() throws PluginExceptionHandler {
         String bridgeDownloadUrl = null;
         String bridgeInstallationPath = "/path/to/bridge";
 

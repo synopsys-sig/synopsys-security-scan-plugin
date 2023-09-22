@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.jenkins.scan.bridge;
 
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
@@ -29,7 +30,7 @@ public class BridgeDownload {
         this.envVars = envVars;
     }
 
-    public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath) {
+    public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath) throws PluginExceptionHandler {
         FilePath bridgeZipFilePath = null;
         FilePath bridgeInstallationFilePath = new FilePath(workspace.getChannel(), bridgeInstallationPath);
 
@@ -72,6 +73,11 @@ public class BridgeDownload {
         } else {
             logger.error(LogMessages.INVALID_SYNOPSYS_BRIDGE_DOWNLOAD_URL, bridgeDownloadUrl);
         }
+
+        if (bridgeZipFilePath == null) {
+            throw new PluginExceptionHandler(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED);
+        }
+
         return bridgeZipFilePath;
     }
 

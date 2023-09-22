@@ -35,6 +35,7 @@ public class BitbucketRepositoryService {
 
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
         if (Utility.isStringNullOrBlank(bitbucketToken) && isFixPrOrPrComment) {
+            logger.error(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
             throw new PluginExceptionHandler(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
         }
 
