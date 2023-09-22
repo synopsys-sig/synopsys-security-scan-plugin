@@ -1,9 +1,7 @@
 package com.synopsys.integration.jenkins.scan.bridge;
 
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.File;

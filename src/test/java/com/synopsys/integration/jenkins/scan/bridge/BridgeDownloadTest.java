@@ -1,4 +1,5 @@
 package com.synopsys.integration.jenkins.scan.bridge;
+
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import hudson.FilePath;
 import org.junit.jupiter.api.Test;

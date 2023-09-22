@@ -101,21 +101,21 @@ public class BridgeDownloadParametersService {
     }
 
     public BridgeDownloadParameters getBridgeDownloadParams(Map<String, Object> scanParameters, BridgeDownloadParameters bridgeDownloadParameters) {
-        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_INSTALLATION_PATH)) {
+        if (scanParameters.containsKey(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY)) {
             bridgeDownloadParameters.setBridgeInstallationPath(
-                    scanParameters.get(ApplicationConstants.BRIDGE_INSTALLATION_PATH).toString().trim());
+                    scanParameters.get(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY).toString().trim());
         }
 
-        boolean isNetworkAirgap = scanParameters.containsKey(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY) &&
-            ((Boolean)scanParameters.get(ApplicationConstants.BRIDGE_NETWORK_AIRGAP_KEY)).equals(true);
+        boolean isNetworkAirgap = scanParameters.containsKey(ApplicationConstants.NETWORK_AIRGAP_KEY) &&
+            ((Boolean)scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY)).equals(true);
 
-        if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_URL)) {
+        if (scanParameters.containsKey(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL)) {
             bridgeDownloadParameters.setBridgeDownloadUrl(
-                    scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_URL).toString().trim());
+                    scanParameters.get(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL).toString().trim());
         }
-        else if (scanParameters.containsKey(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION) &&
+        else if (scanParameters.containsKey(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION) &&
             !isNetworkAirgap) {
-            String desiredVersion = scanParameters.get(ApplicationConstants.BRIDGE_DOWNLOAD_VERSION).toString().trim();
+            String desiredVersion = scanParameters.get(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION).toString().trim();
             String bridgeDownloadUrl = String.join("/", ApplicationConstants.BRIDGE_ARTIFACTORY_URL,
                     desiredVersion, getSynopsysBridgeZipFileName(desiredVersion));
 

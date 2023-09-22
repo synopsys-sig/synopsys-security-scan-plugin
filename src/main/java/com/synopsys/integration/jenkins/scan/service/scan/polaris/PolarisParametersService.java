@@ -31,10 +31,10 @@ public class PolarisParametersService {
 
         List<String> invalidParams = new ArrayList<>();
 
-        Arrays.asList(ApplicationConstants.BRIDGE_POLARIS_SERVER_URL_KEY,
-                        ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY,
-                        ApplicationConstants.BRIDGE_POLARIS_APPLICATION_NAME_KEY,
-                        ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY)
+        Arrays.asList(ApplicationConstants.POLARIS_SERVER_URL_KEY,
+                        ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY,
+                        ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
+                        ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY)
                 .forEach(key -> {
                     boolean isKeyValid = polarisParameters.containsKey(key)
                             && polarisParameters.get(key) != null
@@ -63,28 +63,28 @@ public class PolarisParametersService {
             String value = entry.getValue().toString().trim();
 
             switch (key) {
-                case ApplicationConstants.BRIDGE_POLARIS_SERVER_URL_KEY:
+                case ApplicationConstants.POLARIS_SERVER_URL_KEY:
                     polaris.setServerUrl(value);
                     break;
-                case ApplicationConstants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY:
+                case ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY:
                     polaris.setAccessToken(value);
                     break;
-                case ApplicationConstants.BRIDGE_POLARIS_APPLICATION_NAME_KEY:
+                case ApplicationConstants.POLARIS_APPLICATION_NAME_KEY:
                     polaris.getApplicationName().setName(value);
                     break;
-                case ApplicationConstants.BRIDGE_POLARIS_PROJECT_NAME_KEY:
+                case ApplicationConstants.POLARIS_PROJECT_NAME_KEY:
                     polaris.getProjectName().setName(value);
                     break;
-                case ApplicationConstants.BRIDGE_POLARIS_TRIAGE_KEY:
+                case ApplicationConstants.POLARIS_TRIAGE_KEY:
                     polaris.setTriage(value);
                     break;
-                case ApplicationConstants.BRIDGE_POLARIS_BRANCH_NAME_KEY:
+                case ApplicationConstants.POLARIS_BRANCH_NAME_KEY:
                     polaris.getBranch().setName(value);
                     break;
 //                case ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY:
 //                    polaris.getBranch().getParent().setName(value);
 //                    break;
-                case ApplicationConstants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY:
+                case ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY:
                     if (!value.isEmpty()) {
                         List<String> assessmentTypes = new ArrayList<>();
                         String[] assessmentTypesInput = value.toUpperCase().split(",");

@@ -7,7 +7,7 @@
  */
 package com.synopsys.integration.jenkins.scan;
 
-import com.synopsys.integration.jenkins.scan.exception.ScannerJenkinsException;
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
@@ -44,7 +44,7 @@ public class SecurityScanner {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public int runScanner(Map<String, Object> scanParams, FilePath bridgeInstallationPath) throws ScannerJenkinsException {
+    public int runScanner(Map<String, Object> scanParams, FilePath bridgeInstallationPath) throws PluginExceptionHandler {
         int scanner = 1;
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeInstallationPath);
@@ -70,7 +70,7 @@ public class SecurityScanner {
 
             scannerArgumentService.removeTemporaryInputJson(commandLineArgs);
 
-            if (Objects.equals(scanParams.get(ApplicationConstants.BRIDGE_INCLUDE_DIAGNOSTICS_KEY), true)) {
+            if (Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
                 DiagnosticsService diagnosticsService = new DiagnosticsService(run, listener, launcher, envVars,
                     new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
                 diagnosticsService.archiveDiagnostics(workspace.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));

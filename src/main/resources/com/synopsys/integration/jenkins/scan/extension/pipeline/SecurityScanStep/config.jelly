@@ -1,73 +1,118 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-    <!--<f:entry field="synopsys_security_product" title="Select Security Product">
-        <f:select/>
-    </f:entry>-->
 
-    <f:entry field="synopsys_security_product" title="Select Security Product">
-        <f:textbox/>
-    </f:entry>
+    <div id="synopsys_security_product">
+        <f:entry field="synopsys_security_product" title="Select Security Product">
+            <f:select/>
+        </f:entry>
+    </div>
 
-    <f:section title="Additional Black Duck Parameters">
-        <f:entry field="bridge_blackduck_scan_failure_severities" title="Black Duck Scan Failure Severities">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="bridge_blackduck_download_url" title="Black Duck Download URL">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="bridge_blackduck_scan_full" title="Black Duck Full Scan">
-            <f:checkbox/>
-        </f:entry>
-        <f:entry field="bridge_blackduck_automation_prcomment" title="Black Duck Automatic Pull Request Comment">
-            <f:checkbox/>
-        </f:entry>
-<!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Black Duck Automatic Fix Pull Request">-->
-<!--            <f:checkbox/>-->
-<!--        </f:entry>-->
-    </f:section>
+    <div id="blackduck" style="display: none;">
+        <f:section title="Additional Black Duck Parameters">
+            <f:entry field="blackduck_scan_failure_severities" title="Black Duck Scan Failure Severities">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_download_url" title="Black Duck Download URL">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_scan_full" title="Black Duck Full Scan">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="blackduck_automation_prcomment" title="Black Duck Automatic Pull Request Comment">
+                <f:checkbox/>
+            </f:entry>
+            <!--        <f:entry field="blackduck_automation_fixpr" title="Black Duck Automatic Fix Pull Request">-->
+            <!--            <f:checkbox/>-->
+            <!--        </f:entry>-->
+        </f:section>
+    </div>
 
-    <f:section title="Additional Coverity Parameters">
-        <f:entry field="bridge_coverity_connect_project_name" title="Coverity Project Name">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="bridge_coverity_connect_stream_name" title="Coverity Stream Name">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="bridge_coverity_connect_policy_view" title="Coverity Policy View">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="bridge_coverity_version" title="Coverity Version Number">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="bridge_coverity_automation_prcomment" title="Coverity Automatic Pull Request Comment">
-            <f:checkbox/>
-        </f:entry>
-        <f:entry field="bridge_coverity_local" title="Coverity Local Analysis">
-            <f:checkbox/>
-        </f:entry>
-    </f:section>
+    <div id="coverity" style="display: none;">
+        <f:section title="Additional Coverity Parameters">
+            <f:entry field="coverity_project_name" title="Coverity Project Name">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_stream_name" title="Coverity Stream Name">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_policy_view" title="Coverity Policy View">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_version" title="Coverity Version Number">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_automation_prcomment" title="Coverity Automatic Pull Request Comment">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="coverity_local" title="Coverity Local Analysis">
+                <f:checkbox/>
+            </f:entry>
+        </f:section>
+    </div>
 
-    <f:section title="Additional Polaris Parameters">
-        <f:entry field="bridge_polaris_application_name" title="Polaris Application Name">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="bridge_polaris_project_name" title="Polaris Project Name">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="bridge_polaris_assessment_types" title="Polaris Assessment Types">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="bridge_polaris_triage" title="Polaris Triage">
-            <f:textbox/>
-        </f:entry>
-    </f:section>
+    <div id="polaris" style="display: none;">
+        <f:section title="Additional Polaris Parameters">
+            <f:entry field="polaris_application_name" title="Polaris Application Name">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_project_name" title="Polaris Project Name">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_assessment_types" title="Polaris Assessment Types">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_triage" title="Polaris Triage">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_branch_name" title="Polaris Branch Name">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+    </div>
 
     <f:section title="Additional Parameter">
-        <f:entry field="bridge_include_diagnostics" title="Include Diagnostics">
+        <f:entry field="include_diagnostics" title="Include Diagnostics">
             <f:checkbox/>
         </f:entry>
-        <f:entry field="bridge_network_airgap" title="Network Airgap">
+        <f:entry field="network_airgap" title="Network Airgap">
             <f:checkbox/>
         </f:entry>
     </f:section>
+
+    <script type="text/javascript">
+        var synopsysSecurityProduct = document.querySelector('select[name="_.synopsys_security_product"]');
+        var blackduckDiv = document.getElementById('blackduck');
+        var coverityDiv = document.getElementById('coverity');
+        var polarisDiv = document.getElementById('polaris');
+
+        function hideAllDivs() {
+            blackduckDiv.style.display = 'none';
+            coverityDiv.style.display = 'none';
+            polarisDiv.style.display = 'none';
+        }
+
+        function showDiv(div) {
+            if (div) {
+                div.style.display = 'block';
+            }
+        }
+
+        synopsysSecurityProduct.addEventListener('change', function () {
+            hideAllDivs(); // Hide all divs initially
+            // Determine the selected option value
+            var selectedOption = synopsysSecurityProduct.value;
+            // Show the corresponding div based on the selected option
+            if (selectedOption == 'BLACKDUCK') {
+                showDiv(blackduckDiv);
+            } else if (selectedOption == 'COVERITY') {
+                showDiv(coverityDiv);
+            } else if (selectedOption == 'POLARIS') {
+                showDiv(polarisDiv);
+            }else if (selectedOption == 'Select') {
+                hideAllDivs();
+            }
+        });
+
+    </script>
+
 </j:jelly>
