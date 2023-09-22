@@ -192,7 +192,7 @@ synopsys_scan synopsys_security_product: "BLACKDUCK"
 3. Add Bitbucket as the branch source in the job configuration
 4. Scan Multibranch Pipeline
 
-**Note:** Make sure you have **_Bitbucket_** and **_Pipeline_** plugin installed in your Jenkins instance to configure the multibranch pipeline job.
+**Note:** Make sure you have **_Pipeline_** plugin installed in your Jenkins instance to configure the multibranch pipeline job.
 
 If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
 Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
@@ -249,7 +249,7 @@ synopsys_scan synopsys_security_product: "COVERITY"
 3. Add Bitbucket as the branch source in the job configuration
 4. Scan Multibranch Pipeline
 
-**Note:** Make sure you have **_Bitbucket_** and **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
+**Note:** Make sure you have **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
 
 If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
 Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
@@ -297,7 +297,7 @@ synopsys_scan synopsys_security_product: "POLARIS", polaris_application_name: "Y
 3. Add Bitbucket as the branch source in the job configuration
 4. Scan Multibranch Pipeline
 
-**Note:** Make sure you have **_Bitbucket_** and **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
+**Note:** Make sure you have **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
 
 If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
 Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
