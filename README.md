@@ -160,18 +160,20 @@ stage("Security Scan") {
     steps {
         script {
             def blackDuckScanFull
-            def blackDuckPrComment
+            def blackDuckAutomationPrComment
 
             if (env.CHANGE_ID == null) {
+                // for any push event it will run blackduck full scan
                 blackDuckScanFull = true
-                blackDuckPrComment = false
+                blackDuckAutomationPrComment = false
             } else if (env.CHANGE_ID != null && env.CHANGE_TARGET != null) {
+                // for any PR event it will run blackduck rapid scan
                 blackDuckScanFull = false
-                blackDuckPrComment = true
+                blackDuckAutomationPrComment = true
             }
 
             synopsys_scan synopsys_security_product: "BLACKDUCK", blackduck_url: "BLACKDUCK_URL", blackduck_token: "YOUR_BLACKDUCK_TOKEN", 
-                    blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckPrComment}"
+                    blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
         }
     }
 }
@@ -180,7 +182,7 @@ Make sure to provide the required parameters such as `blackduck_url` and `blackd
 
 Or if the values are configured in **Jenkins Global Configuration**, you can use the following example -
 ```groovy
-synopsys_scan synopsys_security_product: "BLACKDUCK", blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckPrComment}"
+synopsys_scan synopsys_security_product: "BLACKDUCK", blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
 ```
 Or a very basic template - 
 ```groovy
