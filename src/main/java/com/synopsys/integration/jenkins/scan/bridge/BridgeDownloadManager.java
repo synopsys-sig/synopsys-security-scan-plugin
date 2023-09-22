@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.jenkins.scan.bridge;
 
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
@@ -32,7 +33,7 @@ public class BridgeDownloadManager {
         this.envVars = envVars;
     }
 
-    public void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) {
+    public void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) throws PluginExceptionHandler {
         BridgeDownload bridgeDownload = new BridgeDownload(workspace, listener, envVars);
         BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
 
@@ -46,6 +47,7 @@ public class BridgeDownloadManager {
             bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(workspace.getChannel(), bridgeInstallationPath));
         } catch (Exception e) {
             logger.error(LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
+            throw new PluginExceptionHandler(e.getMessage());
         }
     }
 
