@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.jenkins.scan.extension.pipeline;
 
+import com.synopsys.integration.jenkins.annotations.HelpMarkdown;
 import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.exception.ScannerException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
@@ -36,34 +37,49 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class SecurityScanStep extends Step implements Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
+    @HelpMarkdown("Please select the synopsys security product. Supported products are Blac Duck, Coverity and Polaris")
     private String synopsys_security_product;
 
     private String blackduck_url;
     private String blackduck_token;
     private String blackduck_install_directory;
+    @HelpMarkdown("Specifies whether full scan is required or not. Supported values: true or false")
     private Boolean blackduck_scan_full;
+    @HelpMarkdown("Specify scan failure severities of Black Duck. Supported values: ALL, NONE, BLOCKER, CRITICAL, MAJOR, MINOR, OK, TRIVIAL, UNSPECIFIED")
     private String blackduck_scan_failure_severities;
 //    private Boolean blackduck_automation_fixpr;
     private Boolean blackduck_automation_prcomment;
+    @HelpMarkdown("Specify Black Duck download URL")
     private String blackduck_download_url;
 
     private String coverity_url;
     private String coverity_user;
     private String coverity_passphrase;
+    @HelpMarkdown("Project name in Coverity")
     private String coverity_project_name;
+    @HelpMarkdown("Stream name in Coverity")
     private String coverity_stream_name;
+    @HelpMarkdown("ID number/Name of a saved view to apply as a 'break the build' policy")
     private String coverity_policy_view;
     private String coverity_install_directory;
+    @HelpMarkdown("Coverity security testing as pull request comment. Supported values: true or false")
     private Boolean coverity_automation_prcomment;
+    @HelpMarkdown("Specific Coverity version for downloading, rather than opting for the latest version")
     private String coverity_version;
+    @HelpMarkdown("Coverity Local Analysis. Supported values: true or false")
     private Boolean coverity_local;
 
     private String polaris_server_url;
     private String polaris_access_token;
+    @HelpMarkdown("Application name created in the Polaris server")
     private String polaris_application_name;
+    @HelpMarkdown("Project name created in the Polaris server")
     private String polaris_project_name;
+    @HelpMarkdown("Polaris assessment types. Suported values: SCA or SAST or both SCA, SAST")
     private String polaris_assessment_types;
+    @HelpMarkdown("Polaris Triage. Supproted values: REQUIRED or NOT_REQUIRED or NOT_ENTITLED")
     private String polaris_triage;
+    @HelpMarkdown("Branch name in the Polaris Server")
     private String polaris_branch_name;
 //    private String polaris_branch_parent_name;
 
@@ -73,8 +89,10 @@ public class SecurityScanStep extends Step implements Serializable {
     private String synopsys_bridge_download_url;
     private String synopsys_bridge_download_version;
     private String synopsys_bridge_install_directory;
+    @HelpMarkdown("Bridge diagnostics will be uploaded in Jenkins Archive Artifact. Supported values: true or false")
     private Boolean include_diagnostics;
 
+    @HelpMarkdown("Network airgap. Supported values: true or false")
     private Boolean network_airgap;
 
     @DataBoundConstructor
