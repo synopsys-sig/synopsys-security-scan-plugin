@@ -20,10 +20,10 @@
             <f:entry field="blackDuckUrl" title="Black Duck URL">
                 <f:textbox name="blackDuckUrl" />
             </f:entry>
-            <f:entry field="blackDuckApiToken" title="Black Duck API Token">
+            <f:entry field="blackDuckApiToken" title="Black Duck Token">
                 <f:password name="blackDuckApiToken" />
             </f:entry>
-            <f:entry field="blackDuckInstallationPath" title="Black Duck Installation Path (Optional)">
+            <f:entry field="blackDuckInstallationPath" title="Black Duck Install Directory(Optional)">
                 <f:textbox name="blackDuckInstallationPath" />
             </f:entry>
             <button type="button" class="clear-button" onclick="clearTabFields('BLACKDUCKSection')">Clear</button>
@@ -31,16 +31,16 @@
 
         <!-- Coverity Configuration -->
         <div class="scan-type-section" id="COVERITYSection" style="display: none;">
-            <f:entry field="coverityConnectUrl" title="Coverity Connect URL">
+            <f:entry field="coverityConnectUrl" title="Coverity URL">
                 <f:textbox name="coverityConnectUrl" />
             </f:entry>
-            <f:entry field="coverityConnectUserName" title="Coverity Connect Username">
+            <f:entry field="coverityConnectUserName" title="Coverity Username">
                 <f:textbox name="coverityConnectUserName" />
             </f:entry>
-            <f:entry field="coverityConnectUserPassword" title="Coverity Connect User Password">
+            <f:entry field="coverityConnectUserPassword" title="Coverity Passphrase">
                 <f:password name="coverityConnectUserPassword" />
             </f:entry>
-            <f:entry field="coverityInstallationPath" title="Coverity Installation Path (Optional)">
+            <f:entry field="coverityInstallationPath" title="Coverity Install Directory (Optional)">
                 <f:textbox name="coverityInstallationPath" />
             </f:entry>
             <button type="button" class="clear-button" onclick="clearTabFields('COVERITYSection')">Clear</button>
