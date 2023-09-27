@@ -140,7 +140,8 @@ So to trigger only the specific branch during the first time job configuration, 
 >- Then Click on Suppress automatic SCM triggering.
 >- Next on the Branch names to build automatically field → Enter your branch name. Or, if you want to include multiple branches you can use regex.
 >- On the Suppression strategy dropdown, select For matching branches schedule all builds (nothing is suppressed).
->- Finally, click Apply and Save.
+>- Finally, click Apply and Save.  
+**Note:** Later you may need to delete the `Suppress automatic SCM triggering` property to trigger scan on other branches by clicking `Scan Multibranch Pipeline Now` on the job.
 
 #### Configure Global UI :
 Navigate to Dashboard → Manage Jenkins → System  
