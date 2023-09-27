@@ -171,7 +171,7 @@ stage("Security Scan") {
                 blackDuckAutomationPrComment = true
             }
 
-            synopsys_scan synopsys_security_product: "BLACKDUCK", blackduck_url: "BLACKDUCK_URL", blackduck_token: "YOUR_BLACKDUCK_TOKEN", 
+            synopsys_scan product: "blackduck", blackduck_url: "BLACKDUCK_URL", blackduck_token: "YOUR_BLACKDUCK_TOKEN", 
                     blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
         }
     }
@@ -181,11 +181,11 @@ Make sure to provide the required parameters such as `blackduck_url` and `blackd
 
 Or if the values are configured in **Jenkins Global Configuration**, you can use the following example -
 ```groovy
-synopsys_scan synopsys_security_product: "BLACKDUCK", blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
+synopsys_scan product: "blackduck", blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
 ```
 Or a very basic template - 
 ```groovy
-synopsys_scan synopsys_security_product: "BLACKDUCK"
+synopsys_scan product: "blackduck"
 ```
 
 2. Create a Multibranch Pipeline Job in your Jenkins instance
@@ -228,7 +228,7 @@ stage("Security Scan") {
                coverityAutomationPrComment = true
             }
 
-            synopsys_scan synopsys_security_product: "COVERITY", coverity_url: "COVERITY_URL", coverity_user: "COVERITY_USER_NAME",
+            synopsys_scan product: "coverity", coverity_url: "COVERITY_URL", coverity_user: "COVERITY_USER_NAME",
                     coverity_passphrase: "COVERITY_PASSWORD", coverity_automation_prcomment: "${coverityAutomationPrComment}"
         }
     }
@@ -238,11 +238,11 @@ Make sure to provide the required parameters such as `coverity_url`, `coverity_u
 
 Or if the values are configured in **Jenkins Global Configuration**, you can use the following example -
 ```groovy
-synopsys_scan synopsys_security_product: "COVERITY", coverity_automation_prcomment: "${coverityAutomationPrComment}"
+synopsys_scan product: "coverity", coverity_automation_prcomment: "${coverityAutomationPrComment}"
 ```
 Or a very basic template -
 ```groovy
-synopsys_scan synopsys_security_product: "COVERITY"
+synopsys_scan product: "coverity"
 ```
 
 2. Create a Multibranch Pipeline Job in your Jenkins instance
@@ -280,7 +280,7 @@ To use the plugin and invoke it as a pipeline step, follow these instructions:
 stage("Security Scan") {
     steps {
         script {
-            synopsys_scan synopsys_security_product: "POLARIS", polaris_server_url: "POLARIS_SERVERURL", polaris_access_token: "POLARIS_TOKEN",
+            synopsys_scan product: "polaris", polaris_server_url: "POLARIS_SERVERURL", polaris_access_token: "POLARIS_TOKEN",
                     polaris_application_name: "YOUR_POLARIS_APPLICATION_NAME", polaris_project_name: "YOUR_POLARIS_PROJECT_NAME", polaris_assessment_types: "SCA, SAST"
         }
     }
@@ -290,7 +290,7 @@ Make sure to provide the required parameters such as `polaris_server_url`, `pola
 
 Or if the values are configured in **Jenkins Global Configuration**, you can use the following example -
 ```groovy
-synopsys_scan synopsys_security_product: "POLARIS", polaris_application_name: "YOUR_POLARIS_APPLICATION_NAME", polaris_project_name: "YOUR_POLARIS_PROJECT_NAME", polaris_assessment_types: "SCA, SAST"
+synopsys_scan product: "polaris", polaris_application_name: "YOUR_POLARIS_APPLICATION_NAME", polaris_project_name: "YOUR_POLARIS_PROJECT_NAME", polaris_assessment_types: "SCA, SAST"
 ```
 
 2. Create a Multibranch Pipeline Job in your Jenkins instance
@@ -320,7 +320,7 @@ Or, if these values are set both from Jenkins Global Configuration and pipeline 
 
 | Input Parameter             | Description                                                                                                                                                                         | Mandatory / Optional |
 |-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|
-| `synopsys_security_product` | Provide the security product that you want to execute. <br> Supported values: **POLARIS**, **BLACKDUCK**, **COVERITY** <br> Example: `synopsys_security_product: "BLACKDUCK"` </br> | Mandatory            |
+| `product` | Provide the security product that you want to execute. <br> Supported values: **polaris**, **blackduck**, **coverity** <br> Example: `product: "blackduck"` </br> | Mandatory            |
 
 
 ### Bitbucket Parameters
