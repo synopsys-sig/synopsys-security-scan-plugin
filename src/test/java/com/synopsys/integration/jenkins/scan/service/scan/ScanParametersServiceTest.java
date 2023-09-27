@@ -24,7 +24,7 @@ public class ScanParametersServiceTest {
     @Test
     void validParametersForBlackDuckTest() {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck");
+        parameters.put(ApplicationConstants.PRODUCT_KEY, "blackduck");
         parameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
@@ -34,7 +34,7 @@ public class ScanParametersServiceTest {
     @Test
     void invalidParametersForBlackDuckAndPolarisTest() {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck, polaris");
+        parameters.put(ApplicationConstants.PRODUCT_KEY, "blackduck, polaris");
         parameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
@@ -44,7 +44,7 @@ public class ScanParametersServiceTest {
     @Test
     void validParametersForBlackDuckAndPolarisTest() {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck, polaris");
+        parameters.put(ApplicationConstants.PRODUCT_KEY, "blackduck, polaris");
 
         parameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
@@ -62,8 +62,8 @@ public class ScanParametersServiceTest {
     public void getSynopsysSecurityPlatformsTest() {
         Map<String, Object> scanParametersWithMultiplePlatforms = new HashMap<>();
         Map<String, Object> scanParametersWithSinglePlatform = new HashMap<>();
-        scanParametersWithMultiplePlatforms.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "blackduck, polaris");
-        scanParametersWithSinglePlatform.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "");
+        scanParametersWithMultiplePlatforms.put(ApplicationConstants.PRODUCT_KEY, "blackduck, polaris");
+        scanParametersWithSinglePlatform.put(ApplicationConstants.PRODUCT_KEY, "");
 
         Set<String> multiplePlatforms = scanParametersService.getSynopsysSecurityProducts(scanParametersWithMultiplePlatforms);
         Set<String> singlePlatform = scanParametersService.getSynopsysSecurityProducts(scanParametersWithSinglePlatform);

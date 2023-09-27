@@ -39,7 +39,7 @@ public class ScanPipelineCommandsTest {
     @Test
     public void initializeScannerValidParametersTest() throws PluginExceptionHandler, ScannerException {
         Map<String, Object> scanParameters = new HashMap<>();
-        scanParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "BLACKDUCK");
+        scanParameters.put(ApplicationConstants.PRODUCT_KEY, "BLACKDUCK");
         scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         scanParameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
@@ -53,7 +53,7 @@ public class ScanPipelineCommandsTest {
         ScanParametersService mockScanParametersService = Mockito.mock(ScanParametersService.class);
 
         Map<String, Object> scanParameters = new HashMap<>();
-        scanParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "BLACKDUCK");
+        scanParameters.put(ApplicationConstants.PRODUCT_KEY, "BLACKDUCK");
 
         Mockito.when(mockScanParametersService.isValidScanParameters(scanParameters)).thenReturn(false);
 
@@ -63,7 +63,7 @@ public class ScanPipelineCommandsTest {
     @Test
     public void initializeScannerAirGapFailureTest() {
         Map<String, Object> scanParameters = new HashMap<>();
-        scanParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "BLACKDUCK");
+        scanParameters.put(ApplicationConstants.PRODUCT_KEY, "BLACKDUCK");
         scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         scanParameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
         scanParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, true);
@@ -75,7 +75,7 @@ public class ScanPipelineCommandsTest {
     @Test
     public void initializeScannerAirGapSuccessTest() throws PluginExceptionHandler, ScannerException {
         Map<String, Object> scanParameters = new HashMap<>();
-        scanParameters.put(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY, "BLACKDUCK");
+        scanParameters.put(ApplicationConstants.PRODUCT_KEY, "BLACKDUCK");
         scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         scanParameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
         scanParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, true);

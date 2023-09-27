@@ -27,7 +27,7 @@ public class ScanParametersService {
 
     public boolean isValidScanParameters(Map<String, Object> scanParameters) {
         Set<String> securityProducts = getSynopsysSecurityProducts(scanParameters);
-        
+
         boolean isValidBlackDuckParameters = true;
         boolean isValidCoverityParameters = true;
         boolean isValidPolarisParameters = true;
@@ -44,12 +44,12 @@ public class ScanParametersService {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
             isValidPolarisParameters = polarisParametersService.isValidPolarisParameters(scanParameters);
         }
-        
+
         return isValidBlackDuckParameters && isValidCoverityParameters && isValidPolarisParameters;
     }
 
     public Set<String> getSynopsysSecurityProducts(Map<String, Object> scanParameters) {
-        String securityPlatform = (String) scanParameters.get(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY);
+        String securityPlatform = (String) scanParameters.get(ApplicationConstants.PRODUCT_KEY);
 
         return Arrays.stream(securityPlatform.split(","))
                 .map(String::trim)

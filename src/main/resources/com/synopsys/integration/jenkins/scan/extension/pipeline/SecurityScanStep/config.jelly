@@ -1,8 +1,8 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
 
-    <div id="synopsys_security_product">
-        <f:entry field="synopsys_security_product" title="Select Security Product">
+    <div id="product">
+        <f:entry field="product" title="Select Security Product">
             <f:select/>
         </f:entry>
     </div>
@@ -12,7 +12,7 @@
             <f:entry field="blackduck_scan_failure_severities" title="Black Duck Scan Failure Severities (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="blackduck_download_url" title="Black Duck Download URL (Mandatory)">
+            <f:entry field="blackduck_download_url" title="Black Duck Download URL (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
@@ -80,7 +80,7 @@
     </f:section>
 
     <script type="text/javascript">
-        var synopsysSecurityProduct = document.querySelector('select[name="_.synopsys_security_product"]');
+        var synopsysSecurityProduct = document.querySelector('select[name="_.product"]');
         var blackduckDiv = document.getElementById('blackduck');
         var coverityDiv = document.getElementById('coverity');
         var polarisDiv = document.getElementById('polaris');

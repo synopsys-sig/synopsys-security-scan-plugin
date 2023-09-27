@@ -68,7 +68,7 @@ public class ScannerArgumentService {
     private String getBridgeRunCommand(FilePath bridgeInstallationPath) {
         String os = Utility.getAgentOs(workspace, listener);
 
-        if(os.contains("win")) {
+        if (os.contains("win")) {
             return bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS).getRemote();
         } else {
             return bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND).getRemote();
@@ -82,7 +82,7 @@ public class ScannerArgumentService {
         boolean fixPrOrPrComment = isFixPrOrPrCommentValueSet(scanParameters);
 
         SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
-        Object scmObject =  scmRepositoryService.fetchSCMRepositoryDetails(scanParameters, fixPrOrPrComment);
+        Object scmObject = scmRepositoryService.fetchSCMRepositoryDetails(scanParameters, fixPrOrPrComment);
 
         List<String> scanCommands = new ArrayList<>();
 
@@ -213,13 +213,13 @@ public class ScannerArgumentService {
 
     private boolean isFixPrOrPrCommentValueSet(Map<String, Object> scanParameters) {
         if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY) &&
-            Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY), true)) {
+                Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY), true)) {
             return true;
         } else if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) &&
-            Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY), true)) {
+                Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY), true)) {
             return true;
         } else if (scanParameters.containsKey(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY) &&
-            Objects.equals(scanParameters.get(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY), true)) {
+                Objects.equals(scanParameters.get(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY), true)) {
             return true;
         }
         return false;
