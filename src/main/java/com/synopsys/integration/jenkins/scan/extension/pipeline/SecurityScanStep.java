@@ -48,6 +48,7 @@ public class SecurityScanStep extends Step implements Serializable {
     @HelpMarkdown("Specify scan failure severities of Black Duck. Supported values: ALL, NONE, BLOCKER, CRITICAL, MAJOR, MINOR, OK, TRIVIAL, UNSPECIFIED")
     private String blackduck_scan_failure_severities;
 //    private Boolean blackduck_automation_fixpr;
+    @HelpMarkdown("Add automatic pull request comment based on Black Duck scan result. Supported values: true or false")
     private Boolean blackduck_automation_prcomment;
     @HelpMarkdown("Specify Black Duck download URL")
     private String blackduck_download_url;
@@ -401,7 +402,7 @@ public class SecurityScanStep extends Step implements Serializable {
             return ApplicationConstants.DISPLAY_NAME;
         }
 
-        public ListBoxModel doFillSynopsys_security_productItems() {
+        public ListBoxModel doFillProductItems() {
             ListBoxModel items = new ListBoxModel();
             Map<String, String> customLabels = new HashMap<>();
 
@@ -412,7 +413,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
             for (SecurityProduct product : SecurityProduct.values()) {
                 String value = product.name().toLowerCase();
-                String label = customLabels.getOrDefault(value, product.name()); // Use product.name() for label
+                String label = customLabels.getOrDefault(value, product.name());
                 items.add(new Option(label, value));
             }
             return items;
