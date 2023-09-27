@@ -38,7 +38,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
     @HelpMarkdown("Please select the synopsys security product. Supported products are Blac Duck, Coverity and Polaris")
-    private String synopsys_security_product;
+    private String product;
 
     private String blackduck_url;
     private String blackduck_token;
@@ -96,16 +96,12 @@ public class SecurityScanStep extends Step implements Serializable {
     private Boolean network_airgap;
 
     @DataBoundConstructor
-    public SecurityScanStep(String synopsys_security_product) {
-        if(synopsys_security_product.equalsIgnoreCase("Select")){
-            this.synopsys_security_product = "";
-        } else {
-            this.synopsys_security_product = synopsys_security_product;
-        }
+    public SecurityScanStep(String product) {
+        this.product = product.equalsIgnoreCase("Select") ? "" : product;
     }
 
-    public String getSynopsys_security_product() {
-        return synopsys_security_product;
+    public String getProduct() {
+        return product;
     }
 
     public String getBlackduck_url() {

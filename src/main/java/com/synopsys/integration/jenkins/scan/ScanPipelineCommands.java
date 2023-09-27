@@ -116,7 +116,7 @@ public class ScanPipelineCommands {
     }
 
     private void validateSecurityProduct(Map<String, Object> scanParameters) throws PluginExceptionHandler {
-        String securityProduct = scanParameters.get(ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY).toString();
+        String securityProduct = scanParameters.get(ApplicationConstants.PRODUCT_KEY).toString();
         if (securityProduct.isBlank() ||
             !(securityProduct.contains(SecurityProduct.BLACKDUCK.name()) ||
             securityProduct.contains(SecurityProduct.POLARIS.name()) ||
@@ -130,7 +130,7 @@ public class ScanPipelineCommands {
     public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> securityProducts) {
         logger.println("-------------------------- Parameter Validation Initiated --------------------------");
 
-        logger.info(" --- " + ApplicationConstants.SYNOPSYS_SECURITY_PRODUCT_KEY + " = " + securityProducts.toString());
+        logger.info(" --- " + ApplicationConstants.PRODUCT_KEY + " = " + securityProducts.toString());
 
         for (String product : securityProducts) {
             String securityProduct = product.toLowerCase();
