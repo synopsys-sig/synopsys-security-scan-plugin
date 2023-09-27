@@ -133,6 +133,13 @@ First, Go to the Branch Sources section. Then follow these instructions.
 >- Enter the Repository Name. And keep everything as default.
 >- Click Apply and Save.
 
+**Note:** During the first time job configuration, jenkins triggers scan on all branches by default, if jenkinsfile is there in the branch.
+So to trigger only the specific branch during the first time job configuration, follow these instruction:
+>- Click Add property button below the Property strategy field.
+>- Then Click on Suppress automatic SCM triggering.
+>- Next on the Branch names to build automatically field → Enter your branch name. Or, if you want to include multiple branches you can use regex.
+>- Finally, click Apply and Save.
+
 #### Configure Global UI :
 Navigate to Dashboard → Manage Jenkins → System  
 Then go to the Synopsys Security Scan section.  
@@ -183,31 +190,36 @@ Or if the values are configured in **Jenkins Global Configuration**, you can use
 ```groovy
 synopsys_scan product: "blackduck", blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
 ```
+**Note:** If user doesn't pass `blackduck_scan_full`  then there are three scenarios:
+- For main branch, the `detect.blackduck.scan.mode = INTELLIGENT`
+- For push events(any dev branch), the `detect.blackduck.scan.mode = INTELLIGENT`
+- For pull requests, the `detect.blackduck.scan.mode = RAPID`
+
 Or a very basic template - 
 ```groovy
 synopsys_scan product: "blackduck"
 ```
+If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
+Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
 
 2. Create a Multibranch Pipeline Job in your Jenkins instance
 3. Add Bitbucket as the branch source in the job configuration
 4. Scan Multibranch Pipeline
 
-**Note:** Make sure you have **_Pipeline_** plugin installed in your Jenkins instance to configure the multibranch pipeline job.
-
-If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
-Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
+**Note:** Make sure you have **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
 
 
 ###  List of mandatory and optional parameters for Black Duck
 
-| Input Parameter                     | Description                                                                                                                                                                                                                       | Mandatory / Optional                                        |
-|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
-| `blackduck_url`                     | URL for Black Duck server. The URL can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `blackduck_url: "${env.BLACKDUCK_URL}"` </br>                           | Mandatory if not configured in Jenkins Global Configuration |
-| `blackduck_token`                   | API token for Black Duck. The token can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `blackduck_token: "${env.BLACKDUCK_TOKEN}"` </br>                      | Mandatory if not configured in Jenkins Global Configuration |
-| `blackduck_install_directory`       | Directory path to install Black Duck                                                                                                                                                                                              | Optional                                                    |
-| `blackduck_scan_full`               | Specifies whether full scan is required or not. By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan. <br> Supported values: `true` or `false` </br>                           | Optional (Default: **false**)                               |
-| `blackduck_scan_failure_severities` | Scan failure severities of Black Duck. <br> Supported values: `ALL`, `NONE`, `BLOCKER`, `CRITICAL`, `MAJOR`, `MINOR`, `OK`, `TRIVIAL`, `UNSPECIFIED`. <br> Example: `blackduck_scan_failure_severities: "BLOCKER, TRIVIAL"` </br> | Optional                                                    |
-| `blackduck_automation_prcomment`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: `true` or `false`. <br> Example: `blackduck_automation_prcomment: true` </br>                                               | Optional (Default: **false**)                               |
+| Input Parameter                     | Description                                                                                                                                                                                                                                                                                                                                   | Mandatory / Optional                                        |
+|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| `blackduck_url`                     | URL for Black Duck server. The URL can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `blackduck_url: "${env.BLACKDUCK_URL}"` </br>                                                                                                                                       | Mandatory if not configured in Jenkins Global Configuration |
+| `blackduck_token`                   | API token for Black Duck. The token can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `blackduck_token: "${env.BLACKDUCK_TOKEN}"` </br>                                                                                                                                  | Mandatory if not configured in Jenkins Global Configuration |
+| `blackduck_install_directory`       | Directory path to install Black Duck                                                                                                                                                                                                                                                                                                          | Optional                                                    |
+| `blackduck_scan_full`               | Specifies whether full scan is required or not. By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan. <br> Supported values: `true` or `false` </br>                                                                                                                                       | Optional (Default: **false**)                               |
+| `blackduck_scan_failure_severities` | Scan failure severities of Black Duck. <br> Supported values: `ALL`, `NONE`, `BLOCKER`, `CRITICAL`, `MAJOR`, `MINOR`, `OK`, `TRIVIAL`, `UNSPECIFIED`. <br> Example: `blackduck_scan_failure_severities: "BLOCKER, TRIVIAL"` </br>                                                                                                             | Optional                                                    |
+| `blackduck_automation_prcomment`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: `true` or `false`. <br> Example: `blackduck_automation_prcomment: true` </br>                                                                                                                                                           | Optional (Default: **false**)                               |
+| `blackduck_download_url`            | When Black Duck Download URL is provided by user, Synopsys Bridge will download detect from the provided URL. <br> **Note:** If proxy configuration require authentication and agent need to run behind the proxy, user need to pass parameter with authentication data like `-auth user_name:passowrd` while connecting agent to controller. | Optional                                                    |
 
 
 ### Using Synopsys Security Scan for Coverity
@@ -245,14 +257,15 @@ Or a very basic template -
 synopsys_scan product: "coverity"
 ```
 
+If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
+Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
+
 2. Create a Multibranch Pipeline Job in your Jenkins instance
 3. Add Bitbucket as the branch source in the job configuration
 4. Scan Multibranch Pipeline
 
 **Note:** Make sure you have **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
 
-If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
-Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
 
 ###  List of mandatory and optional parameters for Coverity
 
@@ -293,14 +306,15 @@ Or if the values are configured in **Jenkins Global Configuration**, you can use
 synopsys_scan product: "polaris", polaris_application_name: "YOUR_POLARIS_APPLICATION_NAME", polaris_project_name: "YOUR_POLARIS_PROJECT_NAME", polaris_assessment_types: "SCA, SAST"
 ```
 
+If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
+Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
+
 2. Create a Multibranch Pipeline Job in your Jenkins instance
 3. Add Bitbucket as the branch source in the job configuration
 4. Scan Multibranch Pipeline
 
 **Note:** Make sure you have **_Pipeline_** plugin installed in you Jenkins instance to configure the multibranch pipeline job.
 
-If these values are configured in Jenkins Global Configuration, then it is not necessary to pass these values as pipeline input parameter.
-Or, if these values are set both from Jenkins Global Configuration and pipeline input parameter, then pipeline input values will get preference.
 
 ###  List of mandatory and optional parameters for Polaris
 
@@ -330,13 +344,13 @@ Or, if these values are set both from Jenkins Global Configuration and pipeline 
 | `bitbucket_token` | The token can be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. This is required if fixpr or prcomment is set true. <br> Example: `bitbucket_token: "${env.BITBUCKET_TOKEN}"` </br> | Optional             |
 
 ### Synopsys Bridge Parameters
-| Input Parameter                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `synopsys_bridge_install_directory` | Provide a path, where you want to configure or already configured Synopsys Bridge. <br> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge]. If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `synopsys_bridge_download_url`      | Provide URL to bridge zip file. If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path. <br> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `synopsys_bridge_download_version`  | Provide bridge version. If provided, the specified version of Synopsys Bridge will be downloaded and configured.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `include_diagnostics`               | If this is set **true** then the detailed bridge logs will be shown in console and bridge diagnostics will be uploaded in Jenkins Archive Artifact.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `network_airgap`                    | When **network_airgap** is set **true**, <br/> 1. If Bridge exists in the default `$home/synopsys-bridge` or Bridge exists in the specified `<synopsys_bridge_install_directory>`, it is used. Otherwise, errors out. <br/> 2. When `<synopsys_bridge_download_url>` provided by user, <br/> a. If Bridge version available in `<synopsys_bridge_download_url>` is the same version that already exists in default `$home/synopsys-bridge`, it is used.<br/> b. If not, Bridge version pointed to by `<synopsys_bridge_download_url>` is downloaded to the default `$home/synopsys-bridge` and used/cached.<br/> c. If `<synopsys_bridge_download_url>` doesn't have version info, plugin will look for versions.txt file at the same download URL folder level. If versions.txt file is not found, Bridge is not cached. |           
+| Input Parameter                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `synopsys_bridge_install_directory` | Provide a path, where you want to configure or already configured Synopsys Bridge. <br> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge]. If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `synopsys_bridge_download_url`      | Provide URL to bridge zip file. If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path. <br> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `synopsys_bridge_download_version`  | Provide bridge version. If provided, the specified version of Synopsys Bridge will be downloaded and configured.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `include_diagnostics`               | If this is set **true** then the detailed bridge logs will be shown in console and bridge diagnostics will be uploaded in Jenkins Archive Artifact.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `network_airgap`                    | When **network_airgap** is set **true**, <br/> 1. If Bridge exists in the default `$home/synopsys-bridge` or Bridge exists in the specified `synopsys_bridge_install_directory`, it is used. Otherwise, errors out. <br/> 2. When `synopsys_bridge_download_url` provided by user, <br/> a. If Bridge version available in `synopsys_bridge_download_url` is the same version that already exists in default `$home/synopsys-bridge`, it is used.<br/> b. If not, Bridge version pointed to by `synopsys_bridge_download_url` is downloaded to the default `$home/synopsys-bridge` and used/cached.<br/> c. If `synopsys_bridge_download_url` doesn't have version info, plugin will look for versions.txt file at the same download URL folder level. If versions.txt file is not found, Bridge is not cached. |           
 #### Note:
 - If **synopsys_bridge_download_version** or **synopsys_bridge_download_url** is not provided, the plugin will download and configure the latest version of Bridge.
 
