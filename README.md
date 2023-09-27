@@ -135,9 +135,11 @@ First, Go to the Branch Sources section. Then follow these instructions.
 
 **Note:** During the first time job configuration, jenkins triggers scan on all branches by default, if jenkinsfile is there in the branch.
 So to trigger only the specific branch during the first time job configuration, follow these instruction:
+>- On the Property strategy dropdown, select All branches get the same properties.
 >- Click Add property button below the Property strategy field.
 >- Then Click on Suppress automatic SCM triggering.
 >- Next on the Branch names to build automatically field → Enter your branch name. Or, if you want to include multiple branches you can use regex.
+>- On the Suppression strategy dropdown, select For matching branches schedule all builds (nothing is suppressed).
 >- Finally, click Apply and Save.
 
 #### Configure Global UI :
