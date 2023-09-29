@@ -5,15 +5,16 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.jenkins.scan.service;
+package com.synopsys.integration.jenkins.scan.factory;
 
-import com.synopsys.integration.jenkins.scan.ScanPipelineCommands;
+import com.synopsys.integration.jenkins.scan.PluginParametersHandler;
 import com.synopsys.integration.jenkins.scan.SecurityScanner;
 import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.extension.pipeline.SecurityScanStep;
 import com.synopsys.integration.jenkins.scan.global.*;
 import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
+import com.synopsys.integration.jenkins.scan.service.ScannerArgumentService;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -21,16 +22,16 @@ import hudson.Launcher;
 import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import jenkins.model.GlobalConfiguration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import jenkins.model.GlobalConfiguration;
 
-public class ScanCommandsFactory {
+public class ScanParametersFactory {
     private final EnvVars envVars;
     private final FilePath workspace;
 
-    private ScanCommandsFactory(EnvVars envVars, FilePath workspace) throws AbortException {
+    private ScanParametersFactory(EnvVars envVars, FilePath workspace) throws AbortException {
         this.envVars = envVars;
 
         if (workspace == null) {
@@ -39,12 +40,12 @@ public class ScanCommandsFactory {
         this.workspace = workspace;
     }
 
-    public static ScanPipelineCommands createPipelineCommand(Run<?, ?> run, TaskListener listener,
-                                                             EnvVars envVars, Launcher launcher,
-                                                             Node node, FilePath workspace) {
-        return new ScanPipelineCommands(
-            new SecurityScanner(run, listener, launcher, workspace, envVars,
-                new ScannerArgumentService(listener, envVars, workspace)), workspace, envVars, listener);
+    public static PluginParametersHandler createPipelineCommand(Run<?, ?> run, TaskListener listener,
+                                                                EnvVars envVars, Launcher launcher,
+                                                                Node node, FilePath workspace) {
+        return new PluginParametersHandler(
+                new SecurityScanner(run, listener, launcher, workspace, envVars,
+                        new ScannerArgumentService(listener, envVars, workspace)), workspace, envVars, listener);
     }
 
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep, FilePath workspace, TaskListener listener) throws PluginExceptionHandler {
@@ -223,15 +224,15 @@ public class ScanCommandsFactory {
         Map<String, Object> bridgeParameters = new HashMap<>();
 
         if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_download_url())) {
-          bridgeParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, scanStep.getSynopsys_bridge_download_url());
+            bridgeParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, scanStep.getSynopsys_bridge_download_url());
         }
 
         if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_download_version())) {
-          bridgeParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION, scanStep.getSynopsys_bridge_download_version());
+            bridgeParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION, scanStep.getSynopsys_bridge_download_version());
         }
 
         if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_install_directory())) {
-          bridgeParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, scanStep.getSynopsys_bridge_install_directory());
+            bridgeParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, scanStep.getSynopsys_bridge_install_directory());
         }
 
         if(scanStep.isInclude_diagnostics() != null) {

@@ -20,17 +20,18 @@ import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
+
 import java.util.Map;
 import java.util.Set;
 
-public class ScanPipelineCommands {
+public class PluginParametersHandler {
     private final SecurityScanner scanner;
     private final FilePath workspace;
     private final TaskListener listener;
     private final EnvVars envVars;
     private final LoggerWrapper logger;
 
-    public ScanPipelineCommands(SecurityScanner scanner, FilePath workspace, EnvVars envVars, TaskListener listener) {
+    public PluginParametersHandler(SecurityScanner scanner, FilePath workspace, EnvVars envVars, TaskListener listener) {
         this.scanner = scanner;
         this.workspace = workspace;
         this.listener = listener;
@@ -55,14 +56,14 @@ public class ScanPipelineCommands {
             BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener, envVars);
 
             boolean isNetworkAirgap = scanParameters.containsKey(ApplicationConstants.NETWORK_AIRGAP_KEY) &&
-                ((Boolean) scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY)).equals(true);
+                    ((Boolean) scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY)).equals(true);
             boolean isBridgeInstalled = bridgeDownloadManager.checkIfBridgeInstalled(bridgeDownloadParameters.getBridgeInstallationPath());
 
             if (isNetworkAirgap) {
                 logger.info("Network Air Gap mode is enabled");
 
                 if (!bridgeDownloadParams.getBridgeDownloadUrl().contains(".zip") &&
-                    !isBridgeInstalled) {
+                        !isBridgeInstalled) {
                     logger.error("Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
                     throw new PluginExceptionHandler("Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
                 }

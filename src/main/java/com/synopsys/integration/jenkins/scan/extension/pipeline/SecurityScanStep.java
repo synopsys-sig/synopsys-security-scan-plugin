@@ -10,10 +10,10 @@ package com.synopsys.integration.jenkins.scan.extension.pipeline;
 import com.synopsys.integration.jenkins.annotations.HelpMarkdown;
 import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.exception.ScannerException;
+import com.synopsys.integration.jenkins.scan.factory.ScanParametersFactory;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
-import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
 import hudson.*;
 import hudson.model.Node;
 import hudson.model.Run;
@@ -378,7 +378,7 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener) throws PluginExceptionHandler {
-        return ScanCommandsFactory.preparePipelineParametersMap(this, workspace, listener);
+        return ScanParametersFactory.preparePipelineParametersMap(this, workspace, listener);
     }
 
     @Override
@@ -450,7 +450,7 @@ public class SecurityScanStep extends Step implements Serializable {
             Exception caughtException = null;
 
             try {
-                result = Integer.valueOf(ScanCommandsFactory
+                result = Integer.valueOf(ScanParametersFactory
                         .createPipelineCommand(run, listener, envVars, launcher, node, workspace)
                         .initializeScanner(getParametersMap(workspace, listener)));
             } catch (PluginExceptionHandler | ScannerException e) {
