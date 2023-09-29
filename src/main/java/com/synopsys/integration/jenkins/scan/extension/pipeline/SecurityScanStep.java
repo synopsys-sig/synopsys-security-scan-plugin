@@ -11,12 +11,10 @@ import com.synopsys.integration.jenkins.annotations.HelpMarkdown;
 import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.exception.ScannerException;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import com.synopsys.integration.jenkins.scan.service.ScanCommandsFactory;
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
+import hudson.*;
 import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -37,7 +35,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class SecurityScanStep extends Step implements Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
-    @HelpMarkdown("Please select the synopsys security product. Supported products are Blac Duck, Coverity and Polaris")
+    @HelpMarkdown("Please select the synopsys security product. Supported products are Black Duck, Coverity and Polaris")
     private String product;
 
     private String blackduck_url;
@@ -97,8 +95,12 @@ public class SecurityScanStep extends Step implements Serializable {
     private Boolean network_airgap;
 
     @DataBoundConstructor
-    public SecurityScanStep(String product) {
-        this.product = product.equalsIgnoreCase("Select") ? "" : product;
+    public SecurityScanStep() {
+    }
+
+    @DataBoundSetter
+    public void setProduct(String product) {
+        this.product = product;
     }
 
     public String getProduct() {
@@ -242,22 +244,22 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setBlackduck_scan_full(Boolean blackduck_scan_full) {
-        this.blackduck_scan_full = blackduck_scan_full;
+        this.blackduck_scan_full = blackduck_scan_full ? true : null;
     }
 
     @DataBoundSetter
     public void setBlackduck_scan_failure_severities(String blackduck_scan_failure_severities) {
-        this.blackduck_scan_failure_severities = blackduck_scan_failure_severities;
+        this.blackduck_scan_failure_severities = Util.fixEmptyAndTrim(blackduck_scan_failure_severities);
     }
 
     @DataBoundSetter
     public void setBlackduck_automation_prcomment(Boolean blackduck_automation_prcomment) {
-        this.blackduck_automation_prcomment = blackduck_automation_prcomment;
+        this.blackduck_automation_prcomment = blackduck_automation_prcomment ? true : null;
     }
 
     @DataBoundSetter
     public void setBlackduck_download_url(String blackduck_download_url) {
-        this.blackduck_download_url = blackduck_download_url;
+        this.blackduck_download_url = Util.fixEmptyAndTrim(blackduck_download_url);
     }
 
     @DataBoundSetter
@@ -277,17 +279,17 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setCoverity_project_name(String coverity_project_name) {
-        this.coverity_project_name = coverity_project_name;
+        this.coverity_project_name =  Util.fixEmptyAndTrim(coverity_project_name);
     }
 
     @DataBoundSetter
     public void setCoverity_stream_name(String coverity_stream_name) {
-        this.coverity_stream_name = coverity_stream_name;
+        this.coverity_stream_name =  Util.fixEmptyAndTrim(coverity_stream_name);
     }
 
     @DataBoundSetter
     public void setCoverity_policy_view(String coverity_policy_view) {
-        this.coverity_policy_view = coverity_policy_view;
+        this.coverity_policy_view =  Util.fixEmptyAndTrim(coverity_policy_view);
     }
 
     @DataBoundSetter
@@ -297,17 +299,17 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setCoverity_automation_prcomment(Boolean coverity_automation_prcomment) {
-        this.coverity_automation_prcomment = coverity_automation_prcomment;
+        this.coverity_automation_prcomment = coverity_automation_prcomment ? true : null;;
     }
 
     @DataBoundSetter
     public void setCoverity_version(String coverity_version) {
-        this.coverity_version = coverity_version;
+        this.coverity_version =  Util.fixEmptyAndTrim(coverity_version);
     }
 
     @DataBoundSetter
     public void setCoverity_local(Boolean coverity_local) {
-        this.coverity_local = coverity_local;
+        this.coverity_local = coverity_local ? true : null;;
     }
 
     @DataBoundSetter
@@ -322,27 +324,27 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setPolaris_application_name(String polaris_application_name) {
-        this.polaris_application_name = polaris_application_name;
+        this.polaris_application_name =  Util.fixEmptyAndTrim(polaris_application_name);
     }
 
     @DataBoundSetter
     public void setPolaris_project_name(String polaris_project_name) {
-        this.polaris_project_name = polaris_project_name;
+        this.polaris_project_name =  Util.fixEmptyAndTrim(polaris_project_name);
     }
 
     @DataBoundSetter
     public void setPolaris_assessment_types(String polaris_assessment_types) {
-        this.polaris_assessment_types = polaris_assessment_types;
+        this.polaris_assessment_types =  Util.fixEmptyAndTrim(polaris_assessment_types);
     }
 
     @DataBoundSetter
     public void setPolaris_triage(String polaris_triage) {
-        this.polaris_triage = polaris_triage;
+        this.polaris_triage =  Util.fixEmptyAndTrim(polaris_triage);
     }
 
     @DataBoundSetter
     public void setPolaris_branch_name(String polaris_branch_name) {
-        this.polaris_branch_name = polaris_branch_name;
+        this.polaris_branch_name =  Util.fixEmptyAndTrim(polaris_branch_name);
     }
 
     @DataBoundSetter
@@ -367,15 +369,15 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setInclude_diagnostics(Boolean include_diagnostics) {
-        this.include_diagnostics = include_diagnostics;
+        this.include_diagnostics = include_diagnostics ? true : null;;
     }
 
     @DataBoundSetter
     public void setNetwork_airgap(Boolean network_airgap) {
-        this.network_airgap = network_airgap;
+        this.network_airgap = network_airgap ? true : null;;
     }
 
-    private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener) {
+    private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener) throws PluginExceptionHandler {
         return ScanCommandsFactory.preparePipelineParametersMap(this, workspace, listener);
     }
 
@@ -406,7 +408,7 @@ public class SecurityScanStep extends Step implements Serializable {
             ListBoxModel items = new ListBoxModel();
             Map<String, String> customLabels = new HashMap<>();
 
-            items.add(new Option("Select", "Select"));
+            items.add(new Option("Select", ""));
             customLabels.put(SecurityProduct.BLACKDUCK.name().toLowerCase(), "Black Duck");
             customLabels.put(SecurityProduct.COVERITY.name().toLowerCase(), "Coverity");
             customLabels.put(SecurityProduct.POLARIS.name().toLowerCase(), "Polaris");
@@ -441,8 +443,30 @@ public class SecurityScanStep extends Step implements Serializable {
 
         @Override
         protected Integer run() throws PluginExceptionHandler, ScannerException {
-            return ScanCommandsFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
-                .initializeScanner(getParametersMap(workspace, listener));
+            LoggerWrapper logger = new LoggerWrapper(listener);
+            logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+            Integer result = null;
+            Exception caughtException = null;
+
+            try {
+                result = Integer.valueOf(ScanCommandsFactory
+                        .createPipelineCommand(run, listener, envVars, launcher, node, workspace)
+                        .initializeScanner(getParametersMap(workspace, listener)));
+            } catch (PluginExceptionHandler | ScannerException e) {
+                caughtException = e;
+            } finally {
+                logger.println("**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+                if (caughtException != null) {
+                    if (caughtException instanceof PluginExceptionHandler) {
+                        throw (PluginExceptionHandler) caughtException;
+                    } else if (caughtException instanceof ScannerException) {
+                        throw (ScannerException) caughtException;
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

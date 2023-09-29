@@ -15,13 +15,11 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import com.synopsys.integration.jenkins.scan.global.LogMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
-import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import com.synopsys.integration.jenkins.scan.service.bridge.BridgeDownloadParametersService;
 import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,8 +39,6 @@ public class ScanPipelineCommands {
     }
 
     public int initializeScanner(Map<String, Object> scanParameters) throws PluginExceptionHandler, ScannerException {
-        logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
         ScanParametersService scanParametersService = new ScanParametersService(listener);
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);
@@ -50,8 +46,6 @@ public class ScanPipelineCommands {
         BridgeDownloadParameters bridgeDownloadParams = bridgeDownloadParametersService.getBridgeDownloadParams(scanParameters, bridgeDownloadParameters);
 
         logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityProducts(scanParameters));
-
-        validateSecurityProduct(scanParameters);
 
         int exitCode = -1;
         Map<Integer, String> exitCodeToMessage = ExceptionMessages.bridgeErrorMessages();
@@ -102,29 +96,12 @@ public class ScanPipelineCommands {
             }
         }
 
-        try {
-            if(exitCode != 0) {
-                logger.error(exitCodeToMessage.getOrDefault(exitCode, ExceptionMessages.scannerFailedWithExitCode(exitCode)));
-                throw new PluginExceptionHandler("Workflow failed!");
-            }
-        }
-        finally {
-            logger.println("**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+        if(exitCode != 0) {
+            logger.error(exitCodeToMessage.getOrDefault(exitCode, ExceptionMessages.scannerFailedWithExitCode(exitCode)));
+            throw new PluginExceptionHandler("Workflow failed!");
         }
 
         return exitCode;
-    }
-
-    private void validateSecurityProduct(Map<String, Object> scanParameters) throws PluginExceptionHandler {
-        String securityProduct = scanParameters.get(ApplicationConstants.PRODUCT_KEY).toString();
-        if (securityProduct.isBlank() ||
-            !(securityProduct.contains(SecurityProduct.BLACKDUCK.name()) ||
-            securityProduct.contains(SecurityProduct.POLARIS.name()) ||
-            securityProduct.contains(SecurityProduct.COVERITY.name()))) {
-            logger.error(LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
-            logger.info("Supported Synopsys Security Products: " + Arrays.toString(SecurityProduct.values()));
-            throw new PluginExceptionHandler(LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
-        }
     }
 
     public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> securityProducts) {
@@ -162,5 +139,4 @@ public class ScanPipelineCommands {
             }
         }
     }
-
 }

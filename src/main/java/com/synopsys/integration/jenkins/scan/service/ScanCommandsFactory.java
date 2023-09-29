@@ -9,11 +9,11 @@ package com.synopsys.integration.jenkins.scan.service;
 
 import com.synopsys.integration.jenkins.scan.ScanPipelineCommands;
 import com.synopsys.integration.jenkins.scan.SecurityScanner;
+import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.extension.global.ScannerGlobalConfig;
 import com.synopsys.integration.jenkins.scan.extension.pipeline.SecurityScanStep;
-import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
-import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
-import com.synopsys.integration.jenkins.scan.global.Utility;
+import com.synopsys.integration.jenkins.scan.global.*;
+import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -21,17 +21,16 @@ import hudson.Launcher;
 import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import jenkins.model.GlobalConfiguration;
 
 public class ScanCommandsFactory {
-    private final TaskListener listener;
     private final EnvVars envVars;
     private final FilePath workspace;
 
-    private ScanCommandsFactory(TaskListener listener, EnvVars envVars, FilePath workspace) throws AbortException {
-        this.listener = listener;
+    private ScanCommandsFactory(EnvVars envVars, FilePath workspace) throws AbortException {
         this.envVars = envVars;
 
         if (workspace == null) {
@@ -48,22 +47,26 @@ public class ScanCommandsFactory {
                 new ScannerArgumentService(listener, envVars, workspace)), workspace, envVars, listener);
     }
 
-    public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep, FilePath workspace, TaskListener listener) {
+    public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep, FilePath workspace, TaskListener listener) throws PluginExceptionHandler {
         Map<String, Object> parametersMap = new HashMap<>(getGlobalConfigurationValues(workspace, listener));
+        String product = scanStep.getProduct();
 
-        parametersMap.put(ApplicationConstants.PRODUCT_KEY, scanStep.getProduct().trim().toUpperCase());
+        if(validateProduct(product, listener)) {
+            parametersMap.put(ApplicationConstants.PRODUCT_KEY, scanStep.getProduct().trim().toUpperCase());
 
-        parametersMap.putAll(prepareCoverityParametersMap(scanStep));
-        parametersMap.putAll(preparePolarisParametersMap(scanStep));
-        parametersMap.putAll(prepareBlackDuckParametersMap(scanStep));
+            parametersMap.putAll(prepareCoverityParametersMap(scanStep));
+            parametersMap.putAll(preparePolarisParametersMap(scanStep));
+            parametersMap.putAll(prepareBlackDuckParametersMap(scanStep));
 
-        if (!Utility.isStringNullOrBlank(scanStep.getBitbucket_token())) {
-            parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, scanStep.getBitbucket_token());
+            if (!Utility.isStringNullOrBlank(scanStep.getBitbucket_token())) {
+                parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, scanStep.getBitbucket_token());
+            }
+            parametersMap.putAll(prepareBridgeParametersMap(scanStep));
+
+            return parametersMap;
+        } else {
+            throw new PluginExceptionHandler(LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
         }
-
-        parametersMap.putAll(prepareBridgeParametersMap(scanStep));
-
-        return parametersMap;
     }
 
     private static Map<String, Object> getGlobalConfigurationValues(FilePath workspace, TaskListener listener) {
@@ -292,5 +295,26 @@ public class ScanCommandsFactory {
         } else {
             return synopsysBridgeDownloadUrlForWindows;
         }
+    }
+
+    private static boolean validateProduct(String product, TaskListener listener) {
+        LoggerWrapper logger = new LoggerWrapper(listener);
+
+        boolean isValid = !Utility.isStringNullOrBlank(product) &&
+                Arrays.stream(product.split(","))
+                        .map(String::trim)
+                        .map(String::toUpperCase)
+                        .allMatch(p -> p.equals(SecurityProduct.BLACKDUCK.name()) ||
+                                p.equals(SecurityProduct.POLARIS.name()) ||
+                                p.equals(SecurityProduct.COVERITY.name()));
+
+
+        if (!isValid) {
+            logger.error(LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
+            logger.info("Supported Synopsys Security Products: " +
+                    Arrays.toString(SecurityProduct.values()));
+        }
+
+        return isValid;
     }
 }
