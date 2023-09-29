@@ -1,6 +1,6 @@
 # Synopsys Security Scan Plugin
 
-This repository contains a Jenkins plugin implemented as a Gradle project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for developers and users of the plugin.
+This repository contains a Jenkins plugin implemented as a Gradle project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for developers and users of the plugin. Please note that this Jenkins plugin currently supports only Bitbucket as the source code management (SCM) system.
 
 # Quick Start for the Security Scan Plugin
 
@@ -366,3 +366,35 @@ The latest version of Synopsys Bridge will be downloaded by default if user does
 ## Setting Up Synopsys Bridge Manually
 
 If you are unable to download the Synopsys Bridge from our internet-hosted repository or have been directed by support or services to use a custom version of the Synopsys Bridge, you can either specify a custom URL or you can specify the `synopsys_bridge_install_directory` parameter to specify the location of the directory in which the Synopsys Bridge is pre-installed.
+
+## Proxy Support
+
+Proxy configuration in Jenkins pipelines can be done in several ways. Here are two common ways to declare proxy settings in Jenkins:  
+
+1. Utilizing the 'environment' block.   
+    Configuring proxy settings using the environment block within a Jenkins Pipeline.  
+    `environment {        
+        HTTP_PROXY = 'http://proxyIP:proxyPort'    
+    }`
+
+2. Employing the 'export' keyword.      
+   Configuring proxy settings using environment variables.   
+   `export HTTP_PROXY=http://proxyIP:proxyPort`
+
+Supporting the following environment variables.  
+1. HTTP_PROXY:  
+_Format_: http://user:password@proxyIP:proxyPort/
+2. HTTPS_PROXY:  
+   _Format_: https://user:password@proxyIP:proxyPort/    
+3. NO_PROXY:     
+   _Format_: Comma separated list of urls/addresses for which proxy is not used  
+   Example:no_proxy="cern.ch,some.domain:8001,192.168.1.57"
+
+**Note:**  If proxy configuration require authentication and agent need to run behind the proxy, user need to pass parameter with authentication data like  `-auth user_name:password` while connecting agent to controller.
+- _Proxy with auth:_ users need to pass username and password for authentication.  
+   Example: http://user:password@proxyIP:proxyPort/
+- _Proxy with no auth:_ users do not need to pass anything for authentication.   
+  Example: http://proxyIP:proxyPort/  
+
+For more details, you can visit the following link,  
+https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/
