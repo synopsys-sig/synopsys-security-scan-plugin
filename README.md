@@ -373,9 +373,7 @@ Proxy configuration in Jenkins pipelines can be done in several ways. Here are t
 
 1. Utilizing the 'environment' block.   
     Configuring proxy settings using the environment block within a Jenkins Pipeline.  
-    `environment {        
-        HTTP_PROXY = 'http://proxyIP:proxyPort'    
-    }`
+    `environment { HTTP_PROXY = 'http://proxyIP:proxyPort' }`
 
 2. Employing the 'export' keyword.      
    Configuring proxy settings using environment variables.   
@@ -391,9 +389,9 @@ _Format_: http://user:password@proxyIP:proxyPort/
    Example:no_proxy="cern.ch,some.domain:8001,192.168.1.57"
 
 **Note:**  If proxy configuration require authentication and agent need to run behind the proxy, user need to pass parameter with authentication data like  `-auth user_name:password` while connecting agent to controller.
-- _Proxy with auth:_ users need to pass username and password for authentication.  
+- Proxy with auth: Users need to pass username and password for authentication.  
    Example: http://user:password@proxyIP:proxyPort/
-- _Proxy with no auth:_ users do not need to pass anything for authentication.   
+- Proxy with no auth: Users do not need to pass anything for authentication.   
   Example: http://proxyIP:proxyPort/  
 
 For more details, you can visit the following link,  
