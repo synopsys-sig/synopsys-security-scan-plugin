@@ -1,6 +1,6 @@
 # Synopsys Security Scan Plugin
 
-This repository contains a Jenkins plugin implemented as a Gradle project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for developers and users of the plugin. Please note that this Jenkins plugin currently supports only Bitbucket as the source code management (SCM) system.
+This repository contains a Jenkins plugin implemented as a Gradle project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for developers and users of the plugin. Please note that this Jenkins plugin currently supports only **Bitbucket as the source code management (SCM) system.**
 
 # Quick Start for the Security Scan Plugin
 
@@ -133,7 +133,7 @@ First, Go to the Branch Sources section. Then follow these instructions.
 >- Enter the Repository Name. And keep everything as default.
 >- Click Apply and Save.
 
-**Note:** During the first time job configuration, jenkins triggers scan on all branches by default, if jenkinsfile is there in the branch.
+**Note:** During the first time job configuration, jenkins triggers scan on all branches by default, if **Jenkinsfile** exists in root directory of the branch.
 So to trigger only the specific branch during the first time job configuration, follow these instruction:
 >- On the Property strategy dropdown, select All branches get the same properties.
 >- Click Add property button below the Property strategy field.
