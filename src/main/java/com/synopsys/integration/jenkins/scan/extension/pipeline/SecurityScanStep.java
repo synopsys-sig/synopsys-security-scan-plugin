@@ -37,7 +37,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class SecurityScanStep extends Step implements Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
-    @HelpMarkdown("Please select the synopsys security product. Supported products are Blac Duck, Coverity and Polaris")
+    @HelpMarkdown("Please select the synopsys security product. Supported products are Black Duck, Coverity and Polaris")
     private String product;
 
     private String blackduck_url;
