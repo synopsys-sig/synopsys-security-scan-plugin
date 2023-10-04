@@ -101,24 +101,24 @@ public class UtilityTest {
     }
 
     @Test
-    public void getProxyTest() {
+    public void getProxyTest() throws IOException {
         EnvVars envVars = new EnvVars();
 
-        assertEquals(ApplicationConstants.NO_PROXY, Utility.getProxy(url, envVars));
+        assertEquals(ApplicationConstants.NO_PROXY, Utility.getProxy(url, envVars, logger));
 
         envVars.put("NO_PROXY", "https://test-url.com, https://fake-url.com");
 
-        assertEquals(ApplicationConstants.NO_PROXY, Utility.getProxy(url, envVars));
+        assertEquals(ApplicationConstants.NO_PROXY, Utility.getProxy(url, envVars, logger));
 
         envVars.put("HTTP_PROXY", "https://fake-proxy.com:1010");
         envVars.replace("NO_PROXY", "https://test-url.com");
         envVars.put("HTTPS_PROXY", "https://fake-proxy.com:1010");
 
-        assertEquals(envVars.get("HTTPS_PROXY"), Utility.getProxy(url, envVars));
+        assertEquals(envVars.get("HTTPS_PROXY"), Utility.getProxy(url, envVars, logger));
 
         envVars.remove("HTTPS_PROXY");
 
-        assertEquals(envVars.get("HTTP_PROXY"), Utility.getProxy(url, envVars));
+        assertEquals(envVars.get("HTTP_PROXY"), Utility.getProxy(url, envVars, logger));
     }
 
     @Test

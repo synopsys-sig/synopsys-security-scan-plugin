@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.URL;
@@ -68,7 +69,7 @@ public class Utility {
 
     public static HttpURLConnection getHttpURLConnection(URL url, EnvVars envVars, LoggerWrapper logger) {
         try {
-            String proxy = getProxy(url, envVars);
+            String proxy = getProxy(url, envVars, logger);
             if (proxy.equals(ApplicationConstants.NO_PROXY)) {
                 return (HttpURLConnection) url.openConnection(Proxy.NO_PROXY);
             } else {
@@ -77,8 +78,6 @@ public class Utility {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection(
                     new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyURL.getHost(), proxyURL.getPort())));
                 setDefaultProxyAuthenticator(proxyURL.getUserInfo());
-
-                logger.info("Proxy is enabled");
 
                 return connection;
             }
@@ -89,21 +88,41 @@ public class Utility {
         return null;
     }
 
-    public static String getProxy(URL url, EnvVars envVars) {
+    public static String getProxy(URL url, EnvVars envVars, LoggerWrapper logger) throws IOException {
         String noProxy = getEnvOrSystemProxyDetails(ApplicationConstants.NO_PROXY, envVars);
         if (!isStringNullOrBlank(noProxy)) {
-            if (noProxy.contains(url.toString())) {
-                return ApplicationConstants.NO_PROXY;
+            logger.info("Found NO_PROXY configuration - " + noProxy);
+            String[] noProxies = noProxy.split(",");
+
+            if (noProxies.length > 0) {
+                for (String noProxyHost : noProxies) {
+                    boolean hostFoundInNoProxy = false;
+                    if (noProxyHost.startsWith("*") && noProxyHost.length() == 1) {
+                        hostFoundInNoProxy = true;
+                    } else if (noProxyHost.startsWith("*") && noProxyHost.length() > 2) {
+                        noProxyHost = noProxyHost.substring(2);
+                    }
+
+                    if (!hostFoundInNoProxy && url.toString().contains(noProxyHost)) {
+                        hostFoundInNoProxy = true;
+                    }
+
+                    if (hostFoundInNoProxy) {
+                        return ApplicationConstants.NO_PROXY;
+                    }
+                }
             }
         }
 
         String httpsProxy = getEnvOrSystemProxyDetails(ApplicationConstants.HTTPS_PROXY, envVars);
         if (!isStringNullOrBlank(httpsProxy)) {
+            logger.info("Found HTTPS_PROXY configuration - " + getMaskedProxyUrl(httpsProxy));
             return httpsProxy;
         }
 
         String httpProxy = getEnvOrSystemProxyDetails(ApplicationConstants.HTTP_PROXY, envVars);
         if (!isStringNullOrBlank(httpProxy)) {
+            logger.info("Found HTTP_PROXY configuration - " + getMaskedProxyUrl(httpProxy));
             return httpProxy;
         }
 
@@ -137,6 +156,16 @@ public class Utility {
                 });
             }
         }
+    }
+
+    private static String getMaskedProxyUrl(String proxyUrlString) throws MalformedURLException {
+        URL proxyUrl = new URL(proxyUrlString);
+        String userInfo = proxyUrl.getUserInfo();
+        if (!isStringNullOrBlank(userInfo) && userInfo.split(":").length > 1) {
+            return proxyUrlString.replace(userInfo.split(":")[1], "*****");
+        }
+
+        return proxyUrlString;
     }
 
 }
