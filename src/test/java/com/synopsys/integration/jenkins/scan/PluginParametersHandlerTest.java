@@ -18,12 +18,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class ScanPipelineCommandsTest {
+public class PluginParametersHandlerTest {
     private SecurityScanner securityScannerMock;
     private TaskListener listenerMock;
     private FilePath workspace;
     private EnvVars envVarsMock;
-    private ScanPipelineCommands scanPipelineCommands;
+    private PluginParametersHandler pluginParametersHandler;
 
     @BeforeEach
     void setUp() {
@@ -31,7 +31,7 @@ public class ScanPipelineCommandsTest {
         workspace = new FilePath(new File(System.getProperty("user.home")));
         listenerMock = Mockito.mock(TaskListener.class);
         envVarsMock = Mockito.mock(EnvVars.class);
-        scanPipelineCommands = new ScanPipelineCommands(securityScannerMock, workspace, envVarsMock, listenerMock);
+        pluginParametersHandler = new PluginParametersHandler(securityScannerMock, workspace, envVarsMock, listenerMock);
         
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
@@ -43,7 +43,7 @@ public class ScanPipelineCommandsTest {
         scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         scanParameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
-        int exitCode = scanPipelineCommands.initializeScanner(scanParameters);
+        int exitCode = pluginParametersHandler.initializeScanner(scanParameters);
 
         assertEquals(0, exitCode);
     }
@@ -57,7 +57,7 @@ public class ScanPipelineCommandsTest {
 
         Mockito.when(mockScanParametersService.isValidScanParameters(scanParameters)).thenReturn(false);
 
-        assertThrows(PluginExceptionHandler.class, () -> scanPipelineCommands.initializeScanner(scanParameters));
+        assertThrows(PluginExceptionHandler.class, () -> pluginParametersHandler.initializeScanner(scanParameters));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class ScanPipelineCommandsTest {
         scanParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, true);
         scanParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/path/to/bridge");
 
-        assertThrows(PluginExceptionHandler.class, () -> scanPipelineCommands.initializeScanner(scanParameters));
+        assertThrows(PluginExceptionHandler.class, () -> pluginParametersHandler.initializeScanner(scanParameters));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class ScanPipelineCommandsTest {
         scanParameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
         scanParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, true);
 
-        int exitCode = scanPipelineCommands.initializeScanner(scanParameters);
+        int exitCode = pluginParametersHandler.initializeScanner(scanParameters);
 
         assertEquals(0, exitCode);
     }
