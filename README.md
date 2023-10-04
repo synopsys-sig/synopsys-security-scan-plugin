@@ -172,17 +172,13 @@ stage("Security Scan") {
             def blackDuckAutomationPrComment
 
             if (env.CHANGE_ID == null) {
-                // for any push event it will run blackduck full scan
-                blackDuckScanFull = true
                 blackDuckAutomationPrComment = false
             } else {
-                // for any PR event it will run blackduck rapid scan
-                blackDuckScanFull = false
                 blackDuckAutomationPrComment = true
             }
 
             synopsys_scan product: "blackduck", blackduck_url: "BLACKDUCK_URL", blackduck_token: "YOUR_BLACKDUCK_TOKEN", 
-                    blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
+                    blackduck_scan_full: true, blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
         }
     }
 }
