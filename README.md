@@ -193,10 +193,7 @@ Or if the values are configured in **Jenkins Global Configuration**, you can use
 ```groovy
 synopsys_scan product: "blackduck", blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
 ```
-**Note:** If user doesn't pass `blackduck_scan_full`  then there are three scenarios:
-- For main branch, the `detect.blackduck.scan.mode = INTELLIGENT`
-- For push events(any dev branch), the `detect.blackduck.scan.mode = INTELLIGENT`
-- For pull requests, the `detect.blackduck.scan.mode = RAPID`
+**Note:** If user doesn't pass `blackduck_scan_full`, by default BlackDuck INTELLIGENT scan will be run on push events and RAPID scan will be run on pull requests.
 
 Or a very basic template - 
 ```groovy
