@@ -12,6 +12,7 @@ import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.exception.ScannerException;
 import com.synopsys.integration.jenkins.scan.factory.ScanParametersFactory;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
 import hudson.*;
@@ -444,26 +445,22 @@ public class SecurityScanStep extends Step implements Serializable {
         @Override
         protected Integer run() throws PluginExceptionHandler, ScannerException {
             LoggerWrapper logger = new LoggerWrapper(listener);
-            logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
             Integer result = null;
-            Exception caughtException = null;
+
+            logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             try {
                 result = Integer.valueOf(ScanParametersFactory
                         .createPipelineCommand(run, listener, envVars, launcher, node, workspace)
                         .initializeScanner(getParametersMap(workspace, listener)));
-            } catch (PluginExceptionHandler | ScannerException e) {
-                caughtException = e;
+            } catch (Exception e) {
+                if (e instanceof PluginExceptionHandler) {
+                    throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
+                } else {
+                    throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
+                }
             } finally {
                 logger.println("**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-                if (caughtException != null) {
-                    if (caughtException instanceof PluginExceptionHandler) {
-                        throw (PluginExceptionHandler) caughtException;
-                    } else if (caughtException instanceof ScannerException) {
-                        throw (ScannerException) caughtException;
-                    }
-                }
             }
 
             return result;
