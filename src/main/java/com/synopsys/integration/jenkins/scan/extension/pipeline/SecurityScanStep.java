@@ -379,7 +379,8 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener) throws PluginExceptionHandler {
-        return ScanParametersFactory.preparePipelineParametersMap(this, workspace, listener);
+        return ScanParametersFactory.preparePipelineParametersMap(this,
+                ScanParametersFactory.getGlobalConfigurationValues(workspace, listener), workspace, listener);
     }
 
     @Override
