@@ -1,14 +1,20 @@
 package com.synopsys.integration.jenkins.scan.service.scm;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
+import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketApi;
+import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
 import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.*;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
+import hudson.model.TaskListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,6 +28,8 @@ public class BitbucketRepositoryServiceTest {
     private final String TEST_PROJECT_KEY = "my_key";
     Map<String, Object> bitbucketParametersMap = new HashMap<>();
     private BitbucketSCMSource bitbucketSCMSourceMock;
+    private TaskListener listenerMock;
+
 
     @BeforeEach
     void setUp() throws PluginExceptionHandler {
@@ -34,6 +42,9 @@ public class BitbucketRepositoryServiceTest {
         when(bitbucketRepositoryServiceMock
             .fetchBitbucketRepositoryDetails(bitbucketParametersMap, bitbucketSCMSourceMock, TEST_REPOSITORY_PULL_NUMBER, false))
             .thenReturn(bitbucket);
+
+        listenerMock = Mockito.mock(TaskListener.class);
+        Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
     @Test
@@ -46,5 +57,28 @@ public class BitbucketRepositoryServiceTest {
         assertEquals(TEST_REPOSITORY_PULL_NUMBER, bitbucket.getProject().getRepository().getPull().getNumber());
         assertEquals(TEST_REPOSITORY_NAME, bitbucket.getProject().getRepository().getName());
         assertEquals(TEST_PROJECT_KEY, bitbucket.getProject().getKey());
+    }
+
+    @Test
+    public void testFetchBitbucketRepositoryDetails() throws PluginExceptionHandler, IOException, InterruptedException {
+        Map<String, Object> scanParameters = new HashMap<>();
+        BitbucketSCMSource bitbucketSCMSource = mock(BitbucketSCMSource.class);
+        BitbucketApi bitbucketApiFromSCMSource = mock(BitbucketApi.class);
+        BitbucketRepository bitbucketRepository = mock(BitbucketRepository.class);
+
+        scanParameters.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, "yourToken");
+        when(bitbucketSCMSource.buildBitbucketClient(anyString(), anyString())).thenReturn(bitbucketApiFromSCMSource);
+        when(bitbucketApiFromSCMSource.getRepository()).thenReturn(bitbucketRepository);
+
+        BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listenerMock);
+        Bitbucket result = bitbucketRepositoryService.fetchBitbucketRepositoryDetails(scanParameters, bitbucketSCMSource,
+                1, true);
+
+        assertNotNull(result);
+
+        scanParameters.clear();
+        scanParameters.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, "");
+        assertThrows(PluginExceptionHandler.class, () -> bitbucketRepositoryService.fetchBitbucketRepositoryDetails(scanParameters, bitbucketSCMSource,
+                1, true));
     }
 }
