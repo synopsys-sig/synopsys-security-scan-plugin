@@ -60,7 +60,7 @@ public class BitbucketRepositoryServiceTest {
     }
 
     @Test
-    public void testFetchBitbucketRepositoryDetails() throws PluginExceptionHandler, IOException, InterruptedException {
+    public void fetchBitbucketRepositoryDetailsTest() throws PluginExceptionHandler, IOException, InterruptedException {
         Map<String, Object> scanParameters = new HashMap<>();
         BitbucketSCMSource bitbucketSCMSource = mock(BitbucketSCMSource.class);
         BitbucketApi bitbucketApiFromSCMSource = mock(BitbucketApi.class);

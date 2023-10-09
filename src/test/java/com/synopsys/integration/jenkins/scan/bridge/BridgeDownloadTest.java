@@ -2,6 +2,7 @@ package com.synopsys.integration.jenkins.scan.bridge;
 
 import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
+import com.synopsys.integration.jenkins.scan.global.Utility;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -11,6 +12,8 @@ import org.mockito.*;
 import java.io.File;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BridgeDownloadTest {
@@ -29,17 +32,19 @@ public class BridgeDownloadTest {
 
     @Test
     void downloadSynopsysBridgeTest() throws PluginExceptionHandler {
-        String bridgeDownloadUrl = null;
-        String bridgeInstallationPath = "/path/to/bridge";
+        BridgeDownload bridgeDownload = new BridgeDownload(workspace, listenerMock, envVarsMock);
 
-        FilePath outputDownloadFilePath = new FilePath(new File(ApplicationConstants.BRIDGE_DOWNLOAD_FILE_PATH
-                .concat(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT)));
+        String validBridgeDownloadUrl = String.join("/",
+                ApplicationConstants.BRIDGE_ARTIFACTORY_URL, "latest", "versions.txt");
+        String invalidBridgeDownloadUrl = "https://bridge.invalid.url";
 
-        Mockito.when(bridgeDownloadMock.downloadSynopsysBridge
-                (bridgeDownloadUrl, bridgeInstallationPath)).thenReturn(outputDownloadFilePath);
+        FilePath validBridgeDownloadPath = bridgeDownload.downloadSynopsysBridge(validBridgeDownloadUrl, workspace.getRemote());
 
-        assertEquals(outputDownloadFilePath, bridgeDownloadMock.downloadSynopsysBridge
-                (bridgeDownloadUrl, bridgeInstallationPath));
+        assertTrue(Files.exists( Paths.get(validBridgeDownloadPath.getRemote())));
+        assertThrows(PluginExceptionHandler.class, () ->
+                bridgeDownload.downloadSynopsysBridge(invalidBridgeDownloadUrl, workspace.getRemote()));
+
+        Utility.removeFile(validBridgeDownloadPath.getRemote(), workspace, listenerMock);
     }
 
     @Test

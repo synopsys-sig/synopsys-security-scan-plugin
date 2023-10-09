@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ScanParametersFactoryTest {
@@ -38,6 +37,7 @@ public class ScanParametersFactoryTest {
         ScanParametersFactory scanParametersFactory = new ScanParametersFactory(envVarsMock, workspace);
 
         securityScanStep.setProduct("BLACKDUCK");
+        securityScanStep.setBitbucket_token("FAKETOKEN");
         globalConfigValues.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake-blackduck.url");
         globalConfigValues.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "fake-blackduck-token");
         globalConfigValues.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/fake/path");
@@ -45,10 +45,11 @@ public class ScanParametersFactoryTest {
         Map<String, Object> result = scanParametersFactory.preparePipelineParametersMap(securityScanStep,
                 globalConfigValues, workspace, listenerMock);
 
-        assertEquals(4, result.size());
+        assertEquals(5, result.size());
         assertEquals("BLACKDUCK", result.get(ApplicationConstants.PRODUCT_KEY));
         assertEquals("fake-blackduck-token", result.get(ApplicationConstants.BLACKDUCK_TOKEN_KEY));
         assertEquals("/fake/path", result.get(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY));
+        assertEquals("FAKETOKEN", result.get(ApplicationConstants.BITBUCKET_TOKEN_KEY));
 
         securityScanStep.setProduct("invalid-product");
 
@@ -64,17 +65,18 @@ public class ScanParametersFactoryTest {
         securityScanStep.setBlackduck_scan_full(true);
         securityScanStep.setBlackduck_automation_prcomment(true);
         securityScanStep.setBlackduck_download_url("https://fake.blackduck-download-url");
+        securityScanStep.setBlackduck_scan_failure_severities("MAJOR");
 
         Map<String, Object> blackDuckParametersMap = ScanParametersFactory.prepareBlackDuckParametersMap(securityScanStep);
 
-        assertEquals(6, blackDuckParametersMap.size());
+        assertEquals(7, blackDuckParametersMap.size());
         assertEquals("https://fake.blackduck-url", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_URL_KEY));
         assertEquals("fake-token", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_TOKEN_KEY));
         assertEquals("/fake/path", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY));
         assertTrue((boolean) blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY));
         assertTrue((boolean) blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY));
         assertEquals("https://fake.blackduck-download-url", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY));
-        assertFalse(blackDuckParametersMap.containsKey(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY));
+        assertEquals("MAJOR", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY));
 
         Map<String, Object> emptyBlackDuckParametersMap = ScanParametersFactory.prepareBlackDuckParametersMap(new SecurityScanStep());
         
@@ -91,10 +93,12 @@ public class ScanParametersFactoryTest {
         securityScanStep.setCoverity_policy_view("fake-policy");
         securityScanStep.setCoverity_install_directory("/fake/path");
         securityScanStep.setCoverity_automation_prcomment(true);
+        securityScanStep.setCoverity_version("1.0.0");
+        securityScanStep.setCoverity_local(true);
 
         Map<String, Object> coverityParametersMap = ScanParametersFactory.prepareCoverityParametersMap(securityScanStep);
 
-        assertEquals(8, coverityParametersMap.size());
+        assertEquals(10, coverityParametersMap.size());
         assertEquals("https://fake.coverity-url", coverityParametersMap.get(ApplicationConstants.COVERITY_URL_KEY));
         assertEquals("fake-user", coverityParametersMap.get(ApplicationConstants.COVERITY_USER_KEY));
         assertEquals("fake-passphrase", coverityParametersMap.get(ApplicationConstants.COVERITY_PASSPHRASE_KEY));
@@ -103,8 +107,8 @@ public class ScanParametersFactoryTest {
         assertEquals("fake-policy", coverityParametersMap.get(ApplicationConstants.COVERITY_POLICY_VIEW_KEY));
         assertEquals("/fake/path", coverityParametersMap.get(ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY));
         assertTrue((boolean) coverityParametersMap.get(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY));
-        assertFalse(coverityParametersMap.containsKey(ApplicationConstants.COVERITY_VERSION_KEY));
-        assertFalse(coverityParametersMap.containsKey(ApplicationConstants.COVERITY_LOCAL_KEY));
+        assertEquals("1.0.0", coverityParametersMap.get(ApplicationConstants.COVERITY_VERSION_KEY));
+        assertTrue(coverityParametersMap.containsKey(ApplicationConstants.COVERITY_LOCAL_KEY));
 
         Map<String, Object> emptyCoverityParametersMap = ScanParametersFactory.prepareCoverityParametersMap(new SecurityScanStep());
         assertEquals(0, emptyCoverityParametersMap.size());
@@ -116,15 +120,16 @@ public class ScanParametersFactoryTest {
         securityScanStep.setSynopsys_bridge_download_version("1.0.0");
         securityScanStep.setSynopsys_bridge_install_directory("/fake/path");
         securityScanStep.setInclude_diagnostics(true);
+        securityScanStep.setNetwork_airgap(true);
 
         Map<String, Object> bridgeParametersMap = ScanParametersFactory.prepareBridgeParametersMap(securityScanStep);
 
-        assertEquals(4, bridgeParametersMap.size());
+        assertEquals(5, bridgeParametersMap.size());
         assertEquals("https://fake.bridge-download.url", bridgeParametersMap.get(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL));
         assertEquals("1.0.0", bridgeParametersMap.get(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION));
         assertEquals("/fake/path", bridgeParametersMap.get(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY));
         assertTrue((boolean) bridgeParametersMap.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY));
-        assertFalse(bridgeParametersMap.containsKey(ApplicationConstants.NETWORK_AIRGAP_KEY));
+        assertTrue((boolean) bridgeParametersMap.get(ApplicationConstants.NETWORK_AIRGAP_KEY));
 
         Map<String, Object> emptyBridgeParametersMap = ScanParametersFactory.prepareBridgeParametersMap(new SecurityScanStep());
 
@@ -138,15 +143,17 @@ public class ScanParametersFactoryTest {
         securityScanStep.setPolaris_application_name("fake-application-name");
         securityScanStep.setPolaris_project_name("fake-project-name");
         securityScanStep.setPolaris_assessment_types("SCA");
+        securityScanStep.setPolaris_triage("REQUIRED");
+        securityScanStep.setPolaris_branch_name("test");
 
         Map<String, Object> polarisParametersMap = ScanParametersFactory.preparePolarisParametersMap(securityScanStep);
 
-        assertEquals(5, polarisParametersMap.size());
+        assertEquals(7, polarisParametersMap.size());
         assertEquals("https://fake.polaris-server.url", polarisParametersMap.get(ApplicationConstants.POLARIS_SERVER_URL_KEY));
         assertEquals("fake-access-token", polarisParametersMap.get(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY));
         assertEquals("https://fake.polaris-server.url", polarisParametersMap.get(ApplicationConstants.POLARIS_SERVER_URL_KEY));
-        assertFalse(polarisParametersMap.containsKey(ApplicationConstants.POLARIS_BRANCH_NAME_KEY));
-        assertFalse(polarisParametersMap.containsKey(ApplicationConstants.POLARIS_TRIAGE_KEY));
+        assertEquals("test", polarisParametersMap.get(ApplicationConstants.POLARIS_BRANCH_NAME_KEY));
+        assertEquals("REQUIRED", polarisParametersMap.get(ApplicationConstants.POLARIS_TRIAGE_KEY));
     }
 
     @Test
