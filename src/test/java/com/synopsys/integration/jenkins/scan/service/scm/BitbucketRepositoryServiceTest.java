@@ -66,7 +66,7 @@ public class BitbucketRepositoryServiceTest {
         BitbucketApi bitbucketApiFromSCMSource = mock(BitbucketApi.class);
         BitbucketRepository bitbucketRepository = mock(BitbucketRepository.class);
 
-        scanParameters.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, "yourToken");
+        scanParameters.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, "fakeToken");
         when(bitbucketSCMSource.buildBitbucketClient(anyString(), anyString())).thenReturn(bitbucketApiFromSCMSource);
         when(bitbucketApiFromSCMSource.getRepository()).thenReturn(bitbucketRepository);
 
