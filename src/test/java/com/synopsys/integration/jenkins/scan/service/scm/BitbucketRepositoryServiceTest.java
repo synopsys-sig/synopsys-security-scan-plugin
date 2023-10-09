@@ -30,7 +30,6 @@ public class BitbucketRepositoryServiceTest {
     private BitbucketSCMSource bitbucketSCMSourceMock;
     private TaskListener listenerMock;
 
-
     @BeforeEach
     void setUp() throws PluginExceptionHandler {
         Bitbucket bitbucket = BitbucketRepositoryService.createBitbucketObject(TEST_BITBUCKET_URL, TEST_BITBUCKET_TOKEN, TEST_REPOSITORY_PULL_NUMBER, TEST_REPOSITORY_NAME, TEST_PROJECT_KEY);

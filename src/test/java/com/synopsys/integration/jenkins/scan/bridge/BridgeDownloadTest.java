@@ -31,7 +31,7 @@ public class BridgeDownloadTest {
     }
 
     @Test
-    void downloadSynopsysBridgeTest() throws PluginExceptionHandler {
+    public void downloadSynopsysBridgeTest() throws PluginExceptionHandler {
         BridgeDownload bridgeDownload = new BridgeDownload(workspace, listenerMock, envVarsMock);
 
         String validBridgeDownloadUrl = String.join("/",
@@ -75,7 +75,7 @@ public class BridgeDownloadTest {
     }
 
     @Test
-    void checkIfBridgeUrlExistsTest() {
+    public void checkIfBridgeUrlExistsTest() {
         String bridgeDownloadUrl = String.join("/",
                 ApplicationConstants.BRIDGE_ARTIFACTORY_URL, "latest", "synopsys-bridge-linux64.zip");
         String invalidUrl = "https://invalid.bridge-download.url";
