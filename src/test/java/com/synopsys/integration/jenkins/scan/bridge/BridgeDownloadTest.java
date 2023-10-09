@@ -17,7 +17,6 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BridgeDownloadTest {
-    private final BridgeDownload bridgeDownloadMock = Mockito.mock(BridgeDownload.class);
     private TaskListener listenerMock;
     private FilePath workspace;
     private EnvVars envVarsMock;
