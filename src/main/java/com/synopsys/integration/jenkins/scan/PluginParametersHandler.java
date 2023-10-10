@@ -108,12 +108,10 @@ public class PluginParametersHandler {
     private int runScanner(Map<String, Object> scanParameters, FilePath bridgeInstallationPath) throws PluginExceptionHandler, ScannerException {
         try {
             return scanner.runScanner(scanParameters, bridgeInstallationPath);
+        } catch (PluginExceptionHandler e) {
+            throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
         } catch (Exception e) {
-            if (e instanceof PluginExceptionHandler) {
-                throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
-            } else {
-                throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
-            }
+            throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
         }
     }
 
@@ -127,9 +125,11 @@ public class PluginParametersHandler {
 
 
     public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> securityProducts) {
+        final String LOG_DASH = " --- ";
+
         logger.println("-------------------------- Parameter Validation Initiated --------------------------");
 
-        logger.info(" --- " + ApplicationConstants.PRODUCT_KEY + " = " + securityProducts.toString());
+        logger.info(LOG_DASH + ApplicationConstants.PRODUCT_KEY + " = " + securityProducts.toString());
 
         for (String product : securityProducts) {
             String securityProduct = product.toLowerCase();
@@ -143,7 +143,7 @@ public class PluginParametersHandler {
                             || key.equals(ApplicationConstants.COVERITY_PASSPHRASE_KEY)) {
                         value = LogMessages.ASTERISKS;
                     }
-                    logger.info(" --- " + key + " = " + value.toString());
+                    logger.info(LOG_DASH + key + " = " + value.toString());
                 }
             }
 
@@ -157,7 +157,7 @@ public class PluginParametersHandler {
             if(key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL) || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION)
                     || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY) || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)) {
                 Object value = entry.getValue();
-                logger.info(" --- " + key + " = " + value.toString());
+                logger.info(LOG_DASH + key + " = " + value.toString());
             }
         }
     }

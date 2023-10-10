@@ -20,5 +20,6 @@ public class OsNameTask implements FilePath.FileCallable<String> {
 
     @Override
     public void checkRoles(RoleChecker checker) throws SecurityException {
+        // this method is kept empty intentionally
     }
 }
