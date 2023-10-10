@@ -99,11 +99,6 @@ public class SecurityScanStep extends Step implements Serializable {
     public SecurityScanStep() {
     }
 
-    @DataBoundSetter
-    public void setProduct(String product) {
-        this.product = product;
-    }
-
     public String getProduct() {
         return product;
     }
@@ -226,6 +221,11 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public Boolean isNetwork_airgap() {
         return network_airgap;
+    }
+
+    @DataBoundSetter
+    public void setProduct(String product) {
+        this.product = product;
     }
 
     @DataBoundSetter
