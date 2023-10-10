@@ -405,6 +405,7 @@ public class SecurityScanStep extends Step implements Serializable {
             return ApplicationConstants.DISPLAY_NAME;
         }
 
+        @SuppressWarnings("lgtm[jenkins/no-permission-check]")
         public ListBoxModel doFillProductItems() {
             ListBoxModel items = new ListBoxModel();
             Map<String, String> customLabels = new HashMap<>();
