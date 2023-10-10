@@ -7,7 +7,6 @@
  */
 package com.synopsys.integration.jenkins.scan.extension.global;
 
-import com.synopsys.integration.jenkins.annotations.HelpMarkdown;
 import hudson.Extension;
 import java.io.Serializable;
 import jenkins.model.GlobalConfiguration;
@@ -17,53 +16,21 @@ import org.kohsuke.stapler.DataBoundSetter;
 @Extension
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
-
-    @HelpMarkdown("Provide the URL that lets you access your Black Duck server.")
+    
     private String blackDuckUrl;
-
-    @HelpMarkdown("Provide the Black Duck API token through which black duck server can be accessed with proper authorization.")
     private String blackDuckApiToken;
-
-    @HelpMarkdown("Provide the BlackDuck installation path on the agent where it will be installed during the Jenkins build.")
     private String blackDuckInstallationPath;
-
-    @HelpMarkdown("Provide the URL that lets you access your Coverity server.")
     private String coverityConnectUrl;
-
-    @HelpMarkdown("Provide the Coverity username through which coverity server can be accessed with proper authorization.")
     private String coverityConnectUserName;
-
-    @HelpMarkdown("Provide the Coverity password through which coverity server can be accessed with proper authorization.")
     private String coverityConnectUserPassword;
-
-    @HelpMarkdown("Provide the Coverity installation path on the agent where it will be installed during the Jenkins build.")
     private String coverityInstallationPath;
-
-    @HelpMarkdown("Provide the URL from where synopsys-bridge zip file can be downloaded. " +
-            "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrlForMac;
-
-    @HelpMarkdown("Provide the URL from where synopsys-bridge zip file can be downloaded. " +
-            "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrlForWindows;
-
-    @HelpMarkdown("Provide the URL from where synopsys-bridge zip file can be downloaded. " +
-            "Note: You must need to provide the full download url which includes the zip file path.")
     private String synopsysBridgeDownloadUrlForLinux;
-
-    @HelpMarkdown("Provide the specific Synopsys bridge version you want to download from Synopsys artifactory.")
     private String synopsysBridgeVersion;
-
-    @HelpMarkdown("Provide the Synopsys bridge installation path on the agent where it will be installed during the Jenkins build.")
     private String synopsysBridgeInstallationPath;
-
-    @HelpMarkdown("Provide the bitbucket API access token through which PR Comment will be done.")
     private String bitbucketToken;
-
-    @HelpMarkdown("Provide the URL that lets you access Polaris server.")
     private String polarisServerUrl;
-
-    @HelpMarkdown("Provide the Polaris access token through which Polaris server can be accessed with proper authorization.")
     private String polarisAccessToken;
 
     @DataBoundConstructor
