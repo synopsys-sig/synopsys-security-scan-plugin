@@ -22,6 +22,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String blackDuckUrl;
 
     @HelpMarkdown("Provide the Black Duck API token through which black duck server can be accessed with proper authorization.")
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String blackDuckApiToken;
 
     @HelpMarkdown("Provide the BlackDuck installation path on the agent where it will be installed during the Jenkins build.")
@@ -34,6 +35,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String coverityConnectUserName;
 
     @HelpMarkdown("Provide the Coverity password through which coverity server can be accessed with proper authorization.")
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String coverityConnectUserPassword;
 
     @HelpMarkdown("Provide the Coverity installation path on the agent where it will be installed during the Jenkins build.")
@@ -58,12 +60,14 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String synopsysBridgeInstallationPath;
 
     @HelpMarkdown("Provide the bitbucket API access token through which PR Comment will be done.")
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String bitbucketToken;
 
     @HelpMarkdown("Provide the URL that lets you access Polaris server.")
     private String polarisServerUrl;
 
     @HelpMarkdown("Provide the Polaris access token through which Polaris server can be accessed with proper authorization.")
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String polarisAccessToken;
 
     @DataBoundConstructor

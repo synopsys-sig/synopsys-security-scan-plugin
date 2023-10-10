@@ -19,12 +19,12 @@ import hudson.*;
 import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.util.ListBoxModel;
+import hudson.util.ListBoxModel.Option;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import javax.annotation.Nonnull;
-import hudson.util.ListBoxModel;
-import hudson.util.ListBoxModel.Option;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -40,7 +40,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String product;
 
     private String blackduck_url;
-    private String blackduck_token;
+    private transient String blackduck_token;
     private String blackduck_install_directory;
     @HelpMarkdown("Specifies whether full scan is required or not. Supported values: true or false")
     private Boolean blackduck_scan_full;
@@ -54,7 +54,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
     private String coverity_url;
     private String coverity_user;
-    private String coverity_passphrase;
+    private transient String coverity_passphrase;
     @HelpMarkdown("Project name in Coverity")
     private String coverity_project_name;
     @HelpMarkdown("Stream name in Coverity")
@@ -70,21 +70,21 @@ public class SecurityScanStep extends Step implements Serializable {
     private Boolean coverity_local;
 
     private String polaris_server_url;
-    private String polaris_access_token;
+    private transient String polaris_access_token;
     @HelpMarkdown("Application name created in the Polaris server")
     private String polaris_application_name;
     @HelpMarkdown("Project name created in the Polaris server")
     private String polaris_project_name;
-    @HelpMarkdown("Polaris assessment types. Suported values: SCA or SAST or both SCA, SAST")
+    @HelpMarkdown("Polaris assessment types. Supported values: SCA or SAST or both SCA, SAST")
     private String polaris_assessment_types;
-    @HelpMarkdown("Polaris Triage. Supproted values: REQUIRED or NOT_REQUIRED or NOT_ENTITLED")
+    @HelpMarkdown("Polaris Triage. Supported values: REQUIRED or NOT_REQUIRED or NOT_ENTITLED")
     private String polaris_triage;
     @HelpMarkdown("Branch name in the Polaris Server")
     private String polaris_branch_name;
 //    private String polaris_branch_parent_name;
 
 
-    private String bitbucket_token;
+    private transient String bitbucket_token;
 
     private String synopsys_bridge_download_url;
     private String synopsys_bridge_download_version;
