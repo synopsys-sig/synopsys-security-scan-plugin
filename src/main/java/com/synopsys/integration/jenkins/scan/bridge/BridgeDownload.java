@@ -30,48 +30,36 @@ public class BridgeDownload {
         this.envVars = envVars;
     }
 
-    public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath) throws PluginExceptionHandler {
+    public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath) throws Exception {
         FilePath bridgeZipFilePath = null;
         FilePath bridgeInstallationFilePath = new FilePath(workspace.getChannel(), bridgeInstallationPath);
 
-        if (checkIfBridgeUrlExists(bridgeDownloadUrl)) {
+        if (!checkIfBridgeUrlExists(bridgeDownloadUrl)) {
+            logger.error(LogMessages.INVALID_SYNOPSYS_BRIDGE_DOWNLOAD_URL, bridgeDownloadUrl);
+        }
+
+        int retryCount = 1;
+        boolean downloadSuccess = false;
+
+        while (!downloadSuccess && retryCount <= ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES) {
             try {
-                int retryCount = 1;
-                boolean downloadSuccess = false;
+                logger.info("Downloading Synopsys Bridge from: " + bridgeDownloadUrl);
+                bridgeZipFilePath = downloadBridge(bridgeDownloadUrl, bridgeInstallationFilePath);
 
-                while (!downloadSuccess && retryCount <= ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES) {
-                    try {
-                        logger.info("Downloading Synopsys Bridge from: " + bridgeDownloadUrl);
-
-                        bridgeZipFilePath = bridgeInstallationFilePath.child(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT);
-
-                        HttpURLConnection connection = Utility.getHttpURLConnection(new URL(bridgeDownloadUrl), envVars, logger);
-                        if (connection != null) {
-                            bridgeZipFilePath.copyFrom(connection.getURL());
-                            downloadSuccess = true;
-
-                            logger.info("Synopsys Bridge successfully downloaded in: " + bridgeZipFilePath);
-                        }
-                    } catch (Exception e) {
-                        int statusCode = getHttpStatusCode(bridgeDownloadUrl);
-                        if (terminateRetry(statusCode)) {
-                            logger.error("Synopsys Bridge download failed with status code: %s and plugin won't retry to download.", statusCode);
-                            break;
-                        }
-                        Thread.sleep(ApplicationConstants.INTERVAL_BETWEEN_CONSECUTIVE_RETRY_ATTEMPTS);
-                        logger.warn("Synopsys Bridge download failed and attempt#%s to download again.", retryCount);
-                        retryCount++;
-                    }
-                }
-
-                if (!downloadSuccess) {
-                    logger.error("Synopsys Bridge download failed after %s attempts", ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES);
+                if (bridgeZipFilePath != null) {
+                    downloadSuccess = true;
                 }
             } catch (InterruptedException e) {
                 logger.error("Interrupted while waiting to retry Synopsys Bridge download");
+                throw e;
+            } catch (Exception e) {
+                handleDownloadException(e, bridgeDownloadUrl, retryCount);
+                retryCount++;
             }
-        } else {
-            logger.error(LogMessages.INVALID_SYNOPSYS_BRIDGE_DOWNLOAD_URL, bridgeDownloadUrl);
+        }
+
+        if (!downloadSuccess) {
+            logger.error("Synopsys Bridge download failed after %s attempts", ApplicationConstants.BRIDGE_DOWNLOAD_MAX_RETRIES);
         }
 
         if (bridgeZipFilePath == null) {
@@ -80,6 +68,31 @@ public class BridgeDownload {
 
         return bridgeZipFilePath;
     }
+
+    private FilePath downloadBridge(String bridgeDownloadUrl, FilePath bridgeInstallationFilePath) throws Exception {
+        FilePath bridgeZipFilePath = bridgeInstallationFilePath.child(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT);
+        HttpURLConnection connection = Utility.getHttpURLConnection(new URL(bridgeDownloadUrl), envVars, logger);
+
+        if (connection != null) {
+            bridgeZipFilePath.copyFrom(connection.getURL());
+            logger.info("Synopsys Bridge successfully downloaded in: " + bridgeZipFilePath);
+        }
+
+        return bridgeZipFilePath;
+    }
+
+    private void handleDownloadException(Exception e, String bridgeDownloadUrl, int retryCount) throws Exception {
+        int statusCode = getHttpStatusCode(bridgeDownloadUrl);
+
+        if (terminateRetry(statusCode)) {
+            logger.error("Synopsys Bridge download failed with status code: %s and plugin won't retry to download.", statusCode);
+            throw e;
+        }
+
+        Thread.sleep(ApplicationConstants.INTERVAL_BETWEEN_CONSECUTIVE_RETRY_ATTEMPTS);
+        logger.warn("Synopsys Bridge download failed and attempt#%s to download again.", retryCount);
+    }
+
 
     private int getHttpStatusCode(String url) {
         int statusCode = -1;

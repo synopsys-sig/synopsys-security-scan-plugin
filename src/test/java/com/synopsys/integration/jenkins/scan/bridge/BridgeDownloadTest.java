@@ -14,7 +14,7 @@ public class BridgeDownloadTest {
     private final BridgeDownload bridgeDownloadMock = Mockito.mock(BridgeDownload.class);
 
     @Test
-    void downloadSynopsysBridgeTest() throws PluginExceptionHandler {
+    void downloadSynopsysBridgeTest() throws Exception {
         String bridgeDownloadUrl = null;
         String bridgeInstallationPath = "/path/to/bridge";
 
