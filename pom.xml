@@ -12,7 +12,7 @@
   <version>${revision}${changelist}</version>
   <packaging>hpi</packaging>
   <name>Synopsys Security Scan Plugin</name>
-  <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+  <url>https://github.com/jenkinsci/${project.artifactId}</url>
   <licenses>
    <license>
       <name>Apache License</name>
