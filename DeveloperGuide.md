@@ -9,7 +9,7 @@ To work with the project locally and run it with a Jenkins server, follow these 
 > Enter https://localhost:8080/jenkins in your browser
 
 **Note:** Make sure that **port 8080** is free on your machine, and you have
-**_Pipeline_** plugin installed in you Jenkins server to configure the multibranch pipeline job.
+**_Pipeline_** plugin installed in your Jenkins server to configure the multibranch pipeline job.
 
 2. Building the project will generate the plugin `hpi` file:
 ```
