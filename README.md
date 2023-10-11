@@ -335,3 +335,6 @@ Supporting the following environment variables.
   ** If proxy configuration require authentication and agent need to run behind the proxy, user need to pass parameter with authentication data like  `-auth user_name:password` while connecting agent to controller.  
   For more details, you can visit the following link,  
   https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/
+
+## Developers Guide
+Please follow the steps described [**here**](DeveloperGuide.md)
