@@ -186,7 +186,7 @@ public class ScannerArgumentService {
         return "";
     }
 
-    private void setScmObject(BridgeInput bridgeInput, Object scmObject) {
+    public void setScmObject(BridgeInput bridgeInput, Object scmObject) {
         if (scmObject instanceof Bitbucket) {
             bridgeInput.setBitbucket((Bitbucket) scmObject);
         }
@@ -211,7 +211,7 @@ public class ScannerArgumentService {
         return inputJsonPath;
     }
 
-    private boolean isFixPrOrPrCommentValueSet(Map<String, Object> scanParameters) {
+    public boolean isFixPrOrPrCommentValueSet(Map<String, Object> scanParameters) {
         if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY) &&
                 Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY), true)) {
             return true;
