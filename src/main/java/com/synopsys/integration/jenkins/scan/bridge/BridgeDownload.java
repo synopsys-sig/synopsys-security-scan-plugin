@@ -94,7 +94,7 @@ public class BridgeDownload {
     }
 
 
-    private int getHttpStatusCode(String url) {
+    public int getHttpStatusCode(String url) {
         int statusCode = -1;
 
         try {
@@ -111,7 +111,7 @@ public class BridgeDownload {
         return statusCode;
     }
 
-    private boolean terminateRetry(int statusCode) {
+    public boolean terminateRetry(int statusCode) {
         return statusCode == HttpURLConnection.HTTP_UNAUTHORIZED ||
                 statusCode == HttpURLConnection.HTTP_FORBIDDEN ||
                 statusCode == HttpURLConnection.HTTP_OK ||

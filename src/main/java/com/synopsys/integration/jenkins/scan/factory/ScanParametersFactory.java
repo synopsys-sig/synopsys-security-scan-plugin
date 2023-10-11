@@ -97,7 +97,7 @@ public class ScanParametersFactory {
 
         return globalParameters;
     }
-    private static void addParameterIfNotBlank(Map<String, Object> parameters, String key, String value) {
+    public static void addParameterIfNotBlank(Map<String, Object> parameters, String key, String value) {
         if (!Utility.isStringNullOrBlank(value)) {
             parameters.put(key, value);
         }
