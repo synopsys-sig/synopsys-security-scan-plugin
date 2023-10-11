@@ -1,12 +1,10 @@
 package com.synopsys.integration.jenkins.scan.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.synopsys.integration.jenkins.scan.exception.PluginExceptionHandler;
 import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.BridgeParams;
 import com.synopsys.integration.jenkins.scan.global.Utility;
+import com.synopsys.integration.jenkins.scan.input.BridgeInput;
 import com.synopsys.integration.jenkins.scan.input.bitbucket.Bitbucket;
 import com.synopsys.integration.jenkins.scan.input.blackduck.BlackDuck;
 import com.synopsys.integration.jenkins.scan.input.coverity.Coverity;
@@ -19,12 +17,14 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ScannerArgumentServiceTest {
     private Bitbucket bitBucket;
@@ -64,7 +64,17 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    void writeInputJsonToFileTest() {
+    public void setScmObjectTest() {
+        BridgeInput bridgeInput = Mockito.mock(BridgeInput.class);
+        Bitbucket bitbucket = Mockito.mock(Bitbucket.class);
+
+        scannerArgumentService.setScmObject(bridgeInput, bitbucket);
+
+        Mockito.verify(bridgeInput).setBitbucket(bitbucket);
+    }
+
+    @Test
+    public void writeInputJsonToFileTest() {
         String jsonString = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"}}}";
 
         String jsonPath = scannerArgumentService.writeInputJsonToFile(jsonString, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
@@ -83,7 +93,7 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    void createCoverityInputJsonTest() {
+    public void createCoverityInputJsonTest() {
         Coverity coverity = new Coverity();
         coverity.getConnect().setUrl("https://fake.coverity.url");
         coverity.getConnect().getUser().setName("fake-user");
@@ -99,7 +109,7 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    void getCommandLineArgsForBlackDuckTest() throws PluginExceptionHandler {
+    public void getCommandLineArgsForBlackDuckTest() throws PluginExceptionHandler {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.PRODUCT_KEY, "blackduck");
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
@@ -127,7 +137,7 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    void getCommandLineArgsForCoverityTest() throws PluginExceptionHandler {
+    public void getCommandLineArgsForCoverityTest() throws PluginExceptionHandler {
         Map<String, Object> coverityParameters = new HashMap<>();
         coverityParameters.put(ApplicationConstants.PRODUCT_KEY, "coverity");
         coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, "https://fake.coverity.url");
@@ -152,6 +162,82 @@ public class ScannerArgumentServiceTest {
         assertEquals(commandLineArgs.get(5), BridgeParams.DIAGNOSTICS_OPTION);
 
         Utility.removeFile(commandLineArgs.get(4), workspace, listenerMock);
+    }
+
+    @Test
+    public void getCommandLineArgsForPolarisTest() throws PluginExceptionHandler {
+        Map<String, Object> polarisParameters = new HashMap<>();
+        polarisParameters.put(ApplicationConstants.PRODUCT_KEY, "polaris");
+        polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, "https://fake.polaris.url");
+        polarisParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, "fake-token");
+        polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, "Fake-application-name");
+        polarisParameters.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, "fake-project-name");
+
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(polarisParameters, workspace);
+
+        if(getOSNameForTest().contains("win")) {
+            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
+        } else {
+            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY).getRemote());
+        }
+        assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
+        assertEquals(commandLineArgs.get(2), BridgeParams.POLARIS_STAGE);
+        assertNotEquals(commandLineArgs.get(2), BridgeParams.COVERITY_STAGE);
+        assertNotEquals(commandLineArgs.get(2), BridgeParams.BLACKDUCK_STAGE);
+        assertEquals(commandLineArgs.get(3), BridgeParams.INPUT_OPTION);
+        assertTrue(Files.exists(Path.of(commandLineArgs.get(4))),
+                String.format("File %s does not exist at the specified path.", ApplicationConstants.COVERITY_INPUT_JSON_PREFIX.concat(".json")));
+
+        Utility.removeFile(commandLineArgs.get(4), workspace, listenerMock);
+    }
+
+    @Test
+    public void isFixPrOrPrCommentValueSetTest() {
+        Map<String, Object> scanParameters = new HashMap<>();
+
+        scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, true);
+        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+
+        scanParameters.clear();
+        scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, true);
+        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+
+        scanParameters.clear();
+        scanParameters.put(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY, true);
+        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+
+        scanParameters.clear();
+        scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, true);
+        scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, true);
+        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+
+        scanParameters.clear();
+        assertFalse(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+    }
+
+    @Test
+    public void removeTemporaryInputJsonTest() {
+        String[] fileNames = {"file1.json", "file2.json"};
+        List <String> inputJsonPath = new ArrayList<>();
+
+        for (String fileName : fileNames) {
+            Path filePath = Paths.get(getHomeDirectoryForTest(), fileName);
+            String jsonContent = "{\"key\": \"value\"}";
+
+            try {
+                Files.write(filePath, jsonContent.getBytes());
+                inputJsonPath.add(filePath.toString());
+            } catch (IOException e) {
+                System.err.println("Error creating file: " + filePath);
+            }
+        }
+
+        scannerArgumentService.removeTemporaryInputJson(inputJsonPath);
+
+        for (String path : inputJsonPath) {
+            assertFalse(Files.exists(Paths.get(path)));
+        }
+
     }
 
     public String getHomeDirectoryForTest() {

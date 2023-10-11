@@ -31,7 +31,7 @@ public class ScanParametersFactory {
     private final EnvVars envVars;
     private final FilePath workspace;
 
-    private ScanParametersFactory(EnvVars envVars, FilePath workspace) throws AbortException {
+    public ScanParametersFactory(EnvVars envVars, FilePath workspace) throws AbortException {
         this.envVars = envVars;
 
         if (workspace == null) {
@@ -48,8 +48,8 @@ public class ScanParametersFactory {
                         new ScannerArgumentService(listener, envVars, workspace)), workspace, envVars, listener);
     }
 
-    public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep, FilePath workspace, TaskListener listener) throws PluginExceptionHandler {
-        Map<String, Object> parametersMap = new HashMap<>(getGlobalConfigurationValues(workspace, listener));
+    public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep, Map<String, Object> parametersMap,
+                                                                   TaskListener listener) throws PluginExceptionHandler {
         String product = scanStep.getProduct();
 
         if(validateProduct(product, listener)) {
@@ -70,7 +70,7 @@ public class ScanParametersFactory {
         }
     }
 
-    private static Map<String, Object> getGlobalConfigurationValues(FilePath workspace, TaskListener listener) {
+    public static Map<String, Object> getGlobalConfigurationValues(FilePath workspace, TaskListener listener) {
         Map<String, Object> globalParameters = new HashMap<>();
         ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
 
@@ -97,12 +97,14 @@ public class ScanParametersFactory {
 
         return globalParameters;
     }
+
     public static void addParameterIfNotBlank(Map<String, Object> parameters, String key, String value) {
         if (!Utility.isStringNullOrBlank(value)) {
             parameters.put(key, value);
         }
     }
-    private static Map<String, Object> prepareBlackDuckParametersMap(SecurityScanStep scanStep) {
+
+    public static Map<String, Object> prepareBlackDuckParametersMap(SecurityScanStep scanStep) {
         Map<String, Object> blackDuckParameters = new HashMap<>();
 
         if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_url())) {
@@ -140,7 +142,7 @@ public class ScanParametersFactory {
         return blackDuckParameters;
     }
 
-    private static Map<String, Object> prepareCoverityParametersMap(SecurityScanStep scanStep) {
+    public static Map<String, Object> prepareCoverityParametersMap(SecurityScanStep scanStep) {
         Map<String, Object> coverityParameters = new HashMap<>();
 
         if (!Utility.isStringNullOrBlank(scanStep.getCoverity_url())) {
@@ -186,7 +188,7 @@ public class ScanParametersFactory {
         return coverityParameters;
     }
 
-    private static Map<String, Object> prepareBridgeParametersMap(SecurityScanStep scanStep) {
+    public static Map<String, Object> prepareBridgeParametersMap(SecurityScanStep scanStep) {
         Map<String, Object> bridgeParameters = new HashMap<>();
 
         if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_download_url())) {
@@ -212,7 +214,7 @@ public class ScanParametersFactory {
         return bridgeParameters;
     }
 
-    private static Map<String, Object> preparePolarisParametersMap(SecurityScanStep scanStep) {
+    public static Map<String, Object> preparePolarisParametersMap(SecurityScanStep scanStep) {
         Map<String, Object> polarisParametersMap = new HashMap<>();
 
         if (!Utility.isStringNullOrBlank(scanStep.getPolaris_server_url())) {
@@ -250,7 +252,7 @@ public class ScanParametersFactory {
         return polarisParametersMap;
     }
 
-    private static String getSynopsysBridgeDownloadUrlBasedOnAgentOS(FilePath workspace, TaskListener listener,
+    public static String getSynopsysBridgeDownloadUrlBasedOnAgentOS(FilePath workspace, TaskListener listener,
                                                                      String synopsysBridgeDownloadUrlForMac,
                                                                      String synopsysBridgeDownloadUrlForLinux,
                                                                      String synopsysBridgeDownloadUrlForWindows) {
@@ -264,7 +266,7 @@ public class ScanParametersFactory {
         }
     }
 
-    private static boolean validateProduct(String product, TaskListener listener) {
+    public static boolean validateProduct(String product, TaskListener listener) {
         LoggerWrapper logger = new LoggerWrapper(listener);
 
         boolean isValid = !Utility.isStringNullOrBlank(product) &&

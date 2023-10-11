@@ -100,11 +100,6 @@ public class SecurityScanStep extends Step implements Serializable {
         // this block is kept empty intentionally
     }
 
-    @DataBoundSetter
-    public void setProduct(String product) {
-        this.product = product;
-    }
-
     public String getProduct() {
         return product;
     }
@@ -227,6 +222,11 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public Boolean isNetwork_airgap() {
         return network_airgap;
+    }
+
+    @DataBoundSetter
+    public void setProduct(String product) {
+        this.product = product;
     }
 
     @DataBoundSetter
@@ -380,7 +380,8 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener) throws PluginExceptionHandler {
-        return ScanParametersFactory.preparePipelineParametersMap(this, workspace, listener);
+        return ScanParametersFactory.preparePipelineParametersMap(this,
+                ScanParametersFactory.getGlobalConfigurationValues(workspace, listener), listener);
     }
 
     @Override
