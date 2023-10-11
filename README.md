@@ -4,60 +4,6 @@ This repository contains a Jenkins plugin implemented as a Gradle project. The p
 
 # Quick Start for the Security Scan Plugin
 
-## Developers Guide
-
-To work with the project locally and run it with a Jenkins server, follow these steps:
-
-1. Run Jenkins server locally with the plugin being deployed:
-```
-./gradlew server
-```
-> Enter https://localhost:8080 in your browser
-
-**Note:** Make sure that **port 8080** is free on your machine, and you have 
-**_Bitbucket_** and **_Pipeline_** plugin installed in you Jenkins server to configure the multibranch pipeline job.
-
-2. Building the project will generate the plugin `hpi` file:
-```
-./gradlew clean build
-```
-
-The generated plugin `hpi` file can be found in the `build/libs` folder of your project directory.
-
-### Setting up dev-test environment in docker
-
-*  Make sure a `temp-jenkins` directory exists in your home directory.
-
-
-* Run the following command to export your plugin into `hpi` format:
-```
-./gradlew clean build
-```
-
-* Spin up the jenkins instance with the following command:
-
-```
-docker-compose up
-```
-or if you prefer detach mode
-```
-docker-compose up -d
-```
-
-3. Install the plugin `hpi` file in your Jenkins instance:
->- Go to your Jenkins instance.
->- Navigate to **Manage Jenkins** > **Manage Plugins** > **Advanced Settings**.
->- In the **Deploy Plugin** section, click **Choose File**.
->- Select the generated `hpi` file and click **Deploy**.
->- **Restart** your Jenkins instance.
-
-**Note:** `xcode-select` may need to be installed in **Mac** if any kind of error like - `git init` failed or developer path related error is faced while running job from jenkins instance.
-
-Command to install `xcode-select` in Mac:
-```
-xcode-select --install
-```
-
 ## Users Guide
 
 ### Bitbucket Prerequisites:
@@ -172,17 +118,13 @@ stage("Security Scan") {
             def blackDuckAutomationPrComment
 
             if (env.CHANGE_ID == null) {
-                // for any push event it will run blackduck full scan
-                blackDuckScanFull = true
                 blackDuckAutomationPrComment = false
             } else {
-                // for any PR event it will run blackduck rapid scan
-                blackDuckScanFull = false
                 blackDuckAutomationPrComment = true
             }
 
             synopsys_scan product: "blackduck", blackduck_url: "BLACKDUCK_URL", blackduck_token: "YOUR_BLACKDUCK_TOKEN", 
-                    blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
+                    blackduck_scan_full: true, blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
         }
     }
 }
@@ -193,10 +135,7 @@ Or if the values are configured in **Jenkins Global Configuration**, you can use
 ```groovy
 synopsys_scan product: "blackduck", blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
 ```
-**Note:** If user doesn't pass `blackduck_scan_full`  then there are three scenarios:
-- For main branch, the `detect.blackduck.scan.mode = INTELLIGENT`
-- For push events(any dev branch), the `detect.blackduck.scan.mode = INTELLIGENT`
-- For pull requests, the `detect.blackduck.scan.mode = RAPID`
+**Note:** If user doesn't pass `blackduck_scan_full`, by default BlackDuck INTELLIGENT scan will be run on push events and RAPID scan will be run on pull requests.
 
 Or a very basic template - 
 ```groovy
@@ -347,7 +286,7 @@ Or, if these values are set both from Jenkins Global Configuration and pipeline 
 | `bitbucket_token` | The token can be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. This is required if fixpr or prcomment is set true. <br> Example: `bitbucket_token: "${env.BITBUCKET_TOKEN}"` </br> | Optional             |
 
 ### Synopsys Bridge Parameters
-| Input Parameter                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Input Parameter                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 |-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `synopsys_bridge_install_directory` | Provide a path, where you want to configure or already configured Synopsys Bridge. <br> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge]. If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `synopsys_bridge_download_url`      | Provide URL to bridge zip file. If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path. <br> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
