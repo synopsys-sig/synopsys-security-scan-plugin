@@ -1,62 +1,8 @@
 # Synopsys Security Scan Plugin
 
-This repository contains a Jenkins plugin implemented as a Gradle project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for developers and users of the plugin. Please note that this Jenkins plugin currently supports only **Bitbucket as the source code management (SCM) system.**
+This repository contains a Jenkins plugin implemented as a Maven project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for the users of the plugin. Please note that this Jenkins plugin currently supports only **Bitbucket as the source code management (SCM) system.**
 
 # Quick Start for the Security Scan Plugin
-
-## Developers Guide
-
-To work with the project locally and run it with a Jenkins server, follow these steps:
-
-1. Run Jenkins server locally with the plugin being deployed:
-```
-./gradlew server
-```
-> Enter https://localhost:8080 in your browser
-
-**Note:** Make sure that **port 8080** is free on your machine, and you have 
-**_Bitbucket_** and **_Pipeline_** plugin installed in you Jenkins server to configure the multibranch pipeline job.
-
-2. Building the project will generate the plugin `hpi` file:
-```
-./gradlew clean build
-```
-
-The generated plugin `hpi` file can be found in the `build/libs` folder of your project directory.
-
-### Setting up dev-test environment in docker
-
-*  Make sure a `temp-jenkins` directory exists in your home directory.
-
-
-* Run the following command to export your plugin into `hpi` format:
-```
-./gradlew clean build
-```
-
-* Spin up the jenkins instance with the following command:
-
-```
-docker-compose up
-```
-or if you prefer detach mode
-```
-docker-compose up -d
-```
-
-3. Install the plugin `hpi` file in your Jenkins instance:
->- Go to your Jenkins instance.
->- Navigate to **Manage Jenkins** > **Manage Plugins** > **Advanced Settings**.
->- In the **Deploy Plugin** section, click **Choose File**.
->- Select the generated `hpi` file and click **Deploy**.
->- **Restart** your Jenkins instance.
-
-**Note:** `xcode-select` may need to be installed in **Mac** if any kind of error like - `git init` failed or developer path related error is faced while running job from jenkins instance.
-
-Command to install `xcode-select` in Mac:
-```
-xcode-select --install
-```
 
 ## Users Guide
 
@@ -69,10 +15,10 @@ To Generate this token, follow these instructions:
 >- Enter Token name
 >- Keep everything as default or you can change the Project/Repository Permissions as your need.
 >- Click the Create Button. Then a token will be generated. <br>
-** You need to store this token to configure the Branch Sources of your Jenkins job
+   ** You need to store this token to configure the Branch Sources of your Jenkins job
 
 #### Bitbucket token for PrComment/FixPr:
-bitbucket_token parameter is required as input when running Black Duck/Coverity PR Comment. 
+bitbucket_token parameter is required as input when running Black Duck/Coverity PR Comment.
 There are two different types of tokens in bitbucket which can be passed to bitbucket_token
 parameter.
 
@@ -91,22 +37,22 @@ This token is employed when working at the repository level. To Generate this to
 >- Enter Token name.
 >- Keep everything as default or you can change the Project/Repository Permissions as your need.
 >- Click the Create Button. Then a token will be generated. <br>
-** You need to store this token to run the Black Duck/Coverity PR Comment Feature.
+   ** You need to store this token to run the Black Duck/Coverity PR Comment Feature.
 
 ### Project Setup
 #### Installing Helper Plugins for Jenkins:
 - **Pipeline**
 
-To install plugins, first navigate to:  
->- Dashboard → Manage Jenkins → Plugins   
->- After that Go to the section "Available plugins".  
->- Then Search And Install the `Pipeline` plugin that we mentioned above.  
+To install plugins, first navigate to:
+>- Dashboard → Manage Jenkins → Plugins
+>- After that Go to the section "Available plugins".
+>- Then Search And Install the `Pipeline` plugin that we mentioned above.
 >- Once the installation is completed then restart the jenkins instance.
 
 #### Configure Bitbucket Server:
 Navigate to Dashboard → Manage Jenkins → System  
 Go to the Bitbucket Endpoints section. Click to the Add button.   
-Select the Bitbucket Server from the dropdown. Now follow these instructions.  
+Select the Bitbucket Server from the dropdown. Now follow these instructions.
 >- Enter the Name
 >- Enter valid Server URL
 >- Enter Server Version
@@ -122,7 +68,7 @@ To create the Multibranch Pipeline, follow these instructions,
 >- Enter an item name
 >- Select Multibranch Pipeline
 >- Click OK   
-Then you will be navigated to your Job's configuration page.
+   Then you will be navigated to your Job's configuration page.
 
 #### Configure The Job
 
@@ -141,7 +87,7 @@ So to trigger only the specific branch during the first time job configuration, 
 >- Next on the Branch names to build automatically field → Enter your branch name. Or, if you want to include multiple branches you can use regex.
 >- On the Suppression strategy dropdown, select For matching branches schedule all builds (nothing is suppressed).
 >- Finally, click Apply and Save.  
-**Note:** Later you may need to delete the `Suppress automatic SCM triggering` property to trigger scan on other branches by clicking `Scan Multibranch Pipeline Now` on the job.
+   **Note:** Later you may need to delete the `Suppress automatic SCM triggering` property to trigger scan on other branches by clicking `Scan Multibranch Pipeline Now` on the job.
 
 #### Configure Global UI :
 Navigate to Dashboard → Manage Jenkins → System  
@@ -160,7 +106,7 @@ And from there you can populate the inputs for configuration.
 
 ### Using Synopsys Security Scan for Black Duck
 
- To use the plugin and invoke it as a pipeline step, follow these instructions:
+To use the plugin and invoke it as a pipeline step, follow these instructions:
 
 1. Add the following code snippet to your `Jenkinsfile` in your project root directory that you want to scan:
 
@@ -172,17 +118,13 @@ stage("Security Scan") {
             def blackDuckAutomationPrComment
 
             if (env.CHANGE_ID == null) {
-                // for any push event it will run blackduck full scan
-                blackDuckScanFull = true
                 blackDuckAutomationPrComment = false
             } else {
-                // for any PR event it will run blackduck rapid scan
-                blackDuckScanFull = false
                 blackDuckAutomationPrComment = true
             }
 
             synopsys_scan product: "blackduck", blackduck_url: "BLACKDUCK_URL", blackduck_token: "YOUR_BLACKDUCK_TOKEN", 
-                    blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
+                    blackduck_scan_full: true, blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
         }
     }
 }
@@ -193,12 +135,9 @@ Or if the values are configured in **Jenkins Global Configuration**, you can use
 ```groovy
 synopsys_scan product: "blackduck", blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
 ```
-**Note:** If user doesn't pass `blackduck_scan_full`  then there are three scenarios:
-- For main branch, the `detect.blackduck.scan.mode = INTELLIGENT`
-- For push events(any dev branch), the `detect.blackduck.scan.mode = INTELLIGENT`
-- For pull requests, the `detect.blackduck.scan.mode = RAPID`
+**Note:** If user doesn't pass `blackduck_scan_full`, by default BlackDuck INTELLIGENT scan will be run on push events and RAPID scan will be run on pull requests.
 
-Or a very basic template - 
+Or a very basic template -
 ```groovy
 synopsys_scan product: "blackduck"
 ```
@@ -347,7 +286,7 @@ Or, if these values are set both from Jenkins Global Configuration and pipeline 
 | `bitbucket_token` | The token can be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. This is required if fixpr or prcomment is set true. <br> Example: `bitbucket_token: "${env.BITBUCKET_TOKEN}"` </br> | Optional             |
 
 ### Synopsys Bridge Parameters
-| Input Parameter                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Input Parameter                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 |-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `synopsys_bridge_install_directory` | Provide a path, where you want to configure or already configured Synopsys Bridge. <br> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge]. If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `synopsys_bridge_download_url`      | Provide URL to bridge zip file. If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path. <br> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
@@ -369,30 +308,30 @@ If you are unable to download the Synopsys Bridge from our internet-hosted repos
 
 ## Proxy Support
 
-Proxy configuration in Jenkins pipelines can be done in several ways. Here are two common ways to declare proxy settings in Jenkins:  
+Proxy configuration in Jenkins pipelines can be done in several ways. Here are two common ways to declare proxy settings in Jenkins:
 
 1. Utilizing the 'environment' block in Jenkinsfile.   
-    Configuring proxy settings using the environment block within a Jenkins Pipeline.  
-    `environment { HTTP_PROXY = 'http://proxyIP:proxyPort' }`
+   Configuring proxy settings using the environment block within a Jenkins Pipeline.  
+   `environment { HTTP_PROXY = 'http://proxyIP:proxyPort' }`
 
 2. Employing the 'export' keyword.      
    Configuring proxy settings using environment variables.   
    `export HTTP_PROXY=http://proxyIP:proxyPort`
 
-Supporting the following environment variables.  
+Supporting the following environment variables.
 1. HTTP_PROXY:  
-_Format_: http://user:password@proxyIP:proxyPort/
+   _Format_: http://user:password@proxyIP:proxyPort/
 2. HTTPS_PROXY:  
-   _Format_: https://user:password@proxyIP:proxyPort/    
+   _Format_: https://user:password@proxyIP:proxyPort/
 3. NO_PROXY:     
    _Format_: Comma separated list of urls/addresses for which proxy is not used  
    Example:no_proxy="cern.ch,some.domain:8001,192.168.1.57"
 
 **Note:**
 - Proxy with auth: Users need to pass username and password for authentication.  
-   Example: http://user:password@proxyIP:proxyPort/
+  Example: http://user:password@proxyIP:proxyPort/
 - Proxy with no auth: Users do not need to pass anything for authentication.   
   Example: http://proxyIP:proxyPort/  
   ** If proxy configuration require authentication and agent need to run behind the proxy, user need to pass parameter with authentication data like  `-auth user_name:password` while connecting agent to controller.  
-For more details, you can visit the following link,  
-https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/
+  For more details, you can visit the following link,  
+  https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/
