@@ -49,7 +49,7 @@ public class ScanParametersFactory {
     }
 
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep, Map<String, Object> parametersMap,
-                                                                   FilePath workspace, TaskListener listener) throws PluginExceptionHandler {
+                                                                   TaskListener listener) throws PluginExceptionHandler {
         String product = scanStep.getProduct();
 
         if(validateProduct(product, listener)) {

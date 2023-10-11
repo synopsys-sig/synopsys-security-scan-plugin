@@ -43,7 +43,7 @@ public class ScanParametersFactoryTest {
         globalConfigValues.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/fake/path");
 
         Map<String, Object> result = scanParametersFactory.preparePipelineParametersMap(securityScanStep,
-                globalConfigValues, workspace, listenerMock);
+                globalConfigValues, listenerMock);
 
         assertEquals(5, result.size());
         assertEquals("BLACKDUCK", result.get(ApplicationConstants.PRODUCT_KEY));
@@ -54,7 +54,7 @@ public class ScanParametersFactoryTest {
         securityScanStep.setProduct("invalid-product");
 
         assertThrows(PluginExceptionHandler.class, () -> scanParametersFactory.preparePipelineParametersMap(securityScanStep,
-                globalConfigValues, workspace, listenerMock));
+                globalConfigValues, listenerMock));
     }
 
     @Test
