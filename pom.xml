@@ -89,12 +89,6 @@
       <artifactId>workflow-job</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--<dependency>
-    <groupId>org.jenkins-ci.main</groupId>
-    <artifactId>jenkins-test-harness</artifactId>
-    <version>1812.v6d4e97d91fd8</version>
-    <scope>test</scope>
-    </dependency>-->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -114,8 +108,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-
 
   <repositories>
     <repository>
