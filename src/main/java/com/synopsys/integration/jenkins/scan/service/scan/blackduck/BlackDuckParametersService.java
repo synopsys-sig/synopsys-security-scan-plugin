@@ -67,38 +67,22 @@ public class BlackDuckParametersService {
                     blackDuck.setToken(value);
                     break;
                 case ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY:
-                    blackDuck.getInstall().setDirectory(value);
+                    setInstallDirectory(blackDuck, value);
                     break;
                 case ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY:
-                    if (value.equals("true") || value.equals("false")) {
-                        blackDuck.getScan().setFull(Boolean.parseBoolean(value));
-                    }
+                    setScanFull(blackDuck, value);
                     break;
                 case ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY:
-                    if (!value.isEmpty()) {
-                        List<String> failureSeverities = new ArrayList<>();
-                        String[] failureSeveritiesInput = value.toUpperCase().split(",");
-
-                        for (String input : failureSeveritiesInput) {
-                            failureSeverities.add(input.trim());
-                        }
-                        blackDuck.getScan().getFailure().setSeverities(failureSeverities);
-                    }
+                    setScanFailureSeverities(blackDuck, value);
                     break;
                 case ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY:
-                    if (value.equals("true") || value.equals("false")) {
-                        blackDuck.getAutomation().setFixpr(Boolean.parseBoolean(value));
-                    }
+                    setAutomationFixpr(blackDuck, value);
                     break;
                 case ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY:
-                    if (value.equals("true") || value.equals("false")) {
-                        blackDuck.getAutomation().setPrComment(Boolean.parseBoolean(value));
-                    }
+                    setAutomationPrComment(blackDuck, value);
                     break;
                 case ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY:
-                    Download download = new Download();
-                    download.setUrl(value);
-                    blackDuck.setDownload(download);
+                    setDownloadUrl(blackDuck, value);
                     break;
                 default:
                     break;
@@ -106,6 +90,50 @@ public class BlackDuckParametersService {
         }
 
         return blackDuck;
+    }
+
+    private void setInstallDirectory(BlackDuck blackDuck, String value) {
+        blackDuck.getInstall().setDirectory(value);
+    }
+
+    private void setScanFull(BlackDuck blackDuck, String value) {
+        if (isBoolean(value)) {
+            blackDuck.getScan().setFull(Boolean.parseBoolean(value));
+        }
+    }
+
+    private void setScanFailureSeverities(BlackDuck blackDuck, String value) {
+        if (!value.isEmpty()) {
+            List<String> failureSeverities = new ArrayList<>();
+            String[] failureSeveritiesInput = value.toUpperCase().split(",");
+
+            for (String input : failureSeveritiesInput) {
+                failureSeverities.add(input.trim());
+            }
+            blackDuck.getScan().getFailure().setSeverities(failureSeverities);
+        }
+    }
+
+    private void setAutomationFixpr(BlackDuck blackDuck, String value) {
+        if (isBoolean(value)) {
+            blackDuck.getAutomation().setFixpr(Boolean.parseBoolean(value));
+        }
+    }
+
+    private void setAutomationPrComment(BlackDuck blackDuck, String value) {
+        if (isBoolean(value)) {
+            blackDuck.getAutomation().setPrComment(Boolean.parseBoolean(value));
+        }
+    }
+
+    private void setDownloadUrl(BlackDuck blackDuck, String value) {
+        Download download = new Download();
+        download.setUrl(value);
+        blackDuck.setDownload(download);
+    }
+
+    private boolean isBoolean(String value) {
+        return value.equals("true") || value.equals("false");
     }
 
 }
