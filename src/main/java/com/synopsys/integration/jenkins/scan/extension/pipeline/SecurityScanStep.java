@@ -18,12 +18,12 @@ import hudson.*;
 import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.util.ListBoxModel;
+import hudson.util.ListBoxModel.Option;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import javax.annotation.Nonnull;
-import hudson.util.ListBoxModel;
-import hudson.util.ListBoxModel.Option;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -35,11 +35,10 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class SecurityScanStep extends Step implements Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
-    
     private String product;
 
     private String blackduck_url;
-    private String blackduck_token;
+    private transient String blackduck_token;
     private String blackduck_install_directory;
     private Boolean blackduck_scan_full;
     private String blackduck_scan_failure_severities;
@@ -49,7 +48,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
     private String coverity_url;
     private String coverity_user;
-    private String coverity_passphrase;
+    private transient String coverity_passphrase;
     private String coverity_project_name;
     private String coverity_stream_name;
     private String coverity_policy_view;
@@ -59,7 +58,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private Boolean coverity_local;
 
     private String polaris_server_url;
-    private String polaris_access_token;
+    private transient String polaris_access_token;
     private String polaris_application_name;
     private String polaris_project_name;
     private String polaris_assessment_types;
@@ -67,21 +66,18 @@ public class SecurityScanStep extends Step implements Serializable {
     private String polaris_branch_name;
 //    private String polaris_branch_parent_name;
 
+
+    private transient String bitbucket_token;
+
     private String synopsys_bridge_download_url;
     private String synopsys_bridge_download_version;
     private String synopsys_bridge_install_directory;
-
-    private String bitbucket_token;
     private Boolean include_diagnostics;
     private Boolean network_airgap;
 
     @DataBoundConstructor
     public SecurityScanStep() {
-    }
-
-    @DataBoundSetter
-    public void setProduct(String product) {
-        this.product = product;
+        // this block is kept empty intentionally
     }
 
     public String getProduct() {
@@ -206,6 +202,11 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public Boolean isNetwork_airgap() {
         return network_airgap;
+    }
+
+    @DataBoundSetter
+    public void setProduct(String product) {
+        this.product = product;
     }
 
     @DataBoundSetter
@@ -360,7 +361,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener) throws PluginExceptionHandler {
         return ScanParametersFactory.preparePipelineParametersMap(this,
-                ScanParametersFactory.getGlobalConfigurationValues(workspace, listener), workspace, listener);
+                ScanParametersFactory.getGlobalConfigurationValues(workspace, listener), listener);
     }
 
     @Override
@@ -386,6 +387,7 @@ public class SecurityScanStep extends Step implements Serializable {
             return ApplicationConstants.DISPLAY_NAME;
         }
 
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public ListBoxModel doFillProductItems() {
             ListBoxModel items = new ListBoxModel();
             Map<String, String> customLabels = new HashMap<>();

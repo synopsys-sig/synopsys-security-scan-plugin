@@ -19,12 +19,10 @@ import java.io.IOException;
 
 public class BridgeInstall {
     private final LoggerWrapper logger;
-    private final TaskListener listener;
     private final FilePath workspace;
 
     public BridgeInstall(FilePath workspace, TaskListener listener) {
         this.workspace = workspace;
-        this.listener = listener;
         this.logger = new LoggerWrapper(listener);
     }
 

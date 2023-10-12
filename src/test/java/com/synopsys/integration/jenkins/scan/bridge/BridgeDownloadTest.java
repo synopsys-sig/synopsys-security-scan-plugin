@@ -30,7 +30,7 @@ public class BridgeDownloadTest {
     }
 
     @Test
-    public void downloadSynopsysBridgeTest() throws PluginExceptionHandler {
+    public void downloadSynopsysBridgeTest() throws Exception {
         BridgeDownload bridgeDownload = new BridgeDownload(workspace, listenerMock, envVarsMock);
 
         String validBridgeDownloadUrl = String.join("/",

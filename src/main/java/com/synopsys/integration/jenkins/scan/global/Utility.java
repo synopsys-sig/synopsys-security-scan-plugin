@@ -94,26 +94,23 @@ public class Utility {
             logger.info("Found NO_PROXY configuration - " + noProxy);
             String[] noProxies = noProxy.split(",");
 
-            if (noProxies.length > 0) {
-                for (String noProxyHost : noProxies) {
-                    boolean hostFoundInNoProxy = false;
-                    if (noProxyHost.startsWith("*") && noProxyHost.length() == 1) {
-                        hostFoundInNoProxy = true;
-                    } else if (noProxyHost.startsWith("*") && noProxyHost.length() > 2) {
-                        noProxyHost = noProxyHost.substring(2);
-                    }
-
-                    if (!hostFoundInNoProxy && url.toString().contains(noProxyHost)) {
-                        hostFoundInNoProxy = true;
-                    }
-
-                    if (hostFoundInNoProxy) {
+            for (String noProxyHost : noProxies) {
+                if (noProxyHost.startsWith("*") && noProxyHost.length() == 1) {
+                    return ApplicationConstants.NO_PROXY;
+                } else if (noProxyHost.startsWith("*") && noProxyHost.length() > 2) {
+                    noProxyHost = noProxyHost.substring(2);
+                    if(url.toString().contains(noProxyHost)){
                         return ApplicationConstants.NO_PROXY;
                     }
                 }
             }
+
         }
 
+        return getProxyValue(envVars, logger);
+    }
+
+    public static String getProxyValue(EnvVars envVars, LoggerWrapper logger) throws MalformedURLException {
         String httpsProxy = getEnvOrSystemProxyDetails(ApplicationConstants.HTTPS_PROXY, envVars);
         if (!isStringNullOrBlank(httpsProxy)) {
             logger.info("Found HTTPS_PROXY configuration - " + getMaskedProxyUrl(httpsProxy));
@@ -126,7 +123,7 @@ public class Utility {
             return httpProxy;
         }
 
-        return ApplicationConstants.NO_PROXY;
+        return  ApplicationConstants.NO_PROXY;
     }
 
     public static String getEnvOrSystemProxyDetails(String proxyType, EnvVars envVars) {

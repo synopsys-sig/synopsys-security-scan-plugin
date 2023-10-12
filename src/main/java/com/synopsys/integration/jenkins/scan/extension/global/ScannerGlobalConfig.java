@@ -16,12 +16,16 @@ import org.kohsuke.stapler.DataBoundSetter;
 @Extension
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
-    
+
     private String blackDuckUrl;
+
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String blackDuckApiToken;
     private String blackDuckInstallationPath;
     private String coverityConnectUrl;
     private String coverityConnectUserName;
+
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String coverityConnectUserPassword;
     private String coverityInstallationPath;
     private String synopsysBridgeDownloadUrlForMac;
@@ -29,8 +33,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String synopsysBridgeDownloadUrlForLinux;
     private String synopsysBridgeVersion;
     private String synopsysBridgeInstallationPath;
+
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String bitbucketToken;
     private String polarisServerUrl;
+
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String polarisAccessToken;
 
     @DataBoundConstructor

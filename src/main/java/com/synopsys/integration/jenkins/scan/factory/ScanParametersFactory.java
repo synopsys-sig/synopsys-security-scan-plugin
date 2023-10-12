@@ -49,7 +49,7 @@ public class ScanParametersFactory {
     }
 
     public static Map<String, Object> preparePipelineParametersMap(SecurityScanStep scanStep, Map<String, Object> parametersMap,
-                                                                   FilePath workspace, TaskListener listener) throws PluginExceptionHandler {
+                                                                   TaskListener listener) throws PluginExceptionHandler {
         String product = scanStep.getProduct();
 
         if(validateProduct(product, listener)) {
@@ -80,60 +80,28 @@ public class ScanParametersFactory {
                     config.getSynopsysBridgeDownloadUrlForMac(), config.getSynopsysBridgeDownloadUrlForLinux(),
                     config.getSynopsysBridgeDownloadUrlForWindows());
 
-            if (!Utility.isStringNullOrBlank(config.getBlackDuckUrl())) {
-                globalParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl());
-            }
-
-            if (!Utility.isStringNullOrBlank(config.getBlackDuckApiToken())) {
-                globalParameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, config.getBlackDuckApiToken());
-            }
-
-            if (!Utility.isStringNullOrBlank(config.getBlackDuckInstallationPath())) {
-                globalParameters.put(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, config.getBlackDuckInstallationPath());
-            }
-
-            if (!Utility.isStringNullOrBlank(config.getCoverityConnectUrl())) {
-                globalParameters.put(ApplicationConstants.COVERITY_URL_KEY, config.getCoverityConnectUrl());
-            }
-
-            if (!Utility.isStringNullOrBlank(config.getCoverityConnectUserName())) {
-                globalParameters.put(ApplicationConstants.COVERITY_USER_KEY, config.getCoverityConnectUserName());
-            }
-
-            if (!Utility.isStringNullOrBlank(config.getCoverityConnectUserPassword())) {
-                globalParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, config.getCoverityConnectUserPassword());
-            }
-
-            if (!Utility.isStringNullOrBlank(config.getCoverityInstallationPath())) {
-                globalParameters.put(ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY, config.getCoverityInstallationPath());
-            }
-
-            if (!Utility.isStringNullOrBlank(config.getBitbucketToken())) {
-                globalParameters.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, config.getBitbucketToken());
-            }
-
-            if(!Utility.isStringNullOrBlank(synopsysBridgeDownloadUrl)) {
-                globalParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, synopsysBridgeDownloadUrl);
-            }
-
-            if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeInstallationPath())) {
-                globalParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, config.getSynopsysBridgeInstallationPath());
-            }
-
-            if (!Utility.isStringNullOrBlank(config.getSynopsysBridgeVersion())) {
-                globalParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION, config.getSynopsysBridgeVersion());
-            }
-
-            if (!Utility.isStringNullOrBlank(config.getPolarisServerUrl())) {
-                globalParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, config.getPolarisServerUrl());
-            }
-
-            if (!Utility.isStringNullOrBlank(config.getPolarisAccessToken())) {
-                globalParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, config.getPolarisAccessToken());
-            }
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.BLACKDUCK_TOKEN_KEY, config.getBlackDuckApiToken());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, config.getBlackDuckInstallationPath());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.COVERITY_URL_KEY, config.getCoverityConnectUrl());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.COVERITY_USER_KEY, config.getCoverityConnectUserName());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.COVERITY_PASSPHRASE_KEY, config.getCoverityConnectUserPassword());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY, config.getCoverityInstallationPath());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.BITBUCKET_TOKEN_KEY, config.getBitbucketToken());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, synopsysBridgeDownloadUrl);
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, config.getSynopsysBridgeInstallationPath());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION, config.getSynopsysBridgeVersion());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.POLARIS_SERVER_URL_KEY, config.getPolarisServerUrl());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, config.getPolarisAccessToken());
         }
 
         return globalParameters;
+    }
+
+    public static void addParameterIfNotBlank(Map<String, Object> parameters, String key, String value) {
+        if (!Utility.isStringNullOrBlank(value)) {
+            parameters.put(key, value);
+        }
     }
 
     public static Map<String, Object> prepareBlackDuckParametersMap(SecurityScanStep scanStep) {

@@ -15,10 +15,10 @@ To Generate this token, follow these instructions:
 >- Enter Token name
 >- Keep everything as default or you can change the Project/Repository Permissions as your need.
 >- Click the Create Button. Then a token will be generated. <br>
-   ** You need to store this token to configure the Branch Sources of your Jenkins job
+** You need to store this token to configure the Branch Sources of your Jenkins job
 
 #### Bitbucket token for PrComment/FixPr:
-bitbucket_token parameter is required as input when running Black Duck/Coverity PR Comment.
+bitbucket_token parameter is required as input when running Black Duck/Coverity PR Comment. 
 There are two different types of tokens in bitbucket which can be passed to bitbucket_token
 parameter.
 
@@ -37,22 +37,22 @@ This token is employed when working at the repository level. To Generate this to
 >- Enter Token name.
 >- Keep everything as default or you can change the Project/Repository Permissions as your need.
 >- Click the Create Button. Then a token will be generated. <br>
-   ** You need to store this token to run the Black Duck/Coverity PR Comment Feature.
+** You need to store this token to run the Black Duck/Coverity PR Comment Feature.
 
 ### Project Setup
 #### Installing Helper Plugins for Jenkins:
 - **Pipeline**
 
-To install plugins, first navigate to:
->- Dashboard → Manage Jenkins → Plugins
->- After that Go to the section "Available plugins".
->- Then Search And Install the `Pipeline` plugin that we mentioned above.
+To install plugins, first navigate to:  
+>- Dashboard → Manage Jenkins → Plugins   
+>- After that Go to the section "Available plugins".  
+>- Then Search And Install the `Pipeline` plugin that we mentioned above.  
 >- Once the installation is completed then restart the jenkins instance.
 
 #### Configure Bitbucket Server:
 Navigate to Dashboard → Manage Jenkins → System  
 Go to the Bitbucket Endpoints section. Click to the Add button.   
-Select the Bitbucket Server from the dropdown. Now follow these instructions.
+Select the Bitbucket Server from the dropdown. Now follow these instructions.  
 >- Enter the Name
 >- Enter valid Server URL
 >- Enter Server Version
@@ -68,7 +68,7 @@ To create the Multibranch Pipeline, follow these instructions,
 >- Enter an item name
 >- Select Multibranch Pipeline
 >- Click OK   
-   Then you will be navigated to your Job's configuration page.
+Then you will be navigated to your Job's configuration page.
 
 #### Configure The Job
 
@@ -87,7 +87,7 @@ So to trigger only the specific branch during the first time job configuration, 
 >- Next on the Branch names to build automatically field → Enter your branch name. Or, if you want to include multiple branches you can use regex.
 >- On the Suppression strategy dropdown, select For matching branches schedule all builds (nothing is suppressed).
 >- Finally, click Apply and Save.  
-   **Note:** Later you may need to delete the `Suppress automatic SCM triggering` property to trigger scan on other branches by clicking `Scan Multibranch Pipeline Now` on the job.
+**Note:** Later you may need to delete the `Suppress automatic SCM triggering` property to trigger scan on other branches by clicking `Scan Multibranch Pipeline Now` on the job.
 
 #### Configure Global UI :
 Navigate to Dashboard → Manage Jenkins → System  
@@ -106,7 +106,7 @@ And from there you can populate the inputs for configuration.
 
 ### Using Synopsys Security Scan for Black Duck
 
-To use the plugin and invoke it as a pipeline step, follow these instructions:
+ To use the plugin and invoke it as a pipeline step, follow these instructions:
 
 1. Add the following code snippet to your `Jenkinsfile` in your project root directory that you want to scan:
 
@@ -137,7 +137,7 @@ synopsys_scan product: "blackduck", blackduck_scan_full: "${blackDuckScanFull}",
 ```
 **Note:** If user doesn't pass `blackduck_scan_full`, by default BlackDuck INTELLIGENT scan will be run on push events and RAPID scan will be run on pull requests.
 
-Or a very basic template -
+Or a very basic template - 
 ```groovy
 synopsys_scan product: "blackduck"
 ```
@@ -308,28 +308,28 @@ If you are unable to download the Synopsys Bridge from our internet-hosted repos
 
 ## Proxy Support
 
-Proxy configuration in Jenkins pipelines can be done in several ways. Here are two common ways to declare proxy settings in Jenkins:
+Proxy configuration in Jenkins pipelines can be done in several ways. Here are two common ways to declare proxy settings in Jenkins:  
 
 1. Utilizing the 'environment' block in Jenkinsfile.   
-   Configuring proxy settings using the environment block within a Jenkins Pipeline.  
-   `environment { HTTP_PROXY = 'http://proxyIP:proxyPort' }`
+    Configuring proxy settings using the environment block within a Jenkins Pipeline.  
+    `environment { HTTP_PROXY = 'http://proxyIP:proxyPort' }`
 
 2. Employing the 'export' keyword.      
    Configuring proxy settings using environment variables.   
    `export HTTP_PROXY=http://proxyIP:proxyPort`
 
-Supporting the following environment variables.
+Supporting the following environment variables.  
 1. HTTP_PROXY:  
-   _Format_: http://user:password@proxyIP:proxyPort/
+_Format_: http://user:password@proxyIP:proxyPort/
 2. HTTPS_PROXY:  
-   _Format_: https://user:password@proxyIP:proxyPort/
+   _Format_: https://user:password@proxyIP:proxyPort/    
 3. NO_PROXY:     
    _Format_: Comma separated list of urls/addresses for which proxy is not used  
    Example:no_proxy="cern.ch,some.domain:8001,192.168.1.57"
 
 **Note:**
 - Proxy with auth: Users need to pass username and password for authentication.  
-  Example: http://user:password@proxyIP:proxyPort/
+   Example: http://user:password@proxyIP:proxyPort/
 - Proxy with no auth: Users do not need to pass anything for authentication.   
   Example: http://proxyIP:proxyPort/  
   ** If proxy configuration require authentication and agent need to run behind the proxy, user need to pass parameter with authentication data like  `-auth user_name:password` while connecting agent to controller.  

@@ -34,7 +34,6 @@ public class ScanParametersFactoryTest {
     @Test
     public void preparePipelineParametersMapTest() throws AbortException, PluginExceptionHandler {
         Map<String, Object> globalConfigValues = new HashMap<>();
-        ScanParametersFactory scanParametersFactory = new ScanParametersFactory(envVarsMock, workspace);
 
         securityScanStep.setProduct("BLACKDUCK");
         securityScanStep.setBitbucket_token("FAKETOKEN");
@@ -42,8 +41,8 @@ public class ScanParametersFactoryTest {
         globalConfigValues.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "fake-blackduck-token");
         globalConfigValues.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/fake/path");
 
-        Map<String, Object> result = scanParametersFactory.preparePipelineParametersMap(securityScanStep,
-                globalConfigValues, workspace, listenerMock);
+        Map<String, Object> result = ScanParametersFactory.preparePipelineParametersMap(securityScanStep,
+                globalConfigValues, listenerMock);
 
         assertEquals(5, result.size());
         assertEquals("BLACKDUCK", result.get(ApplicationConstants.PRODUCT_KEY));
@@ -53,8 +52,8 @@ public class ScanParametersFactoryTest {
 
         securityScanStep.setProduct("invalid-product");
 
-        assertThrows(PluginExceptionHandler.class, () -> scanParametersFactory.preparePipelineParametersMap(securityScanStep,
-                globalConfigValues, workspace, listenerMock));
+        assertThrows(PluginExceptionHandler.class, () -> ScanParametersFactory.preparePipelineParametersMap(securityScanStep,
+                globalConfigValues, listenerMock));
     }
 
     @Test
@@ -151,7 +150,6 @@ public class ScanParametersFactoryTest {
         assertEquals(7, polarisParametersMap.size());
         assertEquals("https://fake.polaris-server.url", polarisParametersMap.get(ApplicationConstants.POLARIS_SERVER_URL_KEY));
         assertEquals("fake-access-token", polarisParametersMap.get(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY));
-        assertEquals("https://fake.polaris-server.url", polarisParametersMap.get(ApplicationConstants.POLARIS_SERVER_URL_KEY));
         assertEquals("test", polarisParametersMap.get(ApplicationConstants.POLARIS_BRANCH_NAME_KEY));
         assertEquals("REQUIRED", polarisParametersMap.get(ApplicationConstants.POLARIS_TRIAGE_KEY));
     }
