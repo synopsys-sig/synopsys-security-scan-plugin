@@ -1,6 +1,6 @@
 # Synopsys Security Scan Plugin
 
-This repository contains a Jenkins plugin implemented as a Gradle project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for developers and users of the plugin. Please note that this Jenkins plugin currently supports only **Bitbucket as the source code management (SCM) system.**
+This repository contains a Jenkins plugin implemented as a Maven project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for the users of the plugin. Please note that this Jenkins plugin currently supports only **Bitbucket as the source code management (SCM) system.**
 
 # Quick Start for the Security Scan Plugin
 
@@ -333,5 +333,8 @@ _Format_: http://user:password@proxyIP:proxyPort/
 - Proxy with no auth: Users do not need to pass anything for authentication.   
   Example: http://proxyIP:proxyPort/  
   ** If proxy configuration require authentication and agent need to run behind the proxy, user need to pass parameter with authentication data like  `-auth user_name:password` while connecting agent to controller.  
-For more details, you can visit the following link,  
-https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/
+  For more details, you can visit the following link,  
+  https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/
+
+## Developers Guide
+Please follow the steps described [**here**](DeveloperGuide.md)

@@ -30,7 +30,6 @@ public class BridgeDownloadTest {
     }
 
     @Test
-
     public void downloadSynopsysBridgeTest() throws Exception {
         BridgeDownload bridgeDownload = new BridgeDownload(workspace, listenerMock, envVarsMock);
 

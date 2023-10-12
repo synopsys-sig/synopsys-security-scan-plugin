@@ -20,7 +20,6 @@ import com.synopsys.integration.jenkins.scan.service.scan.ScanParametersService;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
-
 import java.util.Map;
 import java.util.Set;
 
