@@ -97,6 +97,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundConstructor
     public SecurityScanStep() {
+        // this block is kept empty intentionally
     }
 
     public String getProduct() {
