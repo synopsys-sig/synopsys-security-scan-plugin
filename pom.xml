@@ -8,11 +8,11 @@
     <relativePath />
   </parent>
   <groupId>io.jenkins.plugins</groupId>
-  <artifactId>synopsys-security-scan-plugin</artifactId>
+  <artifactId>synopsys-security-scan</artifactId>
   <version>${revision}${changelist}</version>
   <packaging>hpi</packaging>
   <name>Synopsys Security Scan Plugin</name>
-  <url>https://github.com/jenkinsci/${project.artifactId}</url>
+  <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
   <licenses>
    <license>
       <name>Apache License</name>
@@ -26,7 +26,7 @@
     <url>https://github.com/${gitHubRepo}</url>
   </scm>
   <properties>
-    <revision>1.0</revision>
+    <revision>1.0.0</revision>
     <changelist>-SNAPSHOT</changelist>
     <java.version>11</java.version>
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
