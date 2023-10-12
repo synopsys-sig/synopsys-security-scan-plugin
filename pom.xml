@@ -118,7 +118,7 @@
       <distributionManagement>
         <snapshotRepository>
           <id>bds-artifactory</id>
-          <url>https://artifactory.internal.synopsys.com/artifactory/bds-integrations-snapshot</url>
+          <url>${snapshotArtifactoryUrl}</url>
         </snapshotRepository>
       </distributionManagement>
     </profile>
@@ -130,7 +130,7 @@
       <distributionManagement>
         <repository>
           <id>bds-artifactory</id>
-          <url>https://artifactory.internal.synopsys.com/artifactory/bds-integrations-release</url>
+          <url>${releaseArtifactoryUrl}</url>
         </repository>
       </distributionManagement>
     </profile>
@@ -142,11 +142,11 @@
       <distributionManagement>
         <repository>
           <id>bds-artifactory</id>
-          <url>https://artifactory.internal.synopsys.com/artifactory/bds-integrations-test</url>
+          <url>${qaArtifactoryUrl}</url>
         </repository>
         <snapshotRepository>
           <id>bds-artifactory</id>
-          <url>https://artifactory.internal.synopsys.com/artifactory/bds-integrations-snapshot</url>
+          <url>${snapshotArtifactoryUrl}</url>
         </snapshotRepository>
       </distributionManagement>
     </profile>
@@ -159,7 +159,7 @@
     </repository>
     <repository>
       <id>bds-artifactory</id>
-      <url>https://sig-repo.synopsys.com/bds-integrations-release</url>
+      <url>${repoReleaseArtifactoryUrl}</url>
     </repository>
   </repositories>
   <pluginRepositories>
