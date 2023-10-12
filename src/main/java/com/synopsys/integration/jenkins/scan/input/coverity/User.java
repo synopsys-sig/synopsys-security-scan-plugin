@@ -12,6 +12,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class User {
     @JsonProperty("name")
     private String name;
+
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     @JsonProperty("password")
     private String password;
 

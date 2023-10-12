@@ -12,6 +12,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Project {
     @JsonProperty("repository")
     private Repository repository;
+
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     @JsonProperty("key")
     private String key;
 

@@ -10,6 +10,7 @@ package com.synopsys.integration.jenkins.scan.input.polaris;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Polaris {
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     @JsonProperty("accesstoken")
     private String accessToken;
 

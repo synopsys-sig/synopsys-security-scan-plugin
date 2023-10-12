@@ -12,14 +12,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class BlackDuck {
     @JsonProperty("url")
     private String url;
+
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     @JsonProperty("token")
     private String token;
+
     @JsonProperty("install")
     private Install install;
+
     @JsonProperty("scan")
     private Scan scan;
+
     @JsonProperty("automation")
     private Automation automation;
+
     @JsonProperty("download")
     private Download download;
 

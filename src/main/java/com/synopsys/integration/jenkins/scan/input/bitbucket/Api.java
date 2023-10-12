@@ -13,6 +13,7 @@ public class Api {
     @JsonProperty("url")
     private String url;
 
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     @JsonProperty("token")
     private String token;
 
