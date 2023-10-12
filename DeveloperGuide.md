@@ -11,21 +11,30 @@ To work with the project locally and run it with a Jenkins server, follow these 
 **Note:** Make sure that **port 8080** is free on your machine, and you have
 **_Pipeline_** plugin installed in your Jenkins server to configure the multibranch pipeline job.
 
-2. Building the project will generate the plugin `hpi` file:
+2. Build the project:
 ```
 ./mvnw clean install -Dspotbugs.skip=true
 ```
 
-The generated plugin `hpi` file can be found in the `target` folder of your project directory.
+3. Generate the `hpi` file:
+```
+./mvnw hpi:hpi
+```
+
+The generated `hpi` file can be found in the `target` folder of your project directory.
 
 ### Setting up dev-test environment in docker
 
-*  Make sure a `temp-jenkins` directory exists in your home directory.
+* Make sure a `temp-jenkins` directory exists in your home directory.
 
-
-* Run the following command to export your plugin into `hpi` format:
+* Build the project:
 ```
 ./mvnw clean install -Dspotbugs.skip=true
+```
+
+* Generate the `hpi` file:
+```
+./mvnw hpi:hpi
 ```
 
 * Spin up the jenkins instance with the following command:
