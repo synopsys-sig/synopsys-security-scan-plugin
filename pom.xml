@@ -11,7 +11,7 @@
   <artifactId>synopsys-security-scan</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>hpi</packaging>
-  <name>Synopsys Security Scan Plugin</name>
+  <name>Synopsys Security Scan</name>
   <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
   <licenses>
    <license>
@@ -123,6 +123,7 @@
   </dependencies>
 
   <build>
+    <finalName>${artifactId}-${version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.jacoco</groupId>
