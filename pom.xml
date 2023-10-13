@@ -123,7 +123,7 @@
   </dependencies>
 
   <build>
-    <finalName>${artifactId}-${version}</finalName>
+    <finalName>${project.artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.jacoco</groupId>
