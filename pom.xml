@@ -144,8 +144,7 @@
         </executions>
         <configuration>
           <excludes>
-            <exclude>com/synopsys/integration/jenkins/scan/extension/global/ScannerGlobalConfig.class</exclude>
-            <exclude>com/synopsys/integration/jenkins/scan/extension/pipeline/SecurityScanStep.class</exclude>
+            <exclude>com/synopsys/integration/jenkins/scan/extension/**/*.class</exclude>
             <exclude>com/synopsys/integration/jenkins/scan/SecurityScanner.class</exclude>
           </excludes>
         </configuration>
