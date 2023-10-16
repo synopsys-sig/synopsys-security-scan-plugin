@@ -1,10 +1,11 @@
 package io.jenkins.plugins.synopsys.security.scan.service.bridge;
 
 import static org.junit.jupiter.api.Assertions.*;
-import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadParameters;
-import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadParameters;
+import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -60,8 +61,7 @@ public class BridgeDownloadParameterServiceTest {
         if (os.contains("win")) {
             validPath = String.join("\\", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
             invalidPath = String.join("\\", "\\path\\absent", ApplicationConstants.DEFAULT_DIRECTORY_NAME);
-        }
-        else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
             validPath = String.join("/", userHome, ApplicationConstants.DEFAULT_DIRECTORY_NAME);
             invalidPath = String.join("/", "/path/absent", ApplicationConstants.DEFAULT_DIRECTORY_NAME);
         }
@@ -77,10 +77,10 @@ public class BridgeDownloadParameterServiceTest {
         scanParams.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/path/to/bridge");
         scanParams.put(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, "https://fake.url.com");
 
-        BridgeDownloadParameters
-            bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
-        
-        BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+
+        BridgeDownloadParameters result =
+                bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
         assertEquals("https://fake.url.com", result.getBridgeDownloadUrl());
         assertEquals("/path/to/bridge", result.getBridgeInstallationPath());
@@ -93,10 +93,10 @@ public class BridgeDownloadParameterServiceTest {
         scanParams.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/path/to/bridge");
         scanParams.put(ApplicationConstants.NETWORK_AIRGAP_KEY, true);
 
-        BridgeDownloadParameters
-            bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
 
-        BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
+        BridgeDownloadParameters result =
+                bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
         assertFalse(result.getBridgeDownloadUrl().contains(".zip"));
         assertEquals("/path/to/bridge", result.getBridgeInstallationPath());
@@ -108,10 +108,10 @@ public class BridgeDownloadParameterServiceTest {
         scanParams.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/path/to/bridge");
         scanParams.put(ApplicationConstants.NETWORK_AIRGAP_KEY, true);
 
-        BridgeDownloadParameters
-            bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
 
-        BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
+        BridgeDownloadParameters result =
+                bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
         assertFalse(result.getBridgeDownloadUrl().contains(".zip"));
         assertEquals("/path/to/bridge", result.getBridgeInstallationPath());
@@ -122,12 +122,13 @@ public class BridgeDownloadParameterServiceTest {
         Map<String, Object> scanParams = new HashMap<>();
         scanParams.put(ApplicationConstants.NETWORK_AIRGAP_KEY, true);
         scanParams.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/path/to/bridge");
-        scanParams.put(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, "https://bridge.fake.url.com/synopsys-bridge.zip");
+        scanParams.put(
+                ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, "https://bridge.fake.url.com/synopsys-bridge.zip");
 
-        BridgeDownloadParameters
-            bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
 
-        BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
+        BridgeDownloadParameters result =
+                bridgeDownloadParametersService.getBridgeDownloadParams(scanParams, bridgeDownloadParameters);
 
         assertTrue(result.getBridgeDownloadUrl().contains(".zip"));
         assertEquals("/path/to/bridge", result.getBridgeInstallationPath());
@@ -138,8 +139,9 @@ public class BridgeDownloadParameterServiceTest {
         Map<String, Object> scanParamsNull = new HashMap<>();
 
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
-        
-        BridgeDownloadParameters result = bridgeDownloadParametersService.getBridgeDownloadParams(scanParamsNull, bridgeDownloadParameters);
+
+        BridgeDownloadParameters result =
+                bridgeDownloadParametersService.getBridgeDownloadParams(scanParamsNull, bridgeDownloadParameters);
 
         assertNotNull(result);
         assertNotNull(result.getBridgeDownloadUrl());

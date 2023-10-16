@@ -7,21 +7,23 @@
  */
 package io.jenkins.plugins.synopsys.security.scan.input.coverity;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Connect {
     @JsonProperty("url")
     private String url;
+
     @JsonProperty("user")
     private User user;
+
     @JsonProperty("project")
     private Project project;
+
     @JsonProperty("stream")
     private Stream stream;
+
     @JsonProperty("policy")
     private Policy policy;
-    
 
     Connect() {
         user = new User();

@@ -10,6 +10,7 @@ package io.jenkins.plugins.synopsys.security.scan.service.scm;
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketApi;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
@@ -18,8 +19,6 @@ import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Pull;
 import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Repository;
-import hudson.model.TaskListener;
-
 import java.util.Map;
 
 public class BitbucketRepositoryService {
@@ -29,10 +28,12 @@ public class BitbucketRepositoryService {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public Bitbucket fetchBitbucketRepositoryDetails(Map<String, Object> scanParameters,
-                                                     BitbucketSCMSource bitbucketSCMSource,
-                                                     Integer projectRepositoryPullNumber,
-                                                     boolean isFixPrOrPrComment) throws PluginExceptionHandler {
+    public Bitbucket fetchBitbucketRepositoryDetails(
+            Map<String, Object> scanParameters,
+            BitbucketSCMSource bitbucketSCMSource,
+            Integer projectRepositoryPullNumber,
+            boolean isFixPrOrPrComment)
+            throws PluginExceptionHandler {
 
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
         if (Utility.isStringNullOrBlank(bitbucketToken) && isFixPrOrPrComment) {
@@ -40,13 +41,15 @@ public class BitbucketRepositoryService {
             throw new PluginExceptionHandler(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
         }
 
-        BitbucketApi bitbucketApiFromSCMSource = bitbucketSCMSource.buildBitbucketClient(bitbucketSCMSource.getRepoOwner(), bitbucketSCMSource.getRepository());
+        BitbucketApi bitbucketApiFromSCMSource = bitbucketSCMSource.buildBitbucketClient(
+                bitbucketSCMSource.getRepoOwner(), bitbucketSCMSource.getRepository());
 
         BitbucketRepository bitbucketRepository = null;
         try {
             bitbucketRepository = bitbucketApiFromSCMSource.getRepository();
         } catch (Exception e) {
-            logger.error("An exception occurred while getting the BitbucketRepository from BitbucketApi: " + e.getMessage());
+            logger.error(
+                    "An exception occurred while getting the BitbucketRepository from BitbucketApi: " + e.getMessage());
         }
 
         String serverUrl = bitbucketSCMSource.getServerUrl();
@@ -58,10 +61,16 @@ public class BitbucketRepositoryService {
             projectKey = bitbucketRepository.getProject().getKey();
         }
 
-        return createBitbucketObject(serverUrl, bitbucketToken, projectRepositoryPullNumber, repositoryName, projectKey);
+        return createBitbucketObject(
+                serverUrl, bitbucketToken, projectRepositoryPullNumber, repositoryName, projectKey);
     }
 
-    public static Bitbucket createBitbucketObject(String serverUrl, String bitbucketToken, Integer projectRepositoryPullNumber, String repositoryName, String projectKey) {
+    public static Bitbucket createBitbucketObject(
+            String serverUrl,
+            String bitbucketToken,
+            Integer projectRepositoryPullNumber,
+            String repositoryName,
+            String projectKey) {
         Bitbucket bitbucket = new Bitbucket();
         bitbucket.getApi().setUrl(serverUrl);
         bitbucket.getApi().setToken(bitbucketToken);
@@ -78,5 +87,4 @@ public class BitbucketRepositoryService {
 
         return bitbucket;
     }
-
 }

@@ -6,6 +6,7 @@
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package io.jenkins.plugins.synopsys.security.scan.input.polaris;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ApplicationName {

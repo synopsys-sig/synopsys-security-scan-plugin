@@ -7,9 +7,9 @@
  */
 package io.jenkins.plugins.synopsys.security.scan.bridge;
 
-import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 
 public class BridgeDownloadParameters {
     private String bridgeDownloadUrl;

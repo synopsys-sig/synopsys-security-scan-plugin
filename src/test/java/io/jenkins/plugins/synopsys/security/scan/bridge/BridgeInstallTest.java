@@ -2,6 +2,7 @@ package io.jenkins.plugins.synopsys.security.scan.bridge;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import java.io.File;
@@ -29,7 +30,7 @@ public class BridgeInstallTest {
         String os = System.getProperty("os.name").toLowerCase();
         FilePath destinationBridge = bridgeInstallationPath.child("demo-bridge.zip");
 
-        if(os.contains("win")) {
+        if (os.contains("win")) {
             sourceBridge = new FilePath(new File("src\\test\\resources\\demo-bridge.zip"));
         } else {
             sourceBridge = new FilePath(new File("src/test/resources/demo-bridge.zip"));
@@ -40,10 +41,8 @@ public class BridgeInstallTest {
             bridgeInstall.installSynopsysBridge(getFullZipPath(), bridgeInstallationPath);
 
             assertFalse(destinationBridge.exists());
-            assertTrue(
-                bridgeInstallationPath.child("demo-bridge-extensions").isDirectory());
-            assertTrue(
-                bridgeInstallationPath.child("demo-bridge-versions.txt").exists());
+            assertTrue(bridgeInstallationPath.child("demo-bridge-extensions").isDirectory());
+            assertTrue(bridgeInstallationPath.child("demo-bridge-versions.txt").exists());
             assertTrue(bridgeInstallationPath.child("demo-bridge-LICENSE.txt").exists());
 
             cleanupBridgeInstallationPath(bridgeInstallationPath);
@@ -58,10 +57,12 @@ public class BridgeInstallTest {
 
     public FilePath getFullZipPath() {
         FilePath bridgeZipPath;
-        if(getHomeDirectory().contains("\\")) {
-            bridgeZipPath = new FilePath(new File(bridgeInstallationPath.getRemote().concat("\\").concat("demo-bridge.zip")));
+        if (getHomeDirectory().contains("\\")) {
+            bridgeZipPath = new FilePath(
+                    new File(bridgeInstallationPath.getRemote().concat("\\").concat("demo-bridge.zip")));
         } else {
-            bridgeZipPath = new FilePath(new File(bridgeInstallationPath.getRemote().concat("/").concat("demo-bridge.zip")));
+            bridgeZipPath = new FilePath(
+                    new File(bridgeInstallationPath.getRemote().concat("/").concat("demo-bridge.zip")));
         }
         return bridgeZipPath;
     }

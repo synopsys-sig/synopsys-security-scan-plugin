@@ -8,12 +8,11 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scm;
 
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
-import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
-import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import hudson.EnvVars;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
+import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import java.util.Map;
-
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
 import jenkins.scm.api.SCMSourceOwner;
@@ -27,23 +26,25 @@ public class SCMRepositoryService {
         this.envVars = envVars;
     }
 
-    public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters, boolean isFixPrOrPrComment) throws PluginExceptionHandler {
-        Integer projectRepositoryPullNumber = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null ?
-                Integer.parseInt(envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY)) : null;
+    public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters, boolean isFixPrOrPrComment)
+            throws PluginExceptionHandler {
+        Integer projectRepositoryPullNumber = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null
+                ? Integer.parseInt(envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY))
+                : null;
 
         SCMSource scmSource = findSCMSource();
         if (scmSource instanceof BitbucketSCMSource) {
             BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
             return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
-                scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isFixPrOrPrComment);
+                    scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isFixPrOrPrComment);
         }
         return null;
     }
 
     public SCMSource findSCMSource() {
         String jobName = envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY)
-            .substring(0, envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY).indexOf("/"));
+                .substring(0, envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY).indexOf("/"));
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         SCMSourceOwner owner = jenkins != null ? jenkins.getItemByFullName(jobName, SCMSourceOwner.class) : null;
         if (owner != null) {
@@ -55,5 +56,4 @@ public class SCMRepositoryService {
         }
         return null;
     }
-
 }

@@ -7,11 +7,11 @@
  */
 package io.jenkins.plugins.synopsys.security.scan.service.scan.polaris;
 
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
-import hudson.model.TaskListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +31,8 @@ public class PolarisParametersService {
 
         List<String> invalidParams = new ArrayList<>();
 
-        Arrays.asList(ApplicationConstants.POLARIS_SERVER_URL_KEY,
+        Arrays.asList(
+                        ApplicationConstants.POLARIS_SERVER_URL_KEY,
                         ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY,
                         ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
                         ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY)
@@ -81,9 +82,9 @@ public class PolarisParametersService {
                 case ApplicationConstants.POLARIS_BRANCH_NAME_KEY:
                     polaris.getBranch().setName(value);
                     break;
-//                case ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY:
-//                    polaris.getBranch().getParent().setName(value);
-//                    break;
+                    //                case ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY:
+                    //                    polaris.getBranch().getParent().setName(value);
+                    //                    break;
                 case ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY:
                     if (!value.isEmpty()) {
                         List<String> assessmentTypes = new ArrayList<>();

@@ -21,12 +21,14 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String blackDuckApiToken;
+
     private String blackDuckInstallationPath;
     private String coverityConnectUrl;
     private String coverityConnectUserName;
 
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String coverityConnectUserPassword;
+
     private String coverityInstallationPath;
     private String synopsysBridgeDownloadUrlForMac;
     private String synopsysBridgeDownloadUrlForWindows;
@@ -36,6 +38,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String bitbucketToken;
+
     private String polarisServerUrl;
 
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
@@ -143,6 +146,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     public String getBlackDuckApiToken() {
         return blackDuckApiToken;
     }
+
     public String getBlackDuckInstallationPath() {
         return blackDuckInstallationPath;
     }

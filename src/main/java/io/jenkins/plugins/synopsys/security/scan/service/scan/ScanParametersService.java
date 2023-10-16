@@ -7,13 +7,12 @@
  */
 package io.jenkins.plugins.synopsys.security.scan.service.scan;
 
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.coverity.CoverityParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.polaris.PolarisParametersService;
-import hudson.model.TaskListener;
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;

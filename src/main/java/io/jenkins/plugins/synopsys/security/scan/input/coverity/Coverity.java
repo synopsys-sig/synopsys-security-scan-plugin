@@ -13,12 +13,16 @@ import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Install;
 public class Coverity {
     @JsonProperty("connect")
     private Connect connect;
+
     @JsonProperty("install")
     private Install install;
+
     @JsonProperty("automation")
     private Automation automation;
+
     @JsonProperty("version")
     private String version;
+
     @JsonProperty("local")
     private boolean local;
 

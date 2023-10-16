@@ -1,5 +1,10 @@
 package io.jenkins.plugins.synopsys.security.scan.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import hudson.EnvVars;
+import hudson.FilePath;
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.BridgeParams;
@@ -8,9 +13,6 @@ import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
-import hudson.EnvVars;
-import hudson.FilePath;
-import hudson.model.TaskListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -24,7 +26,6 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ScannerArgumentServiceTest {
     private Bitbucket bitBucket;
@@ -54,12 +55,15 @@ public class ScannerArgumentServiceTest {
         blackDuck.setUrl("https://fake.blackduck.url");
         blackDuck.setToken("MDJDSROSVC56FAKEKEY");
 
-        String inputJsonPath = scannerArgumentService.createBridgeInputJson(blackDuck, bitBucket, false,
-                null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+        String inputJsonPath = scannerArgumentService.createBridgeInputJson(
+                blackDuck, bitBucket, false, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
         Path filePath = Paths.get(inputJsonPath);
 
-        assertTrue(Files.exists(filePath), String.format("File %s does not exist at the specified path.",
-                ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX.concat(".json")));
+        assertTrue(
+                Files.exists(filePath),
+                String.format(
+                        "File %s does not exist at the specified path.",
+                        ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX.concat(".json")));
         Utility.removeFile(filePath.toString(), workspace, listenerMock);
     }
 
@@ -75,9 +79,11 @@ public class ScannerArgumentServiceTest {
 
     @Test
     public void writeInputJsonToFileTest() {
-        String jsonString = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"}}}";
+        String jsonString =
+                "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"}}}";
 
-        String jsonPath = scannerArgumentService.writeInputJsonToFile(jsonString, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+        String jsonPath = scannerArgumentService.writeInputJsonToFile(
+                jsonString, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
         String fileContent = null;
         try {
             fileContent = new String(Files.readAllBytes(Paths.get(jsonPath)));
@@ -85,9 +91,12 @@ public class ScannerArgumentServiceTest {
             e.printStackTrace();
         }
 
-        assertTrue(Files.exists(Path.of(jsonPath)), String.format("%s does not exist at the specified path.",
-                ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX.concat(".json")));
-        assertEquals(jsonString,fileContent);
+        assertTrue(
+                Files.exists(Path.of(jsonPath)),
+                String.format(
+                        "%s does not exist at the specified path.",
+                        ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX.concat(".json")));
+        assertEquals(jsonString, fileContent);
 
         Utility.removeFile(jsonPath, workspace, listenerMock);
     }
@@ -99,12 +108,15 @@ public class ScannerArgumentServiceTest {
         coverity.getConnect().getUser().setName("fake-user");
         coverity.getConnect().getUser().setPassword("fakeUserPassword");
 
-        String inputJsonPath = scannerArgumentService.createBridgeInputJson(coverity, bitBucket, false,
-                null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
+        String inputJsonPath = scannerArgumentService.createBridgeInputJson(
+                coverity, bitBucket, false, null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
         Path filePath = Paths.get(inputJsonPath);
 
-        assertTrue(Files.exists(filePath), String.format("File %s does not exist at the specified path.",
-                ApplicationConstants.COVERITY_INPUT_JSON_PREFIX.concat(".json")));
+        assertTrue(
+                Files.exists(filePath),
+                String.format(
+                        "File %s does not exist at the specified path.",
+                        ApplicationConstants.COVERITY_INPUT_JSON_PREFIX.concat(".json")));
         Utility.removeFile(filePath.toString(), workspace, listenerMock);
     }
 
@@ -119,18 +131,25 @@ public class ScannerArgumentServiceTest {
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(blackDuckParametersMap, workspace);
 
-        if(getOSNameForTest().contains("win")) {
-            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
+        if (getOSNameForTest().contains("win")) {
+            assertEquals(
+                    commandLineArgs.get(0),
+                    workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
         } else {
-            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY).getRemote());
+            assertEquals(
+                    commandLineArgs.get(0),
+                    workspace.child(ApplicationConstants.BRIDGE_BINARY).getRemote());
         }
         assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
         assertEquals(commandLineArgs.get(2), BridgeParams.BLACKDUCK_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.COVERITY_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.POLARIS_STAGE);
         assertEquals(commandLineArgs.get(3), BridgeParams.INPUT_OPTION);
-        assertTrue(Files.exists(Path.of(commandLineArgs.get(4))),
-                String.format("File %s does not exist at the specified path.", ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX.concat(".json")));
+        assertTrue(
+                Files.exists(Path.of(commandLineArgs.get(4))),
+                String.format(
+                        "File %s does not exist at the specified path.",
+                        ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX.concat(".json")));
         assertEquals(commandLineArgs.get(5), BridgeParams.DIAGNOSTICS_OPTION);
 
         Utility.removeFile(commandLineArgs.get(4), workspace, listenerMock);
@@ -147,18 +166,25 @@ public class ScannerArgumentServiceTest {
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(coverityParameters, workspace);
 
-        if(getOSNameForTest().contains("win")) {
-            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
+        if (getOSNameForTest().contains("win")) {
+            assertEquals(
+                    commandLineArgs.get(0),
+                    workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
         } else {
-            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY).getRemote());
+            assertEquals(
+                    commandLineArgs.get(0),
+                    workspace.child(ApplicationConstants.BRIDGE_BINARY).getRemote());
         }
         assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
         assertEquals(commandLineArgs.get(2), BridgeParams.COVERITY_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.POLARIS_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.BLACKDUCK_STAGE);
         assertEquals(commandLineArgs.get(3), BridgeParams.INPUT_OPTION);
-        assertTrue(Files.exists(Path.of(commandLineArgs.get(4))),
-                String.format("File %s does not exist at the specified path.", ApplicationConstants.COVERITY_INPUT_JSON_PREFIX.concat(".json")));
+        assertTrue(
+                Files.exists(Path.of(commandLineArgs.get(4))),
+                String.format(
+                        "File %s does not exist at the specified path.",
+                        ApplicationConstants.COVERITY_INPUT_JSON_PREFIX.concat(".json")));
         assertEquals(commandLineArgs.get(5), BridgeParams.DIAGNOSTICS_OPTION);
 
         Utility.removeFile(commandLineArgs.get(4), workspace, listenerMock);
@@ -175,18 +201,25 @@ public class ScannerArgumentServiceTest {
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(polarisParameters, workspace);
 
-        if(getOSNameForTest().contains("win")) {
-            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
+        if (getOSNameForTest().contains("win")) {
+            assertEquals(
+                    commandLineArgs.get(0),
+                    workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
         } else {
-            assertEquals(commandLineArgs.get(0), workspace.child(ApplicationConstants.BRIDGE_BINARY).getRemote());
+            assertEquals(
+                    commandLineArgs.get(0),
+                    workspace.child(ApplicationConstants.BRIDGE_BINARY).getRemote());
         }
         assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
         assertEquals(commandLineArgs.get(2), BridgeParams.POLARIS_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.COVERITY_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.BLACKDUCK_STAGE);
         assertEquals(commandLineArgs.get(3), BridgeParams.INPUT_OPTION);
-        assertTrue(Files.exists(Path.of(commandLineArgs.get(4))),
-                String.format("File %s does not exist at the specified path.", ApplicationConstants.COVERITY_INPUT_JSON_PREFIX.concat(".json")));
+        assertTrue(
+                Files.exists(Path.of(commandLineArgs.get(4))),
+                String.format(
+                        "File %s does not exist at the specified path.",
+                        ApplicationConstants.COVERITY_INPUT_JSON_PREFIX.concat(".json")));
 
         Utility.removeFile(commandLineArgs.get(4), workspace, listenerMock);
     }
@@ -218,7 +251,7 @@ public class ScannerArgumentServiceTest {
     @Test
     public void removeTemporaryInputJsonTest() {
         String[] fileNames = {"file1.json", "file2.json"};
-        List <String> inputJsonPath = new ArrayList<>();
+        List<String> inputJsonPath = new ArrayList<>();
 
         for (String fileName : fileNames) {
             Path filePath = Paths.get(getHomeDirectoryForTest(), fileName);
@@ -237,7 +270,6 @@ public class ScannerArgumentServiceTest {
         for (String path : inputJsonPath) {
             assertFalse(Files.exists(Paths.get(path)));
         }
-
     }
 
     public String getHomeDirectoryForTest() {

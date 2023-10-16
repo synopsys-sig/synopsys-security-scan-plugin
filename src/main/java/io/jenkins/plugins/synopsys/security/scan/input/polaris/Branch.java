@@ -13,12 +13,12 @@ public class Branch {
     @JsonProperty("name")
     private String name;
 
-//    @JsonProperty("parent")
-//    private Parent parent;
+    //    @JsonProperty("parent")
+    //    private Parent parent;
 
-//    public Branch() {
-//        parent = new Parent();
-//    }
+    //    public Branch() {
+    //        parent = new Parent();
+    //    }
 
     public String getName() {
         return name;
@@ -28,11 +28,11 @@ public class Branch {
         this.name = name;
     }
 
-//    public Parent getParent() {
-//        return parent;
-//    }
+    //    public Parent getParent() {
+    //        return parent;
+    //    }
 
-//    public void setParent(Parent parent) {
-//        this.parent = parent;
-//    }
+    //    public void setParent(Parent parent) {
+    //        this.parent = parent;
+    //    }
 }

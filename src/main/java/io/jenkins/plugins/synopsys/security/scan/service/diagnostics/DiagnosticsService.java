@@ -7,13 +7,13 @@
  */
 package io.jenkins.plugins.synopsys.security.scan.service.diagnostics;
 
-import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.ArtifactArchiver;
+import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 
 public class DiagnosticsService {
     private final Run<?, ?> run;
@@ -23,8 +23,12 @@ public class DiagnosticsService {
     private final EnvVars envVars;
     private final ArtifactArchiver artifactArchiver;
 
-    public DiagnosticsService(Run<?, ?> run, TaskListener listener, Launcher launcher, EnvVars envVars,
-                              ArtifactArchiver artifactArchiver) {
+    public DiagnosticsService(
+            Run<?, ?> run,
+            TaskListener listener,
+            Launcher launcher,
+            EnvVars envVars,
+            ArtifactArchiver artifactArchiver) {
         this.run = run;
         this.listener = listener;
         this.logger = new LoggerWrapper(listener);
@@ -40,7 +44,8 @@ public class DiagnosticsService {
 
                 artifactArchiver.perform(run, diagnosticsPath, envVars, launcher, listener);
             } else {
-                logger.error("Archiving diagnostics failed as diagnostics path not found at: " + diagnosticsPath.getRemote());
+                logger.error("Archiving diagnostics failed as diagnostics path not found at: "
+                        + diagnosticsPath.getRemote());
                 return;
             }
         } catch (Exception e) {
@@ -50,5 +55,4 @@ public class DiagnosticsService {
 
         logger.info("Diagnostics archived successfully in jenkins artifact");
     }
-
 }

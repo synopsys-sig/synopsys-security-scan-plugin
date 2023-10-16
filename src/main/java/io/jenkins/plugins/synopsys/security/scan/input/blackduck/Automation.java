@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Automation {
     @JsonProperty("fixpr")
     private Boolean fixpr;
+
     @JsonProperty("prComment")
     private Boolean prComment;
 
@@ -31,4 +32,3 @@ public class Automation {
         this.prComment = prComment;
     }
 }
-

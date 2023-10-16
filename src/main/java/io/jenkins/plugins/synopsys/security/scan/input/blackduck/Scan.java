@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Scan {
     @JsonProperty("full")
     private Boolean full;
+
     @JsonProperty("failure")
     private Failure failure;
 
@@ -34,5 +35,4 @@ public class Scan {
     public void setFailure(Failure failure) {
         this.failure = failure;
     }
-
 }

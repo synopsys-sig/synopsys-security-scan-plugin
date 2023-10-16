@@ -1,20 +1,21 @@
 package io.jenkins.plugins.synopsys.security.scan.factory;
 
-import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
-import io.jenkins.plugins.synopsys.security.scan.extension.pipeline.SecurityScanStep;
-import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import static org.junit.jupiter.api.Assertions.*;
+
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
+import io.jenkins.plugins.synopsys.security.scan.extension.pipeline.SecurityScanStep;
+import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class ScanParametersFactoryTest {
     private TaskListener listenerMock;
@@ -41,8 +42,8 @@ public class ScanParametersFactoryTest {
         globalConfigValues.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "fake-blackduck-token");
         globalConfigValues.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/fake/path");
 
-        Map<String, Object> result = ScanParametersFactory.preparePipelineParametersMap(securityScanStep,
-                globalConfigValues, listenerMock);
+        Map<String, Object> result =
+                ScanParametersFactory.preparePipelineParametersMap(securityScanStep, globalConfigValues, listenerMock);
 
         assertEquals(5, result.size());
         assertEquals("BLACKDUCK", result.get(ApplicationConstants.PRODUCT_KEY));
@@ -52,8 +53,10 @@ public class ScanParametersFactoryTest {
 
         securityScanStep.setProduct("invalid-product");
 
-        assertThrows(PluginExceptionHandler.class, () -> ScanParametersFactory.preparePipelineParametersMap(securityScanStep,
-                globalConfigValues, listenerMock));
+        assertThrows(
+                PluginExceptionHandler.class,
+                () -> ScanParametersFactory.preparePipelineParametersMap(
+                        securityScanStep, globalConfigValues, listenerMock));
     }
 
     @Test
@@ -66,7 +69,8 @@ public class ScanParametersFactoryTest {
         securityScanStep.setBlackduck_download_url("https://fake.blackduck-download-url");
         securityScanStep.setBlackduck_scan_failure_severities("MAJOR");
 
-        Map<String, Object> blackDuckParametersMap = ScanParametersFactory.prepareBlackDuckParametersMap(securityScanStep);
+        Map<String, Object> blackDuckParametersMap =
+                ScanParametersFactory.prepareBlackDuckParametersMap(securityScanStep);
 
         assertEquals(7, blackDuckParametersMap.size());
         assertEquals("https://fake.blackduck-url", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_URL_KEY));
@@ -74,11 +78,14 @@ public class ScanParametersFactoryTest {
         assertEquals("/fake/path", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY));
         assertTrue((boolean) blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY));
         assertTrue((boolean) blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY));
-        assertEquals("https://fake.blackduck-download-url", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY));
+        assertEquals(
+                "https://fake.blackduck-download-url",
+                blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY));
         assertEquals("MAJOR", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY));
 
-        Map<String, Object> emptyBlackDuckParametersMap = ScanParametersFactory.prepareBlackDuckParametersMap(new SecurityScanStep());
-        
+        Map<String, Object> emptyBlackDuckParametersMap =
+                ScanParametersFactory.prepareBlackDuckParametersMap(new SecurityScanStep());
+
         assertEquals(0, emptyBlackDuckParametersMap.size());
     }
 
@@ -95,7 +102,8 @@ public class ScanParametersFactoryTest {
         securityScanStep.setCoverity_version("1.0.0");
         securityScanStep.setCoverity_local(true);
 
-        Map<String, Object> coverityParametersMap = ScanParametersFactory.prepareCoverityParametersMap(securityScanStep);
+        Map<String, Object> coverityParametersMap =
+                ScanParametersFactory.prepareCoverityParametersMap(securityScanStep);
 
         assertEquals(10, coverityParametersMap.size());
         assertEquals("https://fake.coverity-url", coverityParametersMap.get(ApplicationConstants.COVERITY_URL_KEY));
@@ -109,7 +117,8 @@ public class ScanParametersFactoryTest {
         assertEquals("1.0.0", coverityParametersMap.get(ApplicationConstants.COVERITY_VERSION_KEY));
         assertTrue(coverityParametersMap.containsKey(ApplicationConstants.COVERITY_LOCAL_KEY));
 
-        Map<String, Object> emptyCoverityParametersMap = ScanParametersFactory.prepareCoverityParametersMap(new SecurityScanStep());
+        Map<String, Object> emptyCoverityParametersMap =
+                ScanParametersFactory.prepareCoverityParametersMap(new SecurityScanStep());
         assertEquals(0, emptyCoverityParametersMap.size());
     }
 
@@ -124,13 +133,16 @@ public class ScanParametersFactoryTest {
         Map<String, Object> bridgeParametersMap = ScanParametersFactory.prepareBridgeParametersMap(securityScanStep);
 
         assertEquals(5, bridgeParametersMap.size());
-        assertEquals("https://fake.bridge-download.url", bridgeParametersMap.get(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL));
+        assertEquals(
+                "https://fake.bridge-download.url",
+                bridgeParametersMap.get(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL));
         assertEquals("1.0.0", bridgeParametersMap.get(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION));
         assertEquals("/fake/path", bridgeParametersMap.get(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY));
         assertTrue((boolean) bridgeParametersMap.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY));
         assertTrue((boolean) bridgeParametersMap.get(ApplicationConstants.NETWORK_AIRGAP_KEY));
 
-        Map<String, Object> emptyBridgeParametersMap = ScanParametersFactory.prepareBridgeParametersMap(new SecurityScanStep());
+        Map<String, Object> emptyBridgeParametersMap =
+                ScanParametersFactory.prepareBridgeParametersMap(new SecurityScanStep());
 
         assertEquals(0, emptyBridgeParametersMap.size());
     }
@@ -148,7 +160,9 @@ public class ScanParametersFactoryTest {
         Map<String, Object> polarisParametersMap = ScanParametersFactory.preparePolarisParametersMap(securityScanStep);
 
         assertEquals(7, polarisParametersMap.size());
-        assertEquals("https://fake.polaris-server.url", polarisParametersMap.get(ApplicationConstants.POLARIS_SERVER_URL_KEY));
+        assertEquals(
+                "https://fake.polaris-server.url",
+                polarisParametersMap.get(ApplicationConstants.POLARIS_SERVER_URL_KEY));
         assertEquals("fake-access-token", polarisParametersMap.get(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY));
         assertEquals("test", polarisParametersMap.get(ApplicationConstants.POLARIS_BRANCH_NAME_KEY));
         assertEquals("REQUIRED", polarisParametersMap.get(ApplicationConstants.POLARIS_TRIAGE_KEY));
@@ -161,12 +175,12 @@ public class ScanParametersFactoryTest {
         String downloadUrlWindows = "https://fake-url.com/windows";
 
         String os = System.getProperty("os.name").toLowerCase();
-        String agentSpecificDownloadUrl = ScanParametersFactory
-                .getSynopsysBridgeDownloadUrlBasedOnAgentOS(workspace, listenerMock, downloadUrlMac,downloadUrlLinux,downloadUrlWindows);
+        String agentSpecificDownloadUrl = ScanParametersFactory.getSynopsysBridgeDownloadUrlBasedOnAgentOS(
+                workspace, listenerMock, downloadUrlMac, downloadUrlLinux, downloadUrlWindows);
 
-        if(os.contains("linux")) {
+        if (os.contains("linux")) {
             assertEquals(downloadUrlLinux, agentSpecificDownloadUrl);
-        } else if(os.contains("mac")) {
+        } else if (os.contains("mac")) {
             assertEquals(downloadUrlMac, agentSpecificDownloadUrl);
         } else {
             assertEquals(downloadUrlWindows, agentSpecificDownloadUrl);

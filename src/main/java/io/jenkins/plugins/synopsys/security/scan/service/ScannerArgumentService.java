@@ -9,6 +9,9 @@ package io.jenkins.plugins.synopsys.security.scan.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hudson.EnvVars;
+import hudson.FilePath;
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.BridgeParams;
@@ -26,10 +29,6 @@ import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuc
 import io.jenkins.plugins.synopsys.security.scan.service.scan.coverity.CoverityParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.polaris.PolarisParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.SCMRepositoryService;
-import hudson.EnvVars;
-import hudson.FilePath;
-import hudson.model.TaskListener;
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +51,8 @@ public class ScannerArgumentService {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, FilePath bridgeInstallationPath) throws PluginExceptionHandler {
+    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, FilePath bridgeInstallationPath)
+            throws PluginExceptionHandler {
         List<String> commandLineArgs = new ArrayList<>();
 
         commandLineArgs.add(getBridgeRunCommand(bridgeInstallationPath));
@@ -70,13 +70,18 @@ public class ScannerArgumentService {
         String os = Utility.getAgentOs(workspace, listener);
 
         if (os.contains("win")) {
-            return bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS).getRemote();
+            return bridgeInstallationPath
+                    .child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND_WINDOWS)
+                    .getRemote();
         } else {
-            return bridgeInstallationPath.child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND).getRemote();
+            return bridgeInstallationPath
+                    .child(ApplicationConstants.SYNOPSYS_BRIDGE_RUN_COMMAND)
+                    .getRemote();
         }
     }
 
-    private List<String> getSecurityProductSpecificCommands(Map<String, Object> scanParameters) throws PluginExceptionHandler {
+    private List<String> getSecurityProductSpecificCommands(Map<String, Object> scanParameters)
+            throws PluginExceptionHandler {
         ScanParametersService scanParametersService = new ScanParametersService(listener);
         Set<String> securityProducts = scanParametersService.getSynopsysSecurityProducts(scanParameters);
 
@@ -101,7 +106,12 @@ public class ScannerArgumentService {
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.BLACKDUCK_STAGE);
             scanCommands.add(BridgeParams.INPUT_OPTION);
-            scanCommands.add(createBridgeInputJson(blackDuck, scmObject, fixPrOrPrComment, networkAirGap, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX));
+            scanCommands.add(createBridgeInputJson(
+                    blackDuck,
+                    scmObject,
+                    fixPrOrPrComment,
+                    networkAirGap,
+                    ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX));
         }
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
             CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
@@ -110,7 +120,12 @@ public class ScannerArgumentService {
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.COVERITY_STAGE);
             scanCommands.add(BridgeParams.INPUT_OPTION);
-            scanCommands.add(createBridgeInputJson(coverity, scmObject, fixPrOrPrComment, networkAirGap, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX));
+            scanCommands.add(createBridgeInputJson(
+                    coverity,
+                    scmObject,
+                    fixPrOrPrComment,
+                    networkAirGap,
+                    ApplicationConstants.COVERITY_INPUT_JSON_PREFIX));
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
@@ -119,13 +134,23 @@ public class ScannerArgumentService {
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.POLARIS_STAGE);
             scanCommands.add(BridgeParams.INPUT_OPTION);
-            scanCommands.add(createBridgeInputJson(polaris, scmObject, fixPrOrPrComment, networkAirGap, ApplicationConstants.POLARIS_INPUT_JSON_PREFIX));
+            scanCommands.add(createBridgeInputJson(
+                    polaris,
+                    scmObject,
+                    fixPrOrPrComment,
+                    networkAirGap,
+                    ApplicationConstants.POLARIS_INPUT_JSON_PREFIX));
         }
 
         return scanCommands;
     }
 
-    public String createBridgeInputJson(Object scanObject, Object scmObject, boolean fixPrOrPrComment, NetworkAirGap networkAirGap, String jsonPrefix) {
+    public String createBridgeInputJson(
+            Object scanObject,
+            Object scmObject,
+            boolean fixPrOrPrComment,
+            NetworkAirGap networkAirGap,
+            String jsonPrefix) {
         BridgeInput bridgeInput = new BridgeInput();
 
         setScanObject(bridgeInput, scanObject, scmObject);
@@ -213,14 +238,14 @@ public class ScannerArgumentService {
     }
 
     public boolean isFixPrOrPrCommentValueSet(Map<String, Object> scanParameters) {
-        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY) &&
-                Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY), true)) {
+        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY)
+                && Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY), true)) {
             return true;
-        } else if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) &&
-                Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY), true)) {
+        } else if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY)
+                && Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY), true)) {
             return true;
-        } else if (scanParameters.containsKey(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY) &&
-                Objects.equals(scanParameters.get(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY), true)) {
+        } else if (scanParameters.containsKey(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)
+                && Objects.equals(scanParameters.get(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY), true)) {
             return true;
         }
         return false;

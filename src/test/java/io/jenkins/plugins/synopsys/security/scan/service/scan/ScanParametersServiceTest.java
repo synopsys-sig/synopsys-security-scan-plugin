@@ -1,7 +1,9 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scan;
 
-import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import static org.junit.jupiter.api.Assertions.*;
+
 import hudson.model.TaskListener;
+import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +11,6 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ScanParametersServiceTest {
     private ScanParametersService scanParametersService;
@@ -20,7 +21,7 @@ public class ScanParametersServiceTest {
         scanParametersService = new ScanParametersService(listenerMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
-    
+
     @Test
     void validParametersForBlackDuckTest() {
         Map<String, Object> parameters = new HashMap<>();
@@ -65,8 +66,10 @@ public class ScanParametersServiceTest {
         scanParametersWithMultiplePlatforms.put(ApplicationConstants.PRODUCT_KEY, "blackduck, polaris");
         scanParametersWithSinglePlatform.put(ApplicationConstants.PRODUCT_KEY, "");
 
-        Set<String> multiplePlatforms = scanParametersService.getSynopsysSecurityProducts(scanParametersWithMultiplePlatforms);
-        Set<String> singlePlatform = scanParametersService.getSynopsysSecurityProducts(scanParametersWithSinglePlatform);
+        Set<String> multiplePlatforms =
+                scanParametersService.getSynopsysSecurityProducts(scanParametersWithMultiplePlatforms);
+        Set<String> singlePlatform =
+                scanParametersService.getSynopsysSecurityProducts(scanParametersWithSinglePlatform);
 
         assertEquals(2, multiplePlatforms.size());
         assertEquals(1, singlePlatform.size());

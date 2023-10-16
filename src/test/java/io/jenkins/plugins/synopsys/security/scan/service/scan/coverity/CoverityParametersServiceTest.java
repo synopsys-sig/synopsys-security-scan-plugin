@@ -3,9 +3,10 @@ package io.jenkins.plugins.synopsys.security.scan.service.scan.coverity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
-import hudson.model.TaskListener;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,16 +26,16 @@ public class CoverityParametersServiceTest {
         coverityParametersService = new CoverityParametersService(listenerMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
-    
+
     @Test
     void invalidScanParametersTest() {
         Map<String, Object> coverityParameters = new HashMap<>();
-        
+
         assertFalse(coverityParametersService.isValidCoverityParameters(coverityParameters));
-        
+
         coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, TEST_COVERITY_URL);
         coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, TEST_COVERITY_USER_NAME);
-        
+
         assertFalse(coverityParametersService.isValidCoverityParameters(coverityParameters));
     }
 
@@ -62,7 +63,7 @@ public class CoverityParametersServiceTest {
         coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, true);
 
         Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(coverityParameters);
-        
+
         assertEquals(coverity.getConnect().getUrl(), TEST_COVERITY_URL);
         assertEquals(coverity.getConnect().getUser().getName(), TEST_COVERITY_USER_NAME);
         assertEquals(coverity.getConnect().getUser().getPassword(), TEST_COVERITY_USER_PASSWORD);

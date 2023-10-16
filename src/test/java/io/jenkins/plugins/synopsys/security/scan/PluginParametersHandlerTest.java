@@ -3,13 +3,13 @@ package io.jenkins.plugins.synopsys.security.scan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import hudson.EnvVars;
+import hudson.FilePath;
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
-import hudson.EnvVars;
-import hudson.FilePath;
-import hudson.model.TaskListener;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -31,8 +31,9 @@ public class PluginParametersHandlerTest {
         workspace = new FilePath(new File(System.getProperty("user.home")));
         listenerMock = Mockito.mock(TaskListener.class);
         envVarsMock = Mockito.mock(EnvVars.class);
-        pluginParametersHandler = new PluginParametersHandler(securityScannerMock, workspace, envVarsMock, listenerMock);
-        
+        pluginParametersHandler =
+                new PluginParametersHandler(securityScannerMock, workspace, envVarsMock, listenerMock);
+
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
@@ -55,7 +56,8 @@ public class PluginParametersHandlerTest {
         Map<String, Object> scanParameters = new HashMap<>();
         scanParameters.put(ApplicationConstants.PRODUCT_KEY, "BLACKDUCK");
 
-        Mockito.when(mockScanParametersService.isValidScanParameters(scanParameters)).thenReturn(false);
+        Mockito.when(mockScanParametersService.isValidScanParameters(scanParameters))
+                .thenReturn(false);
 
         assertThrows(PluginExceptionHandler.class, () -> pluginParametersHandler.initializeScanner(scanParameters));
     }
@@ -84,5 +86,4 @@ public class PluginParametersHandlerTest {
 
         assertEquals(0, exitCode);
     }
-
 }

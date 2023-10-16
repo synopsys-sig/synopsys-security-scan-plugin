@@ -1,20 +1,21 @@
 package io.jenkins.plugins.synopsys.security.scan.bridge;
 
-import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
-import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import static org.junit.jupiter.api.Assertions.*;
+
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
+import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import java.io.File;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.*;
 
 public class BridgeDownloadTest {
     private TaskListener listenerMock;
@@ -33,23 +34,25 @@ public class BridgeDownloadTest {
     public void downloadSynopsysBridgeTest() throws Exception {
         BridgeDownload bridgeDownload = new BridgeDownload(workspace, listenerMock, envVarsMock);
 
-        String validBridgeDownloadUrl = String.join("/",
-                ApplicationConstants.BRIDGE_ARTIFACTORY_URL, "latest", "versions.txt");
+        String validBridgeDownloadUrl =
+                String.join("/", ApplicationConstants.BRIDGE_ARTIFACTORY_URL, "latest", "versions.txt");
         String invalidBridgeDownloadUrl = "https://bridge.invalid.url";
 
-        FilePath validBridgeDownloadPath = bridgeDownload.downloadSynopsysBridge(validBridgeDownloadUrl, workspace.getRemote());
+        FilePath validBridgeDownloadPath =
+                bridgeDownload.downloadSynopsysBridge(validBridgeDownloadUrl, workspace.getRemote());
 
-        assertTrue(Files.exists( Paths.get(validBridgeDownloadPath.getRemote())));
-        assertThrows(PluginExceptionHandler.class, () ->
-                bridgeDownload.downloadSynopsysBridge(invalidBridgeDownloadUrl, workspace.getRemote()));
+        assertTrue(Files.exists(Paths.get(validBridgeDownloadPath.getRemote())));
+        assertThrows(
+                PluginExceptionHandler.class,
+                () -> bridgeDownload.downloadSynopsysBridge(invalidBridgeDownloadUrl, workspace.getRemote()));
 
         Utility.removeFile(validBridgeDownloadPath.getRemote(), workspace, listenerMock);
     }
 
     @Test
     public void getHttpStatusCodeTest() {
-        String bridgeDownloadUrl = String.join("/",
-                ApplicationConstants.BRIDGE_ARTIFACTORY_URL, "latest", "synopsys-bridge-linux64.zip");
+        String bridgeDownloadUrl =
+                String.join("/", ApplicationConstants.BRIDGE_ARTIFACTORY_URL, "latest", "synopsys-bridge-linux64.zip");
         String invalidDownloadUrl = "https://invalid.bridge-download.url";
 
         BridgeDownload bridgeDownload = new BridgeDownload(workspace, listenerMock, envVarsMock);
@@ -75,8 +78,8 @@ public class BridgeDownloadTest {
 
     @Test
     public void checkIfBridgeUrlExistsTest() {
-        String bridgeDownloadUrl = String.join("/",
-                ApplicationConstants.BRIDGE_ARTIFACTORY_URL, "latest", "synopsys-bridge-linux64.zip");
+        String bridgeDownloadUrl =
+                String.join("/", ApplicationConstants.BRIDGE_ARTIFACTORY_URL, "latest", "synopsys-bridge-linux64.zip");
         String invalidUrl = "https://invalid.bridge-download.url";
 
         BridgeDownload bridgeDownload = new BridgeDownload(workspace, listenerMock, envVarsMock);

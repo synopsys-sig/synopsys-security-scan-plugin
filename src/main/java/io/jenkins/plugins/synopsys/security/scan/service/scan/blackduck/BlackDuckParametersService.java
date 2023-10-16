@@ -7,13 +7,12 @@
  */
 package io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck;
 
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Download;
-
-import hudson.model.TaskListener;
 import java.util.*;
 
 public class BlackDuckParametersService {
@@ -27,20 +26,19 @@ public class BlackDuckParametersService {
         if (blackDuckParameters == null || blackDuckParameters.isEmpty()) {
             return false;
         }
-        
+
         List<String> invalidParams = new ArrayList<>();
 
-        Arrays.asList(ApplicationConstants.BLACKDUCK_URL_KEY,
-                ApplicationConstants.BLACKDUCK_TOKEN_KEY)
-            .forEach(key -> {
-                boolean isKeyValid = blackDuckParameters.containsKey(key)
-                    && blackDuckParameters.get(key) != null
-                    && !blackDuckParameters.get(key).toString().isEmpty();
+        Arrays.asList(ApplicationConstants.BLACKDUCK_URL_KEY, ApplicationConstants.BLACKDUCK_TOKEN_KEY)
+                .forEach(key -> {
+                    boolean isKeyValid = blackDuckParameters.containsKey(key)
+                            && blackDuckParameters.get(key) != null
+                            && !blackDuckParameters.get(key).toString().isEmpty();
 
-                if (!isKeyValid) {
-                    invalidParams.add(key);
-                }
-            });
+                    if (!isKeyValid) {
+                        invalidParams.add(key);
+                    }
+                });
 
         if (invalidParams.isEmpty()) {
             logger.info("BlackDuck parameters are validated successfully");
@@ -135,5 +133,4 @@ public class BlackDuckParametersService {
     private boolean isBoolean(String value) {
         return value.equals("true") || value.equals("false");
     }
-
 }

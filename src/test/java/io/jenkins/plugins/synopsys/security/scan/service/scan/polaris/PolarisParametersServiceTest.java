@@ -1,9 +1,10 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scan.polaris;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
-import hudson.model.TaskListener;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class PolarisParametersServiceTest {
     @Test
     void invalidScanParametersTest() {
         Map<String, Object> polarisParameters = new HashMap<>();
-        
+
         assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters));
 
         polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
@@ -62,10 +63,11 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, "SAST");
         polarisParameters.put(ApplicationConstants.POLARIS_TRIAGE_KEY, "REQUIRED");
         polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, "test-branch");
-//        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY, "test-parent-branch");
+        //        polarisParameters.put(ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY,
+        // "test-parent-branch");
 
         Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(polarisParameters);
-        
+
         assertEquals(polaris.getServerUrl(), TEST_POLARIS_SERVER_URL);
         assertEquals(polaris.getAccessToken(), TEST_POLARIS_ACCESS_TOKEN);
         assertEquals(polaris.getApplicationName().getName(), TEST_APPLICATION_NAME);
@@ -73,6 +75,6 @@ public class PolarisParametersServiceTest {
         assertEquals(polaris.getAssessmentTypes().getTypes(), Arrays.asList("SAST"));
         assertEquals(polaris.getTriage(), "REQUIRED");
         assertEquals(polaris.getBranch().getName(), "test-branch");
-//        assertEquals(polaris.getBranch().getParent().getName(), "test-parent-branch");
+        //        assertEquals(polaris.getBranch().getParent().getName(), "test-parent-branch");
     }
 }

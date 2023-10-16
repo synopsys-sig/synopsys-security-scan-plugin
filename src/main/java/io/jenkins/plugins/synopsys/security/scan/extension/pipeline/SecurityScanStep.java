@@ -7,6 +7,12 @@
  */
 package io.jenkins.plugins.synopsys.security.scan.extension.pipeline;
 
+import hudson.*;
+import hudson.model.Node;
+import hudson.model.Run;
+import hudson.model.TaskListener;
+import hudson.util.ListBoxModel;
+import hudson.util.ListBoxModel.Option;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
@@ -14,12 +20,6 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
-import hudson.*;
-import hudson.model.Node;
-import hudson.model.Run;
-import hudson.model.TaskListener;
-import hudson.util.ListBoxModel;
-import hudson.util.ListBoxModel.Option;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
@@ -42,7 +42,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String blackduck_install_directory;
     private Boolean blackduck_scan_full;
     private String blackduck_scan_failure_severities;
-//    private Boolean blackduck_automation_fixpr;
+    //    private Boolean blackduck_automation_fixpr;
     private Boolean blackduck_automation_prcomment;
     private String blackduck_download_url;
 
@@ -64,8 +64,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String polaris_assessment_types;
     private String polaris_triage;
     private String polaris_branch_name;
-//    private String polaris_branch_parent_name;
-
+    //    private String polaris_branch_parent_name;
 
     private transient String bitbucket_token;
 
@@ -261,17 +260,17 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setCoverity_project_name(String coverity_project_name) {
-        this.coverity_project_name =  Util.fixEmptyAndTrim(coverity_project_name);
+        this.coverity_project_name = Util.fixEmptyAndTrim(coverity_project_name);
     }
 
     @DataBoundSetter
     public void setCoverity_stream_name(String coverity_stream_name) {
-        this.coverity_stream_name =  Util.fixEmptyAndTrim(coverity_stream_name);
+        this.coverity_stream_name = Util.fixEmptyAndTrim(coverity_stream_name);
     }
 
     @DataBoundSetter
     public void setCoverity_policy_view(String coverity_policy_view) {
-        this.coverity_policy_view =  Util.fixEmptyAndTrim(coverity_policy_view);
+        this.coverity_policy_view = Util.fixEmptyAndTrim(coverity_policy_view);
     }
 
     @DataBoundSetter
@@ -281,17 +280,19 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setCoverity_automation_prcomment(Boolean coverity_automation_prcomment) {
-        this.coverity_automation_prcomment = coverity_automation_prcomment ? true : null;;
+        this.coverity_automation_prcomment = coverity_automation_prcomment ? true : null;
+        ;
     }
 
     @DataBoundSetter
     public void setCoverity_version(String coverity_version) {
-        this.coverity_version =  Util.fixEmptyAndTrim(coverity_version);
+        this.coverity_version = Util.fixEmptyAndTrim(coverity_version);
     }
 
     @DataBoundSetter
     public void setCoverity_local(Boolean coverity_local) {
-        this.coverity_local = coverity_local ? true : null;;
+        this.coverity_local = coverity_local ? true : null;
+        ;
     }
 
     @DataBoundSetter
@@ -306,27 +307,27 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setPolaris_application_name(String polaris_application_name) {
-        this.polaris_application_name =  Util.fixEmptyAndTrim(polaris_application_name);
+        this.polaris_application_name = Util.fixEmptyAndTrim(polaris_application_name);
     }
 
     @DataBoundSetter
     public void setPolaris_project_name(String polaris_project_name) {
-        this.polaris_project_name =  Util.fixEmptyAndTrim(polaris_project_name);
+        this.polaris_project_name = Util.fixEmptyAndTrim(polaris_project_name);
     }
 
     @DataBoundSetter
     public void setPolaris_assessment_types(String polaris_assessment_types) {
-        this.polaris_assessment_types =  Util.fixEmptyAndTrim(polaris_assessment_types);
+        this.polaris_assessment_types = Util.fixEmptyAndTrim(polaris_assessment_types);
     }
 
     @DataBoundSetter
     public void setPolaris_triage(String polaris_triage) {
-        this.polaris_triage =  Util.fixEmptyAndTrim(polaris_triage);
+        this.polaris_triage = Util.fixEmptyAndTrim(polaris_triage);
     }
 
     @DataBoundSetter
     public void setPolaris_branch_name(String polaris_branch_name) {
-        this.polaris_branch_name =  Util.fixEmptyAndTrim(polaris_branch_name);
+        this.polaris_branch_name = Util.fixEmptyAndTrim(polaris_branch_name);
     }
 
     @DataBoundSetter
@@ -351,17 +352,20 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setInclude_diagnostics(Boolean include_diagnostics) {
-        this.include_diagnostics = include_diagnostics ? true : null;;
+        this.include_diagnostics = include_diagnostics ? true : null;
+        ;
     }
 
     @DataBoundSetter
     public void setNetwork_airgap(Boolean network_airgap) {
-        this.network_airgap = network_airgap ? true : null;;
+        this.network_airgap = network_airgap ? true : null;
+        ;
     }
 
-    private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener) throws PluginExceptionHandler {
-        return ScanParametersFactory.preparePipelineParametersMap(this,
-                ScanParametersFactory.getGlobalConfigurationValues(workspace, listener), listener);
+    private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
+            throws PluginExceptionHandler {
+        return ScanParametersFactory.preparePipelineParametersMap(
+                this, ScanParametersFactory.getGlobalConfigurationValues(workspace, listener), listener);
     }
 
     @Override
@@ -373,7 +377,8 @@ public class SecurityScanStep extends Step implements Serializable {
     public static final class DescriptorImpl extends StepDescriptor {
         @Override
         public Set<? extends Class<?>> getRequiredContext() {
-            return new HashSet<>(Arrays.asList(Run.class, TaskListener.class, EnvVars.class, FilePath.class, Launcher.class, Node.class));
+            return new HashSet<>(Arrays.asList(
+                    Run.class, TaskListener.class, EnvVars.class, FilePath.class, Launcher.class, Node.class));
         }
 
         @Override
@@ -430,12 +435,13 @@ public class SecurityScanStep extends Step implements Serializable {
             LoggerWrapper logger = new LoggerWrapper(listener);
             Integer result = null;
 
-            logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+            logger.println(
+                    "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             try {
-                result = Integer.valueOf(ScanParametersFactory
-                        .createPipelineCommand(run, listener, envVars, launcher, node, workspace)
-                        .initializeScanner(getParametersMap(workspace, listener)));
+                result = Integer.valueOf(
+                        ScanParametersFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
+                                .initializeScanner(getParametersMap(workspace, listener)));
             } catch (Exception e) {
                 if (e instanceof PluginExceptionHandler) {
                     throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
@@ -443,7 +449,8 @@ public class SecurityScanStep extends Step implements Serializable {
                     throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
                 }
             } finally {
-                logger.println("**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+                logger.println(
+                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
             }
 
             return result;

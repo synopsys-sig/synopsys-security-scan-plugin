@@ -26,20 +26,21 @@ public class Utility {
 
         if (os != null && os.contains("win")) {
             return "\\";
-        }  else {
+        } else {
             return "/";
         }
     }
 
     public static String getAgentOs(FilePath workspace, TaskListener listener) {
-        String os =  null;
+        String os = null;
         LoggerWrapper logger = new LoggerWrapper(listener);
 
         if (workspace.isRemote()) {
             try {
                 os = workspace.act(new OsNameTask());
             } catch (IOException | InterruptedException e) {
-                logger.error("An exception occurred while fetching the OS information for the agent node: " + e.getMessage());
+                logger.error("An exception occurred while fetching the OS information for the agent node: "
+                        + e.getMessage());
             }
         } else {
             os = System.getProperty("os.name").toLowerCase();
@@ -47,7 +48,6 @@ public class Utility {
 
         return os;
     }
-
 
     public static void removeFile(String filePath, FilePath workspace, TaskListener listener) {
         LoggerWrapper logger = new LoggerWrapper(listener);
@@ -76,7 +76,7 @@ public class Utility {
                 URL proxyURL = new URL(proxy);
 
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection(
-                    new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyURL.getHost(), proxyURL.getPort())));
+                        new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyURL.getHost(), proxyURL.getPort())));
                 setDefaultProxyAuthenticator(proxyURL.getUserInfo());
 
                 return connection;
@@ -99,12 +99,11 @@ public class Utility {
                     return ApplicationConstants.NO_PROXY;
                 } else if (noProxyHost.startsWith("*") && noProxyHost.length() > 2) {
                     noProxyHost = noProxyHost.substring(2);
-                    if(url.toString().contains(noProxyHost)){
+                    if (url.toString().contains(noProxyHost)) {
                         return ApplicationConstants.NO_PROXY;
                     }
                 }
             }
-
         }
 
         return getProxyValue(envVars, logger);
@@ -123,7 +122,7 @@ public class Utility {
             return httpProxy;
         }
 
-        return  ApplicationConstants.NO_PROXY;
+        return ApplicationConstants.NO_PROXY;
     }
 
     public static String getEnvOrSystemProxyDetails(String proxyType, EnvVars envVars) {
@@ -164,5 +163,4 @@ public class Utility {
 
         return proxyUrlString;
     }
-
 }

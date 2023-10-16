@@ -44,7 +44,7 @@ public class UtilityTest {
         String separator = Utility.getDirectorySeparator(workspace, listenerMock);
         String osName = System.getProperty("os.name").toLowerCase();
 
-        if(osName.contains("win")) {
+        if (osName.contains("win")) {
             assertEquals("\\", separator);
         } else {
             assertEquals("/", separator);
@@ -81,7 +81,7 @@ public class UtilityTest {
         assertTrue(Utility.isStringNullOrBlank(emptyStringContainingSpace));
         assertFalse(Utility.isStringNullOrBlank(validString));
     }
-    
+
     @Test
     public void getHttpURLConnectionTest() {
         EnvVars envVars = new EnvVars();
@@ -133,11 +133,16 @@ public class UtilityTest {
         envVars.put("HTTP_PROXY", "https://fake-proxy.com:1010");
         envVars.put("HTTPS_PROXY", "https://fake-proxy.com:1010");
 
-        assertEquals(envVars.get("NO_PROXY"), Utility.getEnvOrSystemProxyDetails(ApplicationConstants.NO_PROXY, envVars));
-        assertEquals(envVars.get("HTTP_PROXY"), Utility.getEnvOrSystemProxyDetails(ApplicationConstants.HTTP_PROXY, envVars));
-        assertEquals(envVars.get("HTTPS_PROXY"), Utility.getEnvOrSystemProxyDetails(ApplicationConstants.HTTPS_PROXY, envVars));
+        assertEquals(
+                envVars.get("NO_PROXY"), Utility.getEnvOrSystemProxyDetails(ApplicationConstants.NO_PROXY, envVars));
+        assertEquals(
+                envVars.get("HTTP_PROXY"),
+                Utility.getEnvOrSystemProxyDetails(ApplicationConstants.HTTP_PROXY, envVars));
+        assertEquals(
+                envVars.get("HTTPS_PROXY"),
+                Utility.getEnvOrSystemProxyDetails(ApplicationConstants.HTTPS_PROXY, envVars));
     }
-    
+
     @Test
     public void setDefaultProxyAuthenticatorTest() {
         Authenticator.setDefault(null);
@@ -150,7 +155,7 @@ public class UtilityTest {
         assertNotNull(passwordAuth);
         assertEquals("username", passwordAuth.getUserName());
         assertArrayEquals("password".toCharArray(), passwordAuth.getPassword());
-        
+
         Authenticator.setDefault(null);
     }
 

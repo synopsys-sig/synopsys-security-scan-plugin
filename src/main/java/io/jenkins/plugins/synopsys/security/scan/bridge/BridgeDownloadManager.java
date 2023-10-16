@@ -7,14 +7,14 @@
  */
 package io.jenkins.plugins.synopsys.security.scan.bridge;
 
+import hudson.EnvVars;
+import hudson.FilePath;
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
-import hudson.EnvVars;
-import hudson.FilePath;
-import hudson.model.TaskListener;
 import java.io.IOException;
 import java.net.*;
 import java.util.regex.Matcher;
@@ -33,7 +33,8 @@ public class BridgeDownloadManager {
         this.envVars = envVars;
     }
 
-    public void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams) throws PluginExceptionHandler {
+    public void initiateBridgeDownloadAndUnzip(BridgeDownloadParameters bridgeDownloadParams)
+            throws PluginExceptionHandler {
         BridgeDownload bridgeDownload = new BridgeDownload(workspace, listener, envVars);
         BridgeInstall bridgeInstall = new BridgeInstall(workspace, listener);
 
@@ -44,9 +45,11 @@ public class BridgeDownloadManager {
 
         try {
             FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl, bridgeInstallationPath);
-            bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(workspace.getChannel(), bridgeInstallationPath));
+            bridgeInstall.installSynopsysBridge(
+                    bridgeZipPath, new FilePath(workspace.getChannel(), bridgeInstallationPath));
         } catch (Exception e) {
-            logger.error(LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
+            logger.error(
+                    LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
             throw new PluginExceptionHandler(e.getMessage());
         }
     }
@@ -55,13 +58,14 @@ public class BridgeDownloadManager {
         String bridgeDownloadUrl = bridgeDownloadParameters.getBridgeDownloadUrl();
         String bridgeInstallationPath = bridgeDownloadParameters.getBridgeInstallationPath();
 
-
         String installedBridgeVersionFilePath;
         String os = Utility.getAgentOs(workspace, listener);
         if (os.contains("win")) {
-            installedBridgeVersionFilePath = String.join("\\", bridgeInstallationPath, ApplicationConstants.VERSION_FILE);
+            installedBridgeVersionFilePath =
+                    String.join("\\", bridgeInstallationPath, ApplicationConstants.VERSION_FILE);
         } else {
-            installedBridgeVersionFilePath = String.join("/", bridgeInstallationPath, ApplicationConstants.VERSION_FILE);
+            installedBridgeVersionFilePath =
+                    String.join("/", bridgeInstallationPath, ApplicationConstants.VERSION_FILE);
         }
 
         String installedBridgeVersion = getBridgeVersionFromVersionFile(installedBridgeVersionFilePath);
@@ -77,10 +81,13 @@ public class BridgeDownloadManager {
             if (installationDirectory.exists() && installationDirectory.isDirectory()) {
                 FilePath extensionsDir = installationDirectory.child(ApplicationConstants.EXTENSIONS_DIRECTORY);
                 FilePath bridgeBinaryFile = installationDirectory.child(ApplicationConstants.BRIDGE_BINARY);
-                FilePath bridgeBinaryFileWindows = installationDirectory.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS);
+                FilePath bridgeBinaryFileWindows =
+                        installationDirectory.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS);
                 FilePath versionFile = installationDirectory.child(ApplicationConstants.VERSION_FILE);
 
-                return extensionsDir.isDirectory() && (bridgeBinaryFile.exists() || bridgeBinaryFileWindows.exists()) && versionFile.exists();
+                return extensionsDir.isDirectory()
+                        && (bridgeBinaryFile.exists() || bridgeBinaryFileWindows.exists())
+                        && versionFile.exists();
             }
         } catch (IOException | InterruptedException e) {
             logger.error("An exception occurred while checking if the bridge is installed: " + e.getMessage());
@@ -101,31 +108,29 @@ public class BridgeDownloadManager {
                 }
             }
         } catch (IOException | InterruptedException e) {
-            logger.error("An exception occurred while extracting bridge-version from the 'versions.txt': " + e.getMessage());
+            logger.error(
+                    "An exception occurred while extracting bridge-version from the 'versions.txt': " + e.getMessage());
         }
         return null;
     }
 
     public String getLatestBridgeVersionFromArtifactory(String bridgeDownloadUrl) {
-        if (Utility.isStringNullOrBlank(bridgeDownloadUrl))
-            return ApplicationConstants.NOT_AVAILABLE;
+        if (Utility.isStringNullOrBlank(bridgeDownloadUrl)) return ApplicationConstants.NOT_AVAILABLE;
 
         String extractedVersionNumber = extractVersionFromUrl(bridgeDownloadUrl);
-        if(extractedVersionNumber.equals(ApplicationConstants.NOT_AVAILABLE)) {
+        if (extractedVersionNumber.equals(ApplicationConstants.NOT_AVAILABLE)) {
             String directoryUrl = getDirectoryUrl(bridgeDownloadUrl);
-            if(isVersionFileAvailableInArtifactory(directoryUrl)) {
+            if (isVersionFileAvailableInArtifactory(directoryUrl)) {
                 String versionFilePath = downloadVersionFileFromArtifactory(directoryUrl);
                 String latestVersion = getBridgeVersionFromVersionFile(versionFilePath);
 
                 Utility.removeFile(versionFilePath, workspace, listener);
 
                 return latestVersion;
-            }
-            else {
+            } else {
                 return ApplicationConstants.NOT_AVAILABLE;
             }
-        }
-        else {
+        } else {
             return extractedVersionNumber;
         }
     }
@@ -151,7 +156,7 @@ public class BridgeDownloadManager {
 
     public boolean isVersionFileAvailableInArtifactory(String directoryUrl) {
         try {
-            URL url = new URL(String.join("/",directoryUrl,ApplicationConstants.VERSION_FILE));
+            URL url = new URL(String.join("/", directoryUrl, ApplicationConstants.VERSION_FILE));
 
             HttpURLConnection connection = Utility.getHttpURLConnection(url, envVars, logger);
             if (connection != null) {
@@ -159,7 +164,8 @@ public class BridgeDownloadManager {
                 return (connection.getResponseCode() >= 200 && connection.getResponseCode() < 300);
             }
         } catch (IOException e) {
-            logger.error("An exception occurred while checking if 'versions.txt' is available or not in the URL: " + e.getMessage());
+            logger.error("An exception occurred while checking if 'versions.txt' is available or not in the URL: "
+                    + e.getMessage());
         }
         return false;
     }
@@ -197,5 +203,4 @@ public class BridgeDownloadManager {
 
         return version;
     }
-    
 }

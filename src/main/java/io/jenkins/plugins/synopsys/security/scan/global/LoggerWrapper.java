@@ -43,6 +43,4 @@ public class LoggerWrapper {
     public void println() {
         listener.getLogger().println();
     }
-
 }
-

@@ -7,11 +7,11 @@
  */
 package io.jenkins.plugins.synopsys.security.scan.service.scan.coverity;
 
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
-import hudson.model.TaskListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,21 +28,22 @@ public class CoverityParametersService {
         if (coverityParameters == null || coverityParameters.isEmpty()) {
             return false;
         }
-        
+
         List<String> invalidParams = new ArrayList<>();
 
-        Arrays.asList(ApplicationConstants.COVERITY_URL_KEY,
-            ApplicationConstants.COVERITY_USER_KEY,
-            ApplicationConstants.COVERITY_PASSPHRASE_KEY)
-            .forEach(key -> {
-                boolean isKeyValid = coverityParameters.containsKey(key)
-                    && coverityParameters.get(key) != null
-                    && !coverityParameters.get(key).toString().isEmpty();
+        Arrays.asList(
+                        ApplicationConstants.COVERITY_URL_KEY,
+                        ApplicationConstants.COVERITY_USER_KEY,
+                        ApplicationConstants.COVERITY_PASSPHRASE_KEY)
+                .forEach(key -> {
+                    boolean isKeyValid = coverityParameters.containsKey(key)
+                            && coverityParameters.get(key) != null
+                            && !coverityParameters.get(key).toString().isEmpty();
 
-                if (!isKeyValid) {
-                    invalidParams.add(key);
-                }
-            });
+                    if (!isKeyValid) {
+                        invalidParams.add(key);
+                    }
+                });
 
         if (invalidParams.isEmpty()) {
             logger.info("Coverity parameters are validated successfully");

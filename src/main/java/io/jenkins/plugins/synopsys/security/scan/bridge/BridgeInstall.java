@@ -7,15 +7,14 @@
  */
 package io.jenkins.plugins.synopsys.security.scan.bridge;
 
+import hudson.FilePath;
+import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.HomeDirectoryTask;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
-import hudson.FilePath;
-import hudson.model.TaskListener;
-import jenkins.model.Jenkins;
-
 import java.io.IOException;
+import jenkins.model.Jenkins;
 
 public class BridgeInstall {
     private final LoggerWrapper logger;
@@ -31,7 +30,9 @@ public class BridgeInstall {
             if (bridgeZipPath != null && bridgeInstallationPath != null) {
                 bridgeZipPath.unzip(bridgeInstallationPath);
                 bridgeZipPath.delete();
-                logger.info("Synopsys Bridge zip path: %s and bridge installation path: %s", bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
+                logger.info(
+                        "Synopsys Bridge zip path: %s and bridge installation path: %s",
+                        bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
             }
         } catch (Exception e) {
             logger.error("An exception occurred while unzipping Synopsys Bridge zip file: " + e.getMessage());
