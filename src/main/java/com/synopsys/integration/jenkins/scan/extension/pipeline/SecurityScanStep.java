@@ -14,6 +14,7 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.*;
 import hudson.model.Node;
 import hudson.model.Run;
@@ -411,9 +412,12 @@ public class SecurityScanStep extends Step implements Serializable {
         private final transient Run<?, ?> run;
         private final transient Launcher launcher;
         private final transient Node node;
-        private final TaskListener listener;
-        private final EnvVars envVars;
-        private final FilePath workspace;
+        @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
+        private final transient TaskListener listener;
+        @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
+        private final transient EnvVars envVars;
+        @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
+        private final transient FilePath workspace;
 
         protected Execution(@Nonnull StepContext context) throws InterruptedException, IOException {
             super(context);
