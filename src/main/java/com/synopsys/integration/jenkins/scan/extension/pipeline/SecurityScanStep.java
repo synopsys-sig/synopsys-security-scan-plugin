@@ -409,11 +409,11 @@ public class SecurityScanStep extends Step implements Serializable {
     public class Execution extends SynchronousNonBlockingStepExecution<Integer> {
         private static final long serialVersionUID = -2514079516220990421L;
         private final transient Run<?, ?> run;
-        private final transient TaskListener listener;
-        private final transient EnvVars envVars;
-        private final transient FilePath workspace;
         private final transient Launcher launcher;
         private final transient Node node;
+        private final TaskListener listener;
+        private final EnvVars envVars;
+        private final FilePath workspace;
 
         protected Execution(@Nonnull StepContext context) throws InterruptedException, IOException {
             super(context);
@@ -428,14 +428,14 @@ public class SecurityScanStep extends Step implements Serializable {
         @Override
         protected Integer run() throws PluginExceptionHandler, ScannerException {
             LoggerWrapper logger = new LoggerWrapper(listener);
-            Integer result = null;
+            int result;
 
             logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             try {
-                result = Integer.valueOf(ScanParametersFactory
-                        .createPipelineCommand(run, listener, envVars, launcher, node, workspace)
-                        .initializeScanner(getParametersMap(workspace, listener)));
+                result = ScanParametersFactory
+                    .createPipelineCommand(run, listener, envVars, launcher, node, workspace)
+                    .initializeScanner(getParametersMap(workspace, listener));
             } catch (Exception e) {
                 if (e instanceof PluginExceptionHandler) {
                     throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
