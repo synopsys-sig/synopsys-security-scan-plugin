@@ -35,6 +35,7 @@ public class BridgeInstall {
             }
         } catch (Exception e) {
             logger.error("An exception occurred while unzipping Synopsys Bridge zip file: " + e.getMessage());
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -56,6 +57,7 @@ public class BridgeInstall {
             defaultInstallationPath = workspace.act(new HomeDirectoryTask(separator));
         } catch (IOException | InterruptedException e) {
             logger.error(LogMessages.FAILED_TO_FETCH_PLUGINS_DEFAULT_INSTALLATION_PATH, e.getMessage());
+            Thread.currentThread().interrupt();
         }
 
         return defaultInstallationPath;
@@ -70,6 +72,7 @@ public class BridgeInstall {
             }
         } catch (IOException | InterruptedException e) {
             logger.error("Failed to create directory: " + directory.getRemote());
+            Thread.currentThread().interrupt();
         }
     }
 }

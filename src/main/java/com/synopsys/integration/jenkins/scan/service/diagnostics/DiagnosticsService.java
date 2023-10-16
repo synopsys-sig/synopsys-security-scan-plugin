@@ -45,6 +45,7 @@ public class DiagnosticsService {
             }
         } catch (Exception e) {
             logger.error("An exception occurred while archiving diagnostics in jenkins artifact: " + e.getMessage());
+            Thread.currentThread().interrupt();
             return;
         }
 
