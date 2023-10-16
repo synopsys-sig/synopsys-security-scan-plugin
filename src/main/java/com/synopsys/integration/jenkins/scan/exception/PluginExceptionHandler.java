@@ -27,7 +27,7 @@ public class PluginExceptionHandler extends Exception {
     }
 
     @Override
-    public Throwable fillInStackTrace() {
+    public synchronized Throwable fillInStackTrace() {
         return this;
     }
 }
