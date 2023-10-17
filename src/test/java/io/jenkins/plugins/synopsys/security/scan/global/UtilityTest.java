@@ -152,8 +152,8 @@ public class UtilityTest {
         assertEquals("username", passwordAuth.getUserName());
         assertArrayEquals("password".toCharArray(), passwordAuth.getPassword());
 
-
-        Utility.setDefaultProxyAuthenticator(passwordAuth.getUserName().concat(":").concat(Arrays.toString(passwordAuth.getPassword())));
+        Utility.setDefaultProxyAuthenticator(
+                passwordAuth.getUserName().concat(":").concat(Arrays.toString(passwordAuth.getPassword())));
         Authenticator authenticator = Authenticator.getDefault();
         assertNotNull(authenticator);
 

@@ -1,5 +1,6 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.pipeline;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.*;
 import hudson.model.Node;
 import hudson.model.Run;
@@ -13,7 +14,6 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
@@ -406,10 +406,13 @@ public class SecurityScanStep extends Step implements Serializable {
         private final transient Run<?, ?> run;
         private final transient Launcher launcher;
         private final transient Node node;
+
         @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
         private final transient TaskListener listener;
+
         @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
         private final transient EnvVars envVars;
+
         @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
         private final transient FilePath workspace;
 
@@ -432,9 +435,8 @@ public class SecurityScanStep extends Step implements Serializable {
                     "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             try {
-                result = ScanParametersFactory
-                    .createPipelineCommand(run, listener, envVars, launcher, node, workspace)
-                    .initializeScanner(getParametersMap(workspace, listener));
+                result = ScanParametersFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
+                        .initializeScanner(getParametersMap(workspace, listener));
             } catch (Exception e) {
                 if (e instanceof PluginExceptionHandler) {
                     throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
