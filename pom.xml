@@ -145,8 +145,8 @@
         <version>0.8.10</version>
         <configuration>
           <excludes>
-            <exclude>com/synopsys/integration/jenkins/scan/extension/**/*.class</exclude>
-            <exclude>com/synopsys/integration/jenkins/scan/SecurityScanner.class</exclude>
+            <exclude>io/jenkins/plugins/synopsys/security/scan/extension/**/*.class</exclude>
+            <exclude>io/jenkins/plugins/synopsys/security/scan/SecurityScanner.class</exclude>
           </excludes>
         </configuration>
         <executions>
