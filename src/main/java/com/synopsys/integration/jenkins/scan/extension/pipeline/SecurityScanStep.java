@@ -14,6 +14,7 @@ import com.synopsys.integration.jenkins.scan.global.ApplicationConstants;
 import com.synopsys.integration.jenkins.scan.global.ExceptionMessages;
 import com.synopsys.integration.jenkins.scan.global.LoggerWrapper;
 import com.synopsys.integration.jenkins.scan.global.enums.SecurityProduct;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.*;
 import hudson.model.Node;
 import hudson.model.Run;
@@ -409,11 +410,14 @@ public class SecurityScanStep extends Step implements Serializable {
     public class Execution extends SynchronousNonBlockingStepExecution<Integer> {
         private static final long serialVersionUID = -2514079516220990421L;
         private final transient Run<?, ?> run;
-        private final transient TaskListener listener;
-        private final transient EnvVars envVars;
-        private final transient FilePath workspace;
         private final transient Launcher launcher;
         private final transient Node node;
+        @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
+        private final transient TaskListener listener;
+        @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
+        private final transient EnvVars envVars;
+        @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
+        private final transient FilePath workspace;
 
         protected Execution(@Nonnull StepContext context) throws InterruptedException, IOException {
             super(context);
@@ -428,14 +432,14 @@ public class SecurityScanStep extends Step implements Serializable {
         @Override
         protected Integer run() throws PluginExceptionHandler, ScannerException {
             LoggerWrapper logger = new LoggerWrapper(listener);
-            Integer result = null;
+            int result;
 
             logger.println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             try {
-                result = Integer.valueOf(ScanParametersFactory
-                        .createPipelineCommand(run, listener, envVars, launcher, node, workspace)
-                        .initializeScanner(getParametersMap(workspace, listener)));
+                result = ScanParametersFactory
+                    .createPipelineCommand(run, listener, envVars, launcher, node, workspace)
+                    .initializeScanner(getParametersMap(workspace, listener));
             } catch (Exception e) {
                 if (e instanceof PluginExceptionHandler) {
                     throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
