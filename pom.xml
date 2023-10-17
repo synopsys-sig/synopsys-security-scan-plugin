@@ -14,9 +14,9 @@
   <name>Synopsys Security Scan</name>
   <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
   <licenses>
-   <license>
+    <license>
       <name>Apache License</name>
-      <url> http://www.apache.org/licenses/</url>
+      <url>http://www.apache.org/licenses/</url>
     </license>
   </licenses>
   <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
@@ -26,11 +26,10 @@
     <url>https://github.com/${gitHubRepo}</url>
   </scm>
   <properties>
-    <java.version>11</java.version>
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
     <jenkins.version>2.401.3</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
-    <spotless.check.skip>true</spotless.check.skip>
+    <spotless.check.skip>false</spotless.check.skip>
   </properties>
 
   <dependencyManagement>
@@ -45,11 +44,6 @@
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-web</artifactId>
-        <version>5.8.5</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-core</artifactId>
         <version>5.8.5</version>
       </dependency>
@@ -58,10 +52,25 @@
         <artifactId>spring-security-crypto</artifactId>
         <version>5.8.5</version>
       </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>5.8.5</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>cloudbees-bitbucket-branch-source</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.yaml</groupId>
+          <artifactId>snakeyaml</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>structs</artifactId>
@@ -69,18 +78,6 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins.workflow</groupId>
       <artifactId>workflow-step-api</artifactId>
-      <version>639.v6eca_cd8c04a_a_</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jenkins-ci.plugins</groupId>
-      <artifactId>cloudbees-bitbucket-branch-source</artifactId>
-      <version>832.v43175a_425ea_6</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.yaml</groupId>
-          <artifactId>snakeyaml</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins.workflow</groupId>
@@ -122,6 +119,23 @@
     </dependency>
   </dependencies>
 
+  <repositories>
+    <repository>
+      <id>repo.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/public/</url>
+    </repository>
+    <repository>
+      <id>bds-artifactory</id>
+      <url>${repoReleaseArtifactoryUrl}</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repo.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <build>
     <finalName>${project.artifactId}-${project.version}</finalName>
     <plugins>
@@ -129,6 +143,12 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.8.10</version>
+        <configuration>
+          <excludes>
+            <exclude>com/synopsys/integration/jenkins/scan/extension/**/*.class</exclude>
+            <exclude>com/synopsys/integration/jenkins/scan/SecurityScanner.class</exclude>
+          </excludes>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -137,18 +157,12 @@
           </execution>
           <execution>
             <id>report</id>
-            <phase>test</phase>
             <goals>
               <goal>report</goal>
             </goals>
+            <phase>test</phase>
           </execution>
         </executions>
-        <configuration>
-          <excludes>
-            <exclude>com/synopsys/integration/jenkins/scan/extension/**/*.class</exclude>
-            <exclude>com/synopsys/integration/jenkins/scan/SecurityScanner.class</exclude>
-          </excludes>
-        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -195,21 +209,4 @@
       </distributionManagement>
     </profile>
   </profiles>
-
-  <repositories>
-    <repository>
-      <id>repo.jenkins-ci.org</id>
-      <url>https://repo.jenkins-ci.org/public/</url>
-    </repository>
-    <repository>
-      <id>bds-artifactory</id>
-      <url>${repoReleaseArtifactoryUrl}</url>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>repo.jenkins-ci.org</id>
-      <url>https://repo.jenkins-ci.org/public/</url>
-    </pluginRepository>
-  </pluginRepositories>
 </project>
