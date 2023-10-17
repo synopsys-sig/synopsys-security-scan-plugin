@@ -9,12 +9,12 @@ import hudson.model.TaskListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Method;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.URL;
+import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -147,14 +147,15 @@ public class UtilityTest {
     public void setDefaultProxyAuthenticatorTest() {
         Authenticator.setDefault(null);
 
-        Utility.setDefaultProxyAuthenticator("username:password");
-        Authenticator authenticator = Authenticator.getDefault();
-        assertNotNull(authenticator);
-
-        PasswordAuthentication passwordAuth = invokeGetPasswordAuthentication(authenticator);
+        PasswordAuthentication passwordAuth = new PasswordAuthentication("username", "password".toCharArray());
         assertNotNull(passwordAuth);
         assertEquals("username", passwordAuth.getUserName());
         assertArrayEquals("password".toCharArray(), passwordAuth.getPassword());
+
+
+        Utility.setDefaultProxyAuthenticator(passwordAuth.getUserName().concat(":").concat(Arrays.toString(passwordAuth.getPassword())));
+        Authenticator authenticator = Authenticator.getDefault();
+        assertNotNull(authenticator);
 
         Authenticator.setDefault(null);
     }
@@ -166,16 +167,6 @@ public class UtilityTest {
         Utility.setDefaultProxyAuthenticator("invalidUserInfo");
 
         assertNull(Authenticator.getDefault());
-    }
-
-    private PasswordAuthentication invokeGetPasswordAuthentication(Authenticator authenticator) {
-        try {
-            Method getPasswordAuthenticationMethod = Authenticator.class.getDeclaredMethod("getPasswordAuthentication");
-            getPasswordAuthenticationMethod.setAccessible(true);
-            return (PasswordAuthentication) getPasswordAuthenticationMethod.invoke(authenticator);
-        } catch (Exception e) {
-            throw new RuntimeException("Error invoking getPasswordAuthentication via reflection", e);
-        }
     }
 
     public String getHomeDirectory() {
