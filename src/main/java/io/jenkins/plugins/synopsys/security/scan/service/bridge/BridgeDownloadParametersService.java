@@ -89,7 +89,9 @@ public class BridgeDownloadParametersService {
             }
         } catch (IOException | InterruptedException e) {
             logger.error("An exception occurred while validating the installation path: " + e.getMessage());
+            Thread.currentThread().interrupt();
             return false;
+
         }
     }
 

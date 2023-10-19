@@ -84,6 +84,7 @@ public class BridgeDownloadManager {
             }
         } catch (IOException | InterruptedException e) {
             logger.error("An exception occurred while checking if the bridge is installed: " + e.getMessage());
+            Thread.currentThread().interrupt();
         }
         return false;
     }
@@ -101,8 +102,8 @@ public class BridgeDownloadManager {
                 }
             }
         } catch (IOException | InterruptedException e) {
-            logger.error(
-                    "An exception occurred while extracting bridge-version from the 'versions.txt': " + e.getMessage());
+            logger.error("An exception occurred while extracting bridge-version from the 'versions.txt': " + e.getMessage());
+            Thread.currentThread().interrupt();
         }
         return null;
     }
@@ -143,6 +144,7 @@ public class BridgeDownloadManager {
             }
         } catch (IOException | InterruptedException e) {
             logger.error("An exception occurred while downloading 'versions.txt': " + e.getMessage());
+            Thread.currentThread().interrupt();
         }
         return tempVersionFilePath;
     }

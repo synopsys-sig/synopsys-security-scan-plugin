@@ -139,7 +139,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     public String getBlackDuckApiToken() {
         return blackDuckApiToken;
     }
-
     public String getBlackDuckInstallationPath() {
         return blackDuckInstallationPath;
     }
