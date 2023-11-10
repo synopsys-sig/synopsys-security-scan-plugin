@@ -20,10 +20,10 @@ To Generate this token, follow these instructions:
 >- Enter Token name
 >- Keep everything as default or you can change the Project/Repository Permissions as your need.
 >- Click the Create Button. Then a token will be generated. <br>
-** You need to store this token to configure the Branch Sources of your Jenkins job
+   ** You need to store this token to configure the Branch Sources of your Jenkins job
 
 #### Bitbucket token for PrComment/FixPr:
-bitbucket_token parameter is required as input when running Black Duck/Coverity PR Comment. 
+bitbucket_token parameter is required as input when running Black Duck/Coverity PR Comment.
 There are two different types of tokens in bitbucket which can be passed to bitbucket_token
 parameter.
 
@@ -36,28 +36,28 @@ To use this token for PR comments,
 it must hold Repository permissions such as "Repository write" or "Repository admin."
 This token is employed when working at the repository level. To Generate this token, follow these instructions:
 >- First go to the source of your repository.
->- Click on the repostory settings icon.
+>- Click on the repository settings icon.
 >- Then click on the HTTP access tokens.
 >- Next click Create token button.
 >- Enter Token name.
 >- Keep everything as default or you can change the Project/Repository Permissions as your need.
 >- Click the Create Button. Then a token will be generated. <br>
-** You need to store this token to run the Black Duck/Coverity PR Comment Feature.
+   ** You need to store this token to run the Black Duck/Coverity PR Comment Feature.
 
 ### Project Setup
 #### Installing Helper Plugins for Jenkins:
 - **Pipeline**
 
-To install plugins, first navigate to:  
->- Dashboard → Manage Jenkins → Plugins   
->- After that Go to the section "Available plugins".  
->- Then Search And Install the `Pipeline` plugin that we mentioned above.  
+To install plugins, first navigate to:
+>- Dashboard → Manage Jenkins → Plugins
+>- After that Go to the section "Available plugins".
+>- Then Search And Install the `Pipeline` plugin that we mentioned above.
 >- Once the installation is completed then restart the jenkins instance.
 
 #### Configure Bitbucket Server:
 Navigate to Dashboard → Manage Jenkins → System  
 Go to the Bitbucket Endpoints section. Click to the Add button.   
-Select the Bitbucket Server from the dropdown. Now follow these instructions.  
+Select the Bitbucket Server from the dropdown. Now follow these instructions.
 >- Enter the Name
 >- Enter valid Server URL
 >- Enter Server Version
@@ -66,16 +66,16 @@ Select the Bitbucket Server from the dropdown. Now follow these instructions.
 >- Select the Plugin from the "Webhook implementation to use" dropdown.
 >- Click Apply and Save.
 
-#### Create a Multibranch Pipeline Job in your Jenkins instance
+#### Create a Multibranch Pipeline Job in your Jenkins instance:
 
 To create the Multibranch Pipeline, follow these instructions,
 >- First click to the New Item
 >- Enter an item name
 >- Select Multibranch Pipeline
 >- Click OK   
-Then you will be navigated to your Job's configuration page.
+   Then you will be navigated to your Job's configuration page.
 
-#### Configure The Job
+#### Configure The Job:
 
 First, Go to the Branch Sources section. Then follow these instructions.
 >- Select your Bitbucket Server from the Bitbucket Server dropdown.
@@ -92,12 +92,24 @@ So to trigger only the specific branch during the first time job configuration, 
 >- Next on the Branch names to build automatically field → Enter your branch name. Or, if you want to include multiple branches you can use regex.
 >- On the Suppression strategy dropdown, select For matching branches schedule all builds (nothing is suppressed).
 >- Finally, click Apply and Save.  
-**Note:** Later you may need to delete the `Suppress automatic SCM triggering` property to trigger scan on other branches by clicking `Scan Multibranch Pipeline Now` on the job.
+   **Note:** Later you may need to delete the `Suppress automatic SCM triggering` property to trigger scan on other branches by clicking `Scan Multibranch Pipeline Now` on the job.
 
-#### Configure Global UI :
+#### Configure Global UI:
 Navigate to Dashboard → Manage Jenkins → System  
 Then go to the Synopsys Security Scan section.  
-And from there you can populate the inputs for configuration.
+And from there you can populate the inputs for configuration.     
+
+**Note:** To give input for secret fields such as password or token you need to use the jenkins credentials provider.
+- If you have already added secrets using jenkins credentials provider (Manage Jenkins → Credentials or the following way) then they will be listed in the dropdown, and you can select them.
+- But if you haven't configured secrets yet, then you need to follow these instructions,
+>- First you need to click on the add button. Then click Jenkins item on the dropdown.
+>- Then click on the dropdown named Kind and select Secret text item. <br>
+   **Note:** To config coverity security product, you need to select Username with password item. Also you need to populate Username and Password fields with proper values.
+>- Now, enter your Secret text.
+>- Also, you can put an id against the Secret.
+>- Then keep everything as default.
+>- Finally, click the Add button. <br>
+   Then it will appear as a dropdown item under the default -none- item.
 
 #### Generate Pipeline Syntax:
 >- Go to the Dashboard → JOB NAME → Branches / Pull Requests
@@ -109,27 +121,43 @@ And from there you can populate the inputs for configuration.
 >- Then click on the Generate Pipeline Script.
 >- Finally, copy the Generated Pipeline Script to Jenkinsfile.
 
+#### Creating and Configuring Jenkins Agents:             
+To set up your own Jenkins agent, please follow these two important resources.   
+**1. Creating Your Own Jenkins Agent:**  
+If you wish to create a Jenkins agent, visit this documentation [**here**](https://www.jenkins.io/doc/book/using/using-agents/). This resource will walk you through the process of creating an agent, which allows you to distribute and manage workloads effectively.   
+**2. Defining Agents in Jenkinsfile:**
+If you want to define your agents and include multi-agent conditions within your Jenkinsfile, visit this documentation [**here**](https://hrmpw.github.io/jenkins.io/doc/pipeline/tour/agents/). It provides detailed guidance on configuring agents and utilizing multi-agent setups in your Jenkins pipelines.
+
+
 ### Using Synopsys Security Scan for Black Duck
 
- To use the plugin and invoke it as a pipeline step, follow these instructions:
+To use the plugin and invoke it as a pipeline step, follow these instructions:
 
 1. Add the following code snippet to your `Jenkinsfile` in your project root directory that you want to scan:
 
 ```groovy
-stage("Security Scan") {
-    steps {
-        script {
-            def blackDuckScanFull
-            def blackDuckAutomationPrComment
+pipeline {
+    agent any
+    stages {
+        stage("synopsys-security-scan") {
+            when {
+                // Triggering the Synopsys Security Scan on master branch or Pull Request 
+                anyOf {
+                    branch 'master'
+                    branch pattern: "PR-\\d+", comparator: "REGEXP"
+                }
+            }
+            steps {
+                echo 'SYNOPSYS SECURITY SCAN EXECUTION STARTED'
+                script {
+                    // Enabling Black Duck PR comment for Pull Request
+                    def blackduckPrComment = (env.CHANGE_ID != null && !env.BRANCH_IS_PRIMARY) ? true : false
 
-            if (env.CHANGE_ID == null) {
-                blackDuckAutomationPrComment = false
-            } else {
-                blackDuckAutomationPrComment = true
+                    synopsys_scan product: "blackduck", blackduck_url: "BLACKDUCK_URL", blackduck_token: "YOUR_BLACKDUCK_TOKEN", 
+                            blackduck_automation_prcomment: "${blackDuckPrComment}"
+                }
             }
 
-            synopsys_scan product: "blackduck", blackduck_url: "BLACKDUCK_URL", blackduck_token: "YOUR_BLACKDUCK_TOKEN", 
-                    blackduck_scan_full: true, blackduck_automation_prcomment: "${blackDuckAutomationPrComment}"
         }
     }
 }
@@ -142,7 +170,7 @@ synopsys_scan product: "blackduck", blackduck_scan_full: "${blackDuckScanFull}",
 ```
 **Note:** If user doesn't pass `blackduck_scan_full`, by default BlackDuck INTELLIGENT scan will be run on push events and RAPID scan will be run on pull requests.
 
-Or a very basic template - 
+Or a very basic template -
 ```groovy
 synopsys_scan product: "blackduck"
 ```
@@ -158,15 +186,15 @@ Or, if these values are set both from Jenkins Global Configuration and pipeline 
 
 ###  List of mandatory and optional parameters for Black Duck
 
-| Input Parameter                     | Description                                                                                                                                                                                                                       | Mandatory / Optional                                        |
-|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| Input Parameter                     | Description                                                                                                                                                                                                                       | Mandatory / Optional                                       |
+|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------|
 | `blackduck_url`                     | URL for Black Duck server. The URL can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `blackduck_url: "${env.BLACKDUCK_URL}"` </br>                           | Mandatory if not configured in Jenkins Global Configuration |
 | `blackduck_token`                   | API token for Black Duck. The token can also be configured in Jenkins **Global Configuration** or can be passed as **Environment Variable**. <br> Example: `blackduck_token: "${env.BLACKDUCK_TOKEN}"` </br>                      | Mandatory if not configured in Jenkins Global Configuration |
-| `blackduck_install_directory`       | Directory path to install Black Duck                                                                                                                                                                                              | Optional                                                    |
-| `blackduck_scan_full`               | Specifies whether full scan is required or not. By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan. <br> Supported values: `true` or `false` </br>                           | Optional (Default: **false**)                               |
-| `blackduck_scan_failure_severities` | Scan failure severities of Black Duck. <br> Supported values: `ALL`, `NONE`, `BLOCKER`, `CRITICAL`, `MAJOR`, `MINOR`, `OK`, `TRIVIAL`, `UNSPECIFIED`. <br> Example: `blackduck_scan_failure_severities: "BLOCKER, TRIVIAL"` </br> | Optional                                                    |
-| `blackduck_automation_prcomment`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: `true` or `false`. <br> Example: `blackduck_automation_prcomment: true` </br>                                               | Optional (Default: **false**)                               |
-| `blackduck_download_url`            | When Black Duck Download URL is provided by user, Synopsys Bridge will download detect from the provided URL. <br>                                                                                                                | Optional                                                    |
+| `blackduck_install_directory`       | Directory path to install Black Duck                                                                                                                                                                                              | Optional                                                   |
+| `blackduck_scan_full`               | Specifies whether full scan is required or not. By default, push events will initiate a full "intelligent" scan and pull request events will initiate a rapid scan. <br> Supported values: `true` or `false` </br>                | Optional                              |
+| `blackduck_scan_failure_severities` | Scan failure severities of Black Duck. <br> Supported values: `ALL`, `NONE`, `BLOCKER`, `CRITICAL`, `MAJOR`, `MINOR`, `OK`, `TRIVIAL`, `UNSPECIFIED`. <br> Example: `blackduck_scan_failure_severities: "BLOCKER, TRIVIAL"` </br> | Optional                                                   |
+| `blackduck_automation_prcomment`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: `true` or `false`. <br> Example: `blackduck_automation_prcomment: true` </br>                                               | Optional (Default: **false**)                              |
+| `blackduck_download_url`            | When Black Duck Download URL is provided by user, Synopsys Bridge will download detect from the provided URL. <br>                                                                                                                | Optional                                                   |
 
 
 ### Using Synopsys Security Scan for Coverity
@@ -176,19 +204,26 @@ To use the plugin and invoke it as a pipeline step, follow these instructions:
 1. Add the following code snippet to your `Jenkinsfile` in your project root directory that you want to scan:
 
 ```groovy
-stage("Security Scan") {
-    steps {
-        script {
-            def coverityAutomationPrComment
-
-            if (env.CHANGE_ID == null) {
-               coverityAutomationPrComment = false
-            } else {
-               coverityAutomationPrComment = true
+pipeline {
+    agent any
+    stages {
+        stage("synopsys-security-scan") {
+            when {
+                // Triggering the Synopsys Security Scan on master branch or Pull Request
+                anyOf {
+                    branch 'master'
+                    branch pattern: "PR-\\d+", comparator: "REGEXP"
+                }
             }
+            steps {
+                script {
+                    // Enabling Coverity PR comment for Pull Request
+                    def coverityPrComment = (env.CHANGE_ID != null && !env.BRANCH_IS_PRIMARY) ? true : false
 
-            synopsys_scan product: "coverity", coverity_url: "COVERITY_URL", coverity_user: "COVERITY_USER_NAME",
-                    coverity_passphrase: "COVERITY_PASSWORD", coverity_automation_prcomment: "${coverityAutomationPrComment}"
+                    synopsys_scan product: "coverity", coverity_url: "COVERITY_URL", coverity_user: "COVERITY_USER_NAME", 
+                            coverity_passphrase: "COVERITY_PASSWORD", coverity_automation_prcomment: "${coverityPrComment}"
+                }
+            }
         }
     }
 }
@@ -237,11 +272,16 @@ To use the plugin and invoke it as a pipeline step, follow these instructions:
 1. Add the following code snippet to your `Jenkinsfile` in your project root directory that you want to scan:
 
 ```groovy
-stage("Security Scan") {
-    steps {
-        script {
-            synopsys_scan product: "polaris", polaris_server_url: "POLARIS_SERVERURL", polaris_access_token: "POLARIS_TOKEN",
-                    polaris_application_name: "YOUR_POLARIS_APPLICATION_NAME", polaris_project_name: "YOUR_POLARIS_PROJECT_NAME", polaris_assessment_types: "SCA, SAST"
+pipeline {
+    agent any
+    stages {
+        stage("Security Scan") {
+            steps {
+                script {
+                    synopsys_scan product: "polaris", polaris_server_url: "POLARIS_SERVERURL", polaris_access_token: "POLARIS_TOKEN",
+                            polaris_application_name: "YOUR_POLARIS_APPLICATION_NAME", polaris_project_name: "YOUR_POLARIS_PROJECT_NAME", polaris_assessment_types: "SCA, SAST"
+                }
+            }
         }
     }
 }
@@ -305,7 +345,7 @@ Or, if these values are set both from Jenkins Global Configuration and pipeline 
 
 The latest version of the Synopsys Bridge is available at: [Synopsys Bridge](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/)
 
-The latest version of Synopsys Bridge will be downloaded by default if user doesn't provide the specific released version in the `pipeline parameter/Global UI` or the installed version is not the latest version..
+The latest version of Synopsys Bridge will be downloaded by default if user doesn't provide the specific released version in the `pipeline parameter/Global UI` or the installed version is not the latest version.
 
 ## Setting Up Synopsys Bridge Manually
 
@@ -313,33 +353,32 @@ If you are unable to download the Synopsys Bridge from our internet-hosted repos
 
 ## Proxy Support
 
-Proxy configuration in Jenkins pipelines can be done in several ways. Here are two common ways to declare proxy settings in Jenkins:  
+Proxy configuration in Jenkins pipelines can be done in several ways. Here are two common ways to declare proxy settings in Jenkins:
 
 1. Utilizing the 'environment' block in Jenkinsfile.   
-    Configuring proxy settings using the environment block within a Jenkins Pipeline.  
-    `environment { HTTP_PROXY = 'http://proxyIP:proxyPort' }`
+   Configuring proxy settings using the environment block within a Jenkins Pipeline.  
+   `environment { HTTP_PROXY = 'http://proxyIP:proxyPort' }`
 
 2. Employing the 'export' keyword.      
    Configuring proxy settings using environment variables.   
    `export HTTP_PROXY=http://proxyIP:proxyPort`
 
-Supporting the following environment variables.  
+Supporting the following environment variables.
 1. HTTP_PROXY:  
-_Format_: http://user:password@proxyIP:proxyPort/
+   _Format_: http://user:password@proxyIP:proxyPort/
 2. HTTPS_PROXY:  
-   _Format_: https://user:password@proxyIP:proxyPort/    
+   _Format_: https://user:password@proxyIP:proxyPort/
 3. NO_PROXY:     
    _Format_: Comma separated list of urls/addresses for which proxy is not used  
    Example:no_proxy="cern.ch,some.domain:8001,192.168.1.57"
 
 **Note:**
 - Proxy with auth: Users need to pass username and password for authentication.  
-   Example: http://user:password@proxyIP:proxyPort/
+  Example: http://user:password@proxyIP:proxyPort/
 - Proxy with no auth: Users do not need to pass anything for authentication.   
   Example: http://proxyIP:proxyPort/  
   ** If proxy configuration require authentication and agent need to run behind the proxy, user need to pass parameter with authentication data like  `-auth user_name:password` while connecting agent to controller.  
-  For more details, you can visit the following link,  
-  https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/
+  For more details, you can visit this link [**here**](https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/)
 
 ## Developers Guide
 Please follow the steps described [**here**](DeveloperGuide.md)

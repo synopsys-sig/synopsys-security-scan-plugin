@@ -35,6 +35,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private transient String blackduck_token;
     private String blackduck_install_directory;
     private Boolean blackduck_scan_full;
+    private Boolean blackduckIntelligentScan;
     private String blackduck_scan_failure_severities;
     //    private Boolean blackduck_automation_fixpr;
     private Boolean blackduck_automation_prcomment;
@@ -91,6 +92,10 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public Boolean isBlackduck_scan_full() {
         return blackduck_scan_full;
+    }
+
+    public Boolean isBlackduckIntelligentScan() {
+        return blackduckIntelligentScan;
     }
 
     public String getBlackduck_scan_failure_severities() {
@@ -219,6 +224,12 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setBlackduck_scan_full(Boolean blackduck_scan_full) {
+        if (blackduck_scan_full) {
+            this.blackduckIntelligentScan = true;
+        }
+        if (!blackduck_scan_full) {
+            this.blackduckIntelligentScan = false;
+        }
         this.blackduck_scan_full = blackduck_scan_full ? true : null;
     }
 
