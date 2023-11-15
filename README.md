@@ -314,7 +314,7 @@ Or, if these values are set both from Jenkins Global Configuration and pipeline 
 | `polaris_project_name`     | The project name you have created in Polaris.                                                                                                                                                                                     | Mandatory                                                   |
 | `polaris_assessment_types` | Specifies the type of scan you want to run. <br> Supported values: `SCA` or `SAST` or both SCA and SAST. <br> Example:  `polaris_assessment_types: "SCA, SAST"` </br>                                                             | Mandatory                                                   |
 | `polaris_triage`           | Accepts only one value. <br> Supported values: `REQUIRED` or `NOT_REQUIRED` or `NOT_ENTITLED`.</br>                                                                                                                               | Optional                                                    |
-| `polaris_branch_name`      | Branch name in the Polaris Server                                                                                                                                                                                                 | Optional                                                    |
+| `polaris_branch_name`      | Branch name in the Polaris Server                                                                                                                                                                                                 | Mandatory                                                    |
 
 
 ### Synopsys Security Product
