@@ -278,7 +278,7 @@ pipeline {
         stage("Security Scan") {
             steps {
                 script {
-                    synopsys_scan product: "polaris", polaris_server_url: "POLARIS_SERVERURL", polaris_access_token: "POLARIS_TOKEN",
+                    synopsys_scan product: "polaris", polaris_server_url: "POLARIS_SERVERURL", polaris_access_token: "POLARIS_TOKEN", polaris_branch_name: "YOUR_BRANCH_NAME",
                             polaris_application_name: "YOUR_POLARIS_APPLICATION_NAME", polaris_project_name: "YOUR_POLARIS_PROJECT_NAME", polaris_assessment_types: "SCA, SAST"
                 }
             }
